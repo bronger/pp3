@@ -1363,11 +1363,24 @@ the label text.
 of equal declination which can look very nice.  You get it with the option
 ``\.{along declination}'' in the parameter list of the text label.
 
+\medskip If you use the \.{tics} option the label is printed along a
+rectascension or declination circle multiple times, making it possible to print
+tic marks.  For example, \medskip
+
+{\parindent2em\tentt
+text "\$\#3\$" at 0 20 along declination tics rectascension 1 towards N ;\par
+text "\$\#5\$" at 11 0 along declination tics declination 10 towards S ;
+}
+
+\medskip\noindent creates automatically generated labels for the $20^\circ$
+declination circle (every whole hour), and for the $11^{\sevenrm h}$
+rectascension line (every 10 declination degrees).  See the explanation for
+|@<Generate |contents| from current coordinates@>| for further details.
+
 @.text@>
 @.along@>
 @.declination@>
-
-@q'@>
+@.tics@>
 
 @<Text labels@>=
 if (opcode == "text") {
@@ -1382,6 +1395,8 @@ if (opcode == "text") {
     bool on_baseline = false;
     enum { kind_text_label, kind_flex_declination} label_kind
         = kind_text_label;
+    double step_rectascension = -1.0; // $-1$ means that no maks are produced.
+    double step_declination = -1.0; 
     while (script && token != ";") {
         if (token == "color") script >> params.textlabelcolor;
         else if (token == "towards") {
@@ -1394,11 +1409,52 @@ if (opcode == "text") {
             if (token == "declination") {
                 label_kind = kind_flex_declination;
             } else throw string("Invalid \"along\" option");
+        }
+        else if (token == "tics") {
+            script >> token;
+            if (token == "rectascension") {
+                script >> step_rectascension;
+                if (step_rectascension <= 0.0)
+                    throw string("Invalid \"tics\" interval");
+                step_declination = -1.0; 
+            } else if (token == "declination") {
+                script >> step_declination;
+                if (step_declination <= 0.0)
+                    throw string("Invalid \"tics\" interval");
+                step_rectascension = -1.0; 
+            } else throw string("Invalid \"tics\" option");
         } else throw string("Invalid \"text\" option");
         script >> token;
     }
     if (!script)
         throw string("Unexpected end of script while scanning \"text\"");
+    if (step_rectascension <= 0.0 && step_declination <= 0.0) {
+        @<Insert text label into label container structure@>@;
+    } if (step_rectascension > 0.0) {
+        string user_pattern(contents);
+        double start = rectascension - floor(rectascension/step_rectascension)
+                                         * step_rectascension;
+        for (rectascension = start; rectascension < 24.0;
+             rectascension += step_rectascension) { cerr << rectascension << ' ';
+            @<Generate |contents| from current coordinates@>@;
+            @<Insert text label into label container structure@>@;
+        }
+    } else if (step_declination > 0.0) {
+        string user_pattern(contents);
+        double start = declination - floor((declination+90.0) / step_declination)
+                                         * step_declination;
+        for (declination = start; declination <= 90.0;
+             declination += step_declination) { cerr << declination << ' ';
+            @<Generate |contents| from current coordinates@>@;
+            @<Insert text label into label container structure@>@;
+        }
+    }
+}
+
+@ FixMe: Eventually this section must be a clean function call.  I insert a
+text label or a flex into the correct data structure.
+
+@<Insert text label into label container structure@>=
     switch (label_kind) {
     case kind_text_label:
         texts.push_back(text(contents, rectascension, declination,
@@ -1411,8 +1467,38 @@ if (opcode == "text") {
                                               on_baseline));
         break;
     }
-}
 
+@ FixMe: Eventually this section must be a clean function call.  Here I create
+the \LaTeX\ macro for the tics marks.  It is called \.{\BS coordinates} and has
+nine parameters, however not all are used so far:\medskip
+
+\item{\tt\#1} Rectascension in hours.
+\item{\tt\#2} Declination in degrees.
+\item{\tt\#3} Rectascension in integer hours (truncated, not rounded).
+\item{\tt\#4} Rectascension fraction of hour in minutes (truncated, not
+              rounded).
+\item{\tt\#5} Declination in rounded integer degrees.
+
+\medskip All decimal points are replaced by ``\.{\{\\DP\}}'' commands.
+
+@<Generate |contents| from current coordinates@>=
+        {
+            stringstream coordinates;
+            coordinates.setf(ios::fixed);
+            coordinates << "\\def\\coordinates#1#2#3#4#5#6#7#8#9{\\TicMark{"
+                        << user_pattern << "}}";
+            coordinates << "\\coordinates{" << rectascension << "}{"
+                        << declination << "}{";
+            coordinates << int(floor(rectascension)) << "}{"
+                        << int(floor((rectascension - floor(rectascension))
+                                     * 60.0))
+                        << "}{";
+            if (int(declination) > 0.0) coordinates << '+';
+            coordinates << int(declination) << "}{}{}{}{}";
+            contents = coordinates.str();
+            while (contents.find(".") != string::npos)
+                contents.replace(contents.find("."),1,"{\\DP}");
+        }
 
 @** Data structures and file formats.  First I describe the data structures that
 directly contain celestial objects such as stars and nebulae.  This is a little
@@ -3834,7 +3920,9 @@ one argument.  ``\.{\BS Label}'' encloses every label.  In addition to that,
 ``\.{\BS NGC}'', ``\.{\BS IC}'', and ``\.{\BS Messier}'' are built around the
 nebula label of the respective type, ``\.{\BS Starname}'' around all star
 labels, ``\.{\BS TextLabel}'' around text labels, and ``\.{\BS FlexLabel}''
-around flex labels.  By default, they do nothing.  Well, nothing to speak of.
+around flex labels.  ``\.{\BS TicMark}'' encloses all coordinate labels
+generated with the \.{tics} option.  By default, they do nothing.  Well,
+nothing to speak of.
 
 @^preamble (\LaTeX)@>
 
@@ -3844,6 +3932,8 @@ void create_preamble(ostream& out) {
         << "\\nofiles" @/
         << "\\usepackage[dvips]{color}\n" @/
         << "\\usepackage{pstricks,pst-text}\n" @/
+        << "\\newcommand*{\\DP}{.}\n" @/
+        << "\\newcommand*{\\TicMark}[1]{#1}\n" @/
         << "\\newcommand*{\\Label}[1]{#1}\n" @/
         << "\\newcommand*{\\TextLabel}[1]{#1}\n" @/
         << "\\newcommand*{\\FlexLabel}[1]{#1}\n" @/
