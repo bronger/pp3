@@ -1,0 +1,9 @@
+???.tex
+*.log
+*.dvi
+*.eps
+*.png
+*.jpg
+*.gz
+labeldimens.dat
+pp3temp.dat
