@@ -1,7 +1,7 @@
 # Dephinus, the Dolphin
 #
 
-filename output del.tex
+filename output delphinus.tex
 filename include wiki.pp3
 
 set constellation DEL

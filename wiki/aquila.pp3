@@ -1,7 +1,7 @@
 # Aquila, the Eagle
 #
 
-filename output aql.tex
+filename output aquila.tex
 filename include wiki.pp3
 
 set constellation AQL

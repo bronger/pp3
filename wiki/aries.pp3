@@ -1,7 +1,7 @@
 # Aries, the Ram
 #
 
-filename output ari.tex
+filename output aries.tex
 filename include wiki.pp3
 
 set constellation ARI

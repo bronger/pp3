@@ -1,7 +1,7 @@
 # Ursa Major, the Big Bear
 #
 
-filename output uma.tex
+filename output ursa_major.tex
 filename include wiki.pp3
 
 set constellation UMA

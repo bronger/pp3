@@ -1,7 +1,7 @@
 # Scorpius
 #
 
-filename output sco.tex
+filename output scorpius.tex
 filename include wiki.pp3
 
 set constellation SCO

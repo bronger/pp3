@@ -1,7 +1,7 @@
 # Virgo
 #
 
-filename output vir.tex
+filename output virgo.tex
 filename include wiki.pp3
 
 set constellation VIR

@@ -1,7 +1,7 @@
 # Crus, the Southern Cross
 #
 
-filename output cru.tex
+filename output crux.tex
 filename include wiki.pp3
 
 set constellation CRU

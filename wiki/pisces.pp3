@@ -1,7 +1,7 @@
 # Pisces, the Fishes
 #
 
-filename output psc.tex
+filename output pisces.tex
 filename include wiki.pp3
 
 set constellation PSC

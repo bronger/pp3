@@ -1,7 +1,7 @@
 # Taurus
 #
 
-filename output tau.tex
+filename output taurus.tex
 filename include wiki.pp3
 
 set constellation TAU

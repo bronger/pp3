@@ -1,7 +1,7 @@
 # Cetus, the Whale
 #
 
-filename output cet.tex
+filename output cetus.tex
 filename include wiki.pp3
 
 set constellation CET

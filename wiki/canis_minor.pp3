@@ -1,7 +1,7 @@
 # Canis Minor, the Small Dog
 #
 
-filename output cmi.tex
+filename output canis_minor.tex
 filename include wiki.pp3
 
 set constellation CMI

@@ -1,7 +1,7 @@
 # Aquarius
 #
 
-filename output aqr.tex
+filename output aquarius.tex
 filename include wiki.pp3
 
 set constellation AQR

@@ -1,7 +1,7 @@
 # Sagittarius
 #
 
-filename output sgr.tex
+filename output sagittarius.tex
 filename include wiki.pp3
 
 set constellation SGR

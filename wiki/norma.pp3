@@ -1,7 +1,7 @@
 # Norma
 #
 
-filename output nor.tex
+filename output norma.tex
 filename include wiki.pp3
 
 set constellation NOR

@@ -1,7 +1,7 @@
 # Auriga
 #
 
-filename output aur.tex
+filename output auriga.tex
 filename include wiki.pp3
 
 set constellation AUR

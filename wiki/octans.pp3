@@ -1,7 +1,7 @@
 # Octans (Just a boundary test!!)
 #
 
-filename output oct.tex
+filename output octans.tex
 filename include wiki.pp3
 
 set constellation OCT

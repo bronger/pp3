@@ -1,7 +1,7 @@
 # Libra
 #
 
-filename output lib.tex
+filename output libra.tex
 filename include wiki.pp3
 
 set constellation LIB

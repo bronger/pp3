@@ -1,7 +1,7 @@
 # Centaur
 #
 
-filename output cen.tex
+filename output centaurus.tex
 filename include wiki.pp3
 
 set constellation CEN

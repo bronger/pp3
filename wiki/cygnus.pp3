@@ -1,7 +1,7 @@
 # Cygnus, the Swan
 #
 
-filename output cyg.tex
+filename output cygnus.tex
 filename include wiki.pp3
 
 set constellation CYG

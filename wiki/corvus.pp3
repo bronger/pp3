@@ -1,7 +1,7 @@
-# Crovus
+# Corvus
 #
 
-filename output crv.tex
+filename output corvus.tex
 filename include wiki.pp3
 
 set constellation CRV

@@ -1,7 +1,7 @@
 # Bootes
 #
 
-filename output boo.tex
+filename output bootes.tex
 filename include wiki.pp3
 
 set constellation BOO

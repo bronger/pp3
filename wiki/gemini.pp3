@@ -1,7 +1,7 @@
 # Gemini, the Twins
 #
 
-filename output gem.tex
+filename output gemini.tex
 filename include wiki.pp3
 
 set constellation GEM

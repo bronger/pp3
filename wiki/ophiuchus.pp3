@@ -1,7 +1,7 @@
 # Ophiuchus
 #
 
-filename output oph.tex
+filename output ophiuchus.tex
 filename include wiki.pp3
 
 set constellation OPH

@@ -1,7 +1,7 @@
 # Coma Berenices, the Heir of Berenice
 #
 
-filename output com.tex
+filename output coma_berenices.tex
 filename include wiki.pp3
 filename stars stars.dat
 

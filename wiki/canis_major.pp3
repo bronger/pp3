@@ -1,7 +1,7 @@
 # Canis Maior, the Big Dog
 #
 
-filename output cma.tex
+filename output canis_major.tex
 filename include wiki.pp3
 
 set constellation CMA

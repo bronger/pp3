@@ -1,7 +1,7 @@
 # Vulpecula
 #
 
-filename output vul.tex
+filename output vulpecula.tex
 filename include wiki.pp3
 
 set constellation VUL

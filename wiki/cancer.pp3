@@ -1,7 +1,7 @@
 # Cancer, the Crab
 #
 
-filename output cnc.tex
+filename output cancer.tex
 filename include wiki.pp3
 
 set constellation CNC

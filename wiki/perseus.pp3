@@ -1,7 +1,7 @@
 # Perseus
 #
 
-filename output per.tex
+filename output perseus.tex
 filename include wiki.pp3
 
 set constellation PER

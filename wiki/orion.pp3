@@ -1,4 +1,4 @@
-filename output ori.tex
+filename output orion.tex
 filename include wiki.pp3
 
 switch eps_output on

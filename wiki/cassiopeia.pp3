@@ -1,7 +1,7 @@
 # Cassiopeia
 #
 
-filename output cas.tex
+filename output cassiopeia.tex
 filename include wiki.pp3
 
 set constellation CAS

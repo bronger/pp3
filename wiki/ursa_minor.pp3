@@ -1,7 +1,7 @@
 # Ursa Minor
 #
 
-filename output umi.tex
+filename output ursa_minor.tex
 filename include wiki.pp3
 
 set constellation UMI

@@ -1,7 +1,7 @@
 # Capricornus
 #
 
-filename output cap.tex
+filename output capricornus.tex
 filename include wiki.pp3
 
 set constellation CAP

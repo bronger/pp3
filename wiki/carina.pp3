@@ -1,7 +1,7 @@
 # Carina, the keel
 #
 
-filename output car.tex
+filename output carina.tex
 filename include wiki.pp3
 
 set constellation CAR

@@ -1,7 +1,7 @@
 # Serpens
 #
 
-filename output ser.tex
+filename output serpens.tex
 filename include wiki.pp3
 
 set constellation SER

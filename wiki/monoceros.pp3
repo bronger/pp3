@@ -1,7 +1,7 @@
 # Monoceros, the unicorn
 #
 
-filename output mon.tex
+filename output monoceros.tex
 filename include wiki.pp3
 
 set constellation MON

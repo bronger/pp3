@@ -1,7 +1,7 @@
 # Eridanus
 #
 
-filename output eri.tex
+filename output eridanus.tex
 filename include wiki.pp3
 
 set constellation ERI

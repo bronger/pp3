@@ -1,7 +1,7 @@
 # Canes venatici
 #
 
-filename output cvn.tex
+filename output canes_venatici.tex
 filename include wiki.pp3
 
 set constellation CVN
