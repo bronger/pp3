@@ -38,14 +38,25 @@ rm -Rf %{buildroot}
 
 %files
 %defattr(-, root, root)
-%doc COPYING README WHATSNEW pp3.ps
+%doc COPYING README WHATSNEW
 %{_bindir}/pp3
 %{_datadir}/pp3
 %{_datadir}/doc/pp3
+%{_infodir}/pp3.info.gz
+%{_infodir}/betelg.png
+%{_infodir}/leo1.png
+%{_infodir}/orion.png
+%{_infodir}/pp3rose.png
+%{_infodir}/swan1.png
+%{_infodir}/swan2.png
+%{_infodir}/swan.png
+
 
 %changelog
 * Mon Aug 14 2004 Torsten Bronger 
 - Version 1.3.3
+- ATTENTION! Can only be compiled with a fixed brp-compress,
+  see texinfo-pretest mailinglist 2004/03/03
 * Mon Aug 14 2003 Torsten Bronger 
 - Version 1.3.2
 * Mon Aug 09 2003 Torsten Bronger 
