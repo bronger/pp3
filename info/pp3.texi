@@ -1,6 +1,6 @@
 % -*-texinfo-*-
-%\def\rmdefault{ppl}\def\ne{\mathrel{\not{}\mskip-8mu=}}\input pstexinfo
 \def\niceracronym#1{#1}
+\def\rmdefault{ppl}\def\ne{\mathrel{\not{}\mskip-8mu=}}\input pstexinfo
 \input texinfo
 @let@acronym@niceracronym
 
@@ -150,25 +150,10 @@ flexibility of the LaTeX language.
 * Introduction::                The ideas behind it.
 * Installation::                Some ways to set PP3 up.
 * Usage::                       How to invoke PP3.
-@c * Input scripts::               Telling PP3 what to do.
-@c * Keywords reference::          List of all PP3 keywords.
-@c * Data file formats::           Internal structure of the database files.
-@c * Known problems::              List of known shortcomings and bugs.
-@c * PP3 source code::             Making the PP3 source readable.
 * Input scripts::               Telling PP3 what to do.
-@c * Keywords reference::          List of all PP3 keywords.
-@c * Data file formats::           Internal structure of the database files.
-@c * Known problems::              List of known shortcomings and bugs.
-@c * PP3 source code::             Making the PP3 source readable.
 * Keywords reference::          List of all PP3 keywords.
-@c * Data file formats::           Internal structure of the database files.
-@c * Known problems::              List of known shortcomings and bugs.
-@c * PP3 source code::             Making the PP3 source readable.
 * Data file formats::           Internal structure of the database files.
-@c * Known problems::              List of known shortcomings and bugs.
-@c * PP3 source code::             Making the PP3 source readable.
 * Known problems::              List of known shortcomings and bugs.
-@c * PP3 source code::             Making the PP3 source readable.
 * Index::                       General index.
 @end menu
 @end ifnottex
@@ -189,7 +174,7 @@ flexibility of the LaTeX language.
 * What it is::                  Features of PP3.
 * What it is not::              Limitations of PP3.
 * The success of PP3::          Things that have been done using PP3.
-* Astronomical basic terms::    Two or three words for non-astronomers.
+* Basic astronomical terms::    
 @end menu
 
 @node What it is
@@ -203,9 +188,9 @@ is perfectly suited for creating illustrations for books or other print
 media, and for web pages.
 
 @PPTHREE{} is optimised for the semi-automatic generation of large sets
-of sky maps.  It has decent default behaviour, however it can be very
-flexibly customised.  It tries to take as much fine-tuning work away
-from you as possible.
+of sky maps.  It has decent default behaviour, however it can be
+customised very flexibly.  It tries to take as much fine-tuning work
+away from you as possible.
 
 
 @node What it is not
@@ -242,7 +227,7 @@ This is a web page, so you need bitmaps@footnote{as long as we don't
 have @acronym{SVG}}, so a short @uref{http://www.gimp.org,Gimp}
 script@footnote{which is included into the distribution} helped me to
 convert @PPTHREE{}'s @acronym{EPS} vector output to @acronym{PNG}
-bitmaps.  Additionally, this scripts creates smaller thumbnail version
+bitmaps.  Additionally, this script creates smaller thumbnail version
 for all charts that exceed a certain width.
 
 The result is that one can create all maps plus their thumbnails with
@@ -255,8 +240,8 @@ make
 @noindent
 Surely it can't become simpler.  You may retort ``Well, but creating the
 maps must have been the actual work''.  Of course it was, but first it
-took only 10--15 minutes eventually, because much work is done by the
-default behaviour of @PPTHREE{} itself.  And secondly:
+took only 10--15 minutes per map eventually, because much work is done
+by the default behaviour of @PPTHREE{} itself.  And secondly:
 
 @unnumberedsubsec French Wikipedia
 
@@ -264,8 +249,8 @@ Several months later the @uref{http://fr.wikipedia.org,French division
 of Wikipedia} wanted to translate the maps to French.  They wanted
 another background colour and French labels and constellation names.
 They provided me with a translation table.  It took me three hours to
-adjust the scripts, to run @file{make} again, and to upload the ZIP file
-will all the demanded bitmaps.
+adjust the scripts, to run @file{make} again, and to upload the
+@acronym{ZIP} file will all the demanded bitmaps.
 
 @unnumberedsubsec h2g2
 
@@ -277,8 +262,8 @@ the 88@tie{}bitmaps.  So the project died, but on a smaller scale (for
 ten constellations or so), it indeed motivated authors to constribute
 articles about constellations.  The maps were externally linked.
 
-@node Astronomical basic terms
-@section Astronomical basic terms
+@node Basic astronomical terms
+@section Basic astronomical terms
 
 
 @node Installation
@@ -339,12 +324,16 @@ not difficult, and both programs may be useful for other puposes, too.
 @TeX{} is a mighty typesetter.  @PPTHREE{} calls @TeX{} in order to
 actually create the stellar map.  The result is a Postscript file.
 
-The are two major @TeX{} variants for Windows, namely
+@begingroup
+@rightskip0pt plus 1fil
+There are two major @TeX{} variants for Windows, namely
 @uref{http://www.miktex.org,Mik@TeX{}} and
 @uref{http://www.tug.org/texlive/,@TeX{}@tie{}Live}.  Both are rather
 similar in their functionality, and both come with a nice installation
 tool.  Please assure that the @t{pstricks} package as part of @TeX{} is
 installed, however this is highly probable anyway.
+@par
+@endgroup
 
 @node Getting Ghostscript
 @subsection Getting Ghostscript
@@ -364,8 +353,8 @@ lets you view arbitrary Postscript files on screen.
 @subsection Installation of @PPTHREE{} itself
 
 When @TeX{} and Ghostscript are in the right place, you finish the
-installation by unpacking the @PPTHREE{} ZIP file and copying its
-content in the proper directories:
+installation by unpacking the @PPTHREE{} @acronym{ZIP} file and copying
+its content in the proper directories:
 
 @enumerate
 @item
@@ -443,8 +432,7 @@ paths in the @file{Makefile}.
 @PPTHREE{} looks for its data files (all files with the @file{.dat}
 extension) in a special directory that is pre-compiled in the
 executable.  The Makefile assures that this is the correct one, but you
-can override that with the environment variable @env{PP3DATA}.  That's
-it.
+can override that with the environment variable @env{PP3DATA}.
 
 
 @node Usage
@@ -503,20 +491,98 @@ download a neat reference card.  If you fold it twice it is a handy
 zigzag.
 
 @menu
-* General parameters::          
-* Objects and labels::          
+* Minimal example::             The first four PP3 lines.
+* More bells and wistles::      How to make it look more sophisticated.
 @end menu
 
-@node General parameters
-@section Setting general parameters
+
+@node Minimal example
+@section Minimal example input script
+
+The minimal @PPTHREE{} input script is -- well -- the empty file.  Then
+@PPTHREE{}'s default values create a dark blue star map of Orion.  You
+can override these defaults step by step.  Let's do so: Write
+
+@example
+# Cygnus, the Swan
+
+filename output swan.tex
+switch pdf_output on
+
+set center_rectascension  19.95
+set center_declination    40.8
+@end example
+
+@noindent
+to the file @file{swan.pp3} and call
+
+@example
+pp3 swan.pp3
+@end example
+
+@noindent
+The result is a file @file{swan.pdf} in the current directory with a
+star map of the Swan.
+
+The lines of @file{swan.pp3} are not difficult to explain:  The very
+first line is a comment.  Everything that starts with a @code{#} is a
+comment.  You can write descriptive text in them to make the file more
+readable.
+
+The line
+
+@example
+filename output swan.tex
+@end example
+
+@noindent
+makes @PPTHREE{} to write the generated map to the file
+@file{swan.tex}.  But such a file is rarely the desired output.
+Therefore the next line
+
+@example
+switch pdf_output on
+@end example
+
+@noindent
+tells @PPTHREE{} that we want to have a @acronym{PDF} file.  So
+@PPTHREE{} does everything necessary for that.  And finally,
+
+@example
+set center_rectascension  19.95
+set center_declination    40.8
+@end example
+
+@noindent
+denotes the area of the sky that we want to be displayed.  Both values
+indicate the celestial point that we want to have in the centre of the
+map.  In this case, 19.95@s{}h rectascension and @math{+40.8^\circ}
+declination which is the centre of the constellation Swan.
 
 
-@node Objects and labels
-@section Setting celestial objects and their labels
+@node More bells and wistles
+@section More bells and wistles
 
 
 @node Keywords reference
 @chapter Kewords reference
+
+@menu
+* General structure::           
+* Parameters::                  
+* Objects and Labels::          
+@end menu
+
+@node General structure
+@section General structure
+
+
+@node Parameters
+@section Setting Parameters
+
+
+@node Objects and Labels
+@section Setting or deleting celestial objects and their labels
 
 
 @node Data file formats
