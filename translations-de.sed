@@ -9,14 +9,14 @@ s/\"Piscis Austrinus\"/\"Südlicher Fisch\"/
 s/\"Ursa Major\"/\"Großer Bär\"/
 s/\"Ursa Minor\"/\"Kleiner Bär\"/
 s/\FlexLabel{Cepheus}/\FlexLabel{Cepheus}/
-s/\\"\\\\footnotesize Vega\\"/\\"\\\\footnotesize Wega\\"/
-s/\\"\\\\footnotesize Virgo galaxy cluster\\"/\\"\\\\footnotesize Virgo-Galaxiehaufen\\"/
-s/\\"\\\\footnotesize\\\\itshape Coalsack\\"/\\"\\\\footnotesize\\\\itshape Kohlensack\\"/
+s/\\"\\\\footnotesize Vega\\"/\"\\\\footnotesize Wega\"/
+s/\\"\\\\footnotesize Virgo galaxy cluster\\"/\"\\\\footnotesize Virgo-Galaxiehaufen\"/
+s/\\"\\\\footnotesize\\\\itshape Coalsack\\"/\"\\\\footnotesize\\\\itshape Kohlensack\"/
 s/\\parbox[t]{1.8cm}{Serpens\\\\Caput}/\\parbox[t]{1.8cm}{Kopf der\\\\Schlange}/
 s/\\parbox[t]{2cm}{Ser\\\\Cauda}/\\parbox[t]{2cm}{Schw.\\\\Schlange}/
-s/\\"\\\\small Crux\\"/\\"\\\\small Kreuz\\"/
-s/\\"\\\\small Wolf 359\\\\hskip0.3em\\\\psdots[dotstyle=+,dotangle=45](0,0)\\"/\\"\\\\small Wolf 359\\\\hskip0.3em\\\\psdots[dotstyle=+,dotangle=45](0,0)\\"/
-s/\\"\\\\smaller Corvus\\"/\\"\\\\smaller Rabe\\"/
+s/\\"\\\\small Crux\\"/\"\\\\small Kreuz\"/
+s/\\"\\\\small Wolf 359\\\\hskip0.3em\\\\psdots[dotstyle=+,dotangle=45](0,0)\\"/\"\\\\small Wolf 359\\\\hskip0.3em\\\\psdots[dotstyle=+,dotangle=45](0,0)\"/
+s/\\"\\\\smaller Corvus\\"/\"\\\\smaller Rabe\"/
 s/\\vtop{\\hbox{Piscis}\\hbox{Austrinus}}/\\vtop{\\hbox{Südlicher}\\hbox{Fisch}}/
 s/\\vtop{\\hbox{Triangulum}\\hbox{Australe}}/\\vtop{\\hbox{Südliches}\\hbox{Dreieck}}/
 s/Antlia/Luftpumpe/
