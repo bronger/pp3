@@ -456,3 +456,13 @@ HD 203006  # theta1 Mic
 HD 202627  # epsilon Mic
 HD 199951  # gamma Mic
 HD 198232 ; # alpha Mic
+
+
+# Horologium
+
+HD 26967  # alpha Hor
+HD 17051  # iota Hor
+HD 16555  # eta Hor
+HD 16920  # zeta Hor
+HD 19319  # mu Hor
+HD 18866 ; # beta Hor
