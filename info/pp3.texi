@@ -304,7 +304,8 @@ another background colour and French labels and constellation names.
 They provided me with a translation table.  It took me three hours to
 adjust the scripts, to run @file{make} again, and to upload the
 @acronym{ZIP} file with all the demanded bitmaps.  See for example the
-@uref{http://fr.wikipedia.org/wiki/Aquarius,Aquarius entry}.
+@uref{http://fr.wikipedia.org/wiki/Scorpion_(constellation),Scorpius
+entry}.
 
 @unnumberedsubsec h2g2
 @cindex h2g2
