@@ -16,7 +16,7 @@ objects_and_labels
 add_labels BOO 51 ;    # mu
 reposition BOO 16 SW ;
 
-text Bo\"{o}tes at 13.95 24 along declination towards W ;
+text Boötes at 13.95 24 along declination towards W ;
 text CVn at 14.07 40 along declination towards E ;
 text Serpens at 15.25 25 along declination towards SW ;
 text CrB at 15.55 34 along declination towards W ;
