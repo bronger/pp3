@@ -96,6 +96,10 @@ HD 100407  # xi Hya
 HD 103192  # beta Hya
 HYA 46  HYA 49 ;
 
+HD 82150   # epsilon Ant
+HD 90610   # alpha Ant
+HD 94890 ; # iota Ant
+
 CRT 7  CRT 12  CRT 15  CRT 11 ;
 
 CRV 2  CRV 4  CRV 7  CRV 9  CRV 2 ;
