@@ -3115,7 +3115,7 @@ Project, see @ref{Successful use of PP3}.
 @sp 2
 
 @multitable {Triangulum Australe} {MMM} {Water Serpent (male)} {88.88} {@minus{}88.8} {88.8}
-@item @emph{Latin} @tab @emph{ab.} @tab @emph{English}
+@headitem @emph{Latin} @tab @emph{ab.} @tab @emph{English}
       @tab @emph{rec.} @tab @emph{dec.} @tab @emph{sc.}
 @item Andromeda @tab And @tab Andromeda                    @tab 1 @tab @math{+}38 @tab 4
 @item Antlia @tab Ant @tab Air Pump                        @tab 10.2 @tab @minus{}35 @tab 3
