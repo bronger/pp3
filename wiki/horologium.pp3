@@ -1,4 +1,4 @@
-# Horologium, the Pendulum Clock (UNFINISHED)
+# Horologium, the Pendulum Clock
 #
 
 filename output horologium.tex
@@ -25,13 +25,11 @@ reposition HD 18242 NE ;
 
 
 text Horologium at 3.8 -52 along declination ;
-text Hydrus at 1.45 -70 along declination towards W ;
-text Tucana at 1.3 -58 along declination towards SE ;
-text Phoenix at 1.4 -57 along declination ;
-text Eri at 1.5 -55 along declination towards W ;
+text Hydrus at 3.8 -67.5 along declination towards S ;
+text Fornax at 3.5 -38 along declination ;
+text Phe at 2.3 -47 along declination ;
+text Eridanus at 3.4 -45 along declination ;
 text Mensa at 3.7 -79 along declination towards W ;
-text Dor at 4.7 -69 along declination towards NW ;
-text Ind at 23.4 -73.7 along declination ;
-text Octans at 0 -74.5 along declination towards SE ;
+text Dorado at 4.7 -65 along declination towards W ;
 text Reticulum at 4.5 -66.5 along declination ;
 delete HD 22634  HD 22252 ;   # Making space for "Reticulum"
