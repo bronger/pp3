@@ -1,0 +1,27 @@
+# Circinus, the Pair of Compasses
+#
+
+filename output circinus.tex
+filename include wiki.pp3
+
+set constellation CIR
+set center_rectascension  14.8
+set center_declination   -62
+set box_height 7
+set box_width  6.3
+
+set faintest_star_disk_magnitude 5
+
+objects_and_labels
+
+add_labels HD 135379  HD 136415 ;  # beta and gamma Cir
+
+reposition HD 136415 W ;  # gamma Cir
+
+text Circinus at 15.45 -56 along declination towards SE ;
+text Musca at 13.8 -68.5 along declination towards E ;
+text Centaurus at 14.6 -64 along declination towards NE ;
+text Apus at 14 -71 along declination towards SW ;
+text Lupus at 15.1 -55 along declination ;
+text TrA at 16.1 -61 along declination towards S ;
+text Norma at 15.6 -56 along declination towards W ;
