@@ -347,7 +347,8 @@ int main() {
 	remove_names_duplicates(stars);
 	cout << " done.\n";
 	/*	create_label_dimensions_database(stars); */
-	for (int i = 0; i < stars.size(); i++) out << stars[i];
+	for (int i = 0; i < stars.size(); i++)
+	    if (stars[i].magnitude < 99.0) out << stars[i];
     }
     catch (string s) {
 	cerr << s << endl;
