@@ -758,7 +758,7 @@ margin around every label with a width of |skip|.  Overlaps in the rim are
 counted, too, however normally they don't hurt that much.  Normally they hurt
 half as much as the label area ({\it core}) itself, but this can be changed
 with ``\.{rim}''.  With $$\hbox{\.{penalties rim 0}}$$ the rim loses its
-complete significance.  But notice that for each rim penalty a core penalty is
+complete significance.  But notice that for each core penalty a rim penalty is
 added, too, so that the rim can never be more significant than the core.
 
 Within the rim, ``\.{boundaries\_rim}'' and ``\.{constellation\_lines\_rim}''
