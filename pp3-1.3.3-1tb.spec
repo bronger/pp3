@@ -21,12 +21,14 @@ PP3 uses LaTeX+pstricks as the backend for generating the vector
 graphics.  You can add arbitrary labels to the map.  The output is
 configurable in many ways.
 
+#'
+
 %prep
 %setup -n pp3-1.3.3
 
 %build
 rm -rf %{buildroot}
-make LOCAL="" CHANGEFILE=fmax.ch
+make LOCAL=""
 
 %install
 make LOCAL="" ROOT="$RPM_BUILD_ROOT" install
