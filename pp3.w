@@ -27,7 +27,6 @@
 
 \iffalse
 Todo:
- - More parameterisation
  - Final documentation
  - Final webpage
 \fi
@@ -85,6 +84,7 @@ Todo:
 
 \font\eightpplr=pplr7t scaled 800
 \font\ninepplr=pplr7t scaled 900
+\font\ninepplri=pplri7t scaled 900
 \font\tenpplr=pplr7t
 \font\tenpplb=pplb7t
 \font\tenpplri=pplri7t
@@ -97,6 +97,7 @@ Todo:
 \let\sc=\ninepplr
 \let\mc=\ninepplr
 \let\it=\tenpplri
+\let\nineit=\ninepplri
 \let\tt=\tentt
 \let\cmntfont\tenpplr
 
@@ -140,16 +141,16 @@ Todo:
 \font\ttitlefont=pcrb7t scaled\magstep3    % typewriter type in title
 
 \font\stitlefont=bfrr8t scaled\magstep3    % sans serif type in title
-\font\sbtitlefont=0t3x8a scaled\magstep3   % sans bold type in title
-\font\sf=0t3r8a \font\sfbf=0t3b8a
-\font\sfa=0t3r8a scaled 700
+\font\sbtitlefont=0t3x8r scaled\magstep3   % sans bold type in title
+\font\sf=0t3r8r \font\sfbf=0t3b8r
+\font\sfa=0t3r8r scaled 700
 
-\def\title{PP3 (Version 0.91)}
-\def\topofcontents{\null\vfill
+\def\title{PP3 (Version 0.99)}
+\def\topofcontents{\null\vfill\vskip-2cm
   \centerline{\titlefont The Sky Map
   Creator {\sbtitlefont PP3}}
   \vskip 15pt
-  \centerline{(Version 0.91)}
+  \centerline{(Version 0.99)}
   \vfill}
 \def\botofcontents{\parindent2em\vfill
 \noindent
@@ -159,6 +160,7 @@ Todo:
 %
 Copyright \copyright\ 2003 Torsten Bronger
                            ({\tt bronger@@users.sourceforge.net})
+\ninerm\baselineskip0.9\baselineskip\let\it\nineit
 \bigskip\noindent
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the ``Software''), to deal in
@@ -168,7 +170,7 @@ of the Software, and to permit persons to whom the Software is furnished to do
 so, subject to the following conditions:
 
 \leftskip1cm\rightskip\leftskip
-\smallskip\noindent
+\medskip\noindent
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
@@ -183,17 +185,18 @@ implied, including but not limited to the warranties of {\it merchantability},
 event shall the authors or copyright holders be liable for any claim, damages
 or other liability, whether in an action of contract, tort or otherwise,
 arising from, out of or in connection with the Software or the use or other
-dealings in the Software. }
+dealings in the Software.}
 
 \def\PPTHREE/{{\sf PP3}}
 
 @i c++lib.w
 @s ios int
 
-@* Introduction.  This program \PPTHREE/ (``parvum planetarium'') takes the
-data of various celestial data files and turns them into a \LaTeX\ file that
-uses \PS/Tricks to draw a nice sky chart containing a certain region of the
-sky.  Current versions are available on its
+@** Introduction.  \ifpdftex (Please note that you can find a table of contents
+at the end of this document). \fi This program \PPTHREE/ (``parvum
+planetarium'') takes the data of various celestial data files and turns them
+into a \LaTeX\ file that uses \PS/Tricks to draw a nice sky chart containing a
+certain region of the sky.  Current versions are available on its
 \pdfURL{homepage}{http://pp3.sourceforge.net}.
 
 You call \PPTHREE/ with e.\,g.\medskip
@@ -210,41 +213,71 @@ If you want to use other data with this program, you may well provide your own
 catalogue files.  Their file formats are very simple, and they are explained in
 this document together with the respective |read_@t\dots@>()| function.
 
+If you give a single dash ``\.{-}'' as the only parameter to \PPTHREE/, the
+input script is read from standard input.  So if you write\medskip
+
+\.{pp3 - > test.tex \AM\AM{} latex test \AM\AM{} dvips test}
+
+\medskip\noindent and type \.{\CF D} (\hbox{Control-D}), a file \.{test.ps}
+should be produced that contains a sample chart.
+
 Very important is to know how to write an input script.  Please consult the
-section ``Reading the input script'' near the end of this documentation for
-this.  Here is an example input script: \medskip
+following section ``The input script'' for this.  Here is an example input
+script: \medskip
 
 {\parindent2em\baselineskip10.5pt\ninett\obeylines\obeyspaces
 \# Chart of the Scorpion, printable on a 
 \# black and white printing device
 \vskip\baselineskip
 set constellation SCO           \# This is highlighted
-set center\_rectascension  17
-set center\_declination   -28
-set grad\_per\_cm             2.5
+set center\UL{}rectascension   17
+set center\UL{}declination    -28
+set grad\UL{}per\UL{}cm             2.5
 \vskip\baselineskip
-switch milky\_way on
-switch eps\_output on            \# Please call LaTeX and dvips for us
-switch colored\_stars off        \# All the same colour ...
+switch milky\UL{}way on
+switch eps\UL{}output on            \# Please call LaTeX and dvips for us
+switch colored\UL{}stars off        \# All the same colour ...
 color stars 0 0 0               \# ...\ namely this one
 color nebulae 0 0 0
 color background 1 1 1
 color grid 0.5 0.5 0.5
 color ecliptic 0.3 0.3 0.3
-color constellation\_lines 0.7 0.7 0.7
+color constellation\UL{}lines 0.7 0.7 0.7
 color labels 0 0 0
 color boundaries 0.8 0.8 0.8
-color highlighted\_boundaries 0 0 0
-color milky\_way 0.5 0.5 0.5
+color highlighted\UL{}boundaries 0 0 0
+color milky\UL{}way 0.5 0.5 0.5
 \vskip\baselineskip
 filename output test.tex        \# Here should it go
 \vskip\baselineskip
 \vskip\baselineskip
-objects\_and\_labels              \# Now for the second part
+objects\UL{}and\UL{}labels              \# Now for the second part
 \vskip\baselineskip
-delete M 18  NGC 6590  NGC 6634 ;  \# Superfluous
-reposition HD 147165 S          \# Force sig Sco to be labelled.
+delete M 18  NGC 6590  NGC 6634 ;  \# Delete superfluous
+reposition SCO 20 S             \# Force sig Sco to be labelled.
+text "\BS\BS{}Huge Sco" at 16.2 -41.5 color 0 0 0 towards NW ;
 }
+
+@ Many flaws and bugs in this program are already known to its author.
+
+The input script processing is shaky.  The comment character `\.{\#}' must be
+at the beginning of a line or must be preceded by whitespace.  The special
+token ``\.{objects\UL and\UL labels}'' must not occur within strings.  If an
+error is found in the input script, \PPTHREE/ doesn't tell the line number.  It
+should be possible to include more than one file, and it should allow for a
+nesting depth greater than one.
+
+At the moment almost all data structures are kept in memory completely.  For
+the author's needs this is perfectly sufficient, however if you want to use
+data bases with hundreds of thousands of objects, you will run into trouble.
+On the other hand it's only necessary to keep all object in memory that are
+actually drawn.  So memory usage could be reduced drastically.
+
+@ The resulting \LaTeX\ file doesn't use packages special to \PPTHREE/.  In
+fact the preamble is rather small.  This makes it possible to copy the (maybe
+huge) \.{\BS vbox} with the complete map into an own \LaTeX\ file.  However
+this may be a stupid decision because (especially if the Milky Way is switched
+on) this consumes much of \TeX's pool size.
 
 @ In order to use the program, you must have a complete and modern \LaTeX\
 distribution installed, and a modern Ghostscript.  On a Linux system, both
@@ -260,7 +293,7 @@ notice that \pdfURL{{\mc
 GS}View}{http://www.cs.wisc.edu/\TILDE/ghost/gsview/get43.htm} is a very
 sensible program, too.\par}
 
-\bigskip Okay, let's start with the header files~\dots
+@ Okay, let's start with the header files~\dots
 
 @q'}}}}@>
 
@@ -275,8 +308,8 @@ sensible program, too.\par}
 #include <iomanip>
 #include <cstdlib>
 #include <cmath>
-#include <cfloat>
-
+#include <cfloat>@#
+@<Missing math routines@>@;@#
 
 @* Global parameters and default values.  I have to break a strict \CPLUSPLUS/
 rule here: Never use |#@t\hskip-\fontdimen2\mainfont@>define|!  However I
@@ -284,10 +317,12 @@ really found no alternative to it.  No |const| construct worked, and if it had
 done, I'd have to use it in every single routine.  And ubiquitous
 |*params.out|'s are ugly.
 
+I declare {\it and\/} define the structure here.
+
 @d OUT (*params.out)
 
 @c
-@<Define color data structure@>@;@#
+@<Define |color| data structure@>@;@#
 
 struct parameters {
     double center_rectascension, center_declination;
@@ -316,7 +351,17 @@ struct parameters {
     bool milkyway_visible, colored_stars, show_grid, show_ecliptic,
         show_boundaries, show_lines, show_labels;
     bool create_eps, create_pdf;
-    parameters() : center_rectascension(5.8), center_declination(0.0),
+    parameters() : @<Default values of all global parameters@> { }
+    int view_frame_width_in_bp() {
+        return int(ceil(view_frame_width / 2.54 * 72));
+    }
+    int view_frame_height_in_bp() {
+        return int(ceil(view_frame_height / 2.54 * 72));
+    }
+} params;
+
+@ @<Default values of all global parameters@>=
+center_rectascension(5.8), center_declination(0.0),
                    view_frame_width(15.0), view_frame_height(15.0),
                    grad_per_cm(4.0),
                    constellation("ORI"), font_size(10), @/
@@ -364,88 +409,795 @@ struct parameters {
                    show_lines(true), show_labels(true), @/
                    create_eps(false),
                    create_pdf(false)
-    { }
-    int view_frame_width_in_bp() {
-        return int(ceil(view_frame_width / 2.54 * 72));
-    }
-    int view_frame_height_in_bp() {
-        return int(ceil(view_frame_height / 2.54 * 72));
-    }
-} params;
 
 
-@ It's very convenient to have a unified data structure for all colours that
-appear in this program.  Its internal structure is trivial, and I only support
-the \RGB/ colour model.  The only complicated thing is |name| here.  I need it
-because of \PS/Tricks' way to activate colours: They must get names first.  I
-could get rid of it if I called all colours e.\,g.\ ``\.{tempcolor}'' or
-``\.{dummycolor}'' and activated them at once.  But this is not necessary.
+@** The input script.  The input script is a text file that is given as the
+first and only parameter to \PPTHREE/.  Its format is very simple: First, a
+`\.{\#}' introduces a comment and the rest of the line is ignored.  Secondly,
+every commend has an opcode--parameter(s) form.  Thirdly, opcodes and
+parameters are separated by whitespace (no matter which type and how much).
+Forthly, parameters and celestial objects must be separated by
+``\.{objects\_and\_labels}''.
 
-@<Define color data structure@>=
-struct color {
-    double red, green, blue;
-    string name;
-    color(string name, double red, double green, double blue)
-        : red(red), green(green), blue(blue), name(name) { }
-    color(double red, double green, double blue)
-        : red(red), green(green), blue(blue), name() { }
-    void set(ostream& out);
-};
+@* Part~I: Global parameters.  Every input script can be divided into two
+parts, however the second may be absent.  They are separated from each other by
+the token ``\.{objects\_and\_labels}''.  Here we process the first part of the
+input script.
 
-void color::set(ostream& out) {
-    out << "\\newrgbcolor{dummycolor}{" << red << ' ' << green << ' ' << blue
-        << "}\\dummycolor\n  \\psset{linecolor=dummycolor}%\n";
-}
-
-@ Both output and input of |color|s is asymmetric: When I {\it read\/} them I
-assume that I do it from an input script.  Then it's a mere sequence of the
-three colour values.
+First two small helping routines that just read simple values from the file.
 
 @q'@>
 
-@c
-istream& operator>>(istream& in, color& c) {
-    in >> c.red >> c.green >> c.blue;
-    if (!in @/
-        || c.red < 0.0 || c.red > 1.0 @/
-        || c.green < 0.0 || c.green > 1.0 @/
-        || c.blue < 0.0 || c.blue > 1.0)
-        throw string("Invalid RGB values in input script");
-    return in;
+@<Routines for reading the input script@>=
+bool read_boolean(istream& script) {
+    string boolean;
+    script >> boolean;
+    if (boolean == "on") return true;
+    else if (boolean == "off") return false;
+    else throw string("Expected \"on\" or \"off\" in \"switch\" construct "
+                      "in input script");
 }
 
-@ But when I {\it write\/} them, I assume that I do it into a \LaTeX\ file with
-\PS/Tricks package activated.  Then I deploy a complete \.{\\newrgbcolor}
-command.
+@ You can give strings in a similar way as on a shell command line:  If it
+doesn't contain spaces, just input it.  In the other case you have to enclose
+it within \.{"..."}.  The same is necessary if it starts with a~\.{"}.  Within
+the double braces, backslashes and double braces have to be escaped with a
+backslash.  This is not necessary if you had a simple string.
 
-@c
-ostream& operator<<(ostream& out, const color& c) {
-    if (c.name.empty()) throw string("Cannot write unnamed color to stream");
-    out << "\\newrgbcolor{" << c.name << "}{" << c.red << ' ' << c.green
-        << ' ' << c.blue << "}%\n";
-    return out;
+So you may write e.\,g.: \.{Leo}, \.{"Leo Minor"}, \.{\BS alpha}, and
+\.{"\LB\BS\BS sfseries Leo\RB"}.  An empty string can only be written as
+\.{""}.
+
+@q'@>
+
+@<Routines for reading the input script@>=
+string read_string(istream& script) {
+    const string UnexpectedEOS("Unexpected end of input script while reading a"
+                               " string parameter");
+    char c;
+    string contents;
+    while (script.get(c)) if (!isspace(c)) break;
+    if (!script) throw UnexpectedEOS;
+    if (c != '"') {
+        script >> contents;
+        if (script) contents.insert(contents.begin(),c); else contents = c;
+    } else {
+        while (script.get(c)) {
+            if (c == '"') break;
+            if (c == '\\') {
+                if (!script.get(c))
+                    throw UnexpectedEOS;
+                switch (c) {
+                case '\\': case '"': contents += c; break;
+                default: throw string("Unknown escape sequence in string");
+                }
+            } else contents += c;
+        }
+        if (!script)
+            throw UnexpectedEOS;
+    }
+    return contents;
 }
 
-@ This routine is hitherto only used when drawing the milky way.  It helps to
-find a colour between the two extremes |c1| and~|c2|.  The value of |x| is
-always between $0$ and~$1$ and denotes the point on the way between |c1| and
-|c1| in the \RGB/ colour space where the new colour should be.  I interpolate
-linearly.  In order to create a new colour object, I need a |new_name| for it,
-too.
+@ {\sloppy Here the actual routine for this first part.  The top-level keywords
+are: ``\.{color}'', ``\.{line\_width}'', ``\.{line\_style}'', ``\.{switch}'',
+``\.{penalties}'', ``\.{filename}'', and ``\.{set}''.\par}
 
-@c
-color interpolate_colors(const double x, const color c1, const color c2,
-                         const string new_name = "") {
-    if (x < 0.0 || x > 1.0) throw string("Invalid x for color interpolation");
-    const double y = 1.0 - x;
-    return color(new_name,
-                 y * c1.red + x * c2.red,
-                 y * c1.green + x * c2.green,
-                 y * c1.blue + x * c2.blue);
+@.color@>
+@.line\_width@>
+@.line\_style@>
+@.switch@>
+@.penalties@>
+@.filename@>
+@.set@>
+
+@<Routines for reading the input script@>=
+void read_parameters_from_script(istream& script) {
+    string opcode;
+    script >> opcode;
+    while (opcode != "objects_and_labels" && script) {
+        if (opcode[0] == '#') {   // skip comment line
+            string rest_of_line;
+            getline(script,rest_of_line);
+        } else
+            @<Set color parameters@>@;
+        else
+            @<Set line widths@>@;
+        else
+            @<Set line styles@>@;
+        else
+            @<Set on/off parameters@>@;
+        else
+            @<Set penalty parameters@>@;
+        else
+            @<Set filename parameters@>@;
+        else
+            @<Set single value parameters@>@;
+        else throw string("Undefined opcode in input script");
+        script >> opcode;
+    }       
 }
 
+@ Colours are given as red--green--blue values from $0$ to~$1$.  For example,
+$$\hbox{\.{color labels 1 0 0}}$$ which makes all labels red.  The following
+sub-keywords can be used: ``\.{background}'', ``\.{grid}'', ``\.{ecliptic}'',
+``\.{boundaries}'', ``\.{highlighted\_boundaries}'', ``\.{stars}'',
+``\.{nebulae}'', ``\.{labels}'', ``\.{constellation\_lines}'', and
+``\.{milky\_way}''.  In case of the milky way, the colour denotes the brightest
+regions.  (The darkest have \.{back}\-\.{ground} colour.)
 
-@* Celestial data structures.  First I describe the data structures that
+@.color@>
+@.background@>
+@.grid@>
+@.ecliptic@>
+@.boundaries@>
+@.highlighted\_boundaries@>
+@.stars@>
+@.nebulae@>
+@.labels@>
+@.constellation\_lines@>
+@.milky\_way@>
+
+@<Set color parameters@>=
+        if (opcode == "color") {
+            string color_name;
+            script >> color_name;
+            if (color_name == "background") script >> params.bgcolor;
+            else if (color_name == "grid") script >> params.gridcolor;
+            else if (color_name == "ecliptic") script >> params.eclipticcolor;
+            else if (color_name == "boundaries")
+                script >> params.boundarycolor;
+            else if (color_name == "highlighted_boundaries")
+                script >> params.hlboundarycolor;
+            else if (color_name == "stars") script >> params.starcolor;
+            else if (color_name == "nebulae") script >> params.nebulacolor;
+            else if (color_name == "labels") script >> params.labelcolor;
+            else if (color_name == "constellation_lines")
+                script >> params.clinecolor;
+            else if (color_name == "milky_way") script >> params.milkywaycolor;
+            else throw string("Undefined \"color\" construct"
+                              " in input script");
+        }
+
+@ {\sloppy\raggedright The following lines can be modified: ``\.{grid}'',
+``\.{ecliptic}'', ``\.{boundaries}'', ``\.{highlighted\_boundaries}'',
+``\.{nebulae}'', and ``\.{constellation\_lines}''.  The linewidth in
+centimetres must follow.\par}
+
+@.line\_width@>
+@.grid@>
+@.ecliptic@>
+@.boundaries@>
+@.highlighted\_boundaries@>
+@.nebulae@>
+@.constellation\_lines@>
+
+@<Set line widths@>=
+        if (opcode == "line_width") {
+            string line_name;
+            script >> line_name;
+            if (line_name == "grid") script >> params.linewidth_grid;
+            else if (line_name == "ecliptic")
+                script >> params.linewidth_ecliptic;
+            else if (line_name == "boundaries")
+                script >> params.linewidth_boundary;
+            else if (line_name == "highlighted_boundaries")
+                script >> params.linewidth_hlboundary;
+            else if (line_name == "nebulae")
+                script >> params.linewidth_nebula;
+            else if (line_name == "constellation_lines")
+                script >> params.linewidth_cline;
+            else throw string("Undefined \"line_width\" construct"
+                              " in input script");
+        }
+
+@ {\sloppy\raggedright The following lines can be modified: ``\.{grid}'',
+``\.{ecliptic}'', ``\.{boundaries}'', ``\.{highlighted\_boundaries}'',
+``\.{nebulae}'', and ``\.{constellation\_lines}''.  You can set the respective
+line style to ``\.{solid}'', ``\.{dashed}'', and ``\.{dotted}''.\par}
+
+@.line\_style@>
+@.solid@>
+@.dashed@>
+@.dotted@>
+@.grid@>
+@.ecliptic@>
+@.boundaries@>
+@.highlighted\_boundaries@>
+@.nebulae@>
+@.constellation\_lines@>
+
+@<Set line styles@>=
+        if (opcode == "line_style") {
+            string line_name;
+            script >> line_name;
+            if (line_name == "grid") script >> params.linestyle_grid;
+            else if (line_name == "ecliptic")
+                script >> params.linestyle_ecliptic;
+            else if (line_name == "boundaries")
+                script >> params.linestyle_boundary;
+            else if (line_name == "highlighted_boundaries")
+                script >> params.linestyle_hlboundary;
+            else if (line_name == "nebulae")
+                script >> params.linestyle_nebula;
+            else if (line_name == "constellation_lines")
+                script >> params.linestyle_cline;
+            else throw string("Undefined \"line_width\" construct"
+                              " in input script");
+        }
+
+
+@ {\sloppy There are the following boolean values: ``\.{milky\_may}'',
+``\.{colored\_stars}'', ``\.{grid}'', ``\.{ecliptic}'', ``\.{boundaries}'',
+``\.{constellation\_lines}'', ``\.{labels}'', ``\.{eps\_output}'', and
+``\.{pdf\_output}''.  You can switch them ``\.{on}'' or ``\.{off}''.\par}
+
+@.switch@>
+@.on@>
+@.off@>
+@.milky\_way@>
+@.colored\_stars@>
+@.grid@>
+@.ecliptic@>
+@.boundaries@>
+@.constellation\_lines@>
+@.labels@>
+@.eps\_output@>
+@.pdf\_output@>
+
+@<Set on/off parameters@>=
+        if (opcode == "switch") {
+            string switch_name;
+            script >> switch_name;
+            if (switch_name == "milky_way")
+                params.milkyway_visible = read_boolean(script);
+            else if (switch_name == "colored_stars")
+                params.colored_stars = read_boolean(script);
+            else if (switch_name == "grid")
+                params.show_grid = read_boolean(script);
+            else if (switch_name == "ecliptic")
+                params.show_ecliptic = read_boolean(script);
+            else if (switch_name == "boundaries")
+                params.show_boundaries = read_boolean(script);
+            else if (switch_name == "constellation_lines")
+                params.show_lines = read_boolean(script);
+            else if (switch_name == "labels")
+                params.show_labels = read_boolean(script);
+            else if (switch_name == "eps_output")
+                params.create_eps = read_boolean(script);
+            else if (switch_name == "pdf_output")
+                params.create_pdf = read_boolean(script);
+            else throw string("Undefined \"switch\" construct"
+                              " in input script");
+        }
+
+@ In order to avoid overlaps, \PPTHREE/ uses a simple penalty algorithm.  The
+standard value for all penalty values is~1000.  The meanings of ``\.{stars}'',
+``\.{labels}'', ``\.{nebulae}'', ``\.{boundaries}'', and
+``\.{constellation\_lines}'' is pretty easy to explain: They come into play
+when the current label (that is to be positioned) overlaps with the respective
+object.  For example, if you want overlaps with constellation lines to be less
+probable, you can say $$\hbox{\.{penalties constellation\_lines 2000}}$$
+
+There is another concept of importance here: The rim.  A rim is a rectangular
+margin around every label with a width of |skip|.  Overlaps in the rim are
+counted, too, however normally they don't hurt that much.  Normally they hurt
+half as much as the label area ({\it core}) itself, but this can be changed
+with ``\.{rim}''.  With $$\hbox{\.{penalties rim 0}}$$ the rim loses its
+complete significance.  But notice that for each rim penalty a core penalty is
+added, too, so that the rim can never be more significant than the core.
+
+Within the rim, ``\.{boundaries\_rim}'' and ``\.{constellation\_lines\_rim}''
+are used instead of the normal ones.  This is because lines are not so bad in
+the rim as other stars or nebulae would be, because other stars in the vicinity
+of a label may cause confusion, lines not.
+
+\medskip The third thing about penalties is the maximal penalty of a label.  If
+the penalties of a label exceed this value, the label is supressed.  You may
+overrule this behaviour with an explicit repositioning of the label.  You can
+adjust this maximal badness of the label with ``\.{threshold}''.  With
+$$\hbox{\.{penalties threshold 10000}}$$ probably all labels are printed.
+
+@.penalties@>
+@.stars@>
+@.labels@>
+@.nebulae@>
+@.boundaries@>
+@.boundaries\_rim@>
+@.constellation\_lines@>
+@.constellation\_lines\_rim@>
+@.threshold@>
+@.rim@>
+
+@q'@>
+
+@<Set penalty parameters@>=
+        if (opcode == "penalties") {
+            string penalty_name;
+            double value;
+            script >> penalty_name >> value;
+            value /= 1000.0;
+            if (penalty_name == "stars")
+                params.penalties_star = value;
+            else if (penalty_name == "labels")
+                params.penalties_label = value;
+            else if (penalty_name == "nebulae")
+                params.penalties_nebula = value;
+            else if (penalty_name == "boundaries")
+                params.penalties_boundary = value;
+            else if (penalty_name == "boundaries_rim")
+                params.penalties_boundary_rim = value;
+            else if (penalty_name == "constellation_lines")
+                params.penalties_cline = value;
+            else if (penalty_name == "constellation_lines_rim")
+                params.penalties_cline_rim = value;
+            else if (penalty_name == "threshold")
+                params.penalties_threshold = value;
+            else if (penalty_name == "rim")
+                params.penalties_rim = value;
+            else throw string("Undefined \"penalties\" construct"
+                              " in input script");
+        }
+
+@ @q(@> The most important filename is ``\.{output}''.  By default it's unset
+so that the output is sent to standard output.  With $$\hbox{\.{filename output
+orion.tex}}$$ the output is written to \.{orion.tex}.  Most of the other
+filenames denote the data files.  Their file format is described at the
+functions that read them.  Their names are: ``\.{stars}'', ``\.{nebulae}'',
+``\.{label\_dimensions}'', ``\.{constellation\_lines}'', ``\.{boundaries}'',
+and ``\.{milky\_way}''.
+
+``\.{latex\_preamble}'' is a file with a \LaTeX\ excerpt with a preamble
+fragment for the \LaTeX\ output.  See |@<|create_preamble()| for writing the
+\LaTeX\ preamble@>|.
+
+``\.{include}'' denotes a file that is included at the current position as an
+insert script file.  This command particularly makes sense at the very
+beginning of the input script because then you can overwrite the values
+locally.  Note that you can only include zero or one file, and included script
+files must not contain further \.{include}s.  Apart from that included scripts
+have the same structure as usual scripts.  (This is also true for a possible
+`\.{objects\_and\_labels}' part.)
+
+@q;@>
+
+The meaning of this is of course to write a master script with global settings
+(e.\,g.\ colour, line style, data file names etc.), and to overwrite them for
+certain regions of the sky, typically stellar constellations.
+
+@.output@>
+@.stars@>
+@.nebulae@>
+@.label\_dimensions@>
+@.constellation\_lines@>
+@.boundaries@>
+@.milky\_way@>
+@.latex\_preamble@>
+@.include@>
+
+@<Set filename parameters@>=
+        if (opcode == "filename") {
+            string object_name;
+            script >> object_name;
+            if (object_name == "output")
+                params.filename_output = read_string(script);
+            else if (object_name == "stars")
+                params.filename_stars = read_string(script);
+            else if (object_name == "nebulae") 
+                params.filename_nebulae = read_string(script);
+            else if (object_name == "label_dimensions")
+                params.filename_dimensions = read_string(script);
+            else if (object_name == "constellation_lines")
+                params.filename_lines = read_string(script);
+            else if (object_name == "boundaries")
+                params.filename_boundaries = read_string(script);
+            else if (object_name == "milky_way")
+                params.filename_milkyway = read_string(script);
+            else if (object_name == "latex_preamble")
+                params.filename_preamble = read_string(script);
+            else if (object_name == "include") {
+                if (!params.filename_include.empty())
+                    throw string("Nesting depth of include files greater"
+                                 " than one");
+                params.filename_include = read_string(script);
+                ifstream included_script(params.filename_include.c_str());
+                read_parameters_from_script(included_script);
+            }
+            else throw string("Undefined \"filename\" construct"
+                              " in input script");
+        }
+
+
+@ Most of these values are numeric, only \.{constellation} is a string, namely
+a three-letter all-uppercase astronomic abbreviation of the constellation to be
+highlighted.  It's default is ``\.{ORI}''  but you may set it to the empty
+string with $$\hbox{\.{set constellation ""}}$$ so no constellation gets
+highlighted.  At the moment highlighting means that the boundaries have a
+brighter colour than normal.
+
+{\sloppy\raggedright
+``\.{center\_rectascension}'' and ``\.{center\_declination}'' are the celestial
+coordinates of the view frame centre.  ``\.{box\_width}'' and
+``\.{box\_height}'' are the dimensions of the view frame in centimetres.
+``\.{grad\_per\_cm}'' is the magnification (scale).
+``\.{star\_scaling}'' denotes a radial scaling of the star
+disks. ``\.{fontsize}'' is the global \LaTeX\ font size (in points).  It must
+be 10, 11, or~12.  Default is~10.
+
+Many parameters deal with the graphical representation of stars and nebulae:
+``\.{shortest\_constellation\_line}'' is the shortest length for a
+constellation line that is supposed to be drawn.  ``\.{label\_skip}'' is the
+distance between label and celestial object.  ``\.{minimal\_nebula\_radius}''
+is the radius under which a nebula is drawn as a mere circle of {\it that\/}
+radius.  ``\.{minimal\_star\_radius}'' is the radius of the smallest stellar
+dots of the graphics.  All these parameters are measured in centimetres.
+
+But there are also some magnitudes: The faintest stellar clusters that are
+drawn by default are of the ``\.{faintest\_cluster\_magnitude}'', all other
+nebulae drawn by default of the ``\.{faintest\_diffuse\_nebula\_magnitude}''.
+Stars brighter than ``\.{faintest\_star\_magnitude}'' are drawn at all, if they
+are even brighter than ``\.{faintest\_star\_with\_label\_magnitude}'' they get
+a label.  Stars brighter than ``\.{faintest\_star\_disk\_magnitude}'' are not
+just mere dots in the background, but get a radius according to their
+brightness.\par}
+
+Many of these parameters trigger the default behaviour that you can overrule by
+commands in the second part of the input script.
+
+@.center\_rectascension@>
+@.center\_declination@>
+@.box\_width@>
+@.box\_height@>
+@.grad\_per\_cm@>
+@.shortest\_constellation\_line@>
+@.label\_skip@>
+@.minimal\_nebula\_radius@>
+@.faintest\_cluster\_magnitude@>
+@.faintest\_diffuse\_nebula\_magnitude@>
+@.faintest\_star\_magnitude@>
+@.minimal\_star\_radius@>
+@.faintest\_star\_disk\_magnitude@>
+@.faintest\_star\_with\_label\_magnitude@>
+@.star\_scaling@>
+@.constellation@>
+@.fontsize@>
+
+@q)'@>
+
+@<Set single value parameters@>=
+        if (opcode == "set") {
+            string param_name;
+            script >> param_name;
+            if (param_name == "center_rectascension")
+                script >> params.center_rectascension;
+            else if (param_name == "center_declination")
+                script >> params.center_declination;
+            else if (param_name == "box_width")
+                script >> params.view_frame_width;
+            else if (param_name == "box_height")
+                script >> params.view_frame_height;
+            else if (param_name == "grad_per_cm")
+                script >> params.grad_per_cm;
+            else if (param_name == "constellation")
+                params.constellation = read_string(script);
+            else if (param_name == "shortest_constellation_line")
+                script >> params.shortest_constellation_line;
+            else if (param_name == "label_skip")
+                script >> params.label_skip;
+            else if (param_name == "minimal_nebula_radius")
+                script >> params.minimal_nebula_radius;
+            else if (param_name == "faintest_cluster_magnitude")
+                script >> params.faintest_cluster_magnitude;
+            else if (param_name == "faintest_diffuse_nebula_magnitude")
+                script >> params.faintest_diffuse_nebula_magnitude;
+            else if (param_name == "faintest_star_magnitude")
+                script >> params.faintest_star_magnitude;
+            else if (param_name == "minimal_star_radius")
+                script >> params.minimal_star_radius;
+            else if (param_name == "faintest_star_disk_magnitude")
+                script >> params.faintest_star_disk_magnitude;
+            else if (param_name == "faintest_star_with_label_magnitude")
+                script >> params.faintest_star_with_label_magnitude;
+            else if (param_name == "star_scaling")
+                script >> params.star_scaling;
+            else if (param_name == "fontsize")
+                script >> params.font_size;
+            else throw string("Undefined \"set\" construct in input script");
+        }
+
+@* Part~II: Change printed objects and labels.  Here I read and interpret the
+second part of the input script, {\it after\/} the |"objects_and_labels"|.
+This part doesn't need to be available, and both parts may be empty.
+
+First I define a type that is often used in the following routines for a
+mapping from a catalogue number on the index in \PPTHREE/'s internal |vectors|.
+This makes access a lot faster.
+
+@<Routines for reading the input script@>=
+typedef vector<int> index_list;
+
+@ Here I create the data structures that make the above mentioned mapping
+possible.  FixMe: They should be defined globally, so that the constellation
+lines construction can profit by it, too.  And then they needn't be given in
+the parameter lists of the routines.
+
+This mapping is not vital for the program, but the alternative would be to look
+through the whole of |nebulae| or |stars| to find a star with a certain \NGC/
+or \HD/ number.  This is probably way to inefficient.
+
+@q'@>
+
+@<Create mapping structures for direct catalogue access@>=
+    const int max_ngc = 7840, max_ic = 5386, max_messier = 110;
+    index_list ngc(max_ngc+1), ic(max_ic+1), messier(max_messier+1);
+    for (int i = 0; i < nebulae.size(); i++) {
+        if (nebulae[i].ngc > 0 && nebulae[i].ngc <= max_ngc)
+            ngc[nebulae[i].ngc] = i;
+        if (nebulae[i].ic > 0 && nebulae[i].ic <= max_ic)
+            ic[nebulae[i].ic] = i;
+        if (nebulae[i].messier > 0 && nebulae[i].messier <= max_messier)
+            messier[nebulae[i].messier] = i;
+    }
+    map<int,int> henry_draper;
+    map<string, map<int,int> > flamsteed;
+    for (int i = 0; i < stars.size(); i++) {
+        if (stars[i].hd > 0) henry_draper[stars[i].hd] = i;
+        if (stars[i].flamsteed > 0) 
+            flamsteed[stars[i].constellation][stars[i].flamsteed] = i;
+    }
+
+
+@ In this routine I scan a list of stellar objects, given by a token pair of
+catalogue name and catalogue index.  Such lists are used after some top-level
+commands below.  A mandatory `\.{;}' ends such a list.  Five catalogues are
+supported: \NGC/, \IC/, Messier, Henry-Draper~(\HD/), and Flamsteed numbers (in
+the form ``{\it Constellation}\SP{\it Flamsteed number}'').  You may use the
+program `Celestia' to get the \HD/ numbers for the stars.
+
+@<Routines for reading the input script@>=
+void search_objects(istream& script,
+                    const index_list& ngc, const index_list& ic,
+                    const index_list& messier, map<int,int>& henry_draper,
+                    map<string, map<int,int> >& flamsteed,
+                    index_list& found_stars, index_list& found_nebulae) {
+    found_stars.clear();
+    found_nebulae.clear();
+    string catalogue_name;
+    int catalogue_index;
+    script >> catalogue_name;
+    while (script && catalogue_name != ";") {
+        script >> catalogue_index;
+        if (!script) throw string("Unexpected end of input script");
+        if (catalogue_name == "NGC")
+            found_nebulae.push_back(ngc[catalogue_index]);
+        else if (catalogue_name == "IC")
+            found_nebulae.push_back(ic[catalogue_index]);
+        else if (catalogue_name == "M")
+            found_nebulae.push_back(messier[catalogue_index]);
+        else  if (catalogue_name == "HD")
+            found_stars.push_back(henry_draper[catalogue_index]);
+        else found_stars.push_back(flamsteed[catalogue_name][catalogue_index]);
+        script >> catalogue_name;
+    }
+}
+
+@ This routine essentially does the same as the prevous one, however only for
+{\it one\/} celestial object.  This is used for commands that don't take an
+object list but only one object.
+
+@q'@>
+
+@<Routines for reading the input script@>=
+view_data* identify_object(istream& script, const index_list& ngc,
+                           const index_list& ic, const index_list& messier,
+                           map<int,int>& henry_draper,
+                           map<string, map<int,int> >& flamsteed,
+                           stars_list& stars, nebulae_list& nebulae) {
+    string catalogue_name;
+    int catalogue_index;
+    script >> catalogue_name >> catalogue_index;
+    if (!script) throw string("Unexpected end of input script");
+    if (catalogue_name == "NGC") return &nebulae[ngc[catalogue_index]];
+    else if (catalogue_name == "IC") return &nebulae[ic[catalogue_index]];
+    else if (catalogue_name == "M") return &nebulae[messier[catalogue_index]];
+    else if (catalogue_name == "HD")
+        return &stars[henry_draper[catalogue_index]];
+    else return &stars[flamsteed[catalogue_name][catalogue_index]];
+}
+
+@ Here now the main routine for the second part of the input script.  The
+top-level commands in this section are: ``\.{reposition}'',
+``\.{delete\_labels}'', ``\.{add\_labels}'', ``\.{delete}'', ``\.{add}'', and
+``\.{text}''.
+
+@.reposition@>
+@.delete\_labels@>
+@.add\_labels@>
+@.delete@>
+@.add@>
+
+@<Routines for reading the input script@>=
+void read_objects_and_labels(istream& script,
+                             const dimensions_list& dimensions,
+                             objects_list& objects, stars_list& stars,
+                             nebulae_list& nebulae,
+                             texts_list& texts,
+                             const transformation& mytransform,
+                             bool included = false) {
+    if (!params.filename_include.empty() && !included) {
+        ifstream included_file(params.filename_include.c_str());
+        @<Skip everything till |"objects_and_labels"|@>@;
+        read_objects_and_labels(included_file, dimensions, objects, stars,
+                                nebulae, texts, mytransform, true);
+    }
+    string opcode;
+    script >> opcode;
+    if (!script) return;
+    @<Create mapping structures for direct catalogue access@>@;
+    while (script) {
+        if (opcode[0] == '#') {   // skip comment line
+            string rest_of_line;
+            getline(script,rest_of_line);
+        } else 
+            @<Label repositioning@>@;
+        else
+            @<Text labels@>@;
+        else {  // command with objects list
+            index_list found_stars, found_nebulae;
+            @<Label deletion@>@;
+            else
+                @<Label activation@>@;
+            else
+                @<Celestial object deletion@>@;
+            else
+                @<Celestial object activation@>@;
+            else throw string("Undefined opcode in input script");
+        } 
+        script >> opcode;
+    }
+}
+
+@ The following algorithm is so bad that it must be considered a bug.  It
+simply searches for the string |"objects_and_labels"| in the |included_file|,
+but that may occur within a string or wherever.  The file should be properly
+scanned, but I'm too lazy for that.  A case where this bug becomes visible
+should be very rare anyway.
+
+FixMe: Fix this bug, or at least for strings.  Maybe the format of input
+scripts must be changed significantly for this.
+
+@q'@>
+
+@<Skip everything till |"objects_and_labels"|@>=
+        string token;
+        included_file >> token;
+        while (included_file) {
+            if (token[0] == '#') getline(included_file,token);
+            else if (token == "objects_and_labels") break;
+            included_file >> token;
+        }
+
+
+@ Sometimes labels have an unfortunate position.  But you may say e.\,g.\
+$$\hbox{\.{reposition M 42 E}}$$ to position the label for the Orion Nebula to
+the right of it.  (Abbreviations are taken from the wind rose.)  You may use
+this command to force a certain label to be drawn although \PPTHREE/ has
+decided that there is no space for it and didn't print it in the first place.
+
+@q'@>
+
+@<Label repositioning@>=
+        if (opcode == "reposition") {
+            string position;
+            view_data* current_object =
+                identify_object(script, ngc, ic, messier, henry_draper,
+                                flamsteed, stars, nebulae);
+            int angle;
+            script >> position;
+            @<Map a wind rose |position| to an |angle| in degrees@>@;
+            current_object->label_angle = angle;
+            current_object->with_label = visible;
+            current_object->label_arranged = true;
+        }
+
+@ @<Map a wind rose |position| to an |angle| in degrees@>=
+            if (position == "E") angle = 0;
+            else if (position =="NE") angle = 1;
+            else if (position =="N") angle = 2;
+            else if (position =="NW") angle = 3;
+            else if (position =="W") angle = 4;
+            else if (position =="SW") angle = 5;
+            else if (position =="S") angle = 6;
+            else if (position =="SE") angle = 7;
+            else throw string("Undefined position angle: ") + position;
+
+@ With e.\,g.\ $$\hbox{\.{delete\_labels  M 35  M 42 ;}}$$ you delete the labels
+(not the nebulae themselves!)\ of M\,35 and M\,42.
+
+@<Label deletion@>=
+            if (opcode == "delete_labels") {
+                search_objects(script, ngc, ic, messier, henry_draper,
+                               flamsteed, found_stars, found_nebulae);
+                for (int i = 0; i < found_stars.size(); i++) {
+                    stars[found_stars[i]].with_label = hidden;
+                    stars[found_stars[i]].label_arranged = true;
+                }
+                for (int i = 0; i < found_nebulae.size(); i++) {
+                    nebulae[found_nebulae[i]].with_label = hidden;
+                    nebulae[found_nebulae[i]].label_arranged = false;
+                }
+            }
+
+@ The counterpart of \.{delete\_labels}.  It makes sense first and foremost for
+stars.  (Unfortunately this means that you have to use extensively the Henry
+Draper Catalogue.)
+
+@<Label activation@>=
+            if (opcode == "add_labels") {
+                search_objects(script, ngc, ic, messier, henry_draper,
+                               flamsteed, found_stars, found_nebulae);
+                for (int i = 0; i < found_stars.size(); i++)
+                    stars[found_stars[i]].with_label = visible;
+                for (int i = 0; i < found_nebulae.size(); i++)
+                    nebulae[found_nebulae[i]].with_label = visible;
+            }
+
+@ This adds objects (mostly nebulae) the the field.  Notice that this object is
+then printed even if it lies outside the view frame (it may be clipped though).
+
+@<Celestial object activation@>=
+            if (opcode == "add") {
+                search_objects(script, ngc, ic, messier, henry_draper,
+                               flamsteed, found_stars, found_nebulae);
+                for (int i = 0; i < found_stars.size(); i++)
+                    stars[found_stars[i]].in_view = visible;
+                for (int i = 0; i < found_nebulae.size(); i++)
+                    nebulae[found_nebulae[i]].in_view = visible;
+            }
+
+@ The opposite of |@<Celestial object activation@>|.
+
+@<Celestial object deletion@>=
+            if (opcode == "delete") {
+                search_objects(script, ngc, ic, messier, henry_draper,
+                               flamsteed, found_stars, found_nebulae);
+                for (int i = 0; i < found_stars.size(); i++)
+                    stars[found_stars[i]].in_view = hidden;
+                for (int i = 0; i < found_nebulae.size(); i++)
+                    nebulae[found_nebulae[i]].in_view = hidden;
+            }
+
+@ This is the only way to add a text label.  The parameters are the text
+itself, rectascension, declination, \RGB/ colour, and the relative position
+(uppercase wind rose), followed by a semicolon.  For example,
+$$\hbox{\.{text Leo at 11 10 color 1 0 0 towards S ;}}$$ puts a red ``Leo''
+centered below the point $(11\,\hbox{h}, +10^\circ)$ in the Lion.  At the
+moment, all fields are mandatory.
+
+The contents of a text label is eventually in an \.{\BS hbox}, so you can
+use that fact.
+
+@.text@>
+
+@<Text labels@>=
+            if (opcode == "text") {
+                string contents, op1, op2, op3, position, semicolon;
+                double rectascension, declination;
+                color textcolor(params.labelcolor);
+                contents = read_string(script);
+                script >> op1 >> rectascension >> declination >> op2
+                       >> textcolor >> op3 >> position >> semicolon;
+                if (!script || op1 != "at" || op2 != "color" ||
+                    op3 != "towards" || semicolon != ";")
+                    throw string("Invalid text label command");
+                int angle;
+                @<Map a wind rose |position| to an |angle| in degrees@>@;
+                texts.push_back(text(contents, rectascension, declination,
+                                     textcolor, angle));
+            }
+
+
+@** Data structures and file formats.  First I describe the data structures that
 directly contain celestial objects such as stars and nebulae.  This is a little
 bit unfortunate for the program itself, because actually other things should be
 defined first (e.\,g.\ |dimension|).  However I think that the program can be
@@ -460,16 +1212,17 @@ classnames\_list} that is a |vector|.  For almost each data type I define a
 routine that can read it from a file in the vector.  There I also decribe the
 respective file format.
 
-@ This first |struct| can be used as an ancestor in the various celestial
-objects data structurs (e.\,g.\ stars) for containing all view frame dependent
-information.  Most importantly it contains the label of a celestial object, its
-position relatively to the object, and its size.
+@* View data: Positioning and labels.  This first |struct| can be used as an
+ancestor in the various celestial objects data structurs (e.\,g.\ stars) for
+containing all view frame dependent information.  Most importantly it contains
+the label of a celestial object, its position relatively to the object, and its
+size.
 
 |in_view| is |visible| if the object is actually displayed on screen.  |x| and
  |y| contain the screen coordinates in centimetres.  |radius| is the radial
  size of the object in centimetres.  |skip| is given in centimetres, too.  It
  denotes the space between the outer boundary of the object (enclosed by
- |radius|) and the label.  |with_label| is true if the object has a label, with
+ |radius|) and the label.  |with_label| is |visible| if the object has a label, with
  |label_width| and |label_height| (estimated in centimetres) and
  |label_angle|. |label_arranged| is |true| if the best place for the label has
  been found already.  Only then the label should be really printed, but the
@@ -478,22 +1231,19 @@ position relatively to the object, and its size.
  1:~$45^\circ\!$, 2:~$90^\circ\!$, 3:~$135^\circ\!$, 4:~$180^\circ\!$,
  5:~$225^\circ\!$, 6:~$270^\circ\!$, and 7:~$315^\circ\!$.
 
-|scope()| returns the maximal scope of the object.  It is used to in |@<Find
+|scope()| returns the maximal scope of the object.  It is used in |@<Find
 objects in vicinity of |objects[i]|@>| to find all objects in the vicinity of a
-given on-object.  It may look odd that even |label_height| is added, but this
-is because penalties are given even for objects in a margin of |label_height|
-around the object, so it's important to include it into the sum.
+given on-object.
 
-@q';@>
- 
+@q;@>
+
 @c
 typedef enum { @!hidden, @!visible, @!undecided } visibility;
 
 struct view_data {
     visibility in_view;
     double x,y;
-    double radius;
-    double skip;
+    double radius, skip;
     visibility with_label;
     bool label_arranged;
     string label;
@@ -507,7 +1257,8 @@ struct view_data {
                   label_color(params.labelcolor), label_angle(0) { }
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
-    double scope() const { return radius + skip + label_width + label_height; }
+    double scope() const { return radius + skip + 
+                               fmax(label_width,label_height) + 2.0*skip; }
     bool has_valid_coordinates() const { return x != DBL_MAX && y != DBL_MAX; }
     virtual double penalties_with(const double left, const double right,
                                   const double top, const double bottom,
@@ -526,6 +1277,8 @@ typedef vector<view_data*> objects_list;
 are very convenient to use for the positioning of the label, they are pretty
 unfortunate if you want to know which coordinates are occupied by the label in
 order to find out possible overlaps.
+
+@q);@>
 
 Therefore I calculate here the rectangular boundaries of a label.  They are
 stored in |left|, |right|, |top|, and |bottom| in screen centimetres.
@@ -557,8 +1310,6 @@ calculate the overlap of itself with a rectangle given by |left|, |right|,
 this is just the overlap itself in square centimetres, like here.
 
 @c
-@<Missing math routines@>@;@#
-
 double view_data::penalties_with(const double left, const double right,
                                  const double top, const double bottom,
                                  bool core = true) const {
@@ -574,6 +1325,7 @@ double view_data::penalties_with(const double left, const double right,
         return overlap_x * overlap_y * params.penalties_label;
     } else return 0.0;
 }
+
 
 @ The book claims that the following routines are part of the {\mc GNU}
 \CEE/~Library version~2.2 beta.  However, I didn't find them.
@@ -594,7 +1346,7 @@ inline double fdim(const double& x, const double& y) {
 }
 
 
-@*1 Stars.  The actual star data is -- like all other user defined data
+@* Stars.  The actual star data is -- like all other user defined data
 structure in this program -- organised as a |struct| because it's too simple
 for a |class|.  |hd| is the Henry Draper Catalog number, |bs| is the Bright
 Star Catalog number.  |rectascension| is given in hours, |declination| in
@@ -705,7 +1457,7 @@ void read_stars(stars_list& stars) {
 }
 
 
-@*1 Nebulae.  This is also used for stellar clusters of course.  In the whole
+@* Nebulae.  This is also used for stellar clusters of course.  In the whole
 program ``nebula'' denotes nebulae, galaxies, clusters, and other non-stellar
 objects.
 
@@ -724,8 +1476,8 @@ uppercase.  |rectascension| is given in hours, |declination| in degrees.
 |diameter_x| and |diameter_y| are the extent of the nebula in the horizonal and
 the vertical direction and are given in degrees, |horizontal_angle| (in
 degrees) is the angle between the horizontal axis of |diameter_x| and the
-intersecting celestial declination circle.  |magnitude| (in magnitudes) is the
-{\it total\/} brightness (not the brightness density).
+intersecting celestial rectascension circle.  |magnitude| (in magnitudes) is
+the {\it total\/} brightness (not the brightness density).
 
 @c
 struct nebula : public view_data {
@@ -790,13 +1542,8 @@ istream& operator>>(istream& in, nebula& n) {
     return in;
 }
 
-@ Here I read a set of nebulae from a file with the name |filename|.  I need
-|dimension| here, because I want to adjust |label_width| and |label_height| of
-each nebula to the correct values.
-
-The format is just a stream of |nebula|e.
-
-FixMe: I want |dimensions| to be |const|.
+@ Here I read a set of nebulae from a file with the name |filename|.  The
+format is just a stream of |nebula|e.
 
 @c
 void read_nebulae(nebulae_list& nebulae) {
@@ -833,12 +1580,12 @@ contains the number within that catalogue.  I just concatenate both to the
         current_nebula.label = catalogue + number.str() + '}';
 
 
-@*1 Constellation boundaries.  They are stored in an external file called
+@* Constellation boundaries.  They are stored in an external file called
 \.{constborders.dat}.
 
-Is is very convenient to have a special data type for a point in the program
-that has created \.{constborders.dat}.  In this program the advantage is not so
-big but it's sensible to use the same data structures here.
+{\sloppy Is is very convenient to have a special data type for a point in the
+program that has created \.{constborders.dat}.  In this program the advantage
+is not so big but it's sensible to use the same data structures here.\par}
 
 @q'@>
 
@@ -855,9 +1602,9 @@ boundary catalog by Delporte of 1930, and zero or more interpolated points
 calculated by Davenhall (1990).  The interpolated points help to draw a curved
 line where this is necessary.
 
-Every line usually belongs to exactly two constellations (of course).  They are
-stored in the field |constellations|.  FixMe: There are boundaries with only
-one owner.  I don't know how this can happen.
+{\sloppy Every line usually belongs to exactly two constellations (of course).
+They are stored in the field |constellations|.  FixMe: There are boundaries
+with only one owner.  I don't know how this can happen.\par}
 
 @s boundary int
 @s boundaries_list int
@@ -873,7 +1620,7 @@ struct boundary {
 
 typedef vector<boundary> boundaries_list;
 
-@ In this routine is use only the first three letters of the constellation
+@ In this routine I use only the first three letters of the constellation
 abbreviation.  The reason is that the original catalog uses |"SER1"| and
 |"SER2"| for ``Serpent Caput'' and ``Serpent Cauda''.  However, I see them as
 one constellation.  Be aware that this routine expects the constellation
@@ -888,9 +1635,9 @@ bool boundary::belongs_to_constellation(const string constellation) const {
 }
 
 @ Of course I need to be able to read the boundaries from
-\.{constborders.dat}.  The input stream is a test stream of the following
+\.{constborders.dat}.  The input stream is a text stream of the following
 format.  The set of celestial boundaries is stored as a set of elementary
-lines without corners. \medskip
+lines without kinks. \medskip
 
 \item{1.} Number of points (|size|$_1$) in the line (|int|).
 \item{2.} Repeated |size|$_1$ times:
@@ -974,13 +1721,9 @@ boundary_atom::boundary_atom(point start, point end) : start(start), end(end) {
 }
 
 @ The full algorithm that is used here is described in the |@<Definition of
-|line_intersection()| for intersection of two lines@>|.  But I modify it
-slightly here: For every intersection of a boundary line atom with a label
-rectangle edge I give half of the usual penalties.  The reason is very simple:
-I may be that a boundary atom ends {\it within\/} the label.  Then there is
-only one intersection, and another boundary atom will be responsible for the
-other.  Except for peculiar cases there should be exact two intersections
-altogether, which means that it's the same as with constellation lines.
+|line_intersection()| for intersection of two lines@>|.  Except for peculiar
+cases there should be exact two intersections altogether, which means that it's
+the same as with constellation lines.
 
 Objects of this type are created in |@<Create a |boundary_atom| for the
 |objects|@>|.
@@ -1026,6 +1769,356 @@ double boundary_atom::penalties_with(const double left,const double right,
     return (core? 8.0 * params.penalties_boundary :
             0.5 * params.penalties_boundary_rim) / 72.27*2.54 * length;
 }
+
+@* Constellation lines.  This is not about the {\it boundaries}, but about the
+connection lines between the main stars of a given constellation.  They are
+mere eye candy.  I call their |struct| type ``connections'' to keep the name
+unique and concise.
+
+A |connection| consists of |lines|.  The point coordinates are screen
+coordinates in centimetres.  |from| and |to| are the star star and the end
+star, given by their index in |stars|.
+
+Notice that |start| and |end| aren't defined before
+|draw_constellation_lines()| has been called, {\it and\/} the constellation
+line is actually visible.  Then they contain the screen coordinates of the
+start and the end point of the line.
+
+@s connection int
+
+@q'@>
+
+@c
+struct connection : public view_data {
+    point start, end;
+    int from, to;
+    connection(const int from, const int to)
+        : from(from), to(to), start(), end() { in_view = visible;
+        with_label = hidden; skip = 0.0; }
+    virtual double penalties_with(const double left,const double right,
+                                  const double top, const double bottom,
+                                  bool core = true) const;
+};
+
+typedef vector<connection> connections_list;
+
+@ In order to calculate penalties, we need some sort of overlap.  Since there
+is no area overlap between a line and a rectangle, I need the overlapping line
+length.
+
+This is the first part of the algorithm.  It is actually pretty simple, however
+hard to explain.  We have two lines to intersect: One edge of the label
+rectangle and the constellation line.  The rectangle is given by |left|,
+|right|, |top|, and |bottom| -- as usual.  The constellation line is given by
+their start point |start| and end point |end|.  Or, in parameterised form:
+%
+$$\vec x = {\hbox{|start.x|} \choose \hbox{|start.y|}} + \lambda
+{\hbox{|end.x|} - \hbox{|start.x|} \choose \hbox{|end.y|} - \hbox{|start.y|}},
+\qquad \lambda\in[0;1].$$
+%
+The edge of the rectangle is given by (left edge as
+example)
+%
+$$\eqalign{\left(\vec x - {\hbox{|left|} \choose 0}\right) \cdot
+{1\choose0} &= 0 \cr \noalign{\vskip0.5ex} \Rightarrow\quad \hbox{|start.x|} +
+\lambda (\hbox{|end.x|} - \hbox{|start.x|}) &= \hbox{|left|}\cr
+\mathrel{\mathop\Leftrightarrow^{end.x - start.x \ne 0}\lambda = {\hbox{|left|}
+- \hbox{|start.x|} \over \hbox{|end.x|} - \hbox{|start.x|}}}}$$
+%
+with the
+boundary condition $\hbox{|bottom|} < \hbox{|start.y|} + \lambda
+(\hbox{|end.y|} - \hbox{|start.y|}) =: \hbox{|intersection|} < \hbox{|top|}$.
+With the abbreviations/\hskip0ptassignments (also exemplarily for the `left'
+case)
+%
+$$\eqalign{\hbox{|numerator|} &= \hbox{|left|} - \hbox{|start.x|},\cr
+\hbox{|denominator|} &= \hbox{|end.x|} - \hbox{|start.x|},\cr
+\hbox{|zero_point|} &= \hbox{|start_y|},\cr \hbox{|slope|} &= \hbox{|end.y|} -
+\hbox{|start.y|},\cr \hbox{|min|} &= \hbox{|bottom|},\quad \hbox{|max|} =
+\hbox{|top|}}$$
+%
+we get the following routine for finding out whether a certain
+label rectangle edge is intersected by the constellation line or not:
+
+@q')@>
+
+@<Definition of |line_intersection()| for intersection of two lines@>=
+bool line_intersection(double numerator, double denominator,
+                       double zero_point, double slope,
+                       double min, double max,
+                       double& intersection) {
+    if (denominator == 0) return false;
+    const double lambda = numerator / denominator;
+    intersection = zero_point + lambda * slope;
+    return lambda > 0.0 && lambda < 1.0 &&
+        intersection > min && intersection < max;
+}
+
+@ Now for the second part of the intersection algorithm.  Here I apply the
+preceding routing on all four label edges.  I return an overlap as the penalty
+value, however I pretend that the line has a width of 8\,pt.  For an overlap
+with the rim, it's only 0.5\,pt.
+
+@c
+double connection::penalties_with(const double left, const double right,
+                                  const double top, const double bottom,
+                                  bool core = true) const
+{
+    double intersection;
+    point r(end.x - start.x, end.y - start.y);
+    vector<point> intersection_points;
+    if (line_intersection(left - start.x, r.x, start.y, r.y,
+                          bottom, top, intersection))
+        intersection_points.push_back(point(left, intersection));
+    if (line_intersection(right - start.x, r.x, start.y, r.y,
+                          bottom, top, intersection))
+        intersection_points.push_back(point(right, intersection));
+    if (line_intersection(top - start.y, r.y, start.x, r.x,
+                          left, right, intersection))
+        intersection_points.push_back(point(intersection, top));
+    if (line_intersection(bottom - start.y, r.y, start.x, r.x,
+                          left, right, intersection))
+        intersection_points.push_back(point(intersection, bottom));
+    if (start.x > left && start.x < right && start.y > bottom && start.y < top)
+        intersection_points.push_back(start);
+    if (end.x > left && end.x < right && end.y > bottom && end.y < top)
+        intersection_points.push_back(end);
+    if (intersection_points.empty()) return 0.0;
+    if (intersection_points.size() != 2) {
+        cerr << "pp3: Funny " << intersection_points.size()
+             << "-fold constellation line intersecrtion." << endl;
+        return 0.0;
+    }
+    const double length = hypot(intersection_points[1].x -
+                                intersection_points[0].x,
+                                intersection_points[1].y -
+                                intersection_points[0].y);
+    return (core? 8.0 * params.penalties_cline :
+            0.5 * params.penalties_cline_rim) / 72.27*2.54 * length;
+}
+
+@ I must be able to read a file which contains such data.  Here, too, the text
+file format is very simple: It's a list of constellation line paths separated
+by `\.{;}'.  A star name must be of the form $$\eqalign{\noalign{\hbox{{\it
+Constellation}\SP{\it Flamsteed number}}} \noalign{\hbox{or}}
+\noalign{\hbox{\.{HD}\SP{\it Henry-Draper Catalogue number}}}}$$ where {\it
+Constellation\/} must be given as an all uppercase three letter abbreviation.
+For example, \.{ORI\SP19} is $\alpha$~Ori (Rigel).
+
+The hash sign `\.{\#}' introduces comments that are ignored till end of line,
+however they mustn't occur within a star.
+
+@c
+void read_constellation_lines(connections_list& connections,
+                              const stars_list& stars) {
+    ifstream file(params.filename_lines.c_str());
+    string from_catalogue_name, to_catalogue_name;
+    int from_catalogue_index = 0, to_catalogue_index = 0;
+    file >> to_catalogue_name;
+    while (file) {
+        if (to_catalogue_name[0] == '#') { // skip comment
+            string dummy;
+            getline(file,dummy);
+        } else if (to_catalogue_name == ";")  // start a new path
+            from_catalogue_index = 0;
+        else {
+            file >> to_catalogue_index;
+            if (from_catalogue_index > 0 && to_catalogue_index > 0) {
+                @<Create one connection@>@;
+            }
+            from_catalogue_name = to_catalogue_name;
+            from_catalogue_index = to_catalogue_index;
+        }
+        file >> to_catalogue_name;
+    }
+}
+
+@ In the loop I try to find the index within |stars| of the `from' star and the
+`to'~star.
+
+@<Create one connection@>=
+            int from_index = 0, to_index = 0;
+            for (int i = 0; i < stars.size(); i++) {
+                @<Test whether |stars[i]| is the `from' star@>@;
+                @<Test whether |stars[i]| is the `to' star@>@;
+            }
+            if (from_index == 0 || to_index == 0) {
+                stringstream error_message;
+                error_message << "Unrecognised star in constellation lines: ";
+                if (from_index == 0)
+                    error_message << from_catalogue_name << ' '
+                                  << from_catalogue_index;
+                else
+                    error_message << to_catalogue_name << ' '
+                                  << to_catalogue_index;
+                throw error_message.str();
+            }
+            connections.push_back(connection(from_index, to_index));
+
+@ Here I test whether the current star in the loop is the `from' star.  Of
+course only if I haven't found it already (|from_index == 0|).  If apparently
+both stars have been found already, I leave the loop immediately.
+
+@q;@>
+
+@<Test whether |stars[i]| is the `from' star@>=
+@q'@>
+                if (from_index == 0)
+                    if (from_catalogue_name == "HD") {
+                        if (stars[i].hd == from_catalogue_index) from_index = i;
+                    } else {
+                        if (from_catalogue_name == stars[i].constellation)
+                            if (stars[i].flamsteed == from_catalogue_index)
+                                from_index = i;
+                    } else if (to_index != 0) break;
+
+@ Perfectly analogous to |@<Test whether |stars[i]| is the `from' star@>|.
+
+@q'@>
+
+@<Test whether |stars[i]| is the `to' star@>=
+@q'@>
+                if (to_index == 0)
+                    if (to_catalogue_name == "HD") {
+                        if (stars[i].hd == to_catalogue_index) to_index = i;
+                    } else {
+                        if (to_catalogue_name == stars[i].constellation)
+                            if (stars[i].flamsteed == to_catalogue_index)
+                                to_index = i;
+                    } else if (from_index != 0) break;
+
+
+@* The Milky Way.  The file is a text file as usual with the following
+structure, everything separated by whitespace: \medskip
+
+\item{1.} The maximal ($={}$equatorial) diagonal half distance of two pixels in
+degrees (|double|).  This value is used as the |radius| for the milky way
+`pixels'.  Of course it must be the minimal radius for which there are no gaps
+between the pixels.
+
+\item{2.} The pixels themselves with two |double|s and one |int| each:
+\itemitem{--} The rectascension in hours.
+\itemitem{--} The declination in degrees.
+\itemitem{--} The grey value of the pixel from $1$ to~$255$.  Zero is not used
+because zero-value pixels are not included into the data file anyway.
+
+|pixels| is a |vector<vector<point> >|.  The outer (first) index is the grey
+ value, and for every grey value there is an inner vector (second index) with a
+ list of all points (rectascension, declination) that have this value.  This
+ construction makes the drawing in Ghostview looking nice, but more importantly
+ it reduces the number of colour change commands in the \LaTeX\ file.
+ Unfortunately this doesn't reduce pool size usage.
+
+@<Reading the milkyway into |pixels|@>=
+    ifstream file(params.filename_milkyway.c_str());
+    double radius;
+    file >> radius;
+    double rectascension, declination, x, y;
+    int pixel;
+    const double cm_per_grad = 1.0 /
+        (mytransform.get_rad_per_cm() * 180.0 / M_PI);
+    radius *= cm_per_grad / 2.54 * 72.27;
+    file >> rectascension >> declination >> pixel;
+    while (file) {
+        if (mytransform.polar_projection(rectascension, declination, x,y))
+            pixels[pixel].push_back(point(x,y));
+        file >> rectascension >> declination >> pixel;
+    }
+
+
+@* Colour.  It's very convenient to have a unified data structure for all
+colours that appear in this program.  Its internal structure is trivial, and I
+only support the \RGB/ colour model.  The only complicated thing is |name|
+here.  I need it because of \PS/Tricks' way to activate colours: They must get
+names first.  I could get rid of it if I called all colours e.\,g.\
+``\.{tempcolor}'' or ``\.{dummycolor}'' and activated them at once.  But this
+is not necessary.
+
+@s color int
+
+@<Define |color| data structure@>=
+struct color {
+    double red, green, blue;
+    string name;
+    color(string name, double red, double green, double blue)
+        : red(red), green(green), blue(blue), name(name) { }
+    color(double red, double green, double blue)
+        : red(red), green(green), blue(blue), name() { }
+    void set(ostream& out);
+};
+
+@ This routine is used when the name of the colour is not necessary, because
+it's only needed locally.  This is the case for text labels and the Milky Way
+dots.
+
+@c
+void color::set(ostream& out) {
+    out << "\\newrgbcolor{dummycolor}{" << red << ' ' << green << ' ' << blue
+        << "}\\dummycolor\n  \\psset{linecolor=dummycolor}%\n";
+}
+
+@ Both output and input of |color|s is asymmetric: When I {\it read\/} them I
+assume that I do it from an input script.  Then it's a mere sequence of the
+three colour values.
+
+@q'@>
+
+@c
+istream& operator>>(istream& in, color& c) {
+    in >> c.red >> c.green >> c.blue;
+    if (!in @/
+        || c.red < 0.0 || c.red > 1.0 @/
+        || c.green < 0.0 || c.green > 1.0 @/
+        || c.blue < 0.0 || c.blue > 1.0)
+        throw string("Invalid RGB values in input script");
+    return in;
+}
+
+@ But when I {\it write\/} them, I assume that I do it into a \LaTeX\ file with
+\PS/Tricks package activated.  Then I deploy a complete \.{\\newrgbcolor}
+command.
+
+@c
+ostream& operator<<(ostream& out, const color& c) {
+    if (c.name.empty()) throw string("Cannot write unnamed color to stream");
+    out << "\\newrgbcolor{" << c.name << "}{" << c.red << ' ' << c.green
+        << ' ' << c.blue << "}%\n";
+    return out;
+}
+
+@ This routine is hitherto only used when drawing the milky way.  It helps to
+find a colour between the two extremes |c1| and~|c2|.  The value of |x| is
+always between $0$ and~$1$ and denotes the point on the way between |c1| and
+|c1| in the \RGB/ colour space where the new colour should be.  I interpolate
+linearly.  In order to create a new colour object, I need a |new_name| for it,
+too.
+
+@c
+color interpolate_colors(const double x, const color c1, const color c2,
+                         const string new_name = "") {
+    if (x < 0.0 || x > 1.0) throw string("Invalid x for color interpolation");
+    const double y = 1.0 - x;
+    return color(new_name,
+                 y * c1.red + x * c2.red,
+                 y * c1.green + x * c2.green,
+                 y * c1.blue + x * c2.blue);
+}
+
+
+@** Drawing the chart.  This is done in two steps.  First the lines and the
+celestial objects are printed.  During this phase a lot of labels may
+accumulate.  They cannot be drawn at that phase, because the arrangement with
+minimal overlaps can only be calculated when all are known.
+
+Therefore I have to fill a container called |objects| which contains elements
+of type |view_data|.  The part of each |star| or |nebula| or whatever that is
+|view_data| is appended to |objects|, if and only if the object is visible in
+the view frame.  The typical command for that is
+$$\hbox{|objects.push_back(&stars[i]);|}$$ (here for stars).
+Please notice that it is {\it not\/} important whether or not the respective
+object bears a label.  Its data is needed in any case.
+
+In the second phase I arrange and print the labels.
 
 @* Coordinate transformations.  They are done by the class |transformation|.
 |width| and |height| contain the view frame dimensions in centimetres.
@@ -1191,234 +2284,10 @@ bool transformation::polar_projection(const double rectascension,
     const double y1 = a[1][0] * x0 + a[1][1] * y0 + a[1][2] * z0;
     x = x1 * stretch + width / 2.0;
     y = y1 * stretch + height / 2.0;
-    if (x < 0.0 || x > width) return false;
-    if (y < 0.0 || y > height) return false;
+    if (x < 0.0 || x > width || y < 0.0 || y > height) return false;
     return true;
 }
 
-@* Constellation lines.  This is not about the {\it boundaries}, but about the
-connection lines between the main stars of a given constellation.  They are
-mere eye candy.  I call their |struct| type ``connections'' to keep the name
-unique and concise.
-
-A |connection| consists of |lines|.  The point coordinates are screen
-coordinates in centimetres.  |from| and |to| are the star star and the end
-star, given by their index in |stars|.
-
-Notice that |start| and |end| aren't defined before
-|draw_constellation_lines()| has been called, {\it and\/} the constellation
-line is actually visible.  Then they contain the screen coordinates of the
-start and the end point of the line.
-
-@s connection int
-
-@q'@>
-
-@c
-struct connection : public view_data {
-    point start, end;
-    int from, to;
-    connection(const int from, const int to)
-        : from(from), to(to), start(), end() { in_view = visible;
-        with_label = hidden; skip = 0.0; }
-    virtual double penalties_with(const double left,const double right,
-                                  const double top, const double bottom,
-                                  bool core = true) const;
-};
-
-typedef vector<connection> connections_list;
-
-
-@ The current way to calculate the penalties with constellation lines is
-simple, maybe too simple.  I only check whether the current line lies -- partly
-or not -- inside the given label rectangle.  If it does, the penalty value is
-simply the area of the label, otherwise it's zero.  Certainly it would be
-better to calculate penalties according to the amount of overlap and to balance
-it better with the other penalty values.
-
-But I just want to make it simple, and I want to make those overlaps expensive.
-
-@q'@>
-
-@ This is the first part of the algorithm.  It is actually pretty simple,
-however hard to explain.  We have two lines to intersect: One edge of the label
-rectangle and the constellation line.  The rectangle is given by |left|,
-|right|, |top|, and |bottom| -- as usual.  The constellation line is given by
-their start point |start| and end point |end|.  Or, in parameterised form:
-%
-$$\vec x = {\hbox{|start.x|} \choose \hbox{|start.y|}} + \lambda
-{\hbox{|end.x|} - \hbox{|start.x|} \choose \hbox{|end.y|} - \hbox{|start.y|}},
-\qquad \lambda\in[0;1].$$
-%
-The edge of the rectangle is given by (left edge as
-example)
-%
-$$\eqalign{\left(\vec x - {\hbox{|left|} \choose 0}\right) \cdot
-{1\choose0} &= 0 \cr \noalign{\vskip0.5ex} \Rightarrow\quad \hbox{|start.x|} +
-\lambda (\hbox{|end.x|} - \hbox{|start.x|}) &= \hbox{|left|}\cr
-\mathrel{\mathop\Leftrightarrow^{end.x - start.x \ne 0}\lambda = {\hbox{|left|}
-- \hbox{|start.x|} \over \hbox{|end.x|} - \hbox{|start.x|}}}}$$
-%
-with the
-boundary condition $\hbox{|bottom|} < \hbox{|start.y|} + \lambda
-(\hbox{|end.y|} - \hbox{|start.y|}) =: \hbox{|intersection|} < \hbox{|top|}$.
-With the abbreviations/\hskip0ptassignments (also exemplarily for the `left'
-case)
-%
-$$\eqalign{\hbox{|numerator|} &= \hbox{|left|} - \hbox{|start.x|},\cr
-\hbox{|denominator|} &= \hbox{|end.x|} - \hbox{|start.x|},\cr
-\hbox{|zero_point|} &= \hbox{|start_y|},\cr \hbox{|slope|} &= \hbox{|end.y|} -
-\hbox{|start.y|},\cr \hbox{|min|} &= \hbox{|bottom|},\quad \hbox{|max|} =
-\hbox{|top|}}$$
-%
-we get the following routine for finding out whether a certain
-label rectangle edge is intersected by the constellation line or not:
-
-@q')@>
-
-@<Definition of |line_intersection()| for intersection of two lines@>=
-bool line_intersection(double numerator, double denominator,
-                       double zero_point, double slope,
-                       double min, double max,
-                       double& intersection) {
-    if (denominator == 0) return false;
-    const double lambda = numerator / denominator;
-    intersection = zero_point + lambda * slope;
-    return lambda > 0.0 && lambda < 1.0 &&
-        intersection > min && intersection < max;
-}
-
-@ Now for the second part of the intersection algorithm.  Here I apply the
-preceding routing on all four label edges.  If there is an intersection
-(however it may look like), I return |quad| as the penalty value.
-
-@c
-double connection::penalties_with(const double left, const double right,
-                                  const double top, const double bottom,
-                                  bool core = true) const
-{
-    double intersection;
-    point r(end.x - start.x, end.y - start.y);
-    vector<point> intersection_points;
-    if (line_intersection(left - start.x, r.x, start.y, r.y,
-                          bottom, top, intersection))
-        intersection_points.push_back(point(left, intersection));
-    if (line_intersection(right - start.x, r.x, start.y, r.y,
-                          bottom, top, intersection))
-        intersection_points.push_back(point(right, intersection));
-    if (line_intersection(top - start.y, r.y, start.x, r.x,
-                          left, right, intersection))
-        intersection_points.push_back(point(intersection, top));
-    if (line_intersection(bottom - start.y, r.y, start.x, r.x,
-                          left, right, intersection))
-        intersection_points.push_back(point(intersection, bottom));
-    if (start.x > left && start.x < right && start.y > bottom && start.y < top)
-        intersection_points.push_back(start);
-    if (end.x > left && end.x < right && end.y > bottom && end.y < top)
-        intersection_points.push_back(end);
-    if (intersection_points.empty()) return 0.0;
-    if (intersection_points.size() != 2) {
-        cerr << "pp3: Funny " << intersection_points.size()
-             << "-fold constellation line intersecrtion." << endl;
-        return 0.0;
-    }
-    const double length = hypot(intersection_points[1].x -
-                                intersection_points[0].x,
-                                intersection_points[1].y -
-                                intersection_points[0].y);
-    return (core? 8.0 * params.penalties_cline :
-            0.5 * params.penalties_cline_rim) / 72.27*2.54 * length;
-}
-
-@ I must be able to read a file which contains such data.  Here, too, the text
-file format is very simple: It's a list of constellation line paths separated
-by `\.{;}'.  A star name must be of the form $$\eqalign{\noalign{\hbox{{\it
-Constellation}\SP{\it Flamsteed number}}} \noalign{\hbox{or}}
-\noalign{\hbox{\.{HD}\SP{\it Henry-Draper Catalogue number}}}}$$ where {\it
-Constellation\/} must be given as an all uppercase three letter abbreviation.
-For example, \.{ORI\SP19} is $\alpha$~Ori (Rigel).
-
-The hash sign `\.{\#}' introduces comments that are ignored till end of line,
-however they mustn't occur within a star.
-
-@c
-void read_constellation_lines(connections_list& connections,
-                              const stars_list& stars) {
-    ifstream file(params.filename_lines.c_str());
-    string from_catalogue_name, to_catalogue_name;
-    int from_catalogue_index = 0, to_catalogue_index = 0;
-    file >> to_catalogue_name;
-    while (file) {
-        if (to_catalogue_name[0] == '#') { // skip comment
-            string dummy;
-            getline(file,dummy);
-        } else if (to_catalogue_name == ";")  // start a new path
-            from_catalogue_index = 0;
-        else {
-            file >> to_catalogue_index;
-            if (from_catalogue_index > 0 && to_catalogue_index > 0) {
-                @<Create one connection@>@;
-            }
-            from_catalogue_name = to_catalogue_name;
-            from_catalogue_index = to_catalogue_index;
-        }
-        file >> to_catalogue_name;
-    }
-}
-
-@ In the loop I try to find the index within |stars| of the `from' star and the
-`to'~star.
-
-@<Create one connection@>=
-            int from_index = 0, to_index = 0;
-            for (int i = 0; i < stars.size(); i++) {
-                @<Test whether |stars[i]| is the `from' star@>@;
-                @<Test whether |stars[i]| is the `to' star@>@;
-            }
-            if (from_index == 0 || to_index == 0) {
-                stringstream error_message;
-                error_message << "Unrecognised star in constellation lines: ";
-                if (from_index == 0)
-                    error_message << from_catalogue_name << ' '
-                                  << from_catalogue_index;
-                else
-                    error_message << to_catalogue_name << ' '
-                                  << to_catalogue_index;
-                throw error_message.str();
-            }
-            connections.push_back(connection(from_index, to_index));
-
-@ Here I test whether the current star in the loop is the `from' star.  Of
-course only if I haven't found it already (|from_index == 0|).  If apparently
-both stars have been found already, I leave the loop immediately.
-
-@q;@>
-
-@<Test whether |stars[i]| is the `from' star@>=
-@q'@>
-                if (from_index == 0)
-                    if (from_catalogue_name == "HD") {
-                        if (stars[i].hd == from_catalogue_index) from_index = i;
-                    } else {
-                        if (from_catalogue_name == stars[i].constellation)
-                            if (stars[i].flamsteed == from_catalogue_index)
-                                from_index = i;
-                    } else if (to_index != 0) break;
-
-@ Perfectly analogous to |@<Test whether |stars[i]| is the `from' star@>|.
-
-@q'@>
-
-@<Test whether |stars[i]| is the `to' star@>=
-@q'@>
-                if (to_index == 0)
-                    if (to_catalogue_name == "HD") {
-                        if (stars[i].hd == to_catalogue_index) to_index = i;
-                    } else {
-                        if (to_catalogue_name == stars[i].constellation)
-                            if (stars[i].flamsteed == to_catalogue_index)
-                                to_index = i;
-                    } else if (from_index != 0) break;
 
 @* Label organisation.  Without labels, star charts are not very useful.  But
 labels mustn't overlap, and they should not overlap with other chart elements
@@ -2008,10 +2877,8 @@ smoothly through all points.
 I need this |"[liftpen=2]"| because eventually the \.{\\pscurve} command may be
 part of a \.{\\pscustom} command and thus be part of a bigger path that forms
 -- in terms of the Porstscript language -- one united path.\footnote{$^2$}{This
-means e.\,g.\ that a dashed line pattern won't be broken at subpath junctions.}
-In order to get crisp coners, the \.{liftpen} option is necessary.
-
-@q'}@>
+means e.\,g.\ that a dashed line pattern won't @q'@> be broken at subpath
+junctions.}  In order to get crisp coners, the \.{liftpen} option is necessary.
 
 @c
 void draw_boundary_line(const boundary& b, const transformation& transform,
@@ -2146,45 +3013,18 @@ void draw_constellation_lines(connections_list& connections,
 }
 
 
-@* The Milky Way.  If a proper data file is available, the milky way is a
-simple concept, however difficult to digest for \LaTeX\ due to many many
+@* Drawing the Milky Way.  If a proper data file is available, the milky way is
+a simple concept, however difficult to digest for \LaTeX\ due to many many
 Postscipt objects.  But for this program it's so simple that I can do the
 reading and drawing in one small routine and I even don't need any large data
 structures.
 
-The file is a text file as usual with the following structure, everything
-separated by whitespace: \medskip
-
-\item{1.} The maximal ($={}$equatorial) diagonal half distance of two pixels in
-degrees (|double|).  This value is used as the |redius| for the milky way
-`pixels'.  Of course it must me the minimal radius for which there are no holes
-between the pixels.
-
-\item{2.} The pixels themselves with two |double|s and one |int| each:
-\itemitem{--} The rectascension in hours.
-\itemitem{--} The declination in degrees.
-\itemitem{--} The grey value of the pixel from $1$ to~$255$.  Zero is not used
-because zero-value pixels are not included into the data file anyway.
-
-@q'@>
+See |@<Reading the milkyway into |pixels|@>| for more information on |pixels|.
 
 @c
 void draw_milky_way(const transformation& mytransform) {
-    ifstream file(params.filename_milkyway.c_str());
-    double radius;
-    file >> radius;
-    double rectascension, declination, x, y;
-    int pixel;
     vector<vector<point> > pixels(256);
-    const double cm_per_grad = 1.0 /
-        (mytransform.get_rad_per_cm() * 180.0 / M_PI);
-    radius *= cm_per_grad / 2.54 * 72.27;
-    file >> rectascension >> declination >> pixel;
-    while (file) {
-        if (mytransform.polar_projection(rectascension, declination, x,y))
-            pixels[pixel].push_back(point(x,y));
-        file >> rectascension >> declination >> pixel;
-    }
+    @<Reading the milkyway into |pixels|@>@;
     for (int i = 1; i < pixels.size(); i++) {
         if (pixels[i].size() == 0) continue;
         interpolate_colors(double(i) / 255.0, params.bgcolor,
@@ -2195,18 +3035,8 @@ void draw_milky_way(const transformation& mytransform) {
     }
 }
 
-@* Drawing of stars and nebulae.  Now for the two most important objects of the
-star charts.  They are special because they may have labels.  Therefore I not
-only have to draw them, I have to fill a container of |main()| called |objects|
-which contains elements of type |view_data|.  The part of each |star| or
-|nebula| that is |view_data| is appended to |objects|, if and only if the star
-is visible in the view frame.  The typical command for that is
-$$\hbox{|objects.push_back(&stars[i]);|}$$ (here for stars).
-Please notice that it is {\it not\/} important whether or not the respective
-object bears a label.
-
-@ First the nebulae.  Only nebulae with a certain minimal brightness and a
-minimal diameter are included, but all of these get a label by default.  
+@* Drawing nebulae.  Only nebulae with a certain minimal brightness and a
+minimal diameter are included, but all of these get a label by default.
 
 The first decision I have to make here is whether the nebula has all necessary
 data for drawing a neat ellipsis that has the correct diameters and the correct
@@ -2324,13 +3154,13 @@ to the different circular scale.  FixMe: Improve this. (Via rotation matrices.)
     OUT << "\\relax\n";
 
 
-@ Now for the stars.  Stars are a little bit simpler than nebulae because they
-are mere disks.  They are only included if they have a certain minimal
-magnitude.  The disk radius is calculated according to $$\eqalign{
-\hbox{|radius|} &= \sqrt{m_{\hbox{\sevenrm min}} - m + \hbox{\it
-radius}_{\hbox{\sevenrm min}}^2}\,,\quad\hbox{if $m<m_{\hbox{\sevenrm
-min}}$\,,}\cr \noalign{\vskip0.5ex} \hbox{|radius|} &= m_{\hbox{\sevenrm
-min}}\,,\quad \hbox{otherwise}.}$$
+@* Drawing stars.  Stars are a little bit simpler than nebulae because they are
+mere disks.  They are only included if they have a certain minimal magnitude.
+The disk radius is calculated according to $$\eqalign{ \hbox{|radius|} &=
+\sqrt{m_{\hbox{\sevenrm min}} - m + \hbox{\it radius}_{\hbox{\sevenrm
+min}}^2}\,,\quad\hbox{if $m<m_{\hbox{\sevenrm min}}$\,,}\cr
+\noalign{\vskip0.5ex} \hbox{|radius|} &= m_{\hbox{\sevenrm min}}\,,\quad
+\hbox{otherwise}.}$$
 
 The star gets a label by default only if it has a certain magnitude.  This is
 even a little bit stricter than the related condition above.
@@ -2443,787 +3273,8 @@ the respective spectral class.
         }
     }
 
-@* Reading the input script.  The input script is a text file that is given as
-the first and only parameter to \PPTHREE/.  It format is very simple: First, a
-`\.{\#}' introduces a comment and the rest of the line is ignored.  Secondy,
-every commend has an opcode--parameter(s) form.  Third, opcodes and parameters
-are separated by whitespace (no matter which type and how much).  Forthly,
-parameters and celestial objects must be separated by
-``\.{objects\_and\_labels}''.
 
-@*1 Global parameters.  This is the first part of the input script.  This part
-comes before an ``\.{objects\_and\_labels}'' in the input script.
-
-First two small helping routines that just read simple values from the file.
-
-@q'@>
-
-@c
-bool read_boolean(istream& script) {
-    string boolean;
-    script >> boolean;
-    if (boolean == "on") return true;
-    else if (boolean == "off") return false;
-    else throw string("Expected \"on\" or \"off\" in \"switch\" construct "
-                      "in input script");
-}
-
-@ You can give strings in a similar way as on a shell command line:  If it
-doesn't contain spaces, just input it.  In the other case you have to enclose
-it within \.{"..."}.  The same is necessary if it starts with a~\.{"}.  Within
-the double braces, backslashes and double braces have to be escaped with a
-backslash.  This is not necessary if you had a simple string.
-
-So you may write e.\,g.: \.{Leo}, \.{"Leo Minor"}, \.{\BS alpha}, and
-\.{"\LB\BS\BS sfseries Leo\RB"}.  An empty string can only be written as
-\.{""}.
-
-@q'@>
-
-@c
-string read_string(istream& script) {
-    const string UnexpectedEOS("Unexpected end of input script while reading a"
-                               " string parameter");
-    char c;
-    string contents;
-    while (script.get(c)) if (!isspace(c)) break;
-    if (!script) throw UnexpectedEOS;
-    if (c != '"') {
-        script >> contents;
-        if (script) contents.insert(contents.begin(),c); else contents = c;
-    } else {
-        while (script.get(c)) {
-            if (c == '"') break;
-            if (c == '\\') {
-                if (!script.get(c))
-                    throw UnexpectedEOS;
-                switch (c) {
-                case '\\': case '"': contents += c; break;
-                default: throw string("Unknown escape sequence in string");
-                }
-            } else contents += c;
-        }
-        if (!script)
-            throw UnexpectedEOS;
-    }
-    return contents;
-}
-
-@ Here the actual routine for this first part.  The top-level keywords are:
-``\.{color}'', ``\.{linewidth}'', ``\.{linestyle}'', ``\.{switch}'',
-``\.{penalties}'', ``\.{filename}'', and ``\.{set}''.
-
-@.color@>
-@.linewidth@>
-@.linestyle@>
-@.switch@>
-@.penalties@>
-@.filename@>
-@.set@>
-
-@c
-void read_parameters_from_script(istream& script) {
-    string opcode;
-    script >> opcode;
-    while (opcode != "objects_and_labels" && script) {
-        if (opcode[0] == '#') {   // skip comment line
-            string rest_of_line;
-            getline(script,rest_of_line);
-        } else
-            @<Set color parameters@>@;
-        else
-            @<Set line widths@>@;
-        else
-            @<Set line styles@>@;
-        else
-            @<Set on/off parameters@>@;
-        else
-            @<Set penalty parameters@>@;
-        else
-            @<Set filename parameters@>@;
-        else
-            @<Set single value parameters@>@;
-        else throw string("Undefined opcode in input script");
-        script >> opcode;
-    }       
-}
-
-@ Colours are given as red--green--blue values from $0$ to~$1$.  For example,
-$$\hbox{\.{color labels 1 0 0}}$$ which makes all labels red.  The following
-sub-keywords can be used: ``\.{background}'', ``\.{grid}'', ``\.{ecliptic}'',
-``\.{boundaries}'', ``\.{highlighted\_boundaries}'', ``\.{stars}'',
-``\.{nebulae}'', ``\.{labels}'', ``\.{constellation\_lines}'', and
-``\.{milky\_way}''.  In case of the milky way, the colour denotes the brightest
-regions.  (The darkest have \.{back}\-\.{ground} colour.)
-
-@.color@>
-@.background@>
-@.grid@>
-@.ecliptic@>
-@.boundaries@>
-@.highlighted\_boundaries@>
-@.stars@>
-@.nebulae@>
-@.labels@>
-@.constellation\_lines@>
-@.milky\_way@>
-
-@<Set color parameters@>=
-        if (opcode == "color") {
-            string color_name;
-            script >> color_name;
-            if (color_name == "background") script >> params.bgcolor;
-            else if (color_name == "grid") script >> params.gridcolor;
-            else if (color_name == "ecliptic") script >> params.eclipticcolor;
-            else if (color_name == "boundaries")
-                script >> params.boundarycolor;
-            else if (color_name == "highlighted_boundaries")
-                script >> params.hlboundarycolor;
-            else if (color_name == "stars") script >> params.starcolor;
-            else if (color_name == "nebulae") script >> params.nebulacolor;
-            else if (color_name == "labels") script >> params.labelcolor;
-            else if (color_name == "constellation_lines")
-                script >> params.clinecolor;
-            else if (color_name == "milky_way") script >> params.milkywaycolor;
-            else throw string("Undefined \"color\" construct"
-                              " in input script");
-        }
-
-@ {\sloppy\raggedright The following lines can be modified: ``\.{grid}'',
-``\.{ecliptic}'', ``\.{boundaries}'', ``\.{highlighted\_boundaries}'',
-``\.{nebulae}'', and ``\.{constellation\_lines}''.  The linewidth in
-centimetres must follow.\par}
-
-@.line\_width@>
-@.grid@>
-@.ecliptic@>
-@.boundaries@>
-@.highlighted\_boundaries@>
-@.nebulae@>
-@.constellation\_lines@>
-
-@<Set line widths@>=
-        if (opcode == "line_width") {
-            string line_name;
-            script >> line_name;
-            if (line_name == "grid") script >> params.linewidth_grid;
-            else if (line_name == "ecliptic")
-                script >> params.linewidth_ecliptic;
-            else if (line_name == "boundaries")
-                script >> params.linewidth_boundary;
-            else if (line_name == "highlighted_boundaries")
-                script >> params.linewidth_hlboundary;
-            else if (line_name == "nebulae")
-                script >> params.linewidth_nebula;
-            else if (line_name == "constellation_lines")
-                script >> params.linewidth_cline;
-            else throw string("Undefined \"line_width\" construct"
-                              " in input script");
-        }
-
-@ {\sloppy\raggedright The following lines can be modified: ``\.{grid}'',
-``\.{ecliptic}'', ``\.{boundaries}'', ``\.{highlighted\_boundaries}'',
-``\.{nebulae}'', and ``\.{constellation\_lines}''.  You can set the respective
-line style to ``\.{solid}'', ``\.{dashed}'', and ``\.{dotted}''.\par}
-
-@.line\_style@>
-@.solid@>
-@.dashed@>
-@.dotted@>
-@.grid@>
-@.ecliptic@>
-@.boundaries@>
-@.highlighted\_boundaries@>
-@.nebulae@>
-@.constellation\_lines@>
-
-@<Set line styles@>=
-        if (opcode == "line_style") {
-            string line_name;
-            script >> line_name;
-            if (line_name == "grid") script >> params.linestyle_grid;
-            else if (line_name == "ecliptic")
-                script >> params.linestyle_ecliptic;
-            else if (line_name == "boundaries")
-                script >> params.linestyle_boundary;
-            else if (line_name == "highlighted_boundaries")
-                script >> params.linestyle_hlboundary;
-            else if (line_name == "nebulae")
-                script >> params.linestyle_nebula;
-            else if (line_name == "constellation_lines")
-                script >> params.linestyle_cline;
-            else throw string("Undefined \"line_width\" construct"
-                              " in input script");
-        }
-
-
-@ There are the following boolean values: ``\.{milky\_may}'',
-``\.{colored\_stars}'', ``\.{grid}'', ``\.{ecliptic}'', ``\.{boundaries}'',
-``\.{constellation\_lines}'', ``\.{labels}'', ``\.{eps\_output}'',
-and ``\.{pdf\_output}''.  You can switch them ``\.{on}'' or ``\.{off}''.
-
-@.switch@>
-@.on@>
-@.off@>
-@.milky\_way@>
-@.colored\_stars@>
-@.grid@>
-@.ecliptic@>
-@.boundaries@>
-@.constellation\_lines@>
-@.labels@>
-@.eps\_output@>
-@.pdf\_output@>
-
-@<Set on/off parameters@>=
-        if (opcode == "switch") {
-            string switch_name;
-            script >> switch_name;
-            if (switch_name == "milky_way")
-                params.milkyway_visible = read_boolean(script);
-            else if (switch_name == "colored_stars")
-                params.colored_stars = read_boolean(script);
-            else if (switch_name == "grid")
-                params.show_grid = read_boolean(script);
-            else if (switch_name == "ecliptic")
-                params.show_ecliptic = read_boolean(script);
-            else if (switch_name == "boundaries")
-                params.show_boundaries = read_boolean(script);
-            else if (switch_name == "constellation_lines")
-                params.show_lines = read_boolean(script);
-            else if (switch_name == "labels")
-                params.show_labels = read_boolean(script);
-            else if (switch_name == "eps_output")
-                params.create_eps = read_boolean(script);
-            else if (switch_name == "pdf_output")
-                params.create_pdf = read_boolean(script);
-            else throw string("Undefined \"switch\" construct"
-                              " in input script");
-        }
-
-@ In order to avoid overlaps, \PPTHREE/ uses a simple penalty algorithm.  The
-standard value for all penalty values is~1000.  The meanings of ``\.{stars}'',
-``\.{labels}'', ``\.{nebulae}'', ``\.{boundaries}'', and
-``\.{constellation\_lines}'' is pretty easy to explain: They come into play
-when the current label (that is to be positioned) overlaps with the respective
-object.  For example, if you want overlaps with constellation lines to be less
-probable, you can say $$\hbox{\.{penalties constellation\_lines 2000}}$$
-
-There is another concept of importance here: The rim.  A rim is a rectangular
-margin around every label with a width of |skip|.  Overlaps in the rim are
-counted, too, however normally they don't hurt that much.  Normally they hurt
-half as much as the label area ({\it core}) itself, but this can be changed
-with ``\.{rim}''.  With $$\hbox{\.{penalties rim 0}}$$ the rim loses its
-complete significance.  But notice that for each rim penalty a core penalty is
-added, too, so that the rim can never be more significant than the core.
-
-Within the rim, ``\.{boundaries\_rim}'' and ``\.{constellation\_lines\_rim}''
-are used insetad of the normal ones.  This is because lines are not so bad in
-the rim as other stars or nebulae would be, because other stars in the vicinity
-of a label may cause confusion, lines not.
-
-\medskip The third thing about penalties is the maximal penalty of a label.  If
-the penalties of a label exceed this value, the label is supressed.  You may
-overrule this behaviour with an explicit repositioning of the label.  You can
-adjust this maximal badness of the label with ``\.{threshold}''.  With
-$$\hbox{\.{penalties threshold 10000}}$$ probably all labels are printed.
-
-@.penalties@>
-@.stars@>
-@.labels@>
-@.nebulae@>
-@.boundaries@>
-@.boundaries\_rim@>
-@.constellation\_lines@>
-@.constellation\_lines\_rim@>
-@.threshold@>
-@.rim@>
-
-@<Set penalty parameters@>=
-        if (opcode == "penalties") {
-            string penalty_name;
-            double value;
-            script >> penalty_name >> value;
-            value /= 1000.0;
-            if (penalty_name == "stars")
-                params.penalties_star = value;
-            else if (penalty_name == "labels")
-                params.penalties_label = value;
-            else if (penalty_name == "nebulae")
-                params.penalties_nebula = value;
-            else if (penalty_name == "boundaries")
-                params.penalties_boundary = value;
-            else if (penalty_name == "boundaries_rim")
-                params.penalties_boundary_rim = value;
-            else if (penalty_name == "constellation_lines")
-                params.penalties_cline = value;
-            else if (penalty_name == "constellation_lines_rim")
-                params.penalties_cline_rim = value;
-            else if (penalty_name == "threshold")
-                params.penalties_threshold = value;
-            else if (penalty_name == "rim")
-                params.penalties_rim = value;
-            else throw string("Undefined \"penalties\" construct"
-                              " in input script");
-        }
-
-@ @q(@> The most important filename is ``\.{output}''.  By default it's unset
-so that the output is sent to standard output.  With $$\hbox{\.{filename output
-orion.tex}}$$ the output is written to \.{orion.tex}.  Most of the other
-filenames denote the data files.  Their file format is described at the
-functions that read them.  Their names are: ``\.{stars}'', ``\.{nebulae}'',
-``\.{label\_dimensions}'', ``\.{constellation\_lines}'', ``\.{boundaries}'',
-and ``\.{milky\_way}''.
-
-``\.{latex\_preamble}'' is a file with a \LaTeX\ excerpt with a preamble
-fragment for the \LaTeX\ output.  See |@<|create_preamble()| for writing the
-\LaTeX\ preamble@>|.
-
-``\.{include}'' denotes a file that is included at the current position as an
-insert script file.  This command particularly makes sense at the very
-beginning of the input script because then you can overwrite the values
-locally.  Note that you can only include zero or one file, and included script
-files must not contain further \.{include}s.  Apart from that included scripts
-have the same structure as usual scripts.  (This is also true for a possible
-`\.{objects\_and\_labels}' part.)
-
-The meaning of this is of course to write a master script with global settings
-(e.\,g.\ colour, line style, data file names etc.), and to overwrite them for
-certain regions of the sky, typically stellar constellations.
-
-@.output@>
-@.stars@>
-@.nebulae@>
-@.label\_dimensions@>
-@.constellation\_lines@>
-@.boundaries@>
-@.milky\_way@>
-@.latex\_preamble@>
-@.include@>
-
-@<Set filename parameters@>=
-        if (opcode == "filename") {
-            string object_name;
-            script >> object_name;
-            if (object_name == "output")
-                params.filename_output = read_string(script);
-            else if (object_name == "stars")
-                params.filename_stars = read_string(script);
-            else if (object_name == "nebulae") 
-                params.filename_nebulae = read_string(script);
-            else if (object_name == "label_dimensions")
-                params.filename_dimensions = read_string(script);
-            else if (object_name == "constellation_lines")
-                params.filename_lines = read_string(script);
-            else if (object_name == "boundaries")
-                params.filename_boundaries = read_string(script);
-            else if (object_name == "milky_way")
-                params.filename_milkyway = read_string(script);
-            else if (object_name == "latex_preamble")
-                params.filename_preamble = read_string(script);
-            else if (object_name == "include") {
-                if (!params.filename_include.empty())
-                    throw string("Nesting depth of include files greater"
-                                 " than one");
-                params.filename_include = read_string(script);
-                ifstream included_script(params.filename_include.c_str());
-                read_parameters_from_script(included_script);
-            }
-            else throw string("Undefined \"filename\" construct"
-                              " in input script");
-        }
-
-@ Most of these values are numeric, only \.{constellation} is a string, namely
-a three-letter all-uppercase astronomic abbreviation of the constellation to be
-highlighted.  It's default is ``\.{ORI}''  but you may set it to the empty
-string with $$\hbox{\.{set constellation ""}}$$ so no constellation gets
-highlighted.  At the moment highlighting means that the boundaries have a
-brighter colour than normal.
-
-{\sloppy\raggedright
-``\.{center\_rectascension}'' and ``\.{center\_declination}'' are the celestial
-coordinates of the view frame centre.  ``\.{box\_width}'' and
-``\.{box\_height}'' are the dimensions of the view frame in centimetres.
-``\.{grad\_per\_cm}'' is the magnification (scale).
-``\.{star\_scaling}'' denotes a radial scaling of the star
-disks. ``\.{fontsize}'' is the global \LaTeX\ font size (in points).  It must
-be 10, 11, or~12.  Default is~10.
-
-Many parameters deal with the graphical representation of stars and nebulae:
-``\.{shortest\_constellation\_line}'' is the shortest length for a
-constellation line that is supposed to be drawn.  ``\.{label\_skip}'' is the
-distance between label and celestial object.  ``\.{minimal\_nebula\_radius}''
-is the radius under which a nebula is drawn as a mere circle of {\it that\/}
-radius.  ``\.{minimal\_star\_radius}'' is the radius of the smallest stellar
-dots of the graphics.  All these parameters are measured in centimetres.
-
-But there are also some magnitudes: The faintest stellar clusters that are
-drawn by default are of the ``\.{faintest\_cluster\_magnitude}'', all other
-nebulae drawn by default of the ``\.{faintest\_diffuse\_nebula\_magnitude}''.
-Stars brighter than ``\.{faintest\_star\_magnitude}'' are drawn at all, if they
-are even brighter than ``\.{faintest\_star\_with\_label\_magnitude}'' they get
-a label.  Stars brighter than ``\.{faintest\_star\_disk\_magnitude}'' are not
-just mere dots in the background, but get a radius according to their
-brightness.\par}
-
-Many of these parameters trigger the default behaviour that you can overrule by
-commends in the second part of the input script.
-
-@.center\_rectascension@>
-@.center\_declination@>
-@.box\_width@>
-@.box\_height@>
-@.grad\_per\_cm@>
-@.shortest\_constellation\_line@>
-@.label\_skip@>
-@.minimal\_nebula\_radius@>
-@.faintest\_cluster\_magnitude@>
-@.faintest\_diffuse\_nebula\_magnitude@>
-@.faintest\_star\_magnitude@>
-@.minimal\_star\_radius@>
-@.faintest\_star\_disk\_magnitude@>
-@.faintest\_star\_with\_label\_magnitude@>
-@.star\_scaling@>
-@.constellation@>
-@.fontsize@>
-
-@q'@>
-
-@<Set single value parameters@>=
-        if (opcode == "set") {
-            string param_name;
-            script >> param_name;
-            if (param_name == "center_rectascension")
-                script >> params.center_rectascension;
-            else if (param_name == "center_declination")
-                script >> params.center_declination;
-            else if (param_name == "box_width")
-                script >> params.view_frame_width;
-            else if (param_name == "box_height")
-                script >> params.view_frame_height;
-            else if (param_name == "grad_per_cm")
-                script >> params.grad_per_cm;
-            else if (param_name == "constellation")
-                params.constellation = read_string(script);
-            else if (param_name == "shortest_constellation_line")
-                script >> params.shortest_constellation_line;
-            else if (param_name == "label_skip")
-                script >> params.label_skip;
-            else if (param_name == "minimal_nebula_radius")
-                script >> params.minimal_nebula_radius;
-            else if (param_name == "faintest_cluster_magnitude")
-                script >> params.faintest_cluster_magnitude;
-            else if (param_name == "faintest_diffuse_nebula_magnitude")
-                script >> params.faintest_diffuse_nebula_magnitude;
-            else if (param_name == "faintest_star_magnitude")
-                script >> params.faintest_star_magnitude;
-            else if (param_name == "minimal_star_radius")
-                script >> params.minimal_star_radius;
-            else if (param_name == "faintest_star_disk_magnitude")
-                script >> params.faintest_star_disk_magnitude;
-            else if (param_name == "faintest_star_with_label_magnitude")
-                script >> params.faintest_star_with_label_magnitude;
-            else if (param_name == "star_scaling")
-                script >> params.star_scaling;
-            else if (param_name == "fontsize")
-                script >> params.font_size;
-            else throw string("Undefined \"set\" construct in input script");
-        }
-
-@*1 Change printed objects and labels.  Here I read and interpret the second
-part of the input script, {\it after\/} the |"objects_and_labels"|.  Not that
-none of both paths must be available in the script.
-
-First I define a type that is often used in the following routines for a
-mapping from a catalogue number on the intex in \PPTHREE/'s internal |vectors|.
-This makes access a lot faster.  FixMe: At least for stars this can be used for
-stellar constellation lines, too.
-
-@q'@>
-
-@c
-typedef vector<int> index_list;
-
-@ Here I create the data structures that make the above mentioned mapping
-possible.  FixMe: They should be defined globally, so that the constellation
-lines construction can profit by it, too.  And then they needn't be given in
-the parameter lists of the routines.
-
-This mapping is not vital for the program, but the alternative would be to look
-through the whole of |nebulae| or |stars| to find a star with a certain \NGC/
-or \HD/ number.  This is probably way to inefficient.
-
-@q'@>
-
-@<Create mapping structures for direct catalogue access@>=
-    const int max_ngc = 7840, max_ic = 5386, max_messier = 110;
-    index_list ngc(max_ngc+1), ic(max_ic+1), messier(max_messier+1);
-    for (int i = 0; i < nebulae.size(); i++) {
-        if (nebulae[i].ngc > 0 && nebulae[i].ngc <= max_ngc)
-            ngc[nebulae[i].ngc] = i;
-        if (nebulae[i].ic > 0 && nebulae[i].ic <= max_ic)
-            ic[nebulae[i].ic] = i;
-        if (nebulae[i].messier > 0 && nebulae[i].messier <= max_messier)
-            messier[nebulae[i].messier] = i;
-    }
-    map<int,int> henry_draper;
-    map<string, map<int,int> > flamsteed;
-    for (int i = 0; i < stars.size(); i++) {
-        if (stars[i].hd > 0) henry_draper[stars[i].hd] = i;
-        if (stars[i].flamsteed > 0) 
-            flamsteed[stars[i].constellation][stars[i].flamsteed] = i;
-    }
-
-
-@ In this routine I scan a list of stellar objects, given by a token pair of
-catalogue name and catalogue index.  Such lists are used after some top-level
-commands below.  A mandatory `\.{;}' ends such a list.  Five catalogues are
-supported: \NGC/, \IC/, Messier, Henry-Draper~(\HD/), and Flamsteed numbers (in
-the form ``{\it Constellation}\SP{\it Flamsteed number}'').  You may use the
-program `Celestia' to get the \HD/ numbers for the stars.
-
-@c
-void search_objects(istream& script,
-                    const index_list& ngc, const index_list& ic,
-                    const index_list& messier, map<int,int>& henry_draper,
-                    map<string, map<int,int> >& flamsteed,
-                    index_list& found_stars, index_list& found_nebulae) {
-    found_stars.clear();
-    found_nebulae.clear();
-    string catalogue_name;
-    int catalogue_index;
-    script >> catalogue_name;
-    while (script && catalogue_name != ";") {
-        script >> catalogue_index;
-        if (!script) throw string("Unexpected end of input script");
-        if (catalogue_name == "NGC")
-            found_nebulae.push_back(ngc[catalogue_index]);
-        else if (catalogue_name == "IC")
-            found_nebulae.push_back(ic[catalogue_index]);
-        else if (catalogue_name == "M")
-            found_nebulae.push_back(messier[catalogue_index]);
-        else  if (catalogue_name == "HD")
-            found_stars.push_back(henry_draper[catalogue_index]);
-        else found_stars.push_back(flamsteed[catalogue_name][catalogue_index]);
-        script >> catalogue_name;
-    }
-}
-
-@ This routine essentially does the same as the prevous one, however only for
-{\it one\/} celestial object.  This is used for commands that don't take an
-object list but only one object.
-
-@q'@>
-
-@c
-view_data* identify_object(istream& script, const index_list& ngc,
-                           const index_list& ic, const index_list& messier,
-                           map<int,int>& henry_draper,
-                           map<string, map<int,int> >& flamsteed,
-                           stars_list& stars, nebulae_list& nebulae) {
-    string catalogue_name;
-    int catalogue_index;
-    script >> catalogue_name >> catalogue_index;
-    if (!script) throw string("Unexpected end of input script");
-    if (catalogue_name == "NGC") return &nebulae[ngc[catalogue_index]];
-    else if (catalogue_name == "IC") return &nebulae[ic[catalogue_index]];
-    else if (catalogue_name == "M") return &nebulae[messier[catalogue_index]];
-    else if (catalogue_name == "HD")
-        return &stars[henry_draper[catalogue_index]];
-    else return &stars[flamsteed[catalogue_name][catalogue_index]];
-}
-
-@ Here now the main routine for the second part of the input script.  The
-top-level commands in this section are: ``\.{reposition}'',
-``\.{delete\_labels}'', ``\.{add\_labels}'', ``\.{delete}'', and ``\.{add}''.
-
-@.reposition@>
-@.delete\_labels@>
-@.add\_labels@>
-@.delete@>
-@.add@>
-
-@c
-void read_objects_and_labels(istream& script,
-                             const dimensions_list& dimensions,
-                             objects_list& objects, stars_list& stars,
-                             nebulae_list& nebulae,
-                             texts_list& texts,
-                             const transformation& mytransform,
-                             bool included = false) {
-    if (!params.filename_include.empty() && !included) {
-        ifstream included_file(params.filename_include.c_str());
-        @<Skip everything till |"objects_and_labels"|@>@;
-        read_objects_and_labels(included_file, dimensions, objects, stars,
-                                nebulae, texts, mytransform, true);
-    }
-    string opcode;
-    script >> opcode;
-    if (!script) return;
-    @<Create mapping structures for direct catalogue access@>@;
-    while (script) {
-        if (opcode[0] == '#') {   // skip comment line
-            string rest_of_line;
-            getline(script,rest_of_line);
-        } else 
-            @<Label repositioning@>@;
-        else
-            @<Text labels@>@;
-        else {  // command with objects list
-            index_list found_stars, found_nebulae;
-            @<Label deletion@>@;
-            else
-                @<Label activation@>@;
-            else
-                @<Celestial object deletion@>@;
-            else
-                @<Celestial object activation@>@;
-            else throw string("Undefined opcode in input script");
-        } 
-        script >> opcode;
-    }
-}
-
-@ The following algorithm is so bad that it must be considered a bug.  It
-simply searches for the string |"objects_and_labels"| in the |included_file|,
-but that may occur within a string or wherever.  The file should be properly
-scanned, but I'm too lazy for that.  A case where this bug becomes visible
-should be very rare anyway.
-
-FixMe: Fix this bug, or at least for strings.  Maybe the format of input
-scripts must be changed significantly for this.
-
-@q'@>
-
-@<Skip everything till |"objects_and_labels"|@>=
-        string token;
-        included_file >> token;
-        while (included_file) {
-            if (token[0] == '#') getline(included_file,token);
-            else if (token == "objects_and_labels") break;
-            included_file >> token;
-        }
-
-
-@ Sometimes labels have an unfortunate position.  But you may say e.\,g.\
-$$\hbox{\.{reposition M 42 E}}$$ to position the label for the Orion Nebula to
-the right of it.  (Abbreviations are taken from the wind rose.)  You may use
-this command to force a certain label to be drawn although \PPTHREE/ has
-decided that there is no space for it and didn't print it in the first place.
-
-@q'@>
-
-@<Label repositioning@>=
-        if (opcode == "reposition") {
-            string position;
-            view_data* current_object =
-                identify_object(script, ngc, ic, messier, henry_draper,
-                                flamsteed, stars, nebulae);
-            int angle;
-            script >> position;
-            @<Map a wind rose |position| to an |angle| in degrees@>@;
-            current_object->label_angle = angle;
-            current_object->with_label = visible;
-            current_object->label_arranged = true;
-        }
-
-@ @<Map a wind rose |position| to an |angle| in degrees@>=
-            if (position == "E") angle = 0;
-            else if (position =="NE") angle = 1;
-            else if (position =="N") angle = 2;
-            else if (position =="NW") angle = 3;
-            else if (position =="W") angle = 4;
-            else if (position =="SW") angle = 5;
-            else if (position =="S") angle = 6;
-            else if (position =="SE") angle = 7;
-            else throw string("Undefined position angle: ") + position;
-
-@ With e.\,g.\ $$\hbox{\.{delete\_labels  M 35  M 42 ;}}$$ you delete the labels
-(not the nebulae themselves!)\ of M\,35 and M\,42.
-
-@<Label deletion@>=
-            if (opcode == "delete_labels") {
-                search_objects(script, ngc, ic, messier, henry_draper,
-                               flamsteed, found_stars, found_nebulae);
-                for (int i = 0; i < found_stars.size(); i++) {
-                    stars[found_stars[i]].with_label = hidden;
-                    stars[found_stars[i]].label_arranged = true;
-                }
-                for (int i = 0; i < found_nebulae.size(); i++) {
-                    nebulae[found_nebulae[i]].with_label = hidden;
-                    nebulae[found_nebulae[i]].label_arranged = false;
-                }
-            }
-
-@ The counterpart of \.{delete\_labels}.  It makes sense first and formost for
-stars.  (Unfortunately this means that you have to use extensively the Henry
-Draper Catalogue.)
-
-@<Label activation@>=
-            if (opcode == "add_labels") {
-                search_objects(script, ngc, ic, messier, henry_draper,
-                               flamsteed, found_stars, found_nebulae);
-                for (int i = 0; i < found_stars.size(); i++)
-                    stars[found_stars[i]].with_label = visible;
-                for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_nebulae[i]].with_label = visible;
-            }
-
-@ This adds objects (mostly nebulae) the the field.  Notice that this object is
-then printed even if it lies outside the view frame (it may be clipped though).
-
-@<Celestial object activation@>=
-            if (opcode == "add") {
-                search_objects(script, ngc, ic, messier, henry_draper,
-                               flamsteed, found_stars, found_nebulae);
-                for (int i = 0; i < found_stars.size(); i++)
-                    stars[found_stars[i]].in_view = visible;
-                for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_nebulae[i]].in_view = visible;
-            }
-
-@ The opposite of |@<Celestial object activation@>|.
-
-@<Celestial object deletion@>=
-            if (opcode == "delete") {
-                search_objects(script, ngc, ic, messier, henry_draper,
-                               flamsteed, found_stars, found_nebulae);
-                for (int i = 0; i < found_stars.size(); i++)
-                    stars[found_stars[i]].in_view = hidden;
-                for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_nebulae[i]].in_view = hidden;
-            }
-
-@ This is the only way to add a text label.  The parameters are the text
-itself, rectascension, declination, \RGB/ colour, and the relative position
-(uppercase wind rose), followed by a semicolon.  For example,
-$$\hbox{\.{text Leo at 11 10 color 1 0 0 towards S ;}}$$ puts a red ``Leo''
-centered below the point $(11\,\hbox{h}, +10^\circ)$ in the Lion.  At the
-moment, all fields are mandatory.
-
-The contents of a text label is eventually in an \.{\BS hbox}, so you can
-use that fact.
-
-@.text@>
-
-@<Text labels@>=
-            if (opcode == "text") {
-                string contents, op1, op2, op3, position, semicolon;
-                double rectascension, declination;
-                color textcolor(params.labelcolor);
-                contents = read_string(script);
-                script >> op1 >> rectascension >> declination >> op2
-                       >> textcolor >> op3 >> position >> semicolon;
-                if (!script || op1 != "at" || op2 != "color" ||
-                    op3 != "towards" || semicolon != ";")
-                    throw string("Invalid text label command");
-                int angle;
-                @<Map a wind rose |position| to an |angle| in degrees@>@;
-                texts.push_back(text(contents, rectascension, declination,
-                                     textcolor, angle));
-            }
-
-@* The main function.  This consists of six parts: \medskip
+@** The main function.  This consists of six parts: \medskip
 
 \item{(1)} Command line interpretation.
 \item{(2)} Definition of the desired transformation, here called |mytransform|.
@@ -3239,6 +3290,8 @@ programs.
 @q'@>
 
 @c
+@<Routines for reading the input script@>@#@;
+
 int main(int argc, char **argv) {
     istream* in = 0;
     bool input_file = false;
@@ -3444,4 +3497,4 @@ output the user wanted to have eventually in the input script.
         }
 
 
-@* Index.
+@** Index.
