@@ -1,6 +1,6 @@
 % -*-texinfo-*-
 \def\niceracronym#1{#1}
-\def\rmdefault{ppl}\def\ne{\mathrel{\not{}\mskip-8mu=}}\input pstexinfo
+%\def\rmdefault{ppl}\def\ne{\mathrel{\not{}\mskip-8mu=}}\input pstexinfo
 \input texinfo
 @let@acronym@niceracronym
 
@@ -587,6 +587,54 @@ declination which is the centre of the constellation Swan.
 
 @node Data file formats
 @chapter Data file formats
+
+Maybe you want to use you own data bases with @PPTHREE{}.  If they are
+not too large@footnote{Unfortunately @PPTHREE{} still has the
+disadvantageous behaviour of reading the @emph{whole} data base file.}
+you may well do so.  Of course, then you need to know the internal
+structure of the files.  Although they are so simple that reverse
+engeneering should be almost trivial, you find here a complete
+description of all of them.
+
+Additionally I will give detailed information where the original data of
+@PPTHREE{}'s standard distribution came from.
+
+The last point, the ``label dimensions file'', isn't a real data base
+file, but an internal temporary file.  It is mentioned here just for
+completeness.
+
+@menu
+* Stars data file::             The stars database.
+* Nebulae data file::           Galaxies, dust clouds, and such.
+* Lines data file::             The purely subjective constellation
+                                  lines.
+* Boundaries data file::        The boundaries between constellations.
+* Milky Way data file::         The Milky Way brightness bitmap.
+* Label dimensions file::       Typographic diemsnions of all labels.
+@end menu
+
+@node Stars data file
+@section Stars data file
+
+
+@node Nebulae data file
+@section Nebulae data file
+
+
+@node Lines data file
+@section Constellation lines data file
+
+
+@node Boundaries data file
+@section Boundaries data file
+
+
+@node Milky Way data file
+@section Milky Way data file
+
+
+@node Label dimensions file
+@section Label dimensions file
 
 
 @node Known problems
