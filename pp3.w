@@ -2412,7 +2412,7 @@ color interpolate_colors(const double x, const color c1, const color c2,
 }
 
 
-@q@** Ephemerides.@>
+@q@@** Ephemerides.@>
 
 
 @** Drawing the chart.  This is done in two steps.  First the lines and the
