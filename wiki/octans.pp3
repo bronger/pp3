@@ -13,6 +13,7 @@ set box_width 6.3
 objects_and_labels
 
 add_labels HD 205478  HD 214846  HD 124882 ;  # nu, beta, and delta Oct
+add_labels HD 177482 ; # sigma Oct
 
 text \FlexLabel{Octans} at 21 -80 ;
 text Pavo at 21 -74 along declination ;
