@@ -1,10 +1,12 @@
 filename output title.tex
 switch pdf_output on
 
-set box_width 9
-set box_height 9
+set center_rectascension 6
 
-filename latex_preamble wiki.tex
+set box_width 9.5
+set box_height 9.7
+
+filename latex_preamble manual.tex
 
 set faintest_star_magnitude 4.5
 set faintest_star_disk_magnitude 4.5
@@ -35,7 +37,8 @@ set_label_text TAU 87 "\\footnotesize Aldebaran"
 set_label_text GEM 66 "\\footnotesize Castor"
 set_label_text GEM 78 "\\footnotesize Pollux"
 
-reposition ORI 34 E ;  # Mintaka
+reposition ORI 34 E ;   # Mintaka
+reposition TAU 123 W ;  # Zeta Tauri
 
 text Orion at 6.1 2 along declination towards N ;
 text Bull at 5.3 16.5 along declination towards N ;
@@ -44,5 +47,3 @@ text Unicorn at 6.4 -10 along declination towards NW ;
 text Hare at 5.5 -23 along declination towards S ;
 text "Big Dog" at 6.8 -20 along declination towards SE ;
 text Eridanus at 3.9 -20 along declination towards NW ;
-
-delete GEM 60 ;
