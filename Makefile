@@ -32,6 +32,9 @@ doc: pp3.pdf
 pp3: pp3.cc
 	$(CXX) -DPP3DATA=\"$(PP3DATA)\" pp3.cc $(CXXFLAGS) -o pp3
 
+ephem: ephem.cc
+	$(CXX) ephem.cc $(CXXFLAGS) -o ephem
+
 pp3.pdf: pp3.w
 	$(CWEAVE) pp3.w
 	pdftex pp3.tex
