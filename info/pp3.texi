@@ -645,9 +645,12 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 @menu
 * Minimal example::             The first four PP3 lines.
 * More bells and wistles::      How to make it look more sophisticated.
-* Parameters and commands::     
-* Text labels::                 
+* Parameters and commands::     The two parts of an input script.
+* Changing labels::             Changing implicitly created labels.
+* Reposition labels::           Reposition a text label.
+* Text labels::                 How to put arbitrary text on the map.
 * Using flexes::                Labels that are curved.
+* Tics::                        Automatically generated tic marks.
 @end menu
 
 
@@ -657,7 +660,7 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 The minimal @PPTHREE{} input script is -- well -- the empty file.  Then
 @PPTHREE{}'s default values create a dark blue star map of Orion:
 
-@image{orion,10cm}
+@image{orion,10cm,,Constellation map of Orion}
 
 @c Image can be created with the following PP3 input script:
 @c
@@ -790,7 +793,7 @@ in Latin).  Highlighting means that its borderline gets another colour.
 This is the map that results from all this (I removed the Milky Way from
 this figure in order to keep the @acronym{PDF} manual small):
 
-@image{swan,10cm}
+@image{swan,10cm,,Constellation map of the Swan}
 
 @c Image can be created with the following PP3 input script:
 @c
@@ -803,6 +806,7 @@ this figure in order to keep the @acronym{PDF} manual small):
 @c color ecliptic 0.3 0.3 0.3
 @c color constellation_lines 0.7 0.7 0.7
 @c color labels 0 0 0
+@c color text_labels 0.5 0.5 0.5
 @c color boundaries 0.8 0.8 0.8
 @c color highlighted_boundaries 0 0 0
 @c color milky_way 0.5 0.5 0.5
@@ -831,8 +835,8 @@ deleting objects and their labels, to reposition the labels, and to add
 arbitrary text on the map.  Let's begin with that.
 
 
-@node Text labels
-@section Text labels
+@node Changing labels
+@section Changing labels
 
 I change the label for Deneb, the alpha star in the Swan.  At the
 moment, its label is a mere `@math{\alpha}'.  But Deneb has a real name,
@@ -858,7 +862,7 @@ if it contains spaces.
 
 Now we get (only the changed part printed):
 
-@image{swan1}
+@image{swan1,,,Map of North America Nebula and Deneb}
 
 @c Image can be created with the following PP3 input script:
 @c
@@ -872,6 +876,7 @@ Now we get (only the changed part printed):
 @c color ecliptic 0.3 0.3 0.3
 @c color constellation_lines 0.7 0.7 0.7
 @c color labels 0 0 0
+@c color text_labels 0.5 0.5 0.5
 @c color boundaries 0.8 0.8 0.8
 @c color highlighted_boundaries 0 0 0
 @c color milky_way 0.5 0.5 0.5
@@ -888,9 +893,135 @@ Now we get (only the changed part printed):
 @c set_label_text CYG 50 Deneb
 @c set_label_text NGC 7000 "N. America Neb."
 
+@PPTHREE{} takes star names from a file.  So if you use another star
+data file with @PPTHREE{}, you get other labels.  @PPTHREE{}'s standard
+file only contains the astronomical symbols for the stars, so if you
+want to have real stars, you must use `@code{set_text_label}' as above.
+@xref{Stars data file}, for more information.
+
+
+@node Reposition labels
+@section Reposition labels
+
+If you think that @PPTHREE{} mispositioned a label you can change that
+with `@code{reposition}':
+
+@example
+reposition M 39  S ;
+@end example
+
+@noindent
+This puts the label for the nebula M@s{}39 @emph{below} the nebula.
+`@code{S}' means `south'.  The following diagram shows the possible
+values for the direction, by and large you know it from the wind rose:
+
+@image{pp3rose,,,Possible values for `reposition' and `towards'}
+
+@ifinfo
+@noindent
+The `X' marks the spot that lies @emph{exactly} on the celestial
+coordinates given after the `@code{at}' keyword.  Actually there are two
+other possible values, namely `@code{W_}' and `@code{E_}' that can be
+seen only in the printed or HTML version of this manual.  They are like
+`@code{W}' and `@code{E}' except that the X lies on the text baseline
+rather than the centre of the vertical edge.
+@end ifinfo
+
+@ifnotinfo
+@noindent
+The red point marks the spot that lies @emph{exactly} on the celestial
+coordinates given after the `@code{at}' keyword.
+@end ifnotinfo
+
+Using `@code{reposition}' is also necessary if @PPTHREE{} has supressed
+a label because it hadn't found a good place for it, because
+`@code{reposition}' forces a label to be printed.
+
+
+@node Text labels
+@section Text labels
+
+Changing existing labels is a nice thing to do, however sometimes you
+want to add arbitrary text on the map, e.@s{}g.@: `Pleiades' or `Virgo
+galaxy cluster'.  For all user defined text there is the keyword
+`@code{text}'.  For example,
+
+@example
+text "Virgo galaxy cluster" at 12.7 10
+  color 0.0 0.0 0.9333 towards SE ;
+@end example
+
+@noindent
+This places the text `Virgo galaxy cluster' at the celestial coordinates
+12.7@dmn{h} rectascension and @math{+10^\circ} declination in blue
+colour.
+
 
 @node Using flexes
 @section Using flexes
+
+But the `@code{text}' keyword can do more.  When you include the
+keywords `@code{along declination}' the label becomes a @emph{flex}.
+This is printed along a declination circle as a curved text.  It's
+especially nice for constellation name.  So let's try it out:
+
+@example
+text "\\bfseries Swan" at 20.5 47.5 along declination towards N ;
+@end example
+
+@noindent
+This `@code{\\bfseries}' tells the typesetter to print it in @b{bold
+face}, see @ref{LaTeX in labels}.  The result is the following:
+
+@image{swan2,,,Map of Swan with a flex label}
+
+@c Image can be created with the following PP3 input script:
+@c
+@c filename output swan2.tex
+@c switch milky_way off
+@c switch colored_stars off
+@c color stars 0 0 0
+@c color nebulae 0 0 0
+@c color background 1 1 1
+@c color grid 0.5 0.5 0.5
+@c color ecliptic 0.3 0.3 0.3
+@c color constellation_lines 0.7 0.7 0.7
+@c color labels 0 0 0
+@c color text_labels 0.5 0.5 0.5
+@c color boundaries 0.8 0.8 0.8
+@c color highlighted_boundaries 0 0 0
+@c color milky_way 0.5 0.5 0.5
+@c switch pdf_output on
+@c
+@c set center_rectascension  21.1
+@c set center_declination    44
+@c set box_width 7
+@c set box_height 3.5
+@c set constellation CYG
+@c
+@c objects_and_labels
+@c
+@c set_label_text CYG 50 Deneb
+@c set_label_text NGC 7000 "N. America Neb."
+@c
+@c text "\\bfseries Swan" at 20.5 47.5 along declination towards N ;
+
+
+@node Tics
+@section Tic marks
+
+But `@code{text}' can do even more.  With
+
+@example
+text "$#3$" at 0 20 along declination
+            tics rectascension 1 towards N ;
+text "$#5$" at 11 0 along declination
+            tics declination 10 towards S ;
+@end example
+
+@noindent
+You create automatic tic marks at the declination and rectascension
+circles.
 
 
 @node Keywords reference
@@ -1563,12 +1694,38 @@ respective declination circle.
 For further options see @ref{Arbitrary text}.
 
 @node Tic marks
-@subsubsection Tic marks
+@subsubsection Tic mark labels
 
 @deffn Command text {label-text} @code{at} rectascension declination [@code{tics} (@code{rectascension} | @code{declination}) step] @code{;}
 @end deffn
 
 @noindent
+With the keyword @code{rectascension}, one rectascension circle gets tic
+marks, analogously with @code{declination}.  The celestial position
+after `@code{at}' denotes the starting point of the labelling, and
+@var{step} is the step skip (in hours or degrees respectively) for the
+subsequent tic mark labels.
+
+The label should contain one of the following special expressions:
+
+@table @code
+@item #1
+Rectascension in hours.
+
+@item #2
+Declination in degrees.
+
+@item #3
+Rectascension in integer hours (truncated, not rounded).
+
+@item #4
+Rectascension fraction of hour in minutes (truncated, not rounded).
+
+@item #5
+Declination in rounded integer degrees.
+
+@end table
+
 For further options see @ref{Arbitrary text}.  Tic marks can also be
 flexes, see @ref{Flexes}.
 
