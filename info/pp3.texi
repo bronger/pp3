@@ -200,12 +200,17 @@ results are worth it!
 @section Successful use of PP3
 
 @unnumberedsubsec Wikipedia
+@cindex Wikipedia
 
 @PPTHREE{} has been used for the celestial maps of all 88 constellations
 on @uref{http://@/www.wikipedia.org,Wikipedia}, the free encyclopedia.
 Feel free to browse through a
 @uref{http://wikipedia.org/w/wiki.phtml?title=List_of_constellations,list
 of all constellations}.
+
+@cindex Bitmaps
+@cindex Gimp
+@cindex @acronym{PNG}
 
 This is a web page, so you need bitmaps@footnote{as long as we don't
 have @acronym{SVG}}, and a short @uref{http://www.gimp.org,Gimp}
@@ -228,6 +233,7 @@ took only 10--15 minutes per map eventually, because much work is done
 by the default behaviour of @PPTHREE{} itself.  And secondly:
 
 @unnumberedsubsec French Wikipedia
+@cindex Wikipedia
 
 Several months later the @uref{http://fr.wikipedia.org,French division
 of Wikipedia} wanted to translate the maps to French.  They wanted
@@ -237,6 +243,7 @@ adjust the scripts, to run @file{make} again, and to upload the
 @acronym{ZIP} file with all the demanded bitmaps.
 
 @unnumberedsubsec h2g2
+@cindex h2g2
 
 Originally @PPTHREE{} was written for a project on
 @uref{http://www.bbc.co.uk/h2g2/guide/,h2g2}, an @emph{edited} Internet
@@ -249,6 +256,9 @@ articles about constellations.  The maps were externally linked.
 
 @node Installation
 @chapter Installation
+@cindex installation
+@cindex downloads
+@cindex distribution
 
 You can get the latest @PPTHREE{} file releases from
 @uref{http://@/sourceforge.net/projects/pp3,@PPTHREE{}'s project page on
@@ -284,6 +294,7 @@ Obviously you need only @emph{one} of these files.
 
 @node Windows
 @section Installation on Windows
+@cindex Windows
 
 Although @PPTHREE{} runs independently from other programs, it is not
 useful when it's alone.  It needs two external tools in order to work
@@ -305,6 +316,7 @@ not difficult, and both programs may be useful for other purposes, too.
 
 @node Getting TeX
 @subsection Getting @TeX{}
+@cindex @TeX{}
 
 @TeX{} is a mighty typesetter.  @PPTHREE{} calls @TeX{} in order to
 actually create the stellar map.  The result is a Postscript file.
@@ -319,6 +331,8 @@ installed, however this is highly probable anyway.
 
 @node Getting Ghostscript
 @subsection Getting Ghostscript
+@cindex Ghostscript
+@cindex Postscript
 
 The best tool for dealing with Postscript files is
 @uref{http://www.cs.wisc.edu/@/~ghost/doc/AFPL/get811.htm,Ghostscript}.
@@ -337,10 +351,13 @@ its content in the proper directories:
 
 @enumerate
 @item
+@cindex environment variables
+@cindex @env{PATH}
 Copy @file{pp3.exe} to an arbitrary directory that is in your
 @env{PATH}.
 
 @item
+@cindex @env{PP3DATA}
 Copy all the other files to @emph{one single} arbitrary directory.  Then
 set the environment variable @env{PP3DATA} to this directory.
 
@@ -361,6 +378,7 @@ and to set the @env{PP3DATA} environment variable to
 
 @node Linux
 @section Installation on Linux
+@cindex Linux
 
 @menu
 * RPM installation::            The simple way.
@@ -373,6 +391,7 @@ installed.
 
 @node RPM installation
 @subsection @acronym{RPM} installation
+@cindex @acronym{RPM}
 
 You should consider to use the @acronym{RPM} file, because it is the
 simplest installation.  It works for SuSE Linux and probably also for
@@ -388,6 +407,8 @@ That's it.
 
 @node Building from sources
 @subsection Building from sources
+@cindex sources
+@cindex @acronym{CWEB}
 
 (Actually you can compile the sources on Windows, too (of course), but
 since most people who do compile are Linux users, I dare to put it in
@@ -404,6 +425,9 @@ There is no @file{configure} script.  Just call @code{make} and (as
 root) @code{make install}.  Before that, you may want to adjust some
 paths in the @file{Makefile}.
 
+@cindex @env{PP3DATA}
+@cindex environment variables
+
 @PPTHREE{} looks for its data files (all files with the @file{.dat}
 extension) in a special directory that is pre-compiled in the
 executable.  The Makefile assures that this is the correct one, but you
@@ -412,6 +436,9 @@ can override that with the environment variable @env{PP3DATA}.
 
 @node Increase TeX's memory
 @section Increase @TeX{}'s memory
+@cindex @TeX{}
+@cindex pool size (@TeX{})
+@cindex te@TeX{}
 
 There is exactly one object that can need a lot of memory: the Milky
 Way.  Therefor it's switched off by default.  But if you want to see the
@@ -425,8 +452,13 @@ Then call (as root)
 fmtutil --byfmt latex
 @end example
 
+@cindex fp@TeX{}
+@cindex @TeX{}@s{}Live
+
 @noindent
 With fp@TeX{}/@TeX{}@s{}Live (Windows) it's the same.
+
+@cindex Mik@TeX{}
 
 Mik@TeX{} however (Windows too) is different.  Look for a directory
 called @file{localtexmf}.  Then create the file@footnote{It may be
@@ -471,10 +503,14 @@ peculiarities, too.
 
 @node Celestial coordinate system
 @section Celestial coordinate system
+@cindex coordinates, celestial
 
 On a sheet of paper, every point has an @math{x} and a @math{y}
 coordinate (if you draw two axes).  On planet Earth, every location has
 a @emph{longitude} and a @emph{latitude}.
+
+@cindex rectascension
+@cindex declination
 
 With a very similar system astronomers give the coordinates of every
 point in the sky.  The sky longitude is called @emph{rectascension} and
@@ -499,6 +535,8 @@ from @math{-90^\circ} (South Pole) over @math{0^\circ} (equator) to
 
 @node Magnitudes
 @section The system of magnitudes
+@cindex magnitudes
+@cindex brightness, astronomical
 
 Theoretically you could measure the brightness of stars in Watts like
 the power of a light bulb.  But this is rather awkward.  Instead,
@@ -517,6 +555,7 @@ telescopes can see up to @math{22}@dmn{m}.
 
 @node Constellations
 @section Constellations
+@cindex constellations
 
 Since the 1930s, the sky is officially divided into 88 constellations.
 At that time, the boundaries between the constellations were clearly
@@ -556,6 +595,10 @@ two star catalogues and three nebulae catalogues supported in
 
 @node Denoting stars
 @subsection Denoting stars
+@cindex @acronym{HD}
+@cindex Henry Draper
+@cindex Flamsteed
+@cindex stars
 
 The two star catalogues are the Flamsteed and the Henry Draper
 (@acronym{HD}) numbers.  Flamsteed gave numbers beginning with `1' to
@@ -589,6 +632,10 @@ for finding Flamsteed or @acronym{HD} numbers.
 
 @node Denoting nebulae
 @subsection Denoting nebulae
+@cindex @acronym{NGC}
+@cindex @acronym{IC}
+@cindex Messier
+@cindex nebulae
 
 The two nebula catalogues @acronym{NGC} and @acronym{IC} are
 complementary, i.@s{}e.@: they don't have@footnote{well, shouldn't have}
@@ -624,6 +671,9 @@ the space between the catalogue abbreviation and the number.
 
 @node Invocation
 @section Starting PP3
+@cindex Invocation
+@cindex command line syntax
+@cindex syntax, invocation
 
 Invoking @PPTHREE{} is very straightforward.  Since it is a command line
 program you only have to call it somehow and give a so-called input
@@ -652,6 +702,7 @@ bitmap program (e.@s{}g.@: Corel Draw or the
 
 @node Using pipes
 @section Using pipes
+@cindex pipes
 
 Especially on Unix it is very common to read from standard input and to
 write to standard output.  I don't think that this is sensible for
@@ -663,6 +714,8 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 
 @node Input scripts
 @chapter Writing input scripts
+@cindex scripts
+@cindex input scripts
 
 @menu
 * Minimal example::             The first four PP3 lines.
@@ -678,6 +731,7 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 
 @node Minimal example
 @section Minimal example input script
+@cindex example input script
 
 The minimal @PPTHREE{} input script is -- well -- the empty file.  Then
 @PPTHREE{}'s default values create a dark blue star map of Orion:
@@ -704,6 +758,8 @@ set center_declination    40.8
 @noindent
 to the file @file{swan.pp3} and call
 
+@cindex invocation
+
 @example
 pp3 swan.pp3
 @end example
@@ -712,10 +768,16 @@ pp3 swan.pp3
 The result is a file @file{swan.pdf} in the current directory with a
 star map of the Swan.
 
+@cindex comments
+@kwindex #
+
 The lines of @file{swan.pp3} are not difficult to explain:  The very
 first line is a comment.  Everything that starts with a @code{#} is a
 comment.  You can write descriptive text in them to make the file more
 readable.
+
+@kwindex filename
+@kwindex output
 
 The line
 
@@ -728,13 +790,22 @@ makes @PPTHREE{} to write the generated map to the file
 @file{swan.tex}.  But such a file is rarely the desired output.
 Therefore the next line
 
+@kwindex switch
+@kwindex pdf_output
+
 @example
 switch pdf_output on
 @end example
 
+@cindex @acronym{PDF}
+
 @noindent
 tells @PPTHREE{} that we want to have a @acronym{PDF} file.  So
 @PPTHREE{} does everything necessary for that.  And finally,
+
+@kwindex set
+@kwindex center_rectascension
+@kwindex center_declination
 
 @example
 set center_rectascension  19.95
@@ -753,6 +824,10 @@ declination which is the centre of the constellation Swan.
 
 Let's continue with our Swan example of the previous section.
 
+@cindex Milky Way
+@kwindex switch
+@kwindex milky_way
+
 Normally the Milky Way is switched off, because it consumes a lot of
 memory, see @ref{Increase TeX's memory}.  However it looks rather nice,
 so let's switch it on:
@@ -760,6 +835,9 @@ so let's switch it on:
 @example
 switch milky_way on
 @end example
+
+@cindex colour
+@kwindex color
 
 Maybe you want to use the map in a book that is supposed to be printed
 in black and white.  Then the current colour scheme is disadvantageous.
@@ -782,6 +860,12 @@ Colours are given as red--green--blue values, for forther information
 see @ref{Colours}.  With these redefinitions, all elements on the map
 are printed either in black, or in white, or in shades of grey.
 
+@cindex spectral class
+@cindex B@minus{}V brightness
+@cindex colour of stars
+@kwindex stars
+@kwindex colored_stars
+
 A special problem are stars.  With
 
 @example
@@ -799,6 +883,10 @@ also say
 @example
 switch colored_stars off
 @end example
+
+@cindex constellation, highlighted
+@cindex highlighted constellation
+@kwindex constellation
 
 Last but not least you should change the @emph{highlighted
 constellation}.  By default, it's Orion.  But we want to highlight the
@@ -841,6 +929,9 @@ this figure in order to keep the @acronym{PDF} manual small):
 
 @node Parameters and commands
 @section Parameters and Commands
+@cindex parameters
+@cindex commands
+@kwindex objects_and_labels
 
 Every @PPTHREE{} file can contain @emph{parameters} and
 @emph{commands}.  So far, we've had parameters only.  Both types of
@@ -859,6 +950,8 @@ arbitrary text on the map.  Let's begin with that.
 
 @node Changing labels
 @section Changing labels
+@cindex labels
+@kwindex set_label_text
 
 I change the label for Deneb, the alpha star in the Swan.  At the
 moment, its label is a mere `@math{\alpha}'.  But Deneb has a real name,
@@ -924,6 +1017,11 @@ want to have real stars, you must use `@code{set_text_label}' as above.
 
 @node Reposition labels
 @section Reposition labels
+@cindex reposition labels
+@cindex labels, repositioning
+@kwindex reposition
+@kwindex at
+@kwindex towards
 
 If you think that @PPTHREE{} mispositioned a label you can change that
 with `@code{reposition}':
@@ -936,6 +1034,8 @@ reposition M 39  S ;
 This puts the label for the nebula M@s{}39 @emph{below} the nebula.
 `@code{S}'@tie{}means `south'.  The following diagram shows the possible
 values for the direction, by and large you know it from the wind rose:
+
+@cindex wind rose
 
 @image{pp3rose,,,Possible values for `reposition' and `towards'}
 
@@ -962,6 +1062,8 @@ a label because it hadn't found a good place for it, because
 
 @node Text labels
 @section Text labels
+@cindex text labels
+@cindex labels
 
 Changing existing labels is a nice thing to do, however sometimes you
 want to add arbitrary text on the map, e.@s{}g.@: `Pleiades' or `Virgo
@@ -983,6 +1085,7 @@ The keyword `@code{towards}'
 
 @node Using flexes
 @section Using flexes
+@cindex flex labels
 
 But the `@code{text}' keyword can do more.  When you include the
 keywords `@code{along declination}' the label becomes a @emph{flex}.
@@ -1033,6 +1136,7 @@ face}, see @ref{LaTeX in labels}.  The result is the following:
 
 @node Tic labels
 @section Tic mark labels
+@cindex tic mark labels
 
 But `@code{text}' can do even more.  With
 
@@ -1070,6 +1174,7 @@ handy zigzag.
 
 @node General structure
 @section General structure
+@cindex example input script
 
 The outline of a @PPTHREE{} input script is:
 
@@ -1087,6 +1192,7 @@ objects_and_labels
 
 @node Parameters
 @section Setting Parameters
+@cindex parameters
 
 All keyword here are @emph{parameters}.  This means that they are
 allowed only in the @emph{first} part of an input script, i.@s{}e.@:
@@ -1713,6 +1819,7 @@ and @code{towards} keywords as well.
 
 @node Flexes
 @subsubsection Flexes
+@cindex flex labels
 
 @deffn Command text {label-text} @code{at} rectascension declination [@code{along} @code{declination}] @code{;}
 Create a flex label at the given coordinates.  A flex label follows the
@@ -1725,6 +1832,7 @@ For further options see @ref{Arbitrary text}.
 
 @node Tic mark labels
 @subsubsection Tic mark labels
+@cindex tic mark labels
 
 @deffn Command text {label-text} @code{at} rectascension declination [@code{tics} (@code{rectascension} | @code{declination}) step] @code{;}
 @end deffn
@@ -1762,6 +1870,7 @@ be flexes, see @ref{Flexes}.
 
 @node PP3 and LaTeX
 @chapter PP3 and LaTeX
+@cindex La@TeX{}
 
 We're entering now the phase of sophistication.  Here you learn how to
 customise the graphical appearance of all text on your sky map almost
@@ -1787,12 +1896,15 @@ purposes.
 
 @node LaTeX preamble
 @section LaTeX preamble
+@cindex La@TeX{} preamble
+@cindex preamble, La@TeX{}
 
 @strong{Do be done.}
 
 
 @node Known problems
 @appendix Known problems
+@cindex bugs
 
 @strong{Do be done.}
 
@@ -1803,6 +1915,7 @@ purposes.
 
 @node Wishlist
 @section Wishlist
+@cindex wishlist
 
 It would be nice to have the following things in @PPTHREE{}.  Please
 contact @uref{mailto:bronger@@users.sourceforge.net,Torsten Bronger} if
@@ -1845,6 +1958,9 @@ using Guile as the scripting language.
 
 @node Data file formats
 @appendix Data file formats
+@cindex data file formats
+@cindex file formats
+@cindex formats of data files
 
 Maybe you want to use your own data bases with @PPTHREE{}.  If they are
 not too large@footnote{Unfortunately @PPTHREE{} still has the
