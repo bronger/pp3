@@ -2900,8 +2900,10 @@ Here I do this.  First I store all label names (not only the missing!)\ in
 Then I create a |temp_file| which is a \LaTeX\ file that -- if sent through
 \LaTeX\ -- is able to create another temporary file called |raw_labels_file|.
 This is read and stored directly in |dimensions| (where it belongs to
-naturally).  At the same time a new, updated |cooked_labels_file| (aka
-\.{labeldimens.dat}) is created.
+naturally).
+
+Finally, a new updated |cooked_labels_file| (aka \.{labeldimens.dat}) is
+created.
 
 \medskip
 By the way, I am forced to use {\it two\/} temporary files.  It is impossible
@@ -2944,9 +2946,6 @@ void recalculate_dimensions(dimensions_list& dimensions,
             + commandline;
 
     ifstream raw_labels_file("pp3temp.dat");
-    ofstream cooked_labels_file("labeldimens.dat");
-    cooked_labels_file.setf(ios::fixed);
-    cooked_labels_file.precision(5);
     p = required_names.begin();
     while (p != required_names.end()) {
         string current_width, current_height, current_depth;
@@ -2963,13 +2962,32 @@ void recalculate_dimensions(dimensions_list& dimensions,
         dimensions[current_name].depth = strtod(current_depth.c_str(), 0)
             / 72.27 * 2.54;
         dimensions[current_name].height += dimensions[current_name].depth;
+    }
+
+    @<Write updated \.{labeldimens.dat} file@>@;
+}
+
+@ Here I create the new, updated |cooked_labels_file| (aka
+\.{labeldimens.dat}).  So all already calculate dimensions can be used for the
+following runs.
+
+@<Write updated \.{labeldimens.dat} file@>=
+    ofstream cooked_labels_file("labeldimens.dat");
+    cooked_labels_file.setf(ios::fixed);
+    cooked_labels_file.precision(5);
+    dimensions_list::const_iterator q = dimensions.begin();
+    while (q != dimensions.end()) {
+        string current_name;
+        dimension current_dimension;
+        current_name = q -> first;
+        current_dimension = (q++) -> second;
         cooked_labels_file << current_name << '\n'
-                           << dimensions[current_name].width << ' '
-                           << dimensions[current_name].height << ' '
-                           << dimensions[current_name].depth
+                           << current_dimension.width << ' '
+                           << current_dimension.height << ' '
+                           << current_dimension.depth
                            << '\n';
     }
-}
+
 
 @*1 User labels.  The user should be able to insert arbitaray text into the
 chart.  The code for this is provided here.  The data type of them, |text|, is
