@@ -3751,7 +3751,9 @@ to the actual view frame plus 2~millimetres.  So I create a buffer border of
         << "\\pagestyle{empty}\\thispagestyle{empty}%\n" @/
         << "\\special{papersize=" << params.view_frame_width_in_bp() - 0.1
         << "bp," << params.view_frame_height_in_bp() - 0.1 << "bp}%\n" @/
-        << "\\vbox to \\vsize{\\vfill\\hbox to \\hsize{%\n" @/
+        << "\\vbox to " << params.view_frame_height_in_bp() << "bp{" @/
+        << "\\vfill" @/
+        << "\\hbox to " << params.view_frame_width_in_bp() << "bp{%\n" @/
         << params.bgcolor << params.gridcolor << params.eclipticcolor
         << params.boundarycolor << params.hlboundarycolor << params.starcolor
         << params.nebulacolor << params.clinecolor;
