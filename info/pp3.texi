@@ -720,7 +720,7 @@ handy zigzag.
 @menu
 * General structure::           The outline of a PP3 input script.
 * Parameters::                  First part:  parameters.
-* Objects and Labels::          Second part:  stars, nebulae and labels.
+* Objects and labels::          Second part:  stars, nebulae and labels.
 @end menu
 
 
@@ -760,14 +760,11 @@ The keywords explained in this section are allowed only in the
 @node View control
 @subsubsection Map view, scale, and size
 @kwindex set
-@kwindex center_rectascension
-@kwindex center_declination
-@kwindex box_width
-@kwindex box_height
-@kwindex grad_per_cm
 
 @deffn Parameter {set center_rectascension} rectascension
+@kwindex center_rectascension
 @deffnx Parameter {set center_declination} declination
+@kwindex center_declination
 Set the rectascension and declination of the centre of the map to
 @var{rectascension} (in hours) and @var{declination} (in degrees)
 respectively.
@@ -777,7 +774,9 @@ Defaults: 5.8 (@var{rectascension}), 0.0 (@var{declination})
 
 
 @deffn Parameter {set box_width} width
+@kwindex box_width
 @deffnx Parameter {set box_height} height
+@kwindex box_height
 Set the width and height of the resulting map to @var{width} and
 @var{height} (in centimetres) respectively.
 
@@ -786,6 +785,7 @@ Defaults: 15 (@var{width}), 15 (@var{height})
 
 
 @deffn Parameter {set grad_per_cm} scale
+@kwindex grad_per_cm
 Set the scale of the resulting map to @var{scale} (in degrees per
 centimetre).
 
@@ -797,10 +797,9 @@ Default: 4.0
 @subsubsection Setting what file should be created
 @kwindex switch
 @kwindex filename
-@kwindex output
-@kwindex pdf_output
 
 @deffn Parameter {filename output} filename
+@kwindex output
 The resulting map will be written to the file @var{filename} in @LaTeX{}
 format.  It must habe the file extension @file{.tex}.  If @var{filename}
 is empty the map will be written to standard out.
@@ -810,6 +809,7 @@ Default: @code{""} (empty)
 
 
 @deffn Parameter {switch eps_output} on/off
+@kwindex eps_output
 If on, @PPTHREE{} creates a @acronym{PDF} file.  (Additionally to the
 @LaTeX{} file that you then can ignore.)
 
@@ -818,6 +818,7 @@ Default: off
 
 
 @deffn Parameter {switch pdf_output} on/off
+@kwindex pdf_output
 If on, @PPTHREE{} creates an @acronym{EPS} file.  (Additionally to the
 @LaTeX{} file that you then can ignore.)
 
@@ -828,9 +829,9 @@ Default: off
 @node Highlighted constellation
 @subsubsection The highlighted constellation
 @kwindex set
-@kwindex constellation
 
 @deffn Parameter {set constellation} abbreviation
+@kwindex constellation
 Highlight the constellation that is given by @var{abbreviation}.  If you
 don't want to hightlight anything, set it to @code{""} or to an invalid
 abbreviation.
@@ -845,23 +846,21 @@ Default: @code{ORI}
 @node Switching things on or off
 @subsection Switching things on or off
 @kwindex switch
-@kwindex milky_way
-@kwindex nebulae
-@kwindex grid
-@kwindex ecliptic
-@kwindex boundaries
-@kwindex constellation_lines
-@kwindex labels
-@kwindex colored_stars
-
 
 @deffn Parameter {switch milky_way} on/off
+@kwindex milky_way
 @deffnx Parameter {switch nebulae} on/off
+@kwindex nebulae
 @deffnx Parameter {switch grid} on/off
+@kwindex grid
 @deffnx Parameter {switch ecliptic} on/off
+@kwindex ecliptic
 @deffnx Parameter {switch boundaries} on/off
+@kwindex boundaries
 @deffnx Parameter {switch constellation_lines} on/off
+@kwindex constellation_lines
 @deffnx Parameter {switch labels} on/off
+@kwindex labels
 Print or don't print the respective (class of) object(s) on the map.
 `Grid' means the coordinate grid, `boundaries' are the borderlines of
 the constellations, and `constellation lines' denote the lines between
@@ -873,6 +872,7 @@ Defaults: off (Milky Way), on (all others)
 
 
 @deffn Parameter {switch colored_stars} on/off
+@kwindex colored_stars
 If switched on, all stars get a colour that represents their real colour
 according to their spectral class.  This may be unsuitable on a bright
 background since most stars are pretty white.
@@ -888,34 +888,34 @@ Default: on
 @node Filtering by brightness
 @subsection Filtering stars and nebulae by their brightness
 @kwindex set
-@kwindex faintest_cluster_magnitude
-@kwindex faintest_diffuse_nebula_magnitude
-@kwindex faintest_star_magnitude
-@kwindex faintest_star_with_label_magnitude
-@kwindex faintest_star_disk_magnitude
-@kwindex minimal_star_radius
 
 @deffn Parameter {set faintest_cluster_magnitude} magnitude
+@kwindex faintest_cluster_magnitude
 @end deffn
 
 
 @deffn Parameter {set faintest_diffuse_nebula_magnitude} magnitude
+@kwindex faintest_diffuse_nebula_magnitude
 @end deffn
 
 
 @deffn Parameter {set faintest_star_magnitude} magnitude
+@kwindex faintest_star_magnitude
 @end deffn
 
 
 @deffn Parameter {set faintest_star_with_label_magnitude} magnitude
+@kwindex faintest_star_with_label_magnitude
 @end deffn
 
 
 @deffn Parameter {set faintest_star_disk_magnitude} magnitude
+@kwindex faintest_star_disk_magnitude
 @end deffn
 
 
 @deffn Parameter {set minimal_star_radius} radius
+@kwindex minimal_star_radius
 @end deffn
 
 
@@ -924,8 +924,7 @@ Default: on
 
 @menu
 * Colours::                     How to change colour.
-* Line widths::                 How to change line widths.
-* Line styles::                 How to make solid, dashed etc. lines.
+* Line styles and widths::      How to change lines appearance.
 * Other layout parameters::     Miscellaneous stuff.
 @end menu
 
@@ -934,17 +933,6 @@ Default: on
 @subsubsection Colours
 @cindex colour
 @kwindex color
-@kwindex background
-@kwindex grid
-@kwindex ecliptic
-@kwindex boundaries
-@kwindex highlighted_boundaries
-@kwindex constellation_lines
-@kwindex milky_way
-@kwindex nebulae
-@kwindex stars
-@kwindex labels
-@kwindex text_labels
 
 In @PPTHREE{}, colours are given by their red--gren--blue values (also
 called the @acronym{RGB} colour scheme).  Every value is between 0
@@ -956,6 +944,7 @@ is `@code{0.5 0.5 0.5}'.  For further examples have a look at the
 following default values.
 
 @deffn Parameter {color background} red green blue
+@kwindex background
 Set the background colour of the map to the given colour.
 
 Default: 0 @ 0 @ 0.4 @ (dark blue)
@@ -963,6 +952,7 @@ Default: 0 @ 0 @ 0.4 @ (dark blue)
 
 
 @deffn Parameter {color grid} red green blue
+@kwindex grid
 Set the coordinate grid colour to the given colour.
 
 Default: 0 @ 0.298 @ 0.447 @ (dark blue-grey)
@@ -970,6 +960,7 @@ Default: 0 @ 0.298 @ 0.447 @ (dark blue-grey)
 
 
 @deffn Parameter {color ecliptic} red green blue
+@kwindex ecliptic
 Set the ecliptic line colour to the given colour.
 
 Default: 1 @ 0 @ 0 @ (red)
@@ -977,6 +968,7 @@ Default: 1 @ 0 @ 0 @ (red)
 
 
 @deffn Parameter {color boundaries} red green blue
+@kwindex boundaries
 Set the ordinary constellation boundaries colour to the given colour.
 
 Default: 0.5 @ 0.5 @ 0 @ (dark yellow)
@@ -984,6 +976,7 @@ Default: 0.5 @ 0.5 @ 0 @ (dark yellow)
 
 
 @deffn Parameter {color highlighted_boundaries} red green blue
+@kwindex highlighted_boundaries
 Set the highlighted constellation boundaries colour to the given colour.
 See @ref{Highlighted constellation}.
 
@@ -992,6 +985,7 @@ Default: 1 @ 1 @ 0 @ (yellow)
 
 
 @deffn Parameter {color constellation_lines} red green blue
+@kwindex constellation_lines
 Set the constellation lines colour to the given colour.
 
 Default: 0 @ 1 @ 0 @ (green)
@@ -999,6 +993,7 @@ Default: 0 @ 1 @ 0 @ (green)
 
 
 @deffn Parameter {color milky_way} red green blue
+@kwindex milky_way
 The Milky Way is printed in shades of different colour, representing its
 brightness.  The darkest areas of the Milky Way get the background
 colour, and the brightest the colour that you give here.
@@ -1011,6 +1006,7 @@ Default: 0 @ 0 @ 1 @ (blue)
 
 
 @deffn Parameter {color nebulae} red green blue
+@kwindex nebulae
 Set the colour of the nebulae circles to the given colour.
 
 Default: 1 @ 1 @ 1 @ (white)
@@ -1018,6 +1014,7 @@ Default: 1 @ 1 @ 1 @ (white)
 
 
 @deffn Parameter {color stars} red green blue
+@kwindex stars
 Set the colour of all stars to the given colour.  Please note that this
 only has effect if the switch `@code{colored_stars}' is off, see
 @ref{Switching things on or off}.
@@ -1027,6 +1024,7 @@ Default: 1 @ 1 @ 1 @ (white)
 
 
 @deffn Parameter {color labels} red green blue
+@kwindex labels
 Set the colour of automatically generated labels to the given colour.
 
 Default: 0 @ 1 @ 1 @ (cyan)
@@ -1034,6 +1032,7 @@ Default: 0 @ 1 @ 1 @ (cyan)
 
 
 @deffn Parameter {color text_labels} red green blue
+@kwindex text_labels
 Set the colour of user defined labels to the given colour.
 
 Default: 1 @ 1 @ 0 @ (yellow)
@@ -1043,20 +1042,19 @@ Default: 1 @ 1 @ 0 @ (yellow)
 @node Line styles and widths
 @subsubsection Line styles and widths
 @kwindex line_style
-@kwindex line_width
-@kwindex grid
-@kwindex ecliptic
-@kwindex boundaries
-@kwindex highlighted_boundaries
-@kwindex nebulae
-@kwindex constellation_lines
 
 @deffn Parameter {line_style grid} style
+@kwindex grid
 @deffnx Parameter {line_style ecliptic} style
+@kwindex ecliptic
 @deffnx Parameter {line_style boundaries} style
+@kwindex boundaries
 @deffnx Parameter {line_style highlighted_boundaries} style
+@kwindex highlighted_boundaries
 @deffnx Parameter {line_style nebulae} style
+@kwindex nebulae
 @deffnx Parameter {line_style constellation_lines} style
+@kwindex constellation_lines
 Set the line style of the respective object to @var{style}.  Possible
 values are @code{none}, @code{solid}, @code{dashed}, and @code{dotted}.
 
@@ -1064,13 +1062,20 @@ Defaults: solid (grid, nebulae, constellation lines), dashed (ecliptic,
 boundaries)
 @end deffn
 
+@kwindex line_width
 
 @deffn Parameter {line_width grid} width
+@kwindex grid
 @deffnx Parameter {line_width ecliptic} width
+@kwindex ecliptic
 @deffnx Parameter {line_width nebulae} width
+@kwindex nebulae
 @deffnx Parameter {line_width boundaries} width
+@kwindex boundaries
 @deffnx Parameter {line_width highlighted_boundaries} width
+@kwindex highlighted_boundaries
 @deffnx Parameter {line_width constellation_lines} width
+@kwindex constellation_lines
 Set the line width of the respective object to @var{width} (in
 centimetres).
 
@@ -1082,14 +1087,9 @@ constellation lines)
 @node Other layout parameters
 @subsubsection Other layout parameters
 @kwindex set
-@kwindex shortest_constellation_line
-@kwindex label_skip
-@kwindex minimal_nebula_radius
-@kwindex star_scaling
-@kwindex fontsize
-
 
 @deffn Parameter {set shortest_constellation_line} length
+@kwindex shortest_constellation_line
 Set the length of the shortest constellation line that is printed to
 @var{length} (in centimetres).  All constellation lines shorter than
 @var{length} are supressed.
@@ -1099,6 +1099,7 @@ Default: 0.1
 
 
 @deffn Parameter {set label_skip} length
+@kwindex label_skip
 Set the distance between the outer rim of the celestial object and its
 label to @var{length} (in centimetres).
 
@@ -1107,6 +1108,7 @@ Default: 0.06
 
 
 @deffn Parameter {set minimal_nebula_radius} radius
+@kwindex minimal_nebula_radius
 All nebulae that would be smaller than @var{radius} centimetres are
 printed with a radius of exactly @var{radius}@dmn{cm}.
 
@@ -1115,6 +1117,7 @@ Default: 0.1
 
 
 @deffn Parameter {set star_scaling} factor
+@kwindex star_scaling
 Make all star circles @var{factor} times bigger than normal.
 
 Default: 1
@@ -1122,6 +1125,7 @@ Default: 1
 
 
 @deffn Parameter {set fontsize} size
+@kwindex fontsize
 Set the default font size to @var{size}@dmn{pt}.  @var{size} may be 10,
 11, or@tie{}12.
 
@@ -1132,10 +1136,9 @@ Default: 10
 @node Implementing a global style
 @subsection Implementing a global style
 @kwindex filename
-@kwindex include
-@kwindex latex_preamble
 
 @deffn Parameter {filename include} filename
+@kwindex include
 If non-empty, the file @var{filename} is interpreted as a @PPTHREE{}
 input script and read before the keywords in the current script are
 interpreted.  This enables you to enforce global style parameters and
@@ -1150,6 +1153,7 @@ Default: @code{""} (empty)
 
 
 @deffn Parameter {filename latex_preamble} filename
+@kwindex latex_preamble
 If non-empty, the contents of the file @var{filename} is included at an
 appropriate position in the resulting @LaTeX{} file.  This enables you
 to use arbitrary @LaTeX{} macros to customise the map, see @ref{LaTeX
@@ -1162,53 +1166,56 @@ Default: @code{""} (empty)
 @node Penalties
 @subsection Penalties
 @kwindex penalties
-@kwindex stars
-@kwindex labels
-@kwindex nebulae
-@kwindex boundaries
-@kwindex boundaries_rim
-@kwindex constellation_lines
-@kwindex constellation_lines_rim
-@kwindex threshold
-@kwindex rim
 
 
 @deffn Parameter {penalties stars} penalties
+@kwindex stars
 @deffnx Parameter {penalties labels} penalties
+@kwindex labels
 @deffnx Parameter {penalties nebulae} penalties
+@kwindex nebulae
 @deffnx Parameter {penalties boundaries} penalties
+@kwindex boundaries
 @deffnx Parameter {penalties boundaries_rim} penalties
+@kwindex boundaries_rim
 @deffnx Parameter {penalties constellation_lines} penalties
+@kwindex constellation_lines
 @deffnx Parameter {penalties constellation_lines_rim} penalties
+@kwindex constellation_lines_rim
 @deffnx Parameter {penalties threshold} penalties
+@kwindex threshold
 @deffnx Parameter {penalties rim} penalties
+@kwindex rim
 @end deffn
 
 
 @node Filenames
 @subsection Filenames
 @kwindex filename
-@kwindex stars
-@kwindex nebulae
-@kwindex label_dimensions
-@kwindex constellation_lines
-@kwindex boundaries
-@kwindex milky_way
 
 
 @deffn Parameter {filename stars} filename
+@kwindex stars
 @deffnx Parameter {filename nebulae} filename
+@kwindex nebulae
 @deffnx Parameter {filename label_dimensions} filename
+@kwindex label_dimensions
 @deffnx Parameter {filename constellation_lines} filename
+@kwindex constellation_lines
 @deffnx Parameter {filename boundaries} filename
+@kwindex boundaries
 @deffnx Parameter {filename milky_way} filename
+@kwindex milky_way
 @end deffn
 
 
 
-@node Objects and Labels
+@node Objects and labels
 @section Setting or deleting celestial objects and their labels
 
+@deffn Command objects_and_labels
+@kwindex objects_and_labels
+@end deffn
 
 @menu
 * Changing sky objects::        Adding and deleting stars and nebulae.
@@ -1218,53 +1225,88 @@ Default: @code{""} (empty)
 
 @node Changing sky objects
 @subsection Adding and deleting stars and nebulae
-@kwindex add
-@kwindex delete
 
 @deffn Command add objects @dots{} @code{;}
+@kwindex add
 @end deffn
 
 
 @deffn Command delete objects @dots{} @code{;}
+@kwindex delete
 @end deffn
 
 
 @node Changeing labels
 @subsection How to add, delete, and reposition labels
-@kwindex add_labels
-@kwindex delete_labels
-@kwindex set_label_text
 
 @deffn Command add_labels objects @dots{} @code{;}
+@kwindex add_labels
 @end deffn
 
 
 @deffn Command delete_labels objects @dots{} @code{;}
+@kwindex delete_labels
 @end deffn
 
 
 @deffn Command reposition object @code{towards} direction @code{;}
+@kwindex reposition
+@kwindex towards
 @end deffn
 
 
 @deffn Command set_label_text object @code{"}{label-text}@code{"}
+@kwindex set_label_text
 @end deffn
 
 
 @node Arbitrary text
 @subsection How to place text on the map
-@kwindex text
-
 
 @deffn Command text {label-text} @code{at} rectascension declination [@code{color} red green blue] [@code{towards} direction] @code{;}
-
+@kwindex text
+@kwindex at
+@kwindex color
+@kwindex towards
 @end deffn
+
+All user defines texts on the map are generated with the keyword
+`@code{text}'.  However there are two sub-variants, namely @emph{flexes}
+and @emph{tic marks}.  Note that they can have the @code{color} and
+@code{towards} keywords as well.
+
+@menu
+* Flexes::                      Labels on a declination circle.
+* Tic marks::                   Marks for the coordinate grid.
+@end menu
+
+
+@node Flexes
+@subsubsection Flexes
+
+@deffn Command text {label-text} @code{at} rectascension declination [@code{along} @code{declination}] @code{;}
+Create a flex label at the given coordinates.  A flex label follows the
+respective declination circle.
+@end deffn
+
+@noindent
+For further options see @ref{Arbitrary text}.
+
+@node Tic marks
+@subsubsection Tic marks
+
+@deffn Command text {label-text} @code{at} rectascension declination [@code{tics} (@code{rectascension} | @code{declination}) step] @code{;}
+@end deffn
+
+@noindent
+For further options see @ref{Arbitrary text}.  Tic marks can also be
+flexes, see @ref{Flexes}.
 
 
 @node PP3 and LaTeX
 @chapter PP3 and LaTeX
 
-We're entering now the phase of sophistication.  You learn here how to
+We're entering now the phase of sophistication.  Here you learn how to
 customise the graphical appearence of all text on your sky map almost
 arbitrarily.  You also learn how to achieve special text effects using
 the @LaTeX{} language.
@@ -1278,6 +1320,7 @@ purposes.
 * LaTeX in labels::             Using LaTeX in labels.
 * LaTeX preamble::              Total style freedom with LaTeX.
 @end menu
+
 
 @node LaTeX in labels
 @section Using LaTeX in labels
