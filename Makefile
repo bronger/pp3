@@ -90,16 +90,16 @@ distri:
 	- rm pp3.cc
 	mkdir $(DISTRINAME)
 	make pp3.cc
-	make pp3-source.ps
-	cp pp3.w pp3.cc pp3-source.ps $(DISTRINAME)
+	cp pp3.w pp3.cc $(DISTRINAME)
 	cp COPYING README WHATSNEW Makefile $(DISTRINAME)
 	cp stars.dat milkyway.dat nebulae.dat lines.dat boundaries.dat \
 	  $(DISTRINAME)
 	mkdir $(DISTRINAME)/examples
 	cp wiki/*.pp3 wiki/wiki.tex wiki/Makefile wiki/wiki-convert-sky-chart.scm \
 	  $(DISTRINAME)/examples
-	tar -cf $(DISTRINAME).tar $(DISTRINAME)
-	bzip2 $(DISTRINAME).tar
+	cp -r info $(DISTRINAME)/
+	-rm -Rf $(DISTRINAME)/info/CVS $(DISTRINAME)/info/*~
+	tar -cjf $(DISTRINAME).tar.bz2 $(DISTRINAME)
 
 distri-cripple:
 	rm -f $(DISTRINAME)-cripple.tar.gz
@@ -107,6 +107,7 @@ distri-cripple:
 	make distri
 	rm $(DISTRINAME)/milkyway.dat $(DISTRINAME)/pp3.w \
 	  $(DISTRINAME)/nebulae.dat $(DISTRINAME)/Makefile
+	rm -Rf $(DISTRINAME)/info/
 	tar -czf $(DISTRINAME)-cripple.tar.gz $(DISTRINAME)
 
 rpm:
@@ -121,6 +122,8 @@ distri-win:
 	make distri
 	mv $(DISTRINAME) $(DISTRINAME)-win
 	rm $(DISTRINAME)-win/pp3.cc $(DISTRINAME)-win/pp3.w
+	rm -Rf $(DISTRINAME)/info/
+#	Doku noch machen.
 	cp win-bin/* $(DISTRINAME)-win
 	zip -9 -r $(DISTRINAME)-win.zip $(DISTRINAME)-win/
 
