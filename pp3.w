@@ -227,7 +227,7 @@ struct view_data {
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
     virtual double penalties_with(double& left,double& right,double& top,
-                              double& bottom) const;
+                                  double& bottom) const;
 };
 
 @ This is the only structure that is not put into a container directly, but via
@@ -615,7 +615,7 @@ one owner.  I don't know how this can happen.
 @q'@>
 
 @c
-struct boundary : public view_data {
+struct boundary {
     vector<point> points;
     vector<string> constellations;
     bool belongs_to_constellation(const string constellation) const;
@@ -684,6 +684,68 @@ void read_constellation_boundaries(const string filename,
         boundaries.push_back(current_boundary);
         boundaryfile >> current_boundary;
     }
+}
+
+@ As a big exception to the other classes, I don't derive |boundary| itself
+from |view_data|, but its smaller brother, |boundary_atom|.  In contrast to
+|boundary|, |boundary_atom| only contains two points of the view frame, between
+which a boundary line will be drawn.  This is not totally accurate since
+boundary lines are not totally straight which may cause problems at the poles.
+However, it should be good enough.
+
+@s boundary_atom int
+
+@c
+struct boundary_atom : public view_data {
+    point start, end;
+    boundary_atom(point start, point end);
+    virtual double penalties_with(double& left,double& right,double& top,
+                                  double& bottom) const;
+};
+
+@ The nice thing about |boundary_atom| is that after it has been constructed,
+it's finished.  Nothing has to be changed any more because all is known in the
+moment of construction.
+
+@c
+boundary_atom::boundary_atom(point start, point end) : start(start), end(end) {
+    x = (start.x + end.x) / 2.0;
+    y = (start.y + end.y) / 2.0;
+    radius = hypot(end.x - start.x, end.y - start.y) / 2.0;
+    radius *= M_PI_2;
+}
+
+@ The full algoritm that is used here is described in the |@<Definition of
+|line_overlap()| for intersection of two lines@>|.  But I modify it slightly
+here:  For every intersection of a boundary line atom with a label rectangle
+edge I give half of the usual penalties.  The reason is very simple: I may be
+that a boundary atom ends {\it within\/} the label.  Then there is only one
+intersection, and another boundary atom will be responsible for the other.
+Except for peculiar cases there should be exact two intersections altogether,
+which means that it's the same as with constellation lines.
+
+Objects of this type are created in |@<Create a |boundary_atom| for the
+|objects|@>|.
+
+@c
+@<Definition of |line_overlap()| for intersection of two lines@>@;@#
+
+double boundary_atom::penalties_with(double& left,double& right,double& top,
+                                     double& bottom) const {
+    double penalties = 0.0;
+    const double half_area = (right - left) * (top - bottom) / 2.0;
+    double lambda;
+    point r(end.x - start.x, end.y - start.y);
+    if (line_overlap(left - start.x, r.x, start.y, r.y, bottom, top))
+        penalties += half_area;
+    if (line_overlap(right - start.x, r.x, start.y, r.y, bottom, top))
+        penalties += half_area;
+    if (line_overlap(top - start.y, r.y, start.x, r.x, left, right))
+        penalties += half_area;
+    if (line_overlap(bottom - start.y, r.y, start.x, r.x, left, right))
+        penalties += half_area;
+
+    return penalties;
 }
 
 @* Coordinate transformations.  They are done by the class |transformation|.
@@ -954,7 +1016,7 @@ $$\eqalign{\hbox{|numerator|} &= \hbox{|left|} - \hbox{|start.x|},\cr
 we get the following routine for finding out whether a certain
 label rectangle edge is intersected by the constellation line or not:
 
-@c
+@<Definition of |line_overlap()| for intersection of two lines@>=
 bool line_overlap(double numerator, double denominator,
                   double zero_point, double slope, double min, double max) {
     if (denominator == 0) return false;
@@ -1461,7 +1523,8 @@ means e.\,g.\ that a dashed line pattern won't be broken at subpath junctions.}
 In order to get crisp coners, the \.{liftpen} option is necessary.
 
 @c
-void draw_boundary_line(const boundary& b, const transformation& transform) {
+void draw_boundary_line(const boundary& b, const transformation& transform,
+                        objects_list& objects) {
     vector<point> current_line;
     for (int j = 0; j < b.points.size(); j++) {
         const double rectascension = b.points[j].x;
@@ -1479,10 +1542,20 @@ void draw_boundary_line(const boundary& b, const transformation& transform) {
             cout << '(' << current_line[j].x << ','
                  << current_line[j].y << ')';
             if (j % 4 == 3) cout << "%\n";
+            @<Create a |boundary_atom| for the |objects|@>@;
         }
         cout << "\\relax\n";
     }
 }
+
+@ This is the point where the |boundary_atom|s are actually created.  As one
+can see, it's very simple.  I just draw a virtual line from the current point
+in the current path to the previous one.  Unfortunately I create new objects
+here on the heap that are never deleted.  But it's harmless nevertheless.
+
+@<Create a |boundary_atom| for the |objects|@>=
+if (j > 0) objects.push_back(new boundary_atom(current_line[j],
+                                               current_line[j-1]));
 
 @ This is the routine that is actually called from the main program.  There are
 two possibilities: Either the string |constellation| is empty or not.  If not,
@@ -1499,6 +1572,7 @@ style and {\it as one path\/} via \.{\\pscustom}.
 @c
 void draw_boundaries(const transformation& mytransform,
                      boundaries_list& boundaries,
+                     objects_list& objects,
                      string constellation = string(""), ostream& out = cout) {
     out << "\\newrgbcolor{darkyellow}{0.5 0.5 0}";
     out << "\\psset{linecolor=darkyellow,linewidth=1.0pt," @/
@@ -1506,17 +1580,17 @@ void draw_boundaries(const transformation& mytransform,
     if (!constellation.empty()) {
         for (int i = 0; i < boundaries.size(); i++)
             if (!boundaries[i].belongs_to_constellation(constellation))
-                draw_boundary_line(boundaries[i], mytransform);
+                draw_boundary_line(boundaries[i], mytransform, objects);
         out << "\\psset{linecolor=yellow,linewidth=1.0pt,"
             << "linestyle=dashed}%\n";
         out << "\\pscustom{";
         for (int i = 0; i < boundaries.size(); i++)
             if (boundaries[i].belongs_to_constellation(constellation))
-                draw_boundary_line(boundaries[i], mytransform);
+                draw_boundary_line(boundaries[i], mytransform, objects);
         out << "}%\n";
     } else
         for (int i = 0; i < boundaries.size(); i++)
-            draw_boundary_line(boundaries[i], mytransform);
+            draw_boundary_line(boundaries[i], mytransform, objects);
 }
 
 @* Drawing of stars and nebulae.  Now for the two most important objects of the
@@ -1571,7 +1645,7 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
                     nebulae[i].diameter_x = nebulae[i].diameter_y =
                         sqrt(nebulae[i].diameter_x * nebulae[i].diameter_y);
                 nebulae[i].radius = nebulae[i].diameter_x/2.0 /
-                    mytransform.get_rad_per_cm() * 180.0 / M_PI;
+                    mytransform.get_rad_per_cm() * M_PI / 180.0;
                 nebulae[i].with_label = true;
                 if (nebulae[i].radius > 0.1) {
                     @<Draw nebula shape@>@;
@@ -1748,7 +1822,7 @@ drawing routines.
 int main() {
     const double width = 15;
     const double height = 15;
-    const double resolution = 4;
+    const double resolution = 3;
     transformation mytransform(5.8, 0, width, height, resolution);
 
     boundaries_list boundaries;
@@ -1776,7 +1850,7 @@ int main() {
     cout << "\\psframe*[linestyle=none,linecolor=darkblue](0,0)(" << width
          << ',' << height << ")%\n";
     create_grid(mytransform);
-    draw_boundaries(mytransform, boundaries, "ORI");
+    draw_boundaries(mytransform, boundaries, objects, "ORI");
     draw_nebulae(mytransform, nebulae, objects);
     draw_stars(mytransform, stars, objects);
     draw_constellation_lines(mytransform, connections, stars, objects);
