@@ -1,0 +1,70 @@
+
+		      PP3 -- Celestial charts generation
+
+			    Version 1.2  2003/04/29
+			  http://pp3.sourceforge.net
+
+			   (c) 2002 Torsten Bronger
+               			    <bronger@users.sourceforge.net>
+
+INSTALLATION
+
+There is a binary distribution for the Linux (RPM) and one for the Windows
+platform, and two source distributions, a full and a 'crippled' one.  The
+crippled version has no Milky Way and no nebulae data, and it doesn't contain
+the CWEB source code making it more difficult to adjust the source to your
+compiler's peculiarities.
+
+The only really critical point is that PP3 needs to find its data files (all
+files with the .dat extension).  By default it looks for them in the current
+directory.  If you don't like that, you can move them to another directory and
+set the environment variable PP3DATA to that directory.  It it also possible to
+recompile PP3 with a different default data directory.
+
+If you compile PP3 you may have problems with the fmax, fmin, and fdim
+functions that may be undefined for certain compiler versions.  In this case
+recreate PP3's C++ source code from the CWEB source code by deleting the file
+pp3.cc and calling
+
+make CHANGEFILE=fmax.ch
+
+You first may want to change some paths at the beginning of the Makefile before
+you use it.
+
+
+USAGE
+
+See below for the documentation.  But for a quick test, enter the examples/
+directory and say
+
+pp3 leo.pp3
+
+The result should be a file leo.eps with the constellation of Lion.
+
+
+DOCUMENTATION
+
+The documentation of PP3 is its well-documented source code.  Its header tells
+you how you can make a neat pp3.ps from it.  This may have been done already
+for your distribution.  In this case, just print pp3.ps or read it with your
+favourite PostScript viewer.
+
+Especially the first pages are important, because there usage of PP3 and the
+file format of the input scripts is explained.
+
+Another important source of information are the example input scripts in
+examples/.
+
+
+DATABASES
+
+PP3's standard distribution bases on the following original data compilations:
+
+stars          BSC                              Hoffleit & Warren(1)
+nebulae        NGC/IC                           Wolfgang Steinicke(2)
+boundaries     Cat. of Constell. Boundary Data  Davenhall & Leggett
+Milky Way      Sky Panorama View                Axel Mellinger(3)
+
+(1) Being part of the Carte Du Ciel distribution
+(2) http://www.ngcic.com/steinicke/default.htm
+(3) http://home.arcor-online.de/axel.mellinger/
