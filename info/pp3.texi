@@ -194,7 +194,8 @@ reaches @PPTHREE{}'s typographic and graphical quality.  In contrast to
 other programs @PPTHREE{} produces vector images
 (e.@s{}g.@:@tie{}@acronym{PDFs}) rather than mere bitmaps.  Therefore it
 is perfectly suited for creating illustrations for books or other print
-media, and for web pages.
+media.  But even converted to bitmaps for web pages, it exceeds usual
+quality.
 
 @PPTHREE{} is optimised for the semi-automatic generation of large sets
 of sky maps.  It has decent default behaviour, however it can be
@@ -221,7 +222,8 @@ results are worth it!
 @node Online resources
 @section Online resources
 
-Further information about @PPTHREE{} and downloads on the Internet:
+Further information about @PPTHREE{} beyond this manual and downloads on
+the Internet:
 
 @table @asis
 @item @uref{http://pp3.sourceforge.net}
@@ -290,8 +292,8 @@ make
 @noindent
 Surely it can't become simpler.  You may retort ``Well, but creating the
 maps must have been the actual work''.  Of course it was, but first it
-took only 10--15 minutes per map eventually, because much work is done
-by the default behaviour of @PPTHREE{} itself.  And secondly:
+took only 10--15 minutes per map, because much work is done by the
+default behaviour of @PPTHREE{} itself.  And secondly:
 
 @unnumberedsubsec French Wikipedia
 @cindex Wikipedia
@@ -358,7 +360,7 @@ Obviously you need only @emph{one} of these files.
 @section Installation on Windows
 @cindex Windows
 
-Although @PPTHREE{} runs independently from other programs, it is not
+Although @PPTHREE{} runs independently of other programs, it is not
 useful when it's alone.  It needs two external tools in order to work
 properly: @TeX{} and Ghostscript.
 
@@ -494,7 +496,8 @@ paths in the @file{Makefile}.
 @PPTHREE{} looks for its data files (all files with the @file{.dat}
 extension) in a special directory that is pre-compiled in the
 executable.  The Makefile assures that this is the correct one, but you
-can override that with the environment variable @env{PP3DATA}.
+can override that at runtime with the environment variable
+@env{PP3DATA}.
 
 
 @node Increase TeX's memory
@@ -568,8 +571,8 @@ peculiarities, too.
 @cindex coordinates, celestial
 
 On a sheet of paper, every point has an @math{x} and a @math{y}
-coordinate (if you draw two axes).  On planet Earth, every location has
-a @emph{longitude} and a @emph{latitude}.
+coordinate.  On planet Earth, every location has a @emph{longitude} and
+a @emph{latitude}.
 
 @cindex rectascension
 @cindex declination
@@ -582,9 +585,9 @@ can make globes of the sky like of the Earth, with the only difference
 that you must imagine being @emph{inside} the globe.
 
 So, in a way, the rectascension is the @math{x} coordinate.  It is given
-in `hours' (h) from 0@dmn{h} to 24@dmn{h}.  Since the sky is round, both
-0@dmn{h} and 24@dmn{h} are the same rectascension, and 12@dmn{h} is the
-opposite to it.
+in `hours' (h) from 0@dmn{h} to 24@dmn{h}.  Since the sky is circular,
+both 0@dmn{h} and 24@dmn{h} are the same rectascension, and 12@dmn{h} is
+the opposite to it.
 
 Usually the fraction of the rectascension that is smaller than 1@dmn{h}
 is given in minutes and seconds, however in @PPTHREE{} the rectascension
@@ -600,8 +603,8 @@ from @math{-90^\circ} (South Pole) over @math{0^\circ} (equator) to
 @cindex magnitudes
 @cindex brightness, astronomical
 
-Theoretically you could measure the brightness of stars in Watt like
-the power of a light bulb.  But this is rather awkward.  Instead,
+Theoretically you could measure the brightness of stars in candela like
+the brightness of a light bulb.  But this is rather awkward.  Instead,
 astronomers use the system of @emph{magnitudes}@tie{}(m).
 
 The brighter a star, the smaller is its magnitude.  Sirius is the
@@ -628,7 +631,8 @@ Every constellation has a Latin name and a three letter abbreviation.
 For example ``Orion -- Ori'', or ``Ursa Major -- UMa'' (Great Bear), or
 ``Hydrus -- Hyi'' (Male Water Snake).  This abbreviation plays a big
 role in @PPTHREE{} because it's the only way to denote a constellation.
-You must use only uppercase letters in the abbreviation.
+You must use only uppercase letters in the abbreviation: @samp{ORI},
+@samp{UMA}, @samp{HYI}.
 
 One constellation, the snake or ``Serpens'', is divided into two parts,
 ``Serpens Caput'' (Head) and ``Serpens Cauda'' (Tail).  They are
@@ -687,7 +691,7 @@ HD 34085
 
 @noindent
 where `@code{34085}' is Rigel's Henry Draper catalogue number.  Both are
-totally equivalent.  The program
+totally equivalent.  The free program
 @uref{http://www.shatters.net/celestia/,Celestia} is very useful
 for finding Flamsteed or @acronym{HD} numbers.
 
@@ -751,15 +755,16 @@ on the command line starts @PPTHREE{} and lets it generate the file
 Orion.  You can view this @acronym{PDF} with Acrobat Viewer, convert it
 to a bitmap, or you can embed it into a text of yours.
 
-To be honest, there are three possible output formats.  By default,
+Actually there are three possible output formats.  By default,
 @PPTHREE{} generates a @LaTeX{} file in the current directory.  But most
 people cannot do much with it, therefore certain commands in the input
 script trigger @acronym{EPS} or @acronym{PDF} output, see @ref{Output
 control}.
 
-@PPTHREE{} can't generate bitmaps.  If you need bitmaps you must use a
-bitmap program (e.@s{}g.@: Corel Photo Paint or the
-@uref{http://www.gimp.org,Gimp}) for that.
+@PPTHREE{} can't generate bitmaps.  If you need bitmaps you must use an
+appropriate program (e.@s{}g.@: GSView or the
+@uref{http://www.gimp.org,Gimp}) for converting the vector data to
+bitmaps.
 
 
 @node Using pipes
@@ -781,7 +786,7 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 
 Input scripts are the most important part of @PPTHREE{}, at least for
 the user.  They contain some sort of wishlist about the map that you
-want to be created.
+want @PPTHREE{} to create.
 
 @menu
 * Minimal example::             The first four PP3 lines.
@@ -825,8 +830,8 @@ pp3 swan.pp3
 @end example
 
 @noindent
-The result is a file @file{swan.pdf} in the current directory with a
-star map of the Swan.
+The result of these only four lines of input is a file @file{swan.pdf}
+in the current directory with a star map of the Swan.
 
 @cindex comments
 @kwindex #
@@ -1078,6 +1083,7 @@ set_label_text HD 128620 "\\footnotesize Toliman"
 
 @noindent
 prints @samp{Toliman} with small letters, see @ref{LaTeX in labels}.
+Quotes must be entred as @samp{\"}.
 
 
 @node Changing label texts
@@ -1086,8 +1092,8 @@ prints @samp{Toliman} with small letters, see @ref{LaTeX in labels}.
 @kwindex set_label_text
 
 I change the label for Deneb, the alpha star in the Swan.  At the
-moment, its label is a mere `@math{\alpha}'.  But Deneb has a real name,
-and with
+moment, its label is a simple `@math{\alpha}'.  But Deneb has a real
+name, and with
 
 @example
 set_label_text CYG 50 Deneb
@@ -1334,8 +1340,8 @@ a formula.  This makes it look nicer.
 @kwindex delete
 
 Sometimes you have to remove stars or nebulae from the map, especially
-because they collide with other objects.  If you've read how to change
-labels thoroughly, this is very straightforward.  You remove sky objects
+because they collide with other objects.  If you've already read how to
+change labels, this is very straightforward.  You remove sky objects
 with `@code{delete}' and add them with `@code{add}'.  Both commands take
 a list of objects that is ended with a semicolon@tie{}@samp{;}:
 
@@ -1477,7 +1483,7 @@ totally okay for you.
 @node Penalty threshold
 @subsection Penalty threshold
 
-Sometimes a certain region of the map is that crowded with stars,
+Sometimes a certain region of the map is so much crowded with stars,
 nebulae, labels, and more, that there simply is no space left for yet
 another label.  In this case the penalty value reaches a very high
 number.  If it exceeds a given threshold, @PPTHREE{} suppresses that
@@ -1518,7 +1524,7 @@ The outline of a @PPTHREE{} input script is:
 # Some introductory comments,
 # i.e. what the file is about to do.
 
-@var{Section I: Parameters: Output format and style.}
+@var{Section I: Parameters: Output format and global style.}
 
 objects_and_labels
 
@@ -1611,7 +1617,7 @@ Default: @code{""} (empty)
 @deffn Parameter {switch eps_output} on/off
 @kwindex eps_output
 If on, @PPTHREE{} creates a @acronym{PDF} file.  (Additionally to the
-@LaTeX{} file that you then can ignore.)
+@LaTeX{} and @acronym{EPS} files that you then can ignore.)
 
 Default: off
 @end deffn
@@ -1632,9 +1638,9 @@ Default: off
 
 @deffn Parameter {set constellation} abbreviation
 @kwindex constellation
-Highlight the constellation that is given by @var{abbreviation}.  If you
-don't want to hightlight anything, set it to @code{""} or to an invalid
-abbreviation.
+Highlight the constellation that is given by @var{abbreviation} (given
+with all-uppercase letters).  If you don't want to hightlight anything,
+set it to @code{""} or to an invalid abbreviation.
 
 At the moment, highlighting means that the boundaries of the respective
 constellation get another colour, see @ref{Colours}.
@@ -2280,7 +2286,7 @@ unless you say `@code{\small}' there, too.
 @item \hskip0.3em
 This adds a horizontal skip at its position.  Its width is 0.3@dmn{em},
 where `em' is the width of the letter@tie{}`M'@.  In this case, it
-creates a little bit of space between the `Wold@tie{}359' and
+creates a little bit of space between the `Wolf@tie{}359' and
 the@tie{}@xmarksthespot{}.
 
 @item \psdots[dotstyle=+,dotangle=45](0,0)
@@ -2289,10 +2295,11 @@ position on the text baseline.  However the `@code{dotstyle=+}' option
 makes it a@tie{}`@math{+}', and the `@code{dotangle=45}' option turns it
 by 45@tie{}degree, which makes it an@tie{}@xmarksthespot{} effectively.
 
-The clever bit is the fact that is macro is the very last one in the
-row.  Since it says `@code{towards W_}' (towards left) in the @PPTHREE{}
-command, this means that the@tie{}@xmarksthespot{} lies @emph{exactly}
-on the celestial coordinates given after the `@code{at}' option.
+The clever bit is the fact that this macro is the very last one in the
+row.  Since it says `@code{towards W_}' (towards left, on baseline) in
+the @PPTHREE{} command, this means that the@tie{}@xmarksthespot{} lies
+@emph{exactly} on the celestial coordinates given after the `@code{at}'
+option.
 @end table
 
 
@@ -2518,8 +2525,8 @@ find another one, please report it on
 @item
 Unknown stars in constellation line data files (the default is the file
 @file{lines.dat}) result in an error message, which is good, but the
-error message may print another -- probably valid -- star name, which is
-bad.  Fortunately the actually wrong star and the printed star are
+error message may include another -- probably valid -- star name, which
+is bad.  Fortunately the actually wrong star and the printed star are
 within the same constellation line, the printed star coming first.
 
 @item
@@ -2740,13 +2747,13 @@ Each dataset has the following eleven fields:
 
 @enumerate
 @item
-@acronym{NGC} catalogue number (`@code{0}' is not listed there),
+@acronym{NGC} catalogue number (`@code{0}' if not listed there),
 
 @item
-@acronym{IC} catalogue number (`@code{0}' is not listed there),
+@acronym{IC} catalogue number (`@code{0}' if not listed there),
 
 @item
-Messier Catalogue number (`@code{0}' is not listed there),
+Messier Catalogue number (`@code{0}' if not listed there),
 
 @item
 The astronomical abbreviation of the constellation.  It must be all
@@ -2965,8 +2972,8 @@ because zero-value pixels are not included into the data file anyway.
 I used the
 @uref{http://home.arcor-online.de/axel.mellinger/,@emph{All-Sky Milky
 Way Panorama}} by Axel Mellinger.  His bitmap with the two hemispheres
-in equidistant azimuthal projection were greyscaled and smoothed with
-the Gimp, and then transformed to @PPTHREE{}'s format with a small
+in equidistant azimuthal projection was greyscaled and smoothed with the
+Gimp, and then transformed to @PPTHREE{}'s format with a small
 hand-written C program.
 
 
