@@ -33,7 +33,7 @@ url('http://sourceforge.net/sflogo.php?group_id=71469&amp;type=5')"></p>
 
   <p skip="big" style="margin-top: 4ex; font-size: larger">&PP3; is used for
     the maps of <em>all</em> constellations on <url
-      name="http://www.wikipedia.org">Wikipedia</url>! (For example, have a
+      name="http://wikipedia.org/w/wiki.phtml?title=List_of_constellations">Wikipedia</url>! (For example, have a
     look at the <url name="http://www.wikipedia.org/wiki/Cygnus">Cygnus</url>
     entry.)</p>
 
@@ -84,8 +84,8 @@ as well.</p>
 
     <figure id="Orion">
       <graphics file="ori" scale="1.2" kind="vector"/> <caption>The default
-chart.  Please have a look at a <url name="ori.png">larger view</url>,
-too.</caption>
+	chart, plus some names.  Please have a look at a <url
+	  name="ori.png">larger view</url>, too.</caption>
     </figure>
 
     <p><ref refid="Orion">Figure</ref> shows more or less the default view of
@@ -97,7 +97,7 @@ switch eps_output on
 
 objects_and_labels
 
-delete NGC 2478  NGC 1973  NGC 1975 ;
+delete NGC 1973  NGC 1975 ;
 reposition ORI 34 E ;    # Mintaka
 reposition ORI 50 W ;    # Alnitak
 </verbatim>
@@ -182,10 +182,12 @@ too.  <verb>:-)</verb></p>
     <subsection>
       <heading>Wikipedia example scripts</heading>
 
-      <p>&PP3; is responsible for almost all star maps on English <url
-name="http://www.wikipedia.org">Wikipedia</url>, the free encyclopedia.  Since
-they can serve very well as examples, all of their source scripts are included
-in &PP3;'s distribution, together with all associated files.</p>
+      <p>&PP3; is responsible for the star maps of all 88 constellations on
+	English <url
+	  name="http://wikipedia.org/w/wiki.phtml?title=List_of_constellations">Wikipedia</url>,
+	the free encyclopedia.  Since they can serve very well as examples, all
+	of their source scripts are included in &PP3;'s distribution, together
+	with all associated files.</p>
     </subsection>
   </section>
 
@@ -209,9 +211,9 @@ file to a Postscript or EPS file.</item>
 &PP3; can call these programs for you if you wish.</item>
 	<term>Ghostscript:</term><item>This is a program for viewing and
 printing Postscript files, and for converting them to &PDF;&sf;.  You need <url
-name="http://www.cs.wisc.edu/~ghost/doc/AFPL/get704.htm">Ghostscript</url>
+name="http://www.cs.wisc.edu/~ghost/doc/AFPL/get811.htm">Ghostscript</url>
 itself and <url
-name="http://www.cs.wisc.edu/~ghost/gsview/get43.htm">GSView</url>.  For Linux
+name="http://www.cs.wisc.edu/~ghost/gsview/get45.htm">GSView</url>.  For Linux
 these programs are highly probably already installed.</item>
       </description>
 It may seem to be unfortunate that you have to install all these programs only
