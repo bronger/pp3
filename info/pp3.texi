@@ -1298,7 +1298,15 @@ brightness}.
 @node Penalty scheme
 @section Penalty scheme
 
-@b{To be done.}
+It is a tricky task to place labels on a dotty star map without creating
+to many overlaps, and especially overlaps with other labels are very
+annoying.  Therefore @PPTHREE{} tries to avoid that.  It does so by
+using a penalty algorithm: It tests the eight windrose positions around
+the respective object, and calculates the resulting overlaps for each
+position.  The overlaps are counted as @emph{penalties}.  The position
+with the smallest penalty value is chosen.  Sometimes, if the penalties
+exceed a certain threshold, the label is not printed at all.  However,
+all of this can be overruled by the user.
 
 
 @node Keywords reference
