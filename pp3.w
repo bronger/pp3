@@ -154,12 +154,12 @@
 
 \def\sloppy{\tolerance9999\emergencystretch3em\hfuzz .5pt\vfuzz\hfuzz}
 
-\def\title{PP3 (Version 1.2)}
+\def\title{PP3 (Version 1.3)}
 \def\topofcontents{\null\vfill\vskip-1.5cm
   \centerline{\titlefont The Sky Map Creator 
                {\sbtitlefont PP\lower.35ex\hbox{3}}}
   \vskip 15pt
-  \centerline{(Version 1.2)}
+  \centerline{(Version 1.3)}
   \vfill}
 \def\botofcontents{\parindent2em\vfill\vfill\vfill\vfill\vfill
 \noindent
@@ -3829,7 +3829,9 @@ the input script.
                 cerr << "Invalid argument: " << argv[1] << endl;
         }
         if (params.in == 0) {
-            cerr << "Syntax:\n  pp3 {input-file}\n\n" @/
+            cerr << "PP3 1.3  Copyright (c) 2003 Torsten Bronger\n" @/
+                 << "         http://pp3.sourceforge.net\n\n" @/
+                 << "Syntax:\n  pp3 {input-file}\n\n" @/
                  << "{input-file} may be \"-\" to denote standard input.\n" @/
                  << "You may give an empty file to get a default plot.\n" @/
                  << "The plot is sent to standard output by default.\n";
