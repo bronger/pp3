@@ -1316,16 +1316,18 @@ overruled by the user.
                                   labels.
 * Overlaps with line objects::  Labels coming close to boundaries and
                                   constellation lines.
+* Penalty threshold::           When automatic labels are suppressed.
 @end menu
 
 
 @node Basics about penalties
 @subsection Basics about penalties
+@cindex penalties
 
 @PPTHREE{} calculates overlaps with all objects on the map: stars,
 nebulae, constellation lines, boundary lines, and -- last but not least
 -- other labels.  All overlaps are weighted, and their sum is the
-penalty value.  You can influence the weigthing.  By default, it's
+penalty value.  You can influence the weighting.  By default, it's
 @samp{1000} for all objects.  But with
 
 @example
@@ -1348,15 +1350,88 @@ them.  They wouldn't make sense anyway.}
 
 @node The rim
 @subsection The rim
+@cindex rim
+@cindex core
+@kwindex rim
 
 Each label has a @emph{core area}, which is the text area itself, and a
-@emph{rim}, which is an area around the text area.
+@emph{rim}, which is an area around the text area.  Both are rectangles,
+separated by a @emph{skip} that is the same as the one that separates
+labels and their respective celestial object, see @ref{Other layout
+parameters}.
+
+@image{betelg,,,Diagram of core and rim of a label}
+
+@PPTHREE{} takes both rim and core into account.  The relative
+significance of the rim can be set with e.@s{}g.@:
+
+@example
+penalties rim 2000
+@end example
+
+@noindent
+which doubles the default value of @samp{1000}.  With
+
+@example
+penalties rim 0
+@end example
+
+@noindent
+the rim loses its effect completely.  Notice that @PPTHREE{} adds rim
+penalties also for the whole core area, so that the core is always more
+significant than the rim, no matter how you set the penalty values.
+
+What's the point in the rim?  The core avoids overlaps, but the rim is
+supposed to make @emph{approximations} of labels with other things on
+the map less probable.
+
+You may have noticed that the rim overlaps with the object (star or
+nebula) itself.  Usually this only adds some sort of bias to the penalty
+values of the diagonal positions, but this direct contact is
+particularly useful for double stars: There both components get
+``their'' label on ``their'' side due to the small rim overlaps with the
+respectively other component.
 
 
 @node Overlaps with line objects
-@subsection Overlaps with lines section
+@subsection Overlaps with line objects
 
-@b{To be done.}
+``Line objects'' means constellation lines and boundary lines.
+@PPTHREE{} treats both of them in a special way: When they collide with
+the @emph{rim} of a label, it's less bad than for non-line objects.  The
+reason is that lines are so different from labels visually, that it's
+not fatal if they are rather close together.
+
+The two new penalties that are used for the rim are
+@samp{constellation_lines_rim} and @samp{boundaries_rim}.  Their default
+value is @samp{1000} as usual.  For example, with
+
+@example
+penalties boundaries_rim 0
+@end example
+
+@noindent
+you tell @PPTHREE{} that a label directly next to a boundary line is
+totally okay for you.
+
+
+@node Penalty threshold
+@subsection Penalty threshold
+
+Sometimes a certain region of the map is that crowded with stars,
+nebulae, labels, and more, that there simply is no space left for yet
+another label.  In this case the penalty value reaches a very high
+number.  If it exceeds a given threshold, @PPTHREE{} suppressed that
+label.  You can still override this, see @ref{Reposition labels}.
+
+You can set this threshold with
+
+@example
+penalties threshold 3000
+@end example
+
+@noindent
+Again, @samp{1000} is the default value.
 
 
 @node Keywords reference
@@ -1369,7 +1444,7 @@ handy zigzag.
 
 @menu
 * General structure::           The outline of a PP3 input script.
-* Parameters::                  First part: parameters.
+* Parameters::                  First part: Parameters.  First part: parameters.
 * Commands::                    Second part: stars, nebulae and labels.
 @end menu
 
@@ -2275,6 +2350,8 @@ the Wikipedia Project, see @ref{Successful use of PP3}.
 @node LaTeX hooks
 @section LaTeX hooks
 
+@b{To be done.}
+
 
 @node Known problems
 @appendix Known problems
@@ -2804,4 +2881,4 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  cindex kwindex byfmt ini flexes xref ifinfo ifnotinfo tics Cyg
 @c  LocalWords:  deffn deffnx ifhtml todo xmarksthespot miktex Cnc hskip psdots
 @c  LocalWords:  leo nofiles pst TicMark TextLabel AtBeginDocument mypreamble
-@c  LocalWords:  IfFileExists eulervm pmy phv riptsize mdseries atid
+@c  LocalWords:  IfFileExists eulervm pmy phv riptsize mdseries atid betelg
