@@ -1,3 +1,5 @@
+// 	$Id$	
+
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -115,7 +117,7 @@ main() {
 	paths.push_back(current_path);
     }
     
-    ofstream pathfile("constborders.dat");
+    ofstream pathfile("boundaries.dat");
     pathfile.setf(ios::fixed);
     pathfile.precision(7);
     for (int i = 0; i < paths.size(); i++) {
