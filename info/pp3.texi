@@ -84,6 +84,15 @@ La@TeX{}@c
 @end tex
 @end macro
 
+@macro xmarksthespot {}
+@tex
+`@math{@times{}}'@ignorespaces
+@end tex
+@ifnottex
+`x'@c
+@end ifnottex
+@end macro
+
 @copying
 This manual is for @PPTHREE{} (version @value{VERSION}),
 which is a celestial charts drawing tool.
@@ -213,7 +222,7 @@ results are worth it!
 @cindex Wikipedia
 
 @PPTHREE{} has been used for the celestial maps of all 88 constellations
-on @uref{http://@/www.wikipedia.org,Wikipedia}, the free encyclopedia.
+on @uref{http://www.wikipedia.org,Wikipedia}, the free encyclopedia.
 Feel free to browse through a
 @uref{http://wikipedia.org/w/wiki.phtml?title=List_of_constellations,list
 of all constellations}.
@@ -271,7 +280,7 @@ articles about constellations.  The maps were externally linked.
 @cindex distribution
 
 You can get the latest @PPTHREE{} file releases from
-@uref{http://@/sourceforge.net/projects/pp3,@PPTHREE{}'s project page on
+@uref{http://sourceforge.net/projects/pp3,@PPTHREE{}'s project page on
 Sourceforge}.  The main @PPTHREE{} distribution comes as several files,
 namely
 
@@ -332,7 +341,7 @@ not difficult, and both programs may be useful for other purposes, too.
 actually create the stellar map.  The result is a Postscript file.
 
 There are two major @TeX{} variants for Windows, namely
-@uref{http://www.miktex.@/org,Mik@TeX{}} and
+@uref{http://www.miktex.org,Mik@TeX{}} and
 @uref{http://www.tug.org/texlive/,@TeX{}@tie{}Live}.  Both are rather
 similar in their functionality, and both come with a nice installation
 tool.  Please assure that the @t{pstricks} package as part of @TeX{} is
@@ -345,7 +354,7 @@ installed, however this is highly probable anyway.
 @cindex Postscript
 
 The best tool for dealing with Postscript files is
-@uref{http://www.cs.wisc.edu/@/~ghost/doc/AFPL/get811.htm,Ghostscript}.
+@uref{http://www.cs.wisc.edu/~ghost/doc/AFPL/get811.htm,Ghostscript}.
 In particular, if you've installed Ghostscript, PP3 is able to generate
 PDF files for you.  It is wise (although not necessary) to install
 @uref{http://www.cs.wisc.edu/~ghost/gsview/get45.htm,GSView}, too.  It
@@ -426,7 +435,7 @@ the Linux section.)
 
 @PPTHREE{} is written in @acronym{CWEB}@.  This is special form of C++
 and can be transformed to real C++ trivially.  You only need the
-@uref{http://www-cs-faculty.stanford.edu/@/~knuth/cweb.html,@acronym{CWEB}
+@uref{http://www-cs-faculty.stanford.edu/~knuth/cweb.html,@acronym{CWEB}
 programs} installed.  For your convenience the C++ code of @PPTHREE{} is
 included into the source distribution, so you need @acronym{CWEB} only
 if you want to modify the program.
@@ -636,7 +645,7 @@ HD 34085
 @noindent
 where `@code{34085}' is Rigel's Henry Draper catalogue number.  Both are
 totally equivalent.  The program
-@uref{http://@/www.@/shatters.@/net/@/celestia/,Celestia} is very useful
+@uref{http://www.shatters.net/celestia/,Celestia} is very useful
 for finding Flamsteed or @acronym{HD} numbers.
 
 
@@ -733,13 +742,10 @@ want to be created.
 
 @menu
 * Minimal example::             The first four PP3 lines.
-* More bells and wistles::      How to make it look more sophisticated.
+* More bells and wistles::      How to make it look nicer.
 * Parameters and commands::     The two parts of an input script.
-* Changing label texts::        Changing implicitly created labels.
-* Reposition labels::           Reposition a text label.
-* Text labels::                 How to put arbitrary text on the map.
-* Using flexes::                Labels that are curved.
-* Tic labels::                  Automatically generated tic mark labels.
+* Labels::                      Changing implicitly created labels.
+* Deleting and adding objects::  Remove or insert stars and nebulae.
 @end menu
 
 
@@ -748,7 +754,7 @@ want to be created.
 @cindex example input script
 
 The minimal @PPTHREE{} input script is -- well -- the empty file.  Then
-@PPTHREE{}'s default values create a dark blue star map of Orion:
+@PPTHREE{}'s default values create a dark blue star map of Orion.
 
 @image{orion,10cm,,Constellation map of Orion}
 
@@ -934,11 +940,56 @@ objects_and_labels
 and then the commands.  The purpose of the commands is adding and
 deleting objects and their labels, to reposition the labels, and to add
 arbitrary text on the map.  You can also change the contents of
-automatically generated labels.  Let's begin with that.
+automatically generated labels.
+
+
+@node Labels
+@section Labels
+
+My personal experience is that the most difficult part of writing input
+scripts is to fiddle about with labels.  Although @PPTHREE{} does most
+of the labelling work on its own, it is not perfect (yet).  Thus you
+will value the features described in this section.
+
+@menu
+* Changing label texts::        Set another text for a certain label.
+* Deleting and adding labels::  Delete or add implicitly created labels.
+* Reposition labels::           Reposition a text label.
+* Text labels::                 How to put arbitrary text on the map.
+* Using flexes::                Labels that are curved.
+* Tic labels::                  Automatically generated tic mark labels.
+@end menu
+
+Please note how the texts themselves must be given: Either they don't
+contain any spaces or line breaks.  Then you can just enter them.  But
+if they do contain such white space, you must enclose them with
+quotes@tie{}@code{"..."}.  For example, you say
+
+@example
+set_label_text HD 128620 Toliman
+@end example
+
+@noindent
+but
+
+@example
+set_label_text HD 128620 "Rigil Kent"
+@end example
+
+If you (must) use quotes, and only then, you have to enter two symbols
+in a special way, namely the backslash@tie{}@samp{\} and the
+quotes@tie{}@samp{"}:
+
+@example
+set_label_text HD 128620 "\\footnotesize Toliman"
+@end example
+
+@noindent
+prints @samp{Toliman} with small letters, see @ref{LaTeX in labels}.
 
 
 @node Changing label texts
-@section Changing label texts
+@subsection Changing label texts
 @cindex labels
 @kwindex set_label_text
 
@@ -968,15 +1019,61 @@ Now we get (only the changed part printed):
 
 @image{swan1,,,Map of North America Nebula and Deneb}
 
-@PPTHREE{} takes star names from a file.  So if you use another star
-data file with @PPTHREE{}, you get other labels.  @PPTHREE{}'s standard
-file only contains the astronomical symbols for the stars, so if you
-want to have real stars, you must use `@code{set_text_label}' as above.
-@xref{Stars data file}, for more information.
+@PPTHREE{} takes star names from a file.  @PPTHREE{}'s standard file
+contains only the astronomical symbols for the stars (Bayer's Greek
+letters and Flamsteed numbers), so if you want to have real star names,
+you must use `@code{set_text_label}' as above.  Or you use another star
+data file with @PPTHREE{}, see @ref{Stars data file}.
 
+
+@node Deleting and adding labels
+@subsection Deleting and adding labels
+
+@PPTHREE{} decides which labels are printed on the may by itself.  But,
+of course, you can configure this behaviour, and you can delete or add
+any label.
+
+For example, the command
+
+@example
+delete_labels NGC 884  NGC 869  TAU 27 ;
+@end example
+
+@noindent
+deletes the labels for the nebulae @acronym{NGC}@s{}884 and
+@acronym{NGC}@s{}869, and for the star 27@s{}Tau from the map.  The
+nebulae and the star themselves remain on it of course.
+Correspondingly,
+
+@example
+add_labels CNC 65  CNC 47  CNC 43  CNC 48 ;
+@end example
+
+@noindent
+adds the currently set labels texts for the stars 65, 47, 43, and
+48@s{}Cnc.  All of them are too faint to get their labels implicitly.
+
+But you can also influence labels globally in the parameters section of
+the input script.  If you don't want to have any labels at all, simply
+say
+
+@example
+switch labels off
+@end example
+
+@noindent
+in the parameters section.  Another parameter keyword is
+
+@example
+set faintest_star_with_label_magnitude 2.0
+@end example
+
+@noindent
+which means that only stars of brightness of at least 2.0@dmn{m} get an
+implicit (automatic) label.
 
 @node Reposition labels
-@section Reposition labels
+@subsection Reposition labels
 @cindex reposition labels
 @cindex labels, repositioning
 @kwindex reposition
@@ -1021,7 +1118,7 @@ a label because it hadn't found a good place for it.
 
 
 @node Text labels
-@section Text labels
+@subsection Text labels
 @cindex text labels
 @cindex labels
 
@@ -1044,7 +1141,7 @@ The keyword `@code{towards}'
 
 
 @node Using flexes
-@section Using flexes
+@subsection Using flexes
 @cindex flex labels
 
 But the `@code{text}' keyword can do more.  When you include the
@@ -1064,7 +1161,7 @@ face}, see @ref{LaTeX in labels}.  The result is the following:
 
 
 @node Tic labels
-@section Tic mark labels
+@subsection Tic mark labels
 @cindex tic mark labels
 
 But `@code{text}' can do even more.  With
@@ -1084,6 +1181,28 @@ Typically you will embed the placeholders in @code{$...$}, because this
 tells the underlying @TeX{} typesetting engine to typeset the number as
 a formula.  This makes it look nicer.
 
+
+@node Deleting and adding objects
+@section Deleting and adding stars and nebulae
+@kwindex add
+@kwindex delete
+
+Sometimes you have to remove stars or nebulae from the map, especially
+because they collide with other objects.  If you've read how to change
+labels thoroughly, this is very straightforward.  You remove sky objects
+with `@code{delete}' and add them with `@code{add}'.  Both commands take
+a list of objects that is ended with a semicolon@tie{}@samp{;}:
+
+@example
+delete LEO 63  HD 97605 ;
+add NGC 6992 ;
+@end example
+
+@noindent
+The `@code{add}' command is useful mostly for nebulae, because by
+default, @PPTHREE{} only includes all objects of the Messier catalogue,
+but only other objects with a minimal brightness, see @ref{Filtering by
+brightness}.
 
 
 @node Keywords reference
@@ -1820,7 +1939,56 @@ purposes.
 @node LaTeX in labels
 @section Using LaTeX in labels
 
-@strong{To be done.}
+You can use all @LaTeX{} macros in @PPTHREE{} labels that are allowed in
+horizontal boxes (like @samp{\mbox@{...@}}).  Additionally, you can use
+many commands from the @uref{http://www.pstricks.de/docs.phtml,PSTricks
+package}.
+
+The most important pitfall is the backslash@tie{}@samp{\}, because when
+using quotes as string delimiters, you have to write is as `@code{\\}'.
+
+Let's have a look at a more complex example:
+
+@example
+text "\\small Wolf 359\\hskip0.3em
+      \\psdots[dotstyle=+,dotangle=45](0,0)"
+     at 10.902 7.32 color 0.3 0.3 0.9333 towards W_ ;
+@end example
+
+@noindent
+This prints an @xmarksthespot{} at the position of the star
+Wolf@tie{}359 and prints the label `Wolf@tie{}359' at the top left next
+to it:
+
+@image{leo1,,,Constellation map Wolf 359 in Leo}
+
+@noindent
+The row of @LaTeX{} macros consists of the following elements:
+
+@table @code
+@item \small
+This prints the whole label in a small typeface.  Please note that such
+commands only apply to the current label, since the label will be
+typeset within a box.  In effect, the next label will be big again,
+unless you say `@code{\small}' there, too.
+
+@item \hskip0.3em
+This adds a horizontal skip at its position.  Its width is 0.3@dmn{em},
+where `em' is the width of the letter@tie{}`M'@.  In this case, it
+creates a little bit of space between the `Wold@tie{}359' and
+the@tie{}@xmarksthespot{}.
+
+@item \\psdots[dotstyle=+,dotangle=45](0,0)
+This is a PSTricks command.  Normally it prints a dot at the current
+position on the text baseline.  However the `@code{dotstyle=+}' option
+makes it a@tie{}`@math{+}', and the `@code{dotangle=45}' option turns it
+by 45@tie{}degree, which makes it an@tie{}@xmarksthespot{} effectively.
+
+The clever bit is the fact that is macro is the very last one in the
+row.  Since it says `@code{towards W_}' (towards left) in the @PPTHREE{}
+command, this means that the@tie{}@xmarksthespot{} lies @emph{exactly}
+on the celestial coordinates given after the `@code{at}' option.
+@end table
 
 
 @node LaTeX preamble
@@ -1846,13 +2014,6 @@ Unknown stars in constellation line data files (the default is the file
 error message may print another -- probably valid -- star name, which is
 bad.  Fortunately the actually wrong star and the printed star are
 within the same constellation line, the printed star coming first.
-
-@kwindex set_label_text
-
-@item
-The text argument of @code{set_label_text} must be enclosed with double
-quotes even if it doesn't contain whitespace.  This constraint applies
-only to @code{set_label_text}.
 
 @item
 The usage of semicolons in @PPTHREE{} input scripts is not
@@ -1934,7 +2095,7 @@ parameters for them.
 
 @item
 The
-@uref{http://cvs.sourceforge.net/viewcvs.py/@/celestia/@/celestia/data/starnames.dat,
+@uref{http://cvs.sourceforge.net/viewcvs.py/celestia/celestia/data/starnames.dat,
 star names list of Celestia} or something like that should be used for
 identifying stars in input scripts.
 @end itemize
@@ -2130,7 +2291,7 @@ cluster, and 5:@tie{}globular star cluster.
 @cindex Steinicke, Wolfgang
 
 It's the @acronym{NGC}/@acronym{IC} catalogues as compiled by
-@uref{http://www.ngcic.com/@/steinicke/,Wolfgang Steinicke}.
+@uref{http://www.ngcic.com/steinicke/,Wolfgang Steinicke}.
 
 
 @node Lines data file
@@ -2182,7 +2343,7 @@ HD 108903 ;  # gamma Cru
 @cindex Karkoschka, Eric
 @cindex Atlas f@"ur Himmelsbeobachter
 
-I created the lines after my fancy.  The @emph{Atlas f@"ur
+I created the lines after my fancy.  The @cite{Atlas f@"ur
 Himmelsbeobachter}@footnote{by Erich Karkoschka, in German;
 @acronym{ISBN}@tie{}3440074889} was an important source of inspiration
 though.
@@ -2239,7 +2400,7 @@ the adjacent constellation. It may distinguish between @code{SER1} and
 
 @subheading PP3's boundary data origin
 
-It's the @uref{ftp://cdsarc.u-strasbg.fr/cats/@/VI/49/,Catalogue of
+It's the @uref{ftp://cdsarc.u-strasbg.fr/cats/VI/49/,Catalogue of
 Constellation Boundary Data} by Davenhall and Leggett.  I had to fix
 some bugs though, because the Ophiuchus/Serpens region was flawed.
 Additionally, the original data has peculiarities because it tries to be
@@ -2295,7 +2456,7 @@ because zero-value pixels are not included into the data file anyway.
 @cindex Mellinger, Axel
 
 I used the
-@uref{http://home.arcor-online.de/axel.@/mellinger/,@emph{All-Sky Milky
+@uref{http://home.arcor-online.de/axel.mellinger/,@emph{All-Sky Milky
 Way Panorama}} by Axel Mellinger.  His bitmap with the two hemispheres
 in equidistant azimuthal projection were greyscaled and smoothed with
 the Gimp, and then transformed to @PPTHREE{}'s format with a small
