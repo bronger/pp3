@@ -2,7 +2,7 @@ CONSTELLATIONS = andromeda bootes carina crux libra orion taurus aquarius	\
 cancer cassiopeia cygnus monoceros perseus ursa_major aquila canes_venatici	\
 centaurus delphinus pisces ursa_minor ara canis_major cetus eridanus norma	\
 sagittarius virgo aries canis_minor coma_berenices gemini octans scorpius	\
-vulpecula auriga capricornus corvus leo ophiuchus serpens
+vulpecula auriga capricornus corvus leo ophiuchus serpens hercules
 
 %.eps : %.pp3 wiki.pp3 wiki.tex
 	pp3 $<
