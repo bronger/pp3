@@ -1,0 +1,26 @@
+# Crater
+#
+
+filename output crater.tex
+filename include wiki.pp3
+
+set constellation CRT
+set center_rectascension  11.4
+set center_declination   -16
+set box_height 6
+set box_width 6.3
+
+set faintest_star_disk_magnitude 5.0
+
+objects_and_labels
+
+delete HD 102928 ;
+
+add_labels CRT 7  CRT 15  CRT 11 ;
+
+text Crater at 11.9 -20 along declination ;
+text Crv at 12 -12 along declination towards SW ;
+text Virgo at 11.7 -6 along declination towards NW ;
+text Leo at 11.6 -6 along declination ;
+text Sex at 10.8 -7 along declination towards E ;
+text Hydra at 10.9 -22 along declination towards E ;
