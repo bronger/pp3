@@ -1300,13 +1300,63 @@ brightness}.
 
 It is a tricky task to place labels on a dotty star map without creating
 to many overlaps, and especially overlaps with other labels are very
-annoying.  Therefore @PPTHREE{} tries to avoid that.  It does so by
-using a penalty algorithm: It tests the eight windrose positions around
-the respective object, and calculates the resulting overlaps for each
-position.  The overlaps are counted as @emph{penalties}.  The position
-with the smallest penalty value is chosen.  Sometimes, if the penalties
-exceed a certain threshold, the label is not printed at all.  However,
-all of this can be overruled by the user.
+annoying.  Therefore @PPTHREE{} tries to avoid that.
+
+It does so by using a penalty algorithm: It tests the eight windrose
+positions around the respective object, and calculates the resulting
+overlaps for each position.  The overlaps are counted as
+@emph{penalties}.  The position with the smallest penalty value is
+chosen.  In very bad cases when the penalties exceed a certain
+threshold, the label is not printed at all.  However, all of this can be
+overruled by the user.
+
+@menu
+* Basics about penalties::      How PP3 calculates penalties.
+* The rim::                     Avoiding objects coming too close to
+                                  labels.
+* Overlaps with line objects::  Labels coming close to boundaries and
+                                  constellation lines.
+@end menu
+
+
+@node Basics about penalties
+@subsection Basics about penalties
+
+@PPTHREE{} calculates overlaps with all objects on the map: stars,
+nebulae, constellation lines, boundary lines, and -- last but not least
+-- other labels.  All overlaps are weighted, and their sum is the
+penalty value.  You can influence the weigthing.  By default, it's
+@samp{1000} for all objects.  But with
+
+@example
+penalties stars 2000
+@end example
+
+@noindent
+you double the significance of stars.  Thus you make overlaps of labels
+with stars less probable.  In contrast,
+
+@example
+penalties boundaries 0
+@end example
+
+@noindent
+tells @PPTHREE{} that printing a label on a boundary line isn't bad at
+all.@footnote{Avoid negative values, although @PPTHREE{} doesn't reject
+them.  They wouldn't make sense anyway.}
+
+
+@node The rim
+@subsection The rim
+
+Each label has a @emph{core area}, which is the text area itself, and a
+@emph{rim}, which is an area around the text area.
+
+
+@node Overlaps with line objects
+@subsection Overlaps with lines section
+
+@b{To be done.}
 
 
 @node Keywords reference
@@ -1319,8 +1369,8 @@ handy zigzag.
 
 @menu
 * General structure::           The outline of a PP3 input script.
-* Parameters::                  First part:  parameters.
-* Commands::                    Second part:  stars, nebulae and labels.
+* Parameters::                  First part: parameters.
+* Commands::                    Second part: stars, nebulae and labels.
 @end menu
 
 
