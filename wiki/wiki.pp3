@@ -1,0 +1,55 @@
+# Template file for inclusion into other files.
+# You cannot use it alone.
+# Please import into Gimp at 300 dpi and then scale down to 40%
+# No graphics must be wider than 9 cm (425px)
+
+filename latex_preamble wiki.tex
+filename constellation_lines lines.dat
+
+set box_width 7
+set box_height 7
+
+switch eps_output on
+
+switch colored_stars off
+color stars 0 0 0
+color background 1 1 1
+color grid 0.8392 0.9176 1
+color constellation_lines 0 0.8 0
+color labels 0.0 0.0 0.9333
+color boundaries 1 0.9529 0.6667
+color highlighted_boundaries 1 0.8667 0
+#color boundaries 0.85 0.85 0.85
+#color highlighted_boundaries 0.65 0.65 0.7
+color nebulae 0 0 0
+color text_labels 0.7 0.7 0.7
+color ecliptic 0.8 0.1333 0
+color milky_way 0.5 0.5 1
+
+objects_and_labels
+
+delete NGC 2478  NGC 651  M 88  M 86  M 90  M 58  M 59  IC 4700 
+  NGC 6590  NGC 6595  NGC 6634 ;
+
+set_label_text ORI 19 "\\footnotesize Rigel"
+set_label_text ORI 58 "\\footnotesize Betelgeuse"
+set_label_text CMA 9 "\\footnotesize Sirius"
+set_label_text CMI 10 "\\footnotesize Procyon"
+set_label_text TAU 87 "\\footnotesize Aldebaran"
+set_label_text CET 68 "\\footnotesize Mira"
+set_label_text LEO 32 "\\footnotesize Regulus"
+set_label_text LEO 94 "\\footnotesize Denebola"
+set_label_text VIR 67 "\\footnotesize Spica"
+set_label_text BOO 16 "\\footnotesize Arcturus"
+set_label_text UMA 50 "\\footnotesize Dubhe"
+set_label_text UMA 77 "\\footnotesize Alioth"
+set_label_text UMA 85 "\\footnotesize Alkaid"
+set_label_text CYG 50 "\\footnotesize Deneb"
+set_label_text LYR 3 "\\footnotesize Vega"
+set_label_text GEM 66 "\\footnotesize Castor"
+set_label_text GEM 78 "\\footnotesize Pollux"
+set_label_text AND 21 "\\footnotesize Sirrah"
+set_label_text PSA 24 "\\footnotesize Fomalhaut"
+set_label_text SCO 21 "\\footnotesize Antares"
+set_label_text HD 128620 "\\footnotesize Toliman"
+set_label_text HD 158427 "\\footnotesize Choo"  # alpha Ara

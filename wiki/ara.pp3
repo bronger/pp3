@@ -1,0 +1,26 @@
+# Ara, the Altar
+#
+
+filename output ara.tex
+filename include wiki.pp3
+
+set constellation ARA
+set center_rectascension 17.5
+set center_declination   -53
+set box_width 6
+set box_height 7
+
+
+objects_and_labels
+
+add NGC 6397 ;
+add_labels HD 152980 ; # epsilon1 Ara
+add_labels HD 151249 ; # eta Ara
+
+text Ara at 18.1 -47 along declination towards SE ;
+text TrA at 16.5 -61 along declination towards SE ;
+text CrA at 18.1 -44 along declination towards NW ;
+text Tel at 18.3 -51 along declination towards W ;
+text Scorpio at 16.6 -45 along declination towards NW ;
+text Norma at 16.5 -57 along declination towards E ;
+text Pavo at 18.5 -58 along declination towards S ;
