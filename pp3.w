@@ -2,7 +2,8 @@
 
 @q======================================================================@>
 @q    pp3.w - Star Catalog Chart Creator                                @>
-@q    Copyright 2003 Torsten Bronger <bronger@@users.sourceforge.net>   @>
+@q    Copyright 2002--2004 Torsten Bronger                              @>
+@q                         <bronger@@users.sourceforge.net>             @>
 @q                                                                      @>
 @q  This program may be distributed and/or modified under the           @>
 @q  conditions of the MIT licence with the following contraint:         @>
@@ -169,7 +170,7 @@
 %                                *LICENCE*
 %
 %
-Copyright \copyright\ 2003 Torsten Bronger
+Copyright \copyright\ 2002--2004 Torsten Bronger
                            ({\tt bronger@@users.sourceforge.net})
 \ninerm\baselineskip0.9\baselineskip\let\it\nineit
 \bigskip\noindent
@@ -876,7 +877,7 @@ certain regions of the sky, typically stellar constellations.
                 params.filename_include = read_string(script);
                 ifstream included_script(params.filename_include.c_str());
                 if (!included_script.good())
-		    cerr << "pp3: Warning: included file " 
+                    cerr << "pp3: Warning: included file " 
                          << params.filename_include
                          << " not found; ignored" << endl;
                 else read_parameters_from_script(included_script);
@@ -2938,8 +2939,8 @@ void recalculate_dimensions(dimensions_list& dimensions,
               << "\\catcode`\\_=8\n";
     list<string>::const_iterator p = required_names.begin();
     while (p != required_names.end())
-        temp_file << "\\setbox0 = \\hbox{" << *(p++)
-                  << "}\n  \\immediate\\write\\labelsfile{"
+        temp_file << "\\setbox0 = \\hbox{\\Label{" << *(p++)
+                  << "}}\n  \\immediate\\write\\labelsfile{"
                      "\\the\\wd0s \\the\\ht0s \\the\\dp0s}\n";
     temp_file << "\\immediate\\closeout\\labelsfile\n\\end{document}\n";
     temp_file.close();
@@ -3117,7 +3118,7 @@ struct declination_flex : public flex_label {
 };
 
 @ This is the main declination flex routine.  I calculate the dimensions of the
-label in oder to find out how long the path must be and how much it must be
+label in order to find out how long the path must be and how much it must be
 shifted vertically in order to get the desired angular positioning.  Both
 values can only be estimates.  (For example, the scale is not constant on the
 map, so it cannot work perfectly.  However I try to assure that the path will
@@ -3183,7 +3184,7 @@ bool declination_flex::draw(const transformation& mytransform,
             return false;
 
     label_color.set(OUT);
-    OUT << "\\FlexLabel{\\pstextpath[" << justification
+    OUT << "\\Label{\\pstextpath[" << justification
         << "](0," << lower << "em){\\pscurve[linestyle=none]%\n  ";
     for (int i = 0; i < 3; i++)
         OUT << '(' << x[i] << "cm," << y[i] << "cm)";
@@ -3893,7 +3894,7 @@ the input script.
                 cerr << "Invalid argument: " << argv[1] << endl;
         }
         if (params.in == 0) {
-            cerr << "PP3 1.3.2  Copyright (c) 2003 Torsten Bronger\n" @/
+            cerr << "PP3 1.3.2  Copyright (c) 2002--2004 Torsten Bronger\n" @/
                  << "           http://pp3.sourceforge.net\n\n" @/
                  << "Syntax:\n  pp3 {input-file}\n\n" @/
                  << "{input-file} may be \"-\" to denote standard input.\n" @/
