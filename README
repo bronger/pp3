@@ -1,7 +1,7 @@
 
 		      PP3 -- Celestial charts generation
 
-			    Version 1.3  2003/07/28
+			    Version 1.3  2003/07/29
 			  http://pp3.sourceforge.net
 
 			   (c) 2003 Torsten Bronger
@@ -21,7 +21,7 @@ Please note that PP3 produces nothing else but a LaTeX file.  Thus you must
 have LaTeX installed if you want to get the actual map.  It is not necessary to
 be able to use LaTeX though.  If you want PP3 to produce an EPS or a PDF, dvips
 and ps2pdf must be installed properly, too.  (However mostly they are part of
-the TeX distribution anyway.)
+the TeX distribution anyway.)  See PP3's homepage for more information.
 
 The only really critical point is that PP3 needs to find its data files (all
 files with the .dat extension).  By default,
@@ -69,7 +69,8 @@ DOCUMENTATION
 The documentation of PP3 is its well-documented source code.  Its header tells
 you how you can make a neat pp3.ps from it.  This may have been done already
 for your distribution.  In this case, just print pp3.ps or read it with your
-favourite PostScript viewer.
+favourite PostScript viewer.  You can also download this file as a PDF from
+PP3's homepage.
 
 Please don't be afraid -- if you skip the C++ code, there is much useful,
 readable, and neatly printed information.  Especially the first pages are
@@ -88,9 +89,10 @@ PP3's standard distribution bases on the following original data compilations:
 
 stars          BSC                              Hoffleit & Warren(1)
 nebulae        NGC/IC                           Wolfgang Steinicke(2)
-boundaries     Cat. of Constell. Boundary Data  Davenhall & Leggett
-Milky Way      Sky Panorama View                Axel Mellinger(3)
+boundaries     Cat. of Constell. Boundary Data  Davenhall & Leggett(3)
+Milky Way      Sky Panorama View                Axel Mellinger(4)
 
 (1) Being part of the Carte Du Ciel distribution
 (2) http://www.ngcic.com/steinicke/default.htm
-(3) http://home.arcor-online.de/axel.mellinger/
+(3) ftp://cdsarc.u-strasbg.fr/cats/VI/49
+(4) http://home.arcor-online.de/axel.mellinger/
