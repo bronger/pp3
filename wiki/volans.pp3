@@ -1,0 +1,30 @@
+# Volans, the Flying Fish
+#
+
+filename output volans.tex
+filename include wiki.pp3
+
+set constellation VOL
+set center_rectascension   7.8
+set center_declination   -70
+set box_height 6.6
+set box_width  6.3
+
+set faintest_star_disk_magnitude 5
+
+
+objects_and_labels
+
+add_labels HD 78045  HD 71878  HD 57623  HD 68520
+           HD 63295 ;  # alpha, beta, delta, epsilon, and zeta Vol
+
+text Volans at 6.7 -65 along declination towards SW ;
+text Mensa at 7.5 -76 along declination towards SE ;
+text Dorado at 6.5 -67.5 along declination towards E ;
+text Chamaeleon at 10.15 -76 along declination towards S ;
+text Pictor at 6.8 -63.5 along declination ;
+text Carina at 7 -63.5 along declination towards NW ;
+text Vela at 8.95 -56.5 along declination towards NW ;
+
+text "\\footnotesize L\\kern0.1emM\\kern0.1emC" 
+  at 5.3 -70 color 0.0 0.0 0.9333 towards W ;

@@ -1,0 +1,27 @@
+# Musca, the Fly
+#
+
+filename output musca.tex
+filename include wiki.pp3
+
+set constellation MUS
+set center_rectascension  12.6
+set center_declination   -70
+set box_height 5
+set box_width  6.3
+
+
+objects_and_labels
+
+text Musca at 11.4 -75 along declination towards NW ;
+text "\\small Crux" at 12.9 -61.5 along declination towards E ;
+text Chamaeleon at 13.8 -76 along declination towards SE ;
+text Carina at 11.2 -69 along declination towards E ;
+text Volans at 8.8 -75 along declination ;
+text Centaurus at 14.5 -64 along declination towards NE ;
+text Cen at 11.4 -61 along declination towards W ;
+text Apus at 14 -71 along declination towards SW ;
+text Circinus at 13.9 -69 along declination towards W ;
+
+text "\\footnotesize\\itshape Coalsack" 
+  at 13.2 -63.5 color 0.3 0.3 0.9333;

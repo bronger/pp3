@@ -1,0 +1,30 @@
+# Chamaeleon
+#
+
+filename output chamaeleon.tex
+filename include wiki.pp3
+
+set constellation CHA
+set center_rectascension  11
+set center_declination   -79
+set box_height 5
+set box_width  6.3
+
+set faintest_star_disk_magnitude 5
+
+
+objects_and_labels
+
+add_labels HD 71243  HD 106911  HD 92305  HD 93779
+           HD 71701 ; # alpha, beta, gamma, delta, and theta Cha
+
+reposition HD 92305 W ;  # gamma Cha
+
+text Chamaeleon at 10.15 -76 along declination towards S ;
+text Carina at 9.1 -75 along declination towards NW ;
+delete HD 80950  HD 80951 ;  # Making space for "Carina"
+text Volans at 8.8 -75 along declination ;
+text Musca at 11.4 -75 along declination towards NW ;
+text \FlexLabel{Mensa} at 7 -84 towards E ;
+text \FlexLabel{Apus} at 15 -82.5 towards W ;
+text \FlexLabel{Octans} at 11 -87 towards S ;
