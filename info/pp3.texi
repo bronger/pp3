@@ -1,7 +1,7 @@
 % -*-texinfo-*-
 \def\niceracronym#1{#1}
-%\def\rmdefault{ppl}\def\ne{\mathrel{\not{}\mskip-8mu=}}\input pstexinfo
-\input texinfo
+\def\rmdefault{ppl}\def\ne{\mathrel{\not{}\mskip-8mu=}}\input pstexinfo
+@c\input texinfo
 @let@acronym@niceracronym
 
 @c 	$Id$	
@@ -1307,8 +1307,11 @@ positions around the respective object, and calculates the resulting
 overlaps for each position.  The overlaps are counted as
 @emph{penalties}.  The position with the smallest penalty value is
 chosen.  In very bad cases when the penalties exceed a certain
-threshold, the label is not printed at all.  However, all of this can be
-overruled by the user.
+threshold, the label is not printed at all.
+
+All of this can be overruled by the user, but normally the standard
+behaviour is good enough.  So read this section only if you are really
+keen to know how it works.
 
 @menu
 * Basics about penalties::      How PP3 calculates penalties.
@@ -1421,7 +1424,7 @@ totally okay for you.
 Sometimes a certain region of the map is that crowded with stars,
 nebulae, labels, and more, that there simply is no space left for yet
 another label.  In this case the penalty value reaches a very high
-number.  If it exceeds a given threshold, @PPTHREE{} suppressed that
+number.  If it exceeds a given threshold, @PPTHREE{} suppresses that
 label.  You can still override this, see @ref{Reposition labels}.
 
 You can set this threshold with
@@ -1444,7 +1447,7 @@ handy zigzag.
 
 @menu
 * General structure::           The outline of a PP3 input script.
-* Parameters::                  First part: Parameters.  First part: parameters.
+* Parameters::                  First part:  parameters.
 * Commands::                    Second part: stars, nebulae and labels.
 @end menu
 
@@ -2098,7 +2101,7 @@ and @code{towards} keywords as well.
 @subsubsection Flexes
 @cindex flex labels
 
-@deffn Command text {label-text} @code{at} rectascension declination [@code{along} @code{declination}] @code{;}
+@deffn Command text {label-text} @code{at} rectascension declination @code{along declination} @code{;}
 Create a flex label at the given coordinates.  A flex label follows the
 respective declination circle.
 @end deffn
@@ -2111,7 +2114,7 @@ For further options see @ref{Arbitrary text}.
 @subsubsection Tic mark labels
 @cindex tic mark labels
 
-@deffn Command text {label-text} @code{at} rectascension declination [@code{tics} (@code{rectascension} | @code{declination}) step] @code{;}
+@deffn Command text {label-text} @code{at} rectascension declination @code{tics} (@code{rectascension} | @code{declination}) step @code{;}
 @end deffn
 
 @noindent
@@ -2398,7 +2401,7 @@ Ecliptic and grid don't take part in @PPTHREE{}'s penalty scheme yet.
 @cindex Small Magellanic Cloud
 
 @item
-Great nebulae are drawn as ellipses representing their approximative
+Large nebulae are drawn as ellipses representing their approximative
 shape in the sky.  However, the algorithm doing that is mathematically
 flawed and doesn't work for polar-near regions.  Fortunately this only
 affects the Small Magellanic Cloud, the actual shape of which is, by a
@@ -2882,3 +2885,4 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  deffn deffnx ifhtml todo xmarksthespot miktex Cnc hskip psdots
 @c  LocalWords:  leo nofiles pst TicMark TextLabel AtBeginDocument mypreamble
 @c  LocalWords:  IfFileExists eulervm pmy phv riptsize mdseries atid betelg
+@c  LocalWords:  PSTricks
