@@ -11,4 +11,5 @@ set box_height 9
 set box_width 9
 set grad_per_cm 4
 
+switch milky_way on
 color milky_way 0.8 0.6 1
