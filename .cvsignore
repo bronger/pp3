@@ -1,0 +1,54 @@
+*.aux
+Milchstrasse
+constell
+*.cc
+pp3
+*.tmp
+*.gz
+*.gz2
+*.zip
+*.tex
+*.log
+*.dvi
+*.idx
+*.scn
+*.toc
+*.eps
+*.ps
+sicher
+bsc5digest
+distri
+condigest
+boo.pp3
+milkydigest
+leo.pp3
+a.out
+milkyway.png
+milkyway.pgm
+? tbook
+? ngc_ic
+? crb.pp3
+? ori.pp3
+? leo.png
+? her.pp3
+? boo.png
+? pp3-1.0
+? crb.png
+? message.txt
+? cyg.pp3
+? cyg.png
+? pp3-1.1
+? her.png
+? pp3temp.dat
+? test
+? sco.pp3
+? pp3-1.1-linux
+? pp3-1.0-linux
+? h2g2ascp.pp3
+? pp3-1.1-win
+? .emacs.desktop
+? win-bin
+? pp3-1.0-win
+? vir.pp3
+? ori.png
+? labeldimens.dat
