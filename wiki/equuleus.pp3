@@ -1,0 +1,26 @@
+# Equuleus, the Little Horse
+#
+
+filename output equuleus.tex
+filename include wiki.pp3
+
+set constellation EQU
+set center_rectascension  21.2
+set center_declination   8
+set box_height 7
+set box_width 6.3
+
+set grad_per_cm 3
+
+set faintest_star_with_label_magnitude 4.5
+set faintest_star_disk_magnitude 5.5
+
+objects_and_labels
+
+add NGC 6891  NGC 6934  NGC 7006 ;
+add_labels EQU 5  EQU 1 ;
+
+text Equuleus at 21 12 along declination towards SW ;
+text Pegasus at 21.2 13.5 along declination towards NW ;
+text Delphinus at 20.95 9 along declination towards E ;
+text Aquarius at 20.7 2 along declination towards SW ;
