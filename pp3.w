@@ -32,8 +32,8 @@
 \font\fiverm=pplr7t scaled 500
 
 \font\teni=zplmr7m % math italic    (zptmcm7m for Times)
-\font\seveni=zplmr7m
-\font\fivei=zplmr7m
+\font\seveni=zplmr7m scaled 700
+\font\fivei=zplmr7m scaled 500
 
 \font\tensy=zplmr7y % math symbols  (zptmcm7y for Times)
 \font\sevensy=zplmr7y scaled 700
@@ -121,12 +121,12 @@
 \font\ttitlefont=pcrb7t scaled\magstep3    % typewriter type in title
 
 
-\def\title{PP3 (Version 0.1)}
+\def\title{PP3 (Version 0.2)}
 \def\topofcontents{\null\vfill
   \centerline{\titlefont The  Sky Map
   Creator {\stitlefont PP3}}
   \vskip 15pt
-  \centerline{(Version 0.1)}
+  \centerline{(Version 0.2)}
   \vfill}
 \def\botofcontents{\parindent2em\vfill
 \noindent
@@ -198,15 +198,18 @@ objects data structurs (e.\,g.\ stars) for containing all view frame dependent
 information.  Most importantly it contains the label of a celestial object, its
 position relatively to the object, and its size.
 
-|in_view| is |true| if the object is actually display on screen.  |x| and |y|
+|in_view| is |true| if the object is actually displayed on screen.  |x| and |y|
 contain the screen coordinates in centimetres.  |radius| is the radial size of
 the object in centimetres.  |skip| is given in centimetres, too.  It denotes
 the space between the outer boundary of the object (enclosed by |radius|) and
 the label.  |with_label| is true if the object has a label, with |label_width|
-and |label_height| (estimated in centimetres) and |label_angle|.  |lable_angle|
-can only have eight possible values: 0:~$0^\circ\!$, 1:~$45^\circ\!$,
-2:~$90^\circ\!$, 3:~$135^\circ\!$, 4:~$180^\circ\!$, 5:~$225^\circ\!$,
-6:~$270^\circ\!$, and 7:~$315^\circ\!$.
+and |label_height| (estimated in centimetres) and |label_angle|.
+|label_arranged| is |true| if the best place for the label has been found
+already.  Only then the label should be really printed, but the real use of
+|label_arranged| is that it avoids the label to be arranged twice.
+|lable_angle| can only have eight possible values: 0:~$0^\circ\!$,
+1:~$45^\circ\!$, 2:~$90^\circ\!$, 3:~$135^\circ\!$, 4:~$180^\circ\!$,
+5:~$225^\circ\!$, 6:~$270^\circ\!$, and 7:~$315^\circ\!$.
 
 @c
 struct view_data {
@@ -214,20 +217,25 @@ struct view_data {
     double x,y;
     double radius;
     double skip;
-    bool with_label;
+    bool with_label, label_arranged;
     string label;
     double label_width, label_height;
     int label_angle;
     view_data() : in_view(true), x(0.0), y(0.0), radius(0.0), skip(0.06),
-                  with_label(false), label(), label_width(0.24),
-                  label_height(0.36), label_angle(0) { }
+                  with_label(false), label_arranged(false), label(), 
+                  label_width(0.24), label_height(0.36), label_angle(0) { }
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
     virtual double penalties_with(double& left,double& right,double& top,
                               double& bottom) const;
 };
 
-typedef vector<view_data> objects_list;
+@ This is the only structure that is not put into a container directly, but via
+references.  The reason is the virtual routine |penalties_with()|; I want to
+use polymorphy.
+
+@c
+typedef vector<view_data*> objects_list;
 
 @ Each label is stored in |view_data| by its dimensions, its |skip|, the
 |radius| of the object itself, and the |label_angle|.  While these quantities
@@ -240,7 +248,7 @@ stored in |left|, |right|, |top|, and |bottom| in screen centimetres.
 
 @c
 void view_data::get_label_boundaries(double& left,double& right,double& top,
-                          double& bottom) const {
+                                     double& bottom) const {
     const double origin_x =
         x + (radius + skip) * cos(M_PI_4 * double(label_angle));
     const double origin_y =
@@ -259,20 +267,47 @@ void view_data::get_label_boundaries(double& left,double& right,double& top,
     top = bottom + label_height;
 }
 
+@ Every object of type |view_data| (or a descendant of it) must be able to
+calculate the overlap of itself with a rectangle given by |left|, |right|,
+|top|, and |bottom|.  It must then create a penalty value out of it.  Normally
+this is just the overlap itself in square centimetres, like here.
+
+@c
 @<Missing math routines@>@;@#
 
-double view_data::penalties_with(double& left1,double& right1,double& top1,
-                                 double& bottom1) const {
-    double left2, right2, top2, bottom2;
-    get_label_boundaries(left2,right2,top2,bottom2);
-    const double overlap_left = fmax(left1, left2);
-    const double overlap_right = fmin(right1, right2);
-    const double overlap_top = fmin(top1, top2);
-    const double overlap_bottom = fmax(bottom1, bottom2);
-    const double overlap_x = fdim(overlap_right, overlap_left);
-    const double overlap_y = fdim(overlap_top, overlap_bottom);
-    return overlap_x * overlap_y;
+double view_data::penalties_with(double& left,double& right,double& top,
+                                 double& bottom) const {
+    if (with_label && label_arranged) {
+        double left2, right2, top2, bottom2;
+        get_label_boundaries(left2,right2,top2,bottom2);
+        const double overlap_left = fmax(left, left2);
+        const double overlap_right = fmin(right, right2);
+        const double overlap_top = fmin(top, top2);
+        const double overlap_bottom = fmax(bottom, bottom2);
+        const double overlap_x = fdim(overlap_right, overlap_left);
+        const double overlap_y = fdim(overlap_top, overlap_bottom);
+        return overlap_x * overlap_y;
+    } else return 0.0;
 }
+
+@ The book claims that the following routines are part of the {\mc GNU}
+\CEE/~Library version~2.2 beta.  However, I didn't find them.
+
+@q'@>
+
+@<Missing math routines@>=
+inline double fmin(const double& x, const double& y) {
+    return x < y ? x : y;
+}
+
+inline double fmax(const double& x, const double& y) {
+    return x > y ? x : y;
+}
+
+inline double fdim(const double& x, const double& y) {
+    return x > y ? x - y : 0.0;
+}
+
 
 @*1 Stars.  The actual star data is -- like all other user defined data
 structure in this program -- organised as a |struct| because it's too simple
@@ -304,9 +339,27 @@ struct star : public view_data {
     virtual double penalties_with(double& left,double& right,double& top,
                                   double& bottom) const;
 };
+
+@ In order to find the penalties with a (labelled) star, I first calculate them
+for the label itself, which may be |0.0|, in particular if |label_arranged| is
+still |false|.  Then I determine the rectangular overlap, just like in
+|view_data::penalties_with()|.  This is unfortunate, because stars are circles
+and not rectangles.  FixMe: This should be done justice to.
+
+@c
 double star::penalties_with(double& left,double& right,double& top,
                             double& bottom) const {
     double penalties = view_data::penalties_with(left, right, top, bottom);
+    const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
+        bottom2 = y - radius;
+    const double overlap_left = fmax(left, left2);
+    const double overlap_right = fmin(right, right2);
+    const double overlap_top = fmin(top, top2);
+    const double overlap_bottom = fmax(bottom, bottom2);
+    const double overlap_x = fdim(overlap_right, overlap_left);
+    const double overlap_y = fdim(overlap_top, overlap_bottom);
+    penalties += overlap_x * overlap_y;
+    return penalties;
 }
 
 
@@ -419,10 +472,32 @@ struct nebula : public view_data {
                declination(0.0), magnitude(0.0), diameter_x(0.0),
                diameter_y(0.0), horizontal_angle(0.0), kind(unknown) { }
     virtual double penalties_with(double& left,double& right,double& top,
-                              double& bottom) const { return 0.0; }
+                                  double& bottom) const;
 };
 
 typedef vector<nebula> nebulae_list;
+
+@ In order to find the penalties with a (labelled) nebula, I first calculate
+them for the label itself, which may be |0.0|, in particular if
+|label_arranged| is still |false|.  Then I determine the rectangular overlap,
+just like in |view_data::penalties_with()|.  This is unfortunate, because nebulae
+are circles and not rectangles.  FixMe: This should be done justice to.
+
+@c
+double nebula::penalties_with(double& left,double& right,double& top,
+                            double& bottom) const {
+    double penalties = view_data::penalties_with(left, right, top, bottom);
+    const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
+        bottom2 = y - radius;
+    const double overlap_left = fmax(left, left2);
+    const double overlap_right = fmin(right, right2);
+    const double overlap_top = fmin(top, top2);
+    const double overlap_bottom = fmax(bottom, bottom2);
+    const double overlap_x = fdim(overlap_right, overlap_left);
+    const double overlap_y = fdim(overlap_top, overlap_bottom);
+    penalties += overlap_x * overlap_y;
+    return penalties;
+}
 
 @ As you can see, the file format for a nebulae file is very simple, because
 there are no string fields with possible whitespace within them.  It's just a
@@ -454,8 +529,6 @@ The format is just a stream of |nebula|e.
 FixMe: I want |dimensions| to be |const|.
 
 @c
-double fmax(const double& x, const double& y);
-
 void read_nebulae(const string filename, nebulae_list& nebulae,
                   dimensions_list& dimensions) {
     ifstream nebulae_file(filename.c_str());
@@ -542,7 +615,7 @@ one owner.  I don't know how this can happen.
 @q'@>
 
 @c
-struct boundary {
+struct boundary : public view_data {
     vector<point> points;
     vector<string> constellations;
     bool belongs_to_constellation(const string constellation) const;
@@ -598,7 +671,7 @@ istream& operator>>(istream& in, boundary& p) {
     return in;
 }
 
-@ Here I read a set of boundaries froma file.  It's simply a list of
+@ Here I read a set of boundaries from a file.  It's simply a list of
 |boundary|'s.
 
 @c
@@ -782,44 +855,144 @@ bool transformation::polar_projection(const double rectascension,
 
 @* Constellation lines.  This is not about the {\it boundaries}, but about the
 connection lines between the main stars of a given constellation.  They are
-mere eye candy.  I call them ``connections'' in this program to keep the name
+mere eye candy.  I call their |struct| type ``connections'' to keep the name
 unique and concise.
 
 A |connection| consists of |lines|.  The point coordinates are screen
 coordinates in centimetres.  |from| and |to| are the star star and the end
-star, given by their Henry Draper Catalogue number.
+star, given by their index in |stars|.
 
-%% The fields in |connection| are divided into two groups: The {\it raw\/} fields
-%% |from|, |to|, and |intervals|; with these fields the object is initialised.
-%% And the {\it cooked\/} field |lines|.  The cooked field is initialised with the
-%% raw fields by the element function |cook()|.  This distinction is a little bit
-%% artificial, but it makes |connection| a little bit more alike to the other data
-%% structures in this program: First a load of connections is read from a file.
-%% At this time, no labels have been arranged/\hskip0ptdrawn yet, so we cannot
-%% cook the connections at once (and eliminate the distiction).  Later, when
-%% everything but the connections is drawn, they can get cooked, because now all
-%% |objects| ($={}$label positions) are known.
+Notice that |start| and |end| aren't defined before
+|draw_constellation_lines()| has been called, {\it and\/} the constellation
+line is actually visible.  Then they contain the screen coordinates of the
+start and the end point of the line.
 
 @s connection int
 
+@q'@>
+
 @c
-struct connection  {
+struct connection : public view_data {
+    point start, end;
     int from, to;
     connection(const string from_name, const string to_name,
                const stars_list& stars);
+    virtual double penalties_with(double& left,double& right,double& top,
+                              double& bottom) const;
 };
 
 typedef vector<connection> connections_list;
 
-@
+@ Maybe it was a bad idea to do so much work in the constructor of this class.
+It could be done in |read_constellation_lines()| as well.  Be that as it may,
+here I map the names |from_name| and |to_name| to the indexes of their
+respective stars in |stars|.  The names must be given in the format
+$$\hbox{{\it Flamsteed number}\SP{\it Constellation}},$$ where {\it
+Constellation\/} must be given as an all uppercase three letter abbreviation.
+For example: $$\hbox{\.{19\SP ORI}}$$ is $\alpha$~Ori (Rigel).  This is pretty
+contraining, and eventually this routine should understand other name types as
+well, or at least it should allow superfluous whitespace etc.
+
 @c
 connection::connection(const string from_name, const string to_name,
-                       const stars_list& stars) : from(-1), to(-1) {
+                       const stars_list& stars)
+    : from(-1), to(-1), start(), end(), view_data() {
+    @<Find Flamsteed number of name called |from_name|@>@;
+    @<Find Flamsteed number of name called |to_name|@>@;
+    for (int i = 0; i < stars.size(); i++) {
+        if (from_flamsteed == stars[i].flamsteed &&
+            from_constellation == stars[i].constellation) from = i;
+        if (to_flamsteed == stars[i].flamsteed &&
+            to_constellation == stars[i].constellation) to = i;
+    }
+    if (from == -1 || to == -1)
+        throw string("Constellation lines: Star not found");
+}
+
+@*1 Penalty calculation.  The current way to calculate the penalties with
+constellation lines is simple, maybe too simple.  I only check whether the
+current line lies -- partly or not -- inside the given label rectangle.  If it
+does, the penalty value is simply the area of the label, otherwise it's zero.
+Certainly it would be better to calculate penalties according to the amount of
+overlap and to balance it better with the other penalty values.
+
+But I just want to make it simple, and I want to make those overlaps expensive.
+
+@q'@>
+
+@ This is the first part of the algorithm.  It is actually pretty simple,
+however hard to explain.  We have two lines to intersect: One edge of the label
+rectangle and the constellation line.  The rectangle is given by |left|,
+|right|, |top|, and |bottom| -- as usual.  The constellation line is given by
+their start point |start| and end point |end|.  Or, in parameterised form:
+%
+$$\vec x = {\hbox{|start.x|} \choose \hbox{|start.y|}} + \lambda
+{\hbox{|end.x|} - \hbox{|start.x|} \choose \hbox{|end.y|} - \hbox{|start.y|}},
+\qquad \lambda\in[0;1].$$
+%
+The edge of the rectangle is given by (left edge as
+example)
+%
+$$\eqalign{\left(\vec x - {\hbox{|left|} \choose 0}\right) \cdot
+{1\choose0} &= 0 \cr \noalign{\vskip0.5ex} \Rightarrow\quad \hbox{|start.x|} +
+\lambda (\hbox{|end.x|} - \hbox{|start.x|}) &= \hbox{|left|}\cr
+\mathrel{\mathop\Leftrightarrow^{end.x - start.x \ne 0}\lambda = {\hbox{|left|}
+- \hbox{|start.x|} \over \hbox{|end.x|} - \hbox{|start.x|}}}}$$
+%
+with the
+boundary condition $\hbox{|bottom|} < \hbox{|start.y|} + \lambda
+(\hbox{|end.y|} - \hbox{|start.y|}) =: \hbox{|intersection|} < \hbox{|top|}$.
+With the abbreviations/\hskip0ptassignments (also exemplarily for the `left'
+case)
+%
+$$\eqalign{\hbox{|numerator|} &= \hbox{|left|} - \hbox{|start.x|},\cr
+\hbox{|denominator|} &= \hbox{|end.x|} - \hbox{|start.x|},\cr
+\hbox{|zero_point|} &= \hbox{|start_y|},\cr \hbox{|slope|} &= \hbox{|end.y|} -
+\hbox{|start.y|},\cr \hbox{|min|} &= \hbox{|bottom|},\quad \hbox{|max|} =
+\hbox{|top|}}$$
+%
+we get the following routine for finding out whether a certain
+label rectangle edge is intersected by the constellation line or not:
+
+@c
+bool line_overlap(double numerator, double denominator,
+                  double zero_point, double slope, double min, double max) {
+    if (denominator == 0) return false;
+    const double lambda = numerator / denominator;
+    const double intersection = zero_point + lambda * slope;
+    return intersection > min && intersection < max;
+}
+
+@ Now for the second part of the intersection algorithm.  Here I apply the
+preceding routing on all four label edges.  If there is an intersection
+(however it may look like), I return |whole_area| as the penalty value.
+
+@c
+double connection::penalties_with(double& left,double& right,double& top,
+                                  double& bottom) const {
+    const double whole_area = (right - left) * (top - bottom);
+    double lambda;
+    point r(end.x - start.x, end.y - start.y);
+    if (line_overlap(left - start.x, r.x, start.y, r.y, bottom, top) ||@/
+        line_overlap(right - start.x, r.x, start.y, r.y, bottom, top) ||@/
+        line_overlap(top - start.y, r.y, start.x, r.x, left, right) ||@/
+        line_overlap(bottom - start.y, r.y, start.x, r.x, left, right))
+        return whole_area;
+    return 0.0;
+}
+
+@ Here I do simple and annoying string parsing.  I try to fill the variables
+|from_flamsteed| and |from_constellation| with the correct values, and complain
+if this is apparently not possible.  FixMe: Could be more thorough: Make
+|from_constellation| a three uppercase letters sequence, allow superfluous
+whitespace.
+
+@<Find Flamsteed number of name called |from_name|@>=
+    int from_flamsteed = -1;
+    string from_constellation;
     int space_index = from_name.find(' ');
     if (space_index == string::npos)
         throw string("Constellation lines: invalid star name");
-    int from_flamsteed = -1;
-    string from_constellation;
     if (space_index == string::npos)
         throw string("Constellation lines: invalid star name");
     from_flamsteed = strtol(from_name.substr(0,space_index).c_str(), 0, 10);
@@ -829,6 +1002,9 @@ connection::connection(const string from_name, const string to_name,
     if (from_constellation.length() != 3)
         throw string("Constellation lines: invalid star name");
 
+@ Totally analogous to |@<Find Flamsteed number of name called |from_name|@>|.
+
+@<Find Flamsteed number of name called |to_name|@>=
     int to_flamsteed = -1;
     string to_constellation;
     space_index = to_name.find(' ');
@@ -841,23 +1017,28 @@ connection::connection(const string from_name, const string to_name,
     if (to_constellation.length() != 3)
         throw string("Constellation lines: invalid star name");
 
-    for (int i = 0; i < stars.size(); i++) {
-        if (from_flamsteed == stars[i].flamsteed &&
-            from_constellation == stars[i].constellation) from = i;
-        if (to_flamsteed == stars[i].flamsteed &&
-            to_constellation == stars[i].constellation) to = i;
-    }
-    if (from == -1 || to == -1)
-        throw string("Constellation lines: Star not found");
-}
 
-@
+@ Here I draw the constellation lines.  In the loop I test all lines available
+in |connections|.  The first thing in the loop is to assure that both stars are
+actually visible.\footnote{$^2$}{This is one of the very rare times when
+|in_view| is actually used.}  At the beginning $(\hbox{|x1|}, \hbox{|y1|})$ and
+$(\hbox{|x2|}, \hbox{|y2|})$ are the screen coordinates of the two stars that
+are supposed to be connected by a line.  Then I move from there to the
+respective other star by the amount of |skip|.  The current length of the
+connection line is stored in~|r| which must have a minimal value (in particular
+it must be positive), otherwise it doesn't make sense to draw the line.
+Finally the line is drawn from the new $(\hbox{|x1|}, \hbox{|y1|})$ to the new
+$(\hbox{|x2|}, \hbox{|y2|})$.
+
+@q'@>
+
 @c
 void draw_constellation_lines(const transformation& mytransform,
-                              const connections_list& connections,
+                              connections_list& connections,
                               const stars_list& stars,
+                              objects_list& objects,
                               ostream& out = cout) {
-    const double min_length = 0.02;
+    const double min_length = 0.2;
     out << "\\psset{linecolor=green,linestyle=solid,linewidth=1pt}%\n";
     for (int i = 0; i < connections.size(); i++)
         if (stars[connections[i].from].in_view &&
@@ -867,26 +1048,39 @@ void draw_constellation_lines(const transformation& mytransform,
             double x2 = stars[connections[i].to].x;
             double y2 = stars[connections[i].to].y;
             const double phi = atan2(y2 - y1, x2 - x1);
-	    double r = hypot(x2 - x1, y2 - y1);
+            double r = hypot(x2 - x1, y2 - y1);
             double skip;
             skip = stars[connections[i].from].radius +
                 stars[connections[i].from].skip;
-	    r -= skip;
+            r -= skip;
             x1 += skip * cos(phi);
             y1 += skip * sin(phi);
             skip = stars[connections[i].to].radius +
                 stars[connections[i].to].skip;
-	    r -= skip;
+            r -= skip;
             x2 -= skip * cos(phi);
             y2 -= skip * sin(phi);
-            if (r > min_length && r > 0.0)
+            connections[i].radius = r/2.0;
+            connections[i].x = (x1 + x2) / 2.0;
+            connections[i].y = (y1 + y2) / 2.0;
+            if (r > min_length && r > 0.0) {
                 out << "\\psline{cc-cc}(" << x1 << ',' << y1
                     << ")(" << x2 << ',' << y2 << ")%\n";
+                connections[i].start = point(x1,y1);
+                connections[i].end = point(x2,y2);
+                objects.push_back(&connections[i]);
+            }
         }
 
 }
 
-@ I must be able to read a file which contains such data.
+@ I must be able to read a file which contains such data.  Here, too, the text
+file format is very simple: Each line is either empty or it contains exactly
+one star.  An empty line denotes the end of a constellation lines path.
+Consecutive lines with star names are one path.  A star name must be of the
+form $$\hbox{{\it Flamsteed number}\SP{\it Constellation}},$$ where {\it
+Constellation\/} must be given as an all uppercase three letter abbreviation.
+For example, \.{19\SP ORI} is $\alpha$~Ori (Rigel).
 
 @c
 void read_constellation_lines(const string filename,
@@ -914,7 +1108,8 @@ in order to avoid any overlap with other objects, namely other labels, stars,
 or nebulae.  It does so by testing all eight values for |label_angle| and
 calculating a |penalty| value for each of them.  This |penalty| is
 $$\hbox{|penalty|} = \hbox{\it overlap}_{\hbox{\sevenrm labels}} + \hbox{\it
-overlap}_{\hbox{\sevenrm objects}}.$$
+overlap}_{\hbox{\sevenrm objects}} + \hbox{\it penalty}_{\hbox{\sevenrm
+lines}}.$$
 
 |print_labels()| actually generates the \LaTeX\ code for printing them.
 
@@ -945,29 +1140,32 @@ following work only with them.  In the inner |k|-look I test all possible
 
 @c 
 void arrange_labels(objects_list& objects) {
-    vector<view_data> vicinity;
+    objects_list vicinity;
     for (int i = 0; i < objects.size(); i++) {
         vicinity.resize(0);
-        if (objects[i].in_view && objects[i].with_label) {
+        if (objects[i]->in_view && objects[i]->with_label) {
             @<Find objects in vicinity of |objects[i]|@>@;
             double best_penalty = DBL_MAX;
             int best_angle = 0;
             for (int k = 0; k < 8; k ++) {
-                objects[i].label_angle = k;
+                objects[i]->label_angle = k;
                 double on_object_left, on_object_right, on_object_top,
                     on_object_bottom;
-                objects[i].
+                objects[i]->
                     get_label_boundaries(on_object_left, on_object_right,
                                          on_object_top, on_object_bottom);
                 double penalty = 0.0;
-                @<Find overlaps with labels@>@;
-                @<Find overlaps with objects@>@;
+                for (int j = 0; j < vicinity.size(); j++)
+                    penalty +=
+    vicinity[j]->penalties_with(on_object_left, on_object_right, on_object_top,
+                              on_object_bottom);
                 if (penalty < best_penalty) {
                     best_penalty = penalty;
                     best_angle = k;
                 }
             }
-            objects[i].label_angle = best_angle;
+            objects[i]->label_angle = best_angle;
+            objects[i]->label_arranged = true;
         }
     }
 }
@@ -991,55 +1189,15 @@ Of course, it's guaranteed that |objects[i]| is not part of its vicinity.
 
 @<Find objects in vicinity of |objects[i]|@>=
             const double on_object_size =
-                objects[i].radius + objects[i].skip + objects[i].label_width;
-            int last_object_with_labels;
+                objects[i]->radius + objects[i]->skip + objects[i]->label_width;
             for (int j = 0; j < objects.size(); j++) {
-                if (i == j) {
-                    last_object_with_labels = vicinity.size() - 1;
-                    continue;
-                }
-                if (objects[i].in_view)
-                    if (hypot(objects[i].x - objects[j].x,
-                              objects[i].y - objects[j].y) < on_object_size +
-                        objects[j].radius + objects[j].label_width)
+                if (i != j && objects[i]->in_view)
+                    if (hypot(objects[i]->x - objects[j]->x,
+                              objects[i]->y - objects[j]->y) <
+                        on_object_size + objects[j]->radius +
+                        objects[j]->label_width)
                         vicinity.push_back(objects[j]);
             }
-
-@ Here I wander through a part of |vicinity| to find all overlaps of the label
-of |objects[i]| with the labels of its |vicinity|.  As said, I only need to go
-to index |last_object_with_labels| for this.
-
-@<Find overlaps with labels@>=
-                for (int j = 0; j <= last_object_with_labels; j++) {
-                    if (vicinity[j].with_label) {
-                        double left, right, top, bottom;
-                        vicinity[j].get_label_boundaries(left, right,
-                                                         top, bottom);
-                        penalty +=
-                            calculate_overlap(on_object_left, on_object_right,
-                                              on_object_top, on_object_bottom,
-                                              left, right, top, bottom);
-                    }
-                }
-
-@ Here I wander through the whole of |vicinity| to find all overlaps of the
-label of |objects[i]| with the object disks of its |vicinity|.  I make a
-simplification here: I use the circumscribed square of the disk circle.  This
-makes the overlap too big, and sometimes, when it should be zero, it makes it
-non-zero.
-
-@<Find overlaps with objects@>=
-                for (int j = 0; j < vicinity.size() ; j++) {
-                    const double radius = vicinity[j].radius;
-                    const double x = vicinity[j].x;
-                    const double y = vicinity[j].y;
-                    penalty += 
-                        calculate_overlap(on_object_left, on_object_right,
-                                          on_object_top, on_object_bottom,
-                                          x - radius, x + radius, y + radius,
-                                          y - radius);
-                }
-
 
 
 @ Finally I print out all labels by generation \LaTeX\ code from any of them.
@@ -1052,24 +1210,25 @@ origin (bottom left of the view frame) intact.
 void print_labels(const objects_list& objects, ostream& out = cout) {
     out << "\\cyan\n";
     for (int i = 0; i < objects.size(); i++)
-        if (objects[i].in_view && objects[i].with_label) {
-            const double angle = M_PI_4 * double(objects[i].label_angle);
-            const double label_distance = objects[i].radius + objects[i].skip;
-            double x = objects[i].x + label_distance * cos(angle);
-            double y = objects[i].y + label_distance * sin(angle);
+        if (objects[i]->in_view && objects[i]->with_label
+            && objects[i]->label_arranged) {
+            const double angle = M_PI_4 * double(objects[i]->label_angle);
+            const double label_distance = objects[i]->radius + objects[i]->skip;
+            double x = objects[i]->x + label_distance * cos(angle);
+            double y = objects[i]->y + label_distance * sin(angle);
 
-            switch (objects[i].label_angle) {
-            case 2: case 6: x -= objects[i].label_width / 2.0; break;
-            case 3: case 4: case 5: x -= objects[i].label_width; break;
+            switch (objects[i]->label_angle) {
+            case 2: case 6: x -= objects[i]->label_width / 2.0; break;
+            case 3: case 4: case 5: x -= objects[i]->label_width; break;
             }
-            switch (objects[i].label_angle) {
-            case 0: case 4: y -= objects[i].label_height / 2.0; break;
-            case 5: case 6: case 7: y -= objects[i].label_height; break;
+            switch (objects[i]->label_angle) {
+            case 0: case 4: y -= objects[i]->label_height / 2.0; break;
+            case 5: case 6: case 7: y -= objects[i]->label_height; break;
             }
             out << "\\hbox to 0pt{";
             out << "\\hskip" << x << "cm";
             out << "\\vbox to 0pt{\\vss\\hbox{";
-            out << objects[i].label;
+            out << objects[i]->label;
             out << "}\\vskip" << y << "cm";
             out << "\\hrule height 0pt}\\hss}%\n";
         }
@@ -1116,24 +1275,6 @@ void read_label_dimensions(const string filename,
         file >> dimensions[name].width;
         file >> dimensions[name].height;
     }
-}
-
-@ The book claims that the following routines are part of the {\mc GNU}
-\CEE/~Library version~2.2 beta.  However, I didn't find them.
-
-@q'@>
-
-@<Missing math routines@>=
-inline double fmin(const double& x, const double& y) {
-    return x < y ? x : y;
-}
-
-inline double fmax(const double& x, const double& y) {
-    return x > y ? x : y;
-}
-
-inline double fdim(const double& x, const double& y) {
-    return x > y ? x - y : 0.0;
 }
 
 @* Grid and other curves.  It's boring to have only stars on the map.  I want
@@ -1315,11 +1456,9 @@ smoothly through all points.
 
 I need this |"[liftpen=2]"| because eventually the \.{\\pscurve} command may be
 part of a \.{\\pscustom} command and thus be part of a bigger path that forms
--- in terms of the Porstscript language -- one united path.\footnote{$^2$}{This
+-- in terms of the Porstscript language -- one united path.\footnote{$^3$}{This
 means e.\,g.\ that a dashed line pattern won't be broken at subpath junctions.}
 In order to get crisp coners, the \.{liftpen} option is necessary.
-
-@q'@>
 
 @c
 void draw_boundary_line(const boundary& b, const transformation& transform) {
@@ -1335,7 +1474,7 @@ void draw_boundary_line(const boundary& b, const transformation& transform) {
     if (current_line.size() >= 2) {
         if (current_line.size() == 2) cout << "\\psline";
         else cout << "\\pscurve";
-        cout << "[liftpen=2]";
+        cout << "[liftpen=2]{c-c}";
         for (int j = 0; j < current_line.size(); j++) {
             cout << '(' << current_line[j].x << ','
                  << current_line[j].y << ')';
@@ -1386,9 +1525,9 @@ only have to draw them, I have to fill a container of |main()| called |objects|
 which contains elements of type |view_data|.  The part of each |star| or
 |nebula| that is |view_data| is appended to |objects|, if and only if the star
 is visible in the view frame.  The typical command for that is
-$$\hbox{|objects.push_back(view_data(stars[i]));|}$$ (here for stars).  Please
-notice that it is {\it not\/} important whether or not the respective object
-bears a label.
+$$\hbox{|objects.push_back(&stars[i]);|}$$ (here for stars).
+Please notice that it is {\it not\/} important whether or not the respective
+object bears a label.
 
 @ First the nebulae.  Only nebulae with a certain minimal brightness and a
 minimal diameter are included, but all of these get a label by default.  
@@ -1412,8 +1551,8 @@ The |radius| of the label is a rough estimate: It is simply the half of
 If it's large enough, it is printed in its (almost) full beauty, see |@<Draw
 nebula shape@>|.
 
-By the way, |in_view| is set here and at other places, but not really used
-since objects with |in_view|${}={}$|false| aren't in |objects| anyway.
+By the way, |in_view| is set here and at other places, but not often used since
+objects with |in_view|${}={}$|false| aren't in |objects| anyway.
 
 @c
 void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
@@ -1443,7 +1582,7 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
                         << nebulae[i].y << "){"
                         << nebulae[i].radius / 2.54 * 72.27 << "pt}%\n";
                 }
-                objects.push_back(view_data(nebulae[i]));
+                objects.push_back(&nebulae[i]);
             } else nebulae[i].in_view = false;
         } else nebulae[i].in_view = nebulae[i].with_label = false;
 }
@@ -1525,7 +1664,7 @@ void draw_stars(const transformation& mytransform, stars_list& stars,
                     << stars[i].x << ","
                     << stars[i].y << "){"
                     << stars[i].radius / 2.54 * 72.27 << "pt}%\n";
-                objects.push_back(view_data(stars[i]));
+                objects.push_back(&stars[i]);
             } else stars[i].in_view = false;
         } else stars[i].in_view = stars[i].with_label = false;
 }
@@ -1640,7 +1779,7 @@ int main() {
     draw_boundaries(mytransform, boundaries, "ORI");
     draw_nebulae(mytransform, nebulae, objects);
     draw_stars(mytransform, stars, objects);
-    draw_constellation_lines(mytransform, connections, stars);
+    draw_constellation_lines(mytransform, connections, stars, objects);
     arrange_labels(objects);
     print_labels(objects);
     @<Create \LaTeX\ footer@>@;
