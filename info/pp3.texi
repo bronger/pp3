@@ -1645,7 +1645,7 @@ script.  If never, the whole script consists of parameters.
 
 @menu
 * Changing sky objects::        Adding and deleting stars and nebulae.
-* Changing labels::            
+* Changing labels::             
 * Arbitrary text::              How to place arbitrary text on the map.
 @end menu
 
@@ -1795,6 +1795,52 @@ purposes.
 @appendix Known problems
 
 @strong{Do be done.}
+
+@menu
+* Wishlist::                    PP3's todo list.  Feel free to contribute!
+@end menu
+
+
+@node Wishlist
+@section Wishlist
+
+It would be nice to have the following things in @PPTHREE{}.  Please
+contact @uref{mailto:bronger@@users.sourceforge.net,Torsten Bronger} if
+you want to contribute.
+
+@itemize
+@item
+Very faint stars, i.@s{}e.@: stars fainter than
+@samp{faintest_star_disk_magnitude}, should be removed from the map
+automatically, if they overlap with a label.  It shouldn't matter
+whether the label was implicitly created or user-defined.
+
+@item
+An ephemerides module that allows to insert the Sun, the Moon, and the
+planets on the map, for a given date, time, and observation location on
+Earth.  By the way, the C++ module itself is already existing, but its
+integration into @PPTHREE{} is not done yet.
+
+@item
+More map projections, in particular a real isogonal one.
+
+@item
+The resolution of the Milky Way should be determined in a way that
+@TeX{}'s memory doesn't overflow.  Maybe one should switch to contour
+plots insetad of dot patterns for the Milky way.
+
+@item
+Create little bitmaps of all labels in order to determine kerning
+parameters for them.
+
+@item
+@PPTHREE{} should become able to deal with large data bases.
+@end itemize
+
+Besides that, I'd like to re-structure the internals of @PPTHREE{}
+because in some respect the code is not well maintainable and
+expandable.  For the long-term future it may be worth thinking about
+using Guile as the scripting language.
 
 
 @node Data file formats
