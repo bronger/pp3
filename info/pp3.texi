@@ -104,6 +104,58 @@ modify it under the terms of the @acronym{MIT} licence.  Please see the
 @title PP3
 @subtitle drawing beautiful celestial maps
 @subtitle version @value{VERSION}
+@sp 2
+@image{title,10cm,,Constellation map of Orion and its neighbours}
+@c Image can be created with the following PP3 input script:
+@c
+@c filename output title.tex
+@c switch pdf_output on
+@c
+@c set box_width 9
+@c set box_height 9
+@c
+@c filename latex_preamble wiki.tex
+@c
+@c set faintest_star_magnitude 4.5
+@c set faintest_star_disk_magnitude 4.5
+@c set star_scaling 0.8
+@c set grad_per_cm 7
+@c
+@c color background 1 1 1
+@c color stars 0 0 0
+@c switch colored_stars off
+@c color constellation_lines 0.5 0.5 0.5
+@c color nebulae 0 0 0
+@c color milky_way 0.3 0.3 0.3
+@c color ecliptic 0.3 0.3 0.3
+@c color grid 0.8 0.8 0.8
+@c color labels 0 0 0
+@c color text_labels 0.4 0.4 0.4
+@c switch nebulae off
+@c switch grid on
+@c switch boundaries off
+@c
+@c objects_and_labels
+@c
+@c set_label_text ORI 19 "\\footnotesize Rigel"
+@c set_label_text ORI 58 "\\footnotesize Betelgeuse"
+@c set_label_text CMA 9 "\\footnotesize Sirius"
+@c set_label_text CMI 10 "\\footnotesize Procyon"
+@c set_label_text TAU 87 "\\footnotesize Aldebaran"
+@c set_label_text GEM 66 "\\footnotesize Castor"
+@c set_label_text GEM 78 "\\footnotesize Pollux"
+@c
+@c reposition ORI 34 E ;  # Mintaka
+@c
+@c text Orion at 6.1 2 along declination towards N ;
+@c text Bull at 5.3 16.5 along declination towards N ;
+@c text Twins at 7.4 19 along declination towards SW ;
+@c text Unicorn at 6.4 -10 along declination towards NW ;
+@c text Hare at 5.5 -23 along declination towards S ;
+@c text "Big Dog" at 6.8 -20 along declination towards SE ;
+@c text Eridanus at 3.9 -20 along declination towards NW ;
+@c
+@c delete GEM 60 ;
 @author Torsten Bronger
 @page
 @vskip 0pt plus 1filll
@@ -112,7 +164,7 @@ modify it under the terms of the @acronym{MIT} licence.  Please see the
 
 @dircategory Individual utilities
 @direntry
-* PP3: (PP3).   Drawing celestial maps.
+* PP3: (PP3).           Drawing celestial maps.
 @end direntry
 
 @iftex
@@ -2159,10 +2211,10 @@ Each dataset has the following eleven fields:
 @acronym{NGC} catalogue number (`@code{0}' is not listed there),
 
 @item
-@acronym{IC} catalogue number(`@code{0}' is not listed there),
+@acronym{IC} catalogue number (`@code{0}' is not listed there),
 
 @item
-Messier Catalogue number(`@code{0}' is not listed there),
+Messier Catalogue number (`@code{0}' is not listed there),
 
 @item
 The astronomical abbreviation of the constellation.  It must be all
