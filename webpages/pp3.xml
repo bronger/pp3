@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//Torsten Bronger//DTD tbook 1.5.2//EN"
+                      "/usr/share/xml/tbook/tbook.dtd" [
+<!ENTITY PP3 "<visual markup='sf'>PP3</visual>">
+<!ENTITY CWEB "<visual markup='vs'>CWEB</visual>">
+<!ENTITY NGC "<visual markup='vs'>NGC</visual>">
+<!ENTITY MIT "<visual markup='vs'>MIT</visual>">
+<!ENTITY PDF "<visual markup='vs'>PDF</visual>">
+<!ENTITY EPS "<visual markup='vs'>EPS</visual>">
+<!ENTITY DVI "<visual markup='vs'>DVI</visual>">
+<!ENTITY XML "<visual markup='vs'>XML</visual>">
+<!ENTITY tbook "<visual markup='sf'><visual
+markup='bf'>t</visual>book</visual>">
+<!ENTITY i.e. "<latex code='i.\,e.\@'>i.e.</latex>">
+]>
+<article>
+  <title><wrap class="title">&PP3; <latex code="--">--</latex> Celestial Chart
+Generation</wrap></title>
+  <author>Torsten Bronger</author>
+
+  <abstract><p>&PP3; creates celestial charts. It generates resolution
+independent maps of very high graphical quality. They can be used for example
+as illustrations in books or on web pages. You may use own databases or free
+ones from the Internet.</p>
+
+<p style="background-image:
+url('http://sourceforge.net/sflogo.php?group_id=71469&amp;type=5')"></p>
+</abstract>
+
+  <figure><graphics file="pp3-logo" kind="bitmap"/></figure>
+
+  <p skip="big" style="margin-top: 4ex; font-size: larger">&PP3; is used for
+the constellation maps of <url name="http://www.wikipedia.org">Wikipedia</url>!
+(For example, have a look at the <url
+name="http://www.wikipedia.org/wiki/Cygnus">Cygnus</url> entry.)</p>
+
+  <section>
+    <heading style="clear: none">Motivation</heading>
+
+    <p>You can find very many programs on the Internet or elsewhere that draw
+star charts.  Most of them try to imitate a planetarium or your eyepiece view.
+However sometimes one needs such charts for presentational purposes, and the
+number of stars or info pop-up windows with distances or diameters are not
+important.  For example books normally have a high typographic standard, and
+most chart programs would produce output that does not do justice to it.</p>
+
+    <p>Here &PP3; comes into play.  It produces charts that may not be rich in
+detail enough for the professional astronomer but they are perfect as
+illustrations.</p>
+
+  </section>
+
+  <section>
+    <heading>First overview</heading>
+
+    <p>First of all, if you are interested, you can get it on <url
+name="http://sourceforge.net/projects/pp3">&PP3;'s project page</url>.  There
+you also find a reference card, a bug report system and a help forum.  Its
+licence is a slightly modified &MIT; licence.  But it's free software through
+and through.  The `crippled' version has no Milky Way and nebulae data, and no
+&CWEB; source code.</p>
+
+    <p>The program itself consists only of one executable file and a data
+directory.  In the data directory must be the data files (their file extension
+is <verb>.dat</verb>).  The program takes a small text file as input and
+produces a &LaTeX; file as output.</p>
+
+    <p>This &LaTeX; file must be processed by a modern &LaTeX; typesetting
+system.  Eventually Postscript output is produced which has the big advantage
+that it is resolution independent.  It can be successfully converted to &PDF;
+as well.</p>
+
+  </section>
+
+  <section>
+    <heading>Documentation</heading>
+
+    <subsection>
+      <heading>Source code</heading>
+
+      <p skip="med">The only full documentation is the <url
+name="pp3.pdf">source code</url> itself.  Please don't be afraid – the program
+is written in <url
+name="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">&CWEB;</url> so it's
+very easy to read.  On the first pages you can find a short introduction with
+an example and references within the source code where to find further info.
+Some example charts are included in the distribution.  Additionally a reference
+card exists.  If someone wants to contribute, contact me.</p>
+    </subsection>
+
+    <subsection>
+      <heading>Reference card</heading>
+
+      <p>As already mentioned, there is a neat <url name=
+"http://sourceforge.net/project/showfiles.php?group_id=71469&amp;release_id=158044"
+>reference card</url>.  It can be downloaded for A4 and letter paper in &PDF;
+and PostScript format.  If you fold it twice to a zigzag, it's very handy,
+too.  <verb>:-)</verb></p>
+    </subsection>
+
+    <subsection>
+      <heading>Wikipedia example scripts</heading>
+
+      <p>&PP3; is responsible for almost all star maps on English <url
+name="http://www.wikipedia.org">Wikipedia</url>, the free encyclopedia.  Since
+they can serve very well as examples, all of their source scripts are included
+in &PP3;'s distrbution, together with all associated files.</p>
+    </subsection>
+  </section>
+
+  <section>
+    <heading>Examples</heading>
+
+    <figure id="Orion">
+      <graphics file="ori" scale="1.2" kind="vector"/> <caption>The default
+chart.  Please have a look at a <url name="ori.png">larger view</url>,
+too.</caption>
+    </figure>
+
+    <p><ref refid="Orion">Figure</ref> shows more or less the default view of
+&PP3;, &i.e.; if you don't change very much.  Thus the input script is very
+short:
+<verbatim>
+filename output ori.tex
+switch eps_output on
+
+objects_and_labels
+
+delete NGC 2478  NGC 1973  NGC 1975 ;
+reposition ORI 34 E ;    # Mintaka
+reposition ORI 50 W ;    # Alnitak
+</verbatim>
+This is just a little bit of fine-tuning.  I only have to delete some nebulae
+(one of them is a real duplicate in the &NGC; catalogue), and I have to
+position two labels because the constellation lines supresses them.</p>
+
+    <figure id="Scorpion">
+      <graphics file="sco" kind="bitmap"/>
+      <caption>The Scorpion.  (You may click on the picture to get a larger
+view.)</caption>
+    </figure>
+
+  <p>The following script is more complex.  It produces <ref
+refid="Scorpion">figure</ref>:
+<verbatim>
+# Chart of the Scorpion, printable on a black
+# and white printer
+
+set constellation SCO
+set center_rectascension  17
+set center_declination   -30
+set grad_per_cm            4.5
+set box_width              9
+set box_height             7
+
+switch milky_way on
+switch eps_output on
+switch colored_stars off
+color stars 0 0 0
+color nebulae 0 0 0
+color background 1 1 1
+color grid 0.5 0.5 0.5
+color ecliptic 0.3 0.3 0.3
+color constellation_lines 0.7 0.7 0.7
+color labels 0 0 0
+color boundaries 0.8 0.8 0.8
+color highlighted_boundaries 0 0 0
+color milky_way 0.5 0.5 0.5
+
+filename output test.tex
+
+
+objects_and_labels
+
+delete M 18  M 4  NGC 6590  NGC 6634  IC 4700 ;
+reposition SCO 20 S ;    # sigma SCO
+reposition M 23 NE ;
+</verbatim>
+Most of the commands change colour to get this black-and-white effect.  There
+are also gzipped &EPS; versions of both the <url name="ori.eps.gz">Orion</url>
+and the <url name="sco.eps.gz">Scorpion</url> graphics available.</p>
+  </section>
+
+  <section>
+    <heading>Prerequisites</heading>
+
+    <p>&PP3; creates a &LaTeX; file with the extension <verb>.tex</verb>.
+Apparently you cannot directly do something with it.  So you also need:
+<description>
+	<term>&LaTeX;:</term><item>For Windows, you may want to use the <url
+name="http://www.miktex.org">Mik&TeX;</url> distribution, or the <url
+name="http://www.tug.org/texlive/">&TeX; Live</url> distribution.  For Linux,
+it is either already installed or you can easily install it with your package
+manager.  This enables you to use two important commands:<itemize>
+	    <item><verb>latex</verb> for transforming the <verb>.tex</verb>
+file to a <verb>.dvi</verb> file.</item>
+	    <item><verb>dvips</verb> for transforming the <verb>.dvi</verb>
+file to a Postscript or EPS file.</item>
+	  </itemize></item>
+	<term>Ghostscript:</term><item>This is a program for viewing and
+printing Postscript files, and for converting them to &PDF;&sf;.  You need <url
+name="http://www.cs.wisc.edu/~ghost/doc/AFPL/get704.htm">Ghostscript</url>
+itself and <url
+name="http://www.cs.wisc.edu/~ghost/gsview/get43.htm">GSView</url>.  For Linux
+these programs are highly probably already installed.</item>
+      </description>
+It may seem to be unfortunate that you have to install all these programs only
+in order to use &PP3; but fortunately the installation procedures are pretty
+easy and the programs are very useful also for many many other purposes.</p>
+  </section>
+
+  <section>
+    <heading>Original data bases</heading>
+
+    <p>&PP3;'s standard distribution bases on the following original data
+compilations:</p>
+
+    <tabular>
+      <tabhead>
+	<srow>class of object(s) | data base name | authors of compilation</srow>
+      </tabhead>
+      <tabbody>
+	<srow>stars | BSC | Hoffleit &amp; Warren</srow>
+	<row>
+	  <cell>nebulae</cell>
+	  <cell><url
+name="http://www.ngcic.com/steinicke/default.htm">NGC/IC</url></cell>
+	  <cell>Wolfgang Steinicke</cell>
+	</row>
+	<row>
+	  <cell>boundaries</cell>
+	  <cell>Cat.&sf; of Constell.&sf; Boundary Data</cell>
+	  <cell>Davenhall &amp; Leggett</cell>
+	</row>
+	<row>
+	  <cell>Milky Way</cell>
+	  <cell>Sky Panorama View</cell>
+	  <cell><url name="http://home.arcor-online.de/axel.mellinger/">Axel
+Mellinger</url></cell>
+	</row>
+      </tabbody>
+    </tabular>
+  </section>
+
+  <section>
+    <heading>Imprint</heading>
+
+    <p>The author of this text and of &PP3; is <url
+name="mailto:bronger@users.sourceforge.net">Torsten Bronger</url>.  The name
+`&PP3;' is an abbreviation of „Parvum Planetarium“ (Latin for „Little
+Planetarium“), version 3.  The first two versions were totally different and
+are missing.  PP1 was a project during the author's childhood, PP2 never made
+it beyond the logo screen.</p>
+
+    <p>This document was created with the &XML; authoring tool <url
+name="http://tbookdtd.sourceforge.net">&tbook;</url>.</p>
+
+<p skip="small">Copyright © 2003 Torsten Bronger.</p>
+  </section>
+</article>
+
