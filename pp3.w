@@ -278,10 +278,11 @@ sensible program, too.\par}
 #include <cfloat>
 
 
-@* Global parameters.  I have to break a strict \CPLUSPLUS/ rule here: Never
-use |#@t\hskip-\fontdimen2\mainfont@>define|!  However I really found no
-alternative to it.  No |const| construct worked, and if it had done, I'd have
-to use it in every single routine.  And ubiquitous |*params.out|'s are ugly.
+@* Global parameters and default values.  I have to break a strict \CPLUSPLUS/
+rule here: Never use |#@t\hskip-\fontdimen2\mainfont@>define|!  However I
+really found no alternative to it.  No |const| construct worked, and if it had
+done, I'd have to use it in every single routine.  And ubiquitous
+|*params.out|'s are ugly.
 
 @d OUT (*params.out)
 
@@ -298,6 +299,9 @@ struct parameters {
         faintest_star_with_label_magnitude, shortest_constellation_line;
     string constellation;
     int font_size;
+    double penalties_label, penalties_star, penalties_nebula,
+        penalties_boundary, penalties_boundary_rim, penalties_cline,
+        penalties_cline_rim, penalties_threshold, penalties_rim;
     string filename_stars, filename_nebulae, filename_dimensions,
         filename_lines, filename_boundaries, filename_milkyway,
         filename_preamble, filename_include;
@@ -305,6 +309,10 @@ struct parameters {
     ostream* out;
     color bgcolor, gridcolor, eclipticcolor, boundarycolor, hlboundarycolor,
         starcolor, nebulacolor, labelcolor, clinecolor, milkywaycolor;
+    double linewidth_grid, linewidth_ecliptic, linewidth_boundary,
+        linewidth_hlboundary, linewidth_cline, linewidth_nebula;
+    string linestyle_grid, linestyle_ecliptic, linestyle_boundary,
+        linestyle_hlboundary, linestyle_cline, linestyle_nebula;
     bool milkyway_visible, colored_stars, show_grid, show_ecliptic,
         show_boundaries, show_lines, show_labels;
     bool create_eps, create_pdf;
@@ -320,6 +328,11 @@ struct parameters {
                    faintest_star_disk_magnitude(4.5),
                    faintest_star_with_label_magnitude(3.7),
                    shortest_constellation_line(0.1), @/
+                   penalties_label(1.0), penalties_star(1.0),
+                   penalties_nebula(1.0), penalties_boundary(1.0),
+                   penalties_boundary_rim(1.0), penalties_cline(1.0),
+                   penalties_cline_rim(1.0), penalties_threshold(1.0),
+                   penalties_rim(1.0), @/
                    filename_stars("stars.dat"),
                    filename_nebulae("nebulae.dat"),
                    filename_dimensions("labeldimens.dat"),
@@ -338,6 +351,13 @@ struct parameters {
                    labelcolor("labelcolor", 0, 1, 1),
                    clinecolor("clinecolor", 0, 1, 0),
                    milkywaycolor(0, 0, 1), @/
+                   linewidth_grid(0.025), linewidth_ecliptic(0.018),
+                   linewidth_boundary(0.035), linewidth_hlboundary(0.035),
+                   linewidth_cline(0.035), linewidth_nebula(0.018), @/
+                   linestyle_grid("solid"), linestyle_ecliptic("dashed"),
+                   linestyle_boundary("dashed"),
+                   linestyle_hlboundary("dashed"), linestyle_cline("solid"),
+                   linestyle_nebula("solid"), @/
                    milkyway_visible(true),
                    colored_stars(true),
                    show_grid(true), show_ecliptic(true), show_boundaries(true),
@@ -551,7 +571,7 @@ double view_data::penalties_with(const double left, const double right,
         const double overlap_bottom = fmax(bottom, bottom2);
         const double overlap_x = fdim(overlap_right, overlap_left);
         const double overlap_y = fdim(overlap_top, overlap_bottom);
-        return overlap_x * overlap_y;
+        return overlap_x * overlap_y * params.penalties_label;
     } else return 0.0;
 }
 
@@ -628,7 +648,7 @@ double star::penalties_with(const double left, const double right,
     const double overlap_bottom = fmax(bottom, bottom2);
     const double overlap_x = fdim(overlap_right, overlap_left);
     const double overlap_y = fdim(overlap_top, overlap_bottom);
-    penalties += overlap_x * overlap_y;
+    penalties += overlap_x * overlap_y * params.penalties_star;
     return penalties;
 }
 
@@ -745,7 +765,7 @@ double nebula::penalties_with(const double left, const double right,
     const double overlap_bottom = fmax(bottom, bottom2);
     const double overlap_x = fdim(overlap_right, overlap_left);
     const double overlap_y = fdim(overlap_top, overlap_bottom);
-    penalties += overlap_x * overlap_y;
+    penalties += overlap_x * overlap_y * params.penalties_nebula;
     return penalties;
 }
 
@@ -1003,7 +1023,8 @@ double boundary_atom::penalties_with(const double left,const double right,
                                 intersection_points[0].x,
                                 intersection_points[1].y -
                                 intersection_points[0].y);
-    return (core? 8.0 : 0.5) / 72.27*2.54 * length;
+    return (core? 8.0 * params.penalties_boundary :
+            0.5 * params.penalties_boundary_rim) / 72.27*2.54 * length;
 }
 
 @* Coordinate transformations.  They are done by the class |transformation|.
@@ -1305,7 +1326,8 @@ double connection::penalties_with(const double left, const double right,
                                 intersection_points[0].x,
                                 intersection_points[1].y -
                                 intersection_points[0].y);
-    return (core? 8.0 : 0.5) / 72.27*2.54 * length;
+    return (core? 8.0 * params.penalties_cline :
+            0.5 * params.penalties_cline_rim) / 72.27*2.54 * length;
 }
 
 @ I must be able to read a file which contains such data.  Here, too, the text
@@ -1493,7 +1515,7 @@ void arrange_labels(objects_list& objects, dimensions_list& dimensions) {
                                        on_object_right + shell_width,
                                        on_object_top + shell_width,
                                        on_object_bottom - shell_width,
-                                       false);
+                                       false) * params.penalties_rim;
                 }
                 if (on_object_left < 0.0 || on_object_bottom < 0.0 ||
                     on_object_right > params.view_frame_width ||
@@ -1505,27 +1527,27 @@ void arrange_labels(objects_list& objects, dimensions_list& dimensions) {
                 }
             }
             if (!objects[i]->label.empty())
-            if (best_penalty < 0.4 * objects[i]->label_height *
-                objects[i]->label_width) {
-                objects[i]->label_angle = best_angle;
-                objects[i]->label_arranged = true;
+                if (best_penalty < 0.4 * params.penalties_threshold *
+                    objects[i]->label_height * objects[i]->label_width) {
+                    objects[i]->label_angle = best_angle;
+                    objects[i]->label_arranged = true;
 #ifdef DEBUG
-                stringstream penalty;
-                penalty.precision(2);
-                penalty << " " << best_penalty << " ("
-                        <<  best_penalty /
-                    (objects[i]->label_height * objects[i]->label_width) * 100
-                        << "%)";
+                    stringstream penalty;
+                    penalty.precision(2);
+                    penalty << " " << best_penalty << " ("
+                            <<  best_penalty /
+                        (objects[i]->label_height * objects[i]->label_width)
+                        * 100 << "%)";
                 //                objects[i]->label += penalty.str();
-                cerr << "pp3DEBUG: Object " << objects[i]->label << ' ';
-                const star* s = dynamic_cast<star*>(objects[i]);
-                if (s) cerr << s->constellation;
-                cerr << " has penalty of" << penalty.str() << endl;
+                    cerr << "pp3DEBUG: Object " << objects[i]->label << ' ';
+                    const star* s = dynamic_cast<star*>(objects[i]);
+                    if (s) cerr << s->constellation;
+                    cerr << " has penalty of" << penalty.str() << endl;
 #endif
-            } else {
-                objects[i]->with_label = hidden;
-                objects[i]->label_arranged = true;
-            }
+                } else {
+                    objects[i]->with_label = hidden;
+                    objects[i]->label_arranged = true;
+                }
         }
     }
 }
@@ -1882,7 +1904,9 @@ void create_grid(const transformation transform,
                           (scans_per_fullcircle/(2.0*M_PI))) + 2;
     bool within_curve;
     if (params.show_grid) {
-        OUT << "\\psset{linestyle=solid,linecolor=gridcolor,linewidth=0.7pt}%\n";
+        OUT << "\\psset{linestyle=" << params.linestyle_grid
+            << ",linecolor=gridcolor,linewidth="
+            << params.linewidth_grid << "cm}%\n";
         @<Create grid lines for equal declination@>@;
         @<Create grid lines for equal rectascension@>@;
     }
@@ -1901,7 +1925,9 @@ because the very last point {\it must\/} be drawn.
 
 @<Create grid lines for equal declination@>=
     for (int declination = -80; declination <= 80; declination += 10) {
-        if (declination == 0) OUT << "\\psset{linewidth=1.5pt}%\n";
+        if (declination == 0)
+            OUT << "\\psset{linewidth=" << 2.0 * params.linewidth_grid
+                << "cm}%\n";
         within_curve = false;
         const int number_of_points =
             int(cos(declination*M_PI/180.0)*scans_per_fullcircle);
@@ -1909,7 +1935,8 @@ because the very last point {\it must\/} be drawn.
             add_curve_point(double(i)/double(number_of_points)*24.0,
                             declination,transform,i,within_curve,
                             i==number_of_points?1:steps);
-        if (declination == 0) OUT << "\\psset{linewidth=0.7pt}%\n";
+        if (declination == 0)
+            OUT << "\\psset{linewidth=" << params.linewidth_grid << "cm}%\n";
     }
 
 @ The only slightly interesting thing here is that I draw the lines of equal
@@ -1945,8 +1972,9 @@ because $\arctan$ only returns values between $-\pi/2$ and $+\pi/2$.
 
 
 @<Draw the ecliptic@>=
-    OUT << "\\psset{linestyle=dashed,linecolor=eclipticcolor,"
-        << "linewidth=0.5pt}%\n";
+    OUT << "\\psset{linestyle=" << params.linestyle_ecliptic
+        << ",linecolor=eclipticcolor,"
+        << "linewidth=" << params.linewidth_ecliptic << "cm}%\n";
     {
         const double epsilon = 23.44 * M_PI / 180.0;
         const int number_of_points = int(scans_per_fullcircle);
@@ -2038,14 +2066,16 @@ void draw_boundaries(const transformation& mytransform,
                      boundaries_list& boundaries,
                      objects_list& objects,
                      string constellation = string("")) {
-    OUT << "\\psset{linecolor=boundarycolor,linewidth=1.0pt," @/
-        << "linestyle=dashed}%\n";
+    OUT << "\\psset{linecolor=boundarycolor,linewidth="
+        << params.linewidth_boundary << "cm,"
+        << "linestyle=" << params.linestyle_boundary << "}%\n";
     if (!constellation.empty()) {
         for (int i = 0; i < boundaries.size(); i++)
             if (!boundaries[i].belongs_to_constellation(constellation))
                 draw_boundary_line(boundaries[i], mytransform, objects);
-        OUT << "\\psset{linecolor=hlboundarycolor,linewidth=1.0pt,"
-            << "linestyle=dashed}%\n";
+        OUT << "\\psset{linecolor=hlboundarycolor,linewidth="
+            << params.linewidth_boundary << "cm," << "linestyle="
+            << params.linestyle_hlboundary << "}%\n";
         OUT << "\\pscustom{";
         for (int i = 0; i < boundaries.size(); i++)
             if (boundaries[i].belongs_to_constellation(constellation))
@@ -2077,7 +2107,8 @@ non-visible hemisphere (i.\,e.\ $z<0$).
 void draw_constellation_lines(connections_list& connections,
                               const stars_list& stars,
                               objects_list& objects) {
-    OUT << "\\psset{linecolor=clinecolor,linestyle=solid,linewidth=1pt}%\n";
+    OUT << "\\psset{linecolor=clinecolor,linestyle=" << params.linestyle_cline
+        << ",linewidth=" << params.linewidth_cline << "cm}%\n";
     for (int i = 0; i < connections.size(); i++)
         if ((stars[connections[i].from].in_view == visible ||
             stars[connections[i].to].in_view == visible)
@@ -2201,8 +2232,9 @@ nebula shape@>|.
 @c
 void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
                   objects_list& objects) {
-    OUT << "\\psset{linecolor=nebulacolor,linewidth=0.5pt,linestyle=solid,"
-        << "curvature=1 .5 -1}%\n";
+    OUT << "\\psset{linecolor=nebulacolor,linewidth="
+        << params.linewidth_nebula << "cm,linestyle="
+        << params.linestyle_nebula << ",curvature=1 .5 -1}%\n";
     for (int i = 0; i < nebulae.size(); i++)
         if (nebulae[i].in_view != hidden &&
             (((nebulae[i].kind == open_cluster ||
@@ -2478,10 +2510,14 @@ string read_string(istream& script) {
 }
 
 @ Here the actual routine for this first part.  The top-level keywords are:
-``\.{color}'', ``\.{switch}'', ``\.{filename}'', and ``\.{set}''.
+``\.{color}'', ``\.{linewidth}'', ``\.{linestyle}'', ``\.{switch}'',
+``\.{penalties}'', ``\.{filename}'', and ``\.{set}''.
 
 @.color@>
+@.linewidth@>
+@.linestyle@>
 @.switch@>
+@.penalties@>
 @.filename@>
 @.set@>
 
@@ -2496,7 +2532,13 @@ void read_parameters_from_script(istream& script) {
         } else
             @<Set color parameters@>@;
         else
+            @<Set line widths@>@;
+        else
+            @<Set line styles@>@;
+        else
             @<Set on/off parameters@>@;
+        else
+            @<Set penalty parameters@>@;
         else
             @<Set filename parameters@>@;
         else
@@ -2514,6 +2556,7 @@ sub-keywords can be used: ``\.{background}'', ``\.{grid}'', ``\.{ecliptic}'',
 ``\.{milky\_way}''.  In case of the milky way, the colour denotes the brightest
 regions.  (The darkest have \.{back}\-\.{ground} colour.)
 
+@.color@>
 @.background@>
 @.grid@>
 @.ecliptic@>
@@ -2546,12 +2589,82 @@ regions.  (The darkest have \.{back}\-\.{ground} colour.)
                               " in input script");
         }
 
+@ {\sloppy\raggedright The following lines can be modified: ``\.{grid}'',
+``\.{ecliptic}'', ``\.{boundaries}'', ``\.{highlighted\_boundaries}'',
+``\.{nebulae}'', and ``\.{constellation\_lines}''.  The linewidth in
+centimetres must follow.\par}
+
+@.line\_width@>
+@.grid@>
+@.ecliptic@>
+@.boundaries@>
+@.highlighted\_boundaries@>
+@.nebulae@>
+@.constellation\_lines@>
+
+@<Set line widths@>=
+        if (opcode == "line_width") {
+            string line_name;
+            script >> line_name;
+            if (line_name == "grid") script >> params.linewidth_grid;
+            else if (line_name == "ecliptic")
+                script >> params.linewidth_ecliptic;
+            else if (line_name == "boundaries")
+                script >> params.linewidth_boundary;
+            else if (line_name == "highlighted_boundaries")
+                script >> params.linewidth_hlboundary;
+            else if (line_name == "nebulae")
+                script >> params.linewidth_nebula;
+            else if (line_name == "constellation_lines")
+                script >> params.linewidth_cline;
+            else throw string("Undefined \"line_width\" construct"
+                              " in input script");
+        }
+
+@ {\sloppy\raggedright The following lines can be modified: ``\.{grid}'',
+``\.{ecliptic}'', ``\.{boundaries}'', ``\.{highlighted\_boundaries}'',
+``\.{nebulae}'', and ``\.{constellation\_lines}''.  You can set the respective
+line style to ``\.{solid}'', ``\.{dashed}'', and ``\.{dotted}''.\par}
+
+@.line\_style@>
+@.solid@>
+@.dashed@>
+@.dotted@>
+@.grid@>
+@.ecliptic@>
+@.boundaries@>
+@.highlighted\_boundaries@>
+@.nebulae@>
+@.constellation\_lines@>
+
+@<Set line styles@>=
+        if (opcode == "line_style") {
+            string line_name;
+            script >> line_name;
+            if (line_name == "grid") script >> params.linestyle_grid;
+            else if (line_name == "ecliptic")
+                script >> params.linestyle_ecliptic;
+            else if (line_name == "boundaries")
+                script >> params.linestyle_boundary;
+            else if (line_name == "highlighted_boundaries")
+                script >> params.linestyle_hlboundary;
+            else if (line_name == "nebulae")
+                script >> params.linestyle_nebula;
+            else if (line_name == "constellation_lines")
+                script >> params.linestyle_cline;
+            else throw string("Undefined \"line_width\" construct"
+                              " in input script");
+        }
+
 
 @ There are the following boolean values: ``\.{milky\_may}'',
 ``\.{colored\_stars}'', ``\.{grid}'', ``\.{ecliptic}'', ``\.{boundaries}'',
 ``\.{constellation\_lines}'', ``\.{labels}'', ``\.{eps\_output}'',
 and ``\.{pdf\_output}''.  You can switch them ``\.{on}'' or ``\.{off}''.
 
+@.switch@>
+@.on@>
+@.off@>
 @.milky\_way@>
 @.colored\_stars@>
 @.grid@>
@@ -2585,6 +2698,72 @@ and ``\.{pdf\_output}''.  You can switch them ``\.{on}'' or ``\.{off}''.
             else if (switch_name == "pdf_output")
                 params.create_pdf = read_boolean(script);
             else throw string("Undefined \"switch\" construct"
+                              " in input script");
+        }
+
+@ In order to avoid overlaps, \PPTHREE/ uses a simple penalty algorithm.  The
+standard value for all penalty values is~1000.  The meanings of ``\.{stars}'',
+``\.{labels}'', ``\.{nebulae}'', ``\.{boundaries}'', and
+``\.{constellation\_lines}'' is pretty easy to explain: They come into play
+when the current label (that is to be positioned) overlaps with the respective
+object.  For example, if you want overlaps with constellation lines to be less
+probable, you can say $$\hbox{\.{penalties constellation\_lines 2000}}$$
+
+There is another concept of importance here: The rim.  A rim is a rectangular
+margin around every label with a width of |skip|.  Overlaps in the rim are
+counted, too, however normally they don't hurt that much.  Normally they hurt
+half as much as the label area ({\it core}) itself, but this can be changed
+with ``\.{rim}''.  With $$\hbox{\.{penalties rim 0}}$$ the rim loses its
+complete significance.  But notice that for each rim penalty a core penalty is
+added, too, so that the rim can never be more significant than the core.
+
+Within the rim, ``\.{boundaries\_rim}'' and ``\.{constellation\_lines\_rim}''
+are used insetad of the normal ones.  This is because lines are not so bad in
+the rim as other stars or nebulae would be, because other stars in the vicinity
+of a label may cause confusion, lines not.
+
+\medskip The third thing about penalties is the maximal penalty of a label.  If
+the penalties of a label exceed this value, the label is supressed.  You may
+overrule this behaviour with an explicit repositioning of the label.  You can
+adjust this maximal badness of the label with ``\.{threshold}''.  With
+$$\hbox{\.{penalties threshold 10000}}$$ probably all labels are printed.
+
+@.penalties@>
+@.stars@>
+@.labels@>
+@.nebulae@>
+@.boundaries@>
+@.boundaries\_rim@>
+@.constellation\_lines@>
+@.constellation\_lines\_rim@>
+@.threshold@>
+@.rim@>
+
+@<Set penalty parameters@>=
+        if (opcode == "penalties") {
+            string penalty_name;
+            double value;
+            script >> penalty_name >> value;
+            value /= 1000.0;
+            if (penalty_name == "stars")
+                params.penalties_star = value;
+            else if (penalty_name == "labels")
+                params.penalties_label = value;
+            else if (penalty_name == "nebulae")
+                params.penalties_nebula = value;
+            else if (penalty_name == "boundaries")
+                params.penalties_boundary = value;
+            else if (penalty_name == "boundaries_rim")
+                params.penalties_boundary_rim = value;
+            else if (penalty_name == "constellation_lines")
+                params.penalties_cline = value;
+            else if (penalty_name == "constellation_lines_rim")
+                params.penalties_cline_rim = value;
+            else if (penalty_name == "threshold")
+                params.penalties_threshold = value;
+            else if (penalty_name == "rim")
+                params.penalties_rim = value;
+            else throw string("Undefined \"penalties\" construct"
                               " in input script");
         }
 
@@ -2661,6 +2840,7 @@ string with $$\hbox{\.{set constellation ""}}$$ so no constellation gets
 highlighted.  At the moment highlighting means that the boundaries have a
 brighter colour than normal.
 
+{\sloppy\raggedright
 ``\.{center\_rectascension}'' and ``\.{center\_declination}'' are the celestial
 coordinates of the view frame centre.  ``\.{box\_width}'' and
 ``\.{box\_height}'' are the dimensions of the view frame in centimetres.
@@ -2684,7 +2864,7 @@ Stars brighter than ``\.{faintest\_star\_magnitude}'' are drawn at all, if they
 are even brighter than ``\.{faintest\_star\_with\_label\_magnitude}'' they get
 a label.  Stars brighter than ``\.{faintest\_star\_disk\_magnitude}'' are not
 just mere dots in the background, but get a radius according to their
-brightness.
+brightness.\par}
 
 Many of these parameters trigger the default behaviour that you can overrule by
 commends in the second part of the input script.
