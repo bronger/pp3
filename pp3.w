@@ -1994,6 +1994,7 @@ Serpens Cauda.
 istream& operator>>(istream& in, boundary& p) {
     int size;
     in >> size;
+    if (!in.good()) return in;
     p.points.resize(size);
     for (int i=0; i<size; i++)
         in >> p.points[i].x >> p.points[i].y;
