@@ -111,7 +111,7 @@ modify it under the terms of the @acronym{MIT} licence.  Please see the
 @finalout
 @titlepage
 @title PP3
-@subtitle drawing beautiful celestial maps
+@subtitle typesetting beautiful celestial maps
 @subtitle version @value{VERSION}
 @sp 2
 @image{title,10cm,,Constellation map of Orion and its neighbours}
@@ -153,6 +153,8 @@ flexibility of the LaTeX language.
 * PP3 and LaTeX::               LaTeX in labels, and LaTeX preambles.
 * Known problems::              List of known shortcomings and bugs.
 * Data file formats::           Internal structure of the database files.
+* List of all constellations::  All 88 official constellations with
+                                  their abbreviations and coordinates.
 * Index::                       General index.
 @end menu
 @end ifnottex
@@ -223,22 +225,28 @@ Further information about @PPTHREE{} and downloads on the Internet:
 
 @table @asis
 @item @uref{http://pp3.sourceforge.net}
+@cindex homepage
 @PPTHREE{}'s homepage.
 
 @item @uref{http://sourceforge.net/projects/pp3}
+@cindex download
 @PPTHREE{}'s project page with quick links to downloads.
 
 @item @uref{http://sourceforge.net/project/showfiles.php?group_id=71469,Download area}
 List of all downloadable files, also for older versions.
 
 @item @uref{http://sourceforge.net/tracker/?atid=531401&group_id=71469,Bug data base}
+@cindex bugs
 Here you can see open bugs, make comments, and report new bugs that
 you've found.
 
 @item @uref{http://sourceforge.net/forum/?group_id=71469,Discussion forums}
+@cindex support
+@cindex help
 Ask questions about @PPTHREE{} here.
 
 @item @uref{http://sourceforge.net/tracker/?atid=531404&group_id=71469,Feature requests}
+@cindex feature requests
 Suggest new features and improvements here.
 @end table
 
@@ -539,8 +547,7 @@ information.
 @chapter Basic astronomical terms
 
 The following is a mere crash course.  It is supposed to enable you to
-use @PPTHREE{} even if you have not the slightest idea about how
-astronomers describe the sky.
+use @PPTHREE{} even if you didn't know how astronomers describe the sky.
 
 Readers competent in astronomy may skip it, although
 @ref{Constellations} and @ref{Catalogues} contain minor program
@@ -2077,7 +2084,8 @@ script.  If never, the whole script consists of parameters.
 
 @menu
 * Changing sky objects::        Adding and deleting stars and nebulae.
-* Changing labels::             
+* Changing labels::             Add, delete, or reposition labels, or
+                                  change their text.
 * Arbitrary text::              How to place arbitrary text on the map.
 @end menu
 
@@ -2390,7 +2398,7 @@ the Wikipedia Project, see @ref{Successful use of PP3}.
 @r{06 @ @ }  \renewcommand*@{\sfdefault@}@{pmy@}
 @r{07 @ @ }@}@{
 @r{08 @ @ }  \renewcommand*@{\sfdefault@}@{phv@}
-@r{09 @ @ }@}  
+@r{09 @ @ }@}
 @r{10 @ @ }\renewcommand@{\Messier@}[1]@{\footnotesize@{\scriptsize M@}\,#1@}
 @r{11 @ @ }\renewcommand@{\NGC@}[1]@{\footnotesize@{\scriptsize NGC@}\,#1@}
 @r{12 @ @ }\renewcommand@{\IC@}[1]@{\footnotesize@{\scriptsize IC@}\,#1@}
@@ -2455,22 +2463,42 @@ program at certain points.
 
 @table @samp
 @item \Label
+@cindex Label (@LaTeX{} hook)
+Argument: The label text.
 
 @item \TextLabel
+@cindex TextLabel (@LaTeX{} hook)
+Argument: The label text.
 
 @item \FlexLabel
+@cindex FlexLabel (@LaTeX{} hook)
+Argument: The label text.
 
 @item \Starname
+@cindex Starname (@LaTeX{} hook)
+Argument: The star name.
 
 @item \Messier
+@cindex Messier (@LaTeX{} hook)
+Argument: The Messier number.
 
 @item \NGC
+@cindex NGC (@LaTeX{} hook)
+Argument: The @acronym{NGC} number.
 
 @item \IC
-
-@item \DP
+@cindex IC (@LaTeX{} hook)
+Argument: The @acronym{IC} number.
 
 @item \TicMark
+@cindex TicMark (@LaTeX{} hook)
+Argument: The tic mark label text.
+
+@item \DP
+@cindex DP (@LaTeX{} hook)
+@cindex decimal point (DP, @LaTeX{} hook)
+@cindex point, decimal (DP, @LaTeX{} hook)
+No argument.
 
 @end table
 
@@ -2629,7 +2657,7 @@ A row with seven fields separated by whitespace:
 @item
 Henry Draper Catalogue number (`@code{0}' if unknown),
 
-@item 
+@item
 BSC catalogue number (`@code{0}' if unknown),
 
 @item
@@ -2978,6 +3006,145 @@ Pleiades
 \FlexLabel@{Antlia@}
 0.93945 0.25076 0.00316
 @end smallexample
+
+
+@node List of all constellations
+@appendix List of all constellations
+@cindex constallations
+@cindex list of constellations
+@cindex coodinates of constellations
+
+@table @asis
+@item first column
+Latin name
+
+@item second column
+astronomical abbreviation, ready for being used -- in its all-uppercase
+form -- with @samp{set constellation}
+
+@item third column
+English name
+
+@item fifth column
+rectascension of constellation centre, in hours, ready for being used
+with @samp{center_rectascension}
+
+@item sixth column
+declination of constellation centre, in degrees, ready for being used
+with @samp{center_declination}
+
+@item last column
+@iftex
+recommended scale for a 9@dmn{cm}@tie{}@math{\times}@tie{}9@dmn{cm} map,
+in degrees per centimetre, ready for being used
+with @samp{grad_per_cm}
+@end iftex
+@ifnottex
+recommended scale for a 9@dmn{cm}@tie{}x@tie{}9@dmn{cm} map,
+in degrees per centimetre, ready for being used
+with @samp{grad_per_cm}
+@end ifnottex
+
+@end table
+
+
+The values are taken from the input scripts used for the Wikipedia
+Project, see @ref{Successful use of PP3}.
+
+@sp 2
+
+@multitable {Triangulum Australe} {MMM} {Water Serpent (male)} {88.88} {@minus{}88.8} {88.8}
+@item @emph{Latin} @tab @emph{ab.} @tab @emph{English}
+      @tab @emph{rec.} @tab @emph{dec.} @tab @emph{sc.}
+@item Andromeda @tab And @tab Andromeda                    @tab 1 @tab @math{+}38 @tab 4
+@item Antlia @tab Ant @tab Air Pump                        @tab 10.2 @tab @minus{}35 @tab 3
+@item Apus @tab Aps @tab Bird of Paradise                  @tab 16 @tab @minus{}75 @tab 3
+@item Aquarius @tab Aqr @tab Water Carrier                 @tab 22.3 @tab @minus{}8 @tab 6
+@item Aquila @tab Aql @tab Eagle                           @tab 19.7 @tab @math{+}3 @tab 4
+@item Ara @tab Ara @tab Altar                              @tab 17.5 @tab @minus{}53 @tab 4
+@item Aries @tab Ari @tab Ram                              @tab 2.8 @tab @math{+}18.8 @tab 4
+@item Auriga @tab Aur @tab Charioteer                      @tab 5.6 @tab @math{+}38 @tab 4
+@item Bootes @tab Boo @tab Herdsman                        @tab 14.7 @tab @math{+}34 @tab 4
+@item Caelum @tab Cae @tab Chisel                          @tab 4.8 @tab @minus{}38 @tab 3
+@item Camelopardalis @tab Cam @tab Giraffe                 @tab 5.5 @tab @math{+}75 @tab 5
+@item Cancer @tab Cnc @tab Crab                            @tab 8.7 @tab @math{+}20 @tab 4
+@item Canes Venatici @tab CVn @tab Hunting Dogs            @tab 13 @tab @math{+}40 @tab 4
+@item Canis Major @tab CMa @tab Big Dog                    @tab 6.5 @tab @minus{}20 @tab 4
+@item Canis Minor @tab CMi @tab Little Dog                 @tab 7.5 @tab @math{+}12 @tab 4
+@item Capricornus @tab Cap @tab Goat                       @tab 21 @tab @minus{}16 @tab 4
+@item Carina @tab Car @tab Keel                            @tab 8.5 @tab @minus{}64 @tab 5
+@item Cassiopeia @tab Cas @tab Cassiopeia                  @tab 0.5 @tab @math{+}60.5 @tab 4
+@item Centaurus @tab Cen @tab Centaur                      @tab 13.6 @tab @minus{}45 @tab 5
+@item Cepheus @tab Cep @tab Cepheus                        @tab 23 @tab @math{+}75 @tab 4
+@item Cetus @tab Cet @tab Whale                            @tab 1.7 @tab @minus{}7 @tab 6
+@item Chamaeleon @tab Cha @tab Chameleon                   @tab 11 @tab @minus{}79 @tab 4
+@item Circinus @tab Cir @tab Compasses                     @tab 14.8 @tab @minus{}62 @tab 4
+@item Columba @tab Col @tab Dove                           @tab 5.8 @tab @minus{}35 @tab 4
+@item Coma Berenices @tab Com @tab Berenice's Hair         @tab 12.4 @tab @math{+}22.5 @tab 4
+@item Corona Australis @tab CrA @tab Southern Crown        @tab 18.6 @tab @minus{}42 @tab 3
+@item Corona Borealis @tab CrB @tab Northern Crown         @tab 15.8 @tab @math{+}33 @tab 4
+@item Corvus @tab Crv @tab Crow                            @tab 12.4 @tab @minus{}18 @tab 4
+@item Crater @tab Crt @tab Cup                             @tab 11.4 @tab @minus{}16 @tab 4
+@item Crux @tab Cru @tab Southern Cross                    @tab 13.2 @tab @minus{}60.8 @tab 4
+@item Cygnus @tab Cyg @tab Swan                            @tab 19.95 @tab @math{+}40.8 @tab 5
+@item Delphinus @tab Del @tab Dolphin                      @tab 20.5 @tab @math{+}12 @tab 3
+@item Dorado @tab Dor @tab Goldfish                        @tab 5.1 @tab @minus{}60 @tab 4
+@item Draco @tab Dra @tab Dragon                           @tab 16.5 @tab @math{+}72 @tab 5
+@item Equuleus @tab Equ @tab Little Horse                  @tab 21.2 @tab @math{+}8 @tab 3
+@item Eridanus @tab Eri @tab River                         @tab 3.8 @tab @minus{}30 @tab 6
+@item Fornax @tab For @tab Furnace                         @tab 2.7 @tab @minus{}32 @tab 4
+@item Gemini @tab Gem @tab Twins                           @tab 7 @tab @math{+}20 @tab 4
+@item Grus @tab Gru @tab Crane                             @tab 22.5 @tab @minus{}44 @tab 4
+@item Hercules @tab Her @tab Hercules                      @tab 17.55 @tab @math{+}30 @tab 5
+@item Horologium @tab Hor @tab Clock                       @tab 3.3 @tab @minus{}53 @tab 4
+@item Hydra @tab Hya @tab Hydra (Sea Serpent)              @tab 11.15 @tab @minus{}15 @tab 10
+@item Hydrus @tab Hyi @tab Water Serpent (male)            @tab 2.5 @tab @minus{}70 @tab 4
+@item Indus @tab Ind @tab Indian                           @tab 21.5 @tab @minus{}60 @tab 4
+@item Lacerta @tab Lac @tab Lizard                         @tab 22.5 @tab @math{+}46 @tab 4
+@item Leo @tab Leo @tab Lion                               @tab 10.8 @tab @math{+}20 @tab 4
+@item Leo Minor @tab LMi @tab Smaller Lion                 @tab 10.3 @tab @math{+}32 @tab 4
+@item Lepus @tab Lep @tab Hare                             @tab 5.6 @tab @minus{}18 @tab 4
+@item Libra @tab Lib @tab Balance                          @tab 15.2 @tab @minus{}17 @tab 4
+@item Lupus @tab Lup @tab Wolf                             @tab 15.3 @tab @minus{}41 @tab 4
+@item Lynx @tab Lyn @tab Lynx                              @tab 8.2 @tab @math{+}47 @tab 4
+@item Lyra @tab Lyr @tab Lyre                              @tab 18.8 @tab @math{+}37 @tab 3
+@item Mensa @tab Men @tab Table                            @tab 5.7 @tab @minus{}77 @tab 4
+@item Microscopium @tab Mic @tab Microscope                @tab 21.15 @tab @minus{}37 @tab 3
+@item Monoceros @tab Mon @tab Unicorn                      @tab 6.7 @tab @minus{}3.5 @tab 4
+@item Musca @tab Mus @tab Fly                              @tab 12.6 @tab @minus{}70 @tab 4
+@item Norma @tab Nor @tab Square                           @tab 16 @tab @minus{}50 @tab 4
+@item Octans @tab Oct @tab Octant                          @tab 22 @tab @minus{}85 @tab 4
+@item Ophiucus @tab Oph @tab Serpent Holder                @tab 17.3 @tab @minus{}9 @tab 6
+@item Orion @tab Ori @tab Orion                            @tab 5.8 @tab @math{+}0 @tab 4
+@item Pavo @tab Pav @tab Peacock                           @tab 19.5 @tab @minus{}67 @tab 4
+@item Pegasus @tab Peg @tab Winged Horse                   @tab 22.7 @tab @math{+}20 @tab 6
+@item Perseus @tab Per @tab Perseus                        @tab 3.6 @tab @math{+}47 @tab 4
+@item Phoenix @tab Phe @tab Phoenix                        @tab 0.7 @tab @minus{}49 @tab 5
+@item Pictor @tab Pic @tab Easel                           @tab 5.6 @tab @minus{}54 @tab 4
+@item Pisces @tab Psc @tab Fishes                          @tab 0.5 @tab @math{+}14 @tab 6
+@item Pisces Austrinus @tab PsA @tab Southern Fish         @tab 22.3 @tab @minus{}31 @tab 4
+@item Puppis @tab Pup @tab Stern                           @tab 7.6 @tab @minus{}31 @tab 4
+@item Pyxis @tab Pyx @tab Compass                          @tab 8.95 @tab @minus{}30 @tab 4
+@item Reticulum @tab Ret @tab Reticle                      @tab 3.9 @tab @minus{}60 @tab 3
+@item Sagitta @tab Sge @tab Arrow                          @tab 19.6 @tab @math{+}15 @tab 4
+@item Sagittarius @tab Sgr @tab Archer                     @tab 18.5 @tab @minus{}27 @tab 4
+@item Scorpius @tab Sco @tab Scorpion                      @tab 16.8 @tab @minus{}30 @tab 4
+@item Sculptor @tab Scl @tab Sculptor                      @tab 0.5 @tab @minus{}32 @tab 5
+@item Scutum @tab Sct @tab Shield                          @tab 18.7 @tab @minus{}10 @tab 3
+@item Serpens @tab Ser @tab Serpent                        @tab 17.1 @tab @math{+}2 @tab 6.5
+@item Sextans @tab Sex @tab Sextant                        @tab 10.2 @tab @minus{}1 @tab 4
+@item Taurus @tab Tau @tab Bull                            @tab 4.6 @tab @math{+}18 @tab 4
+@item Telescopium @tab Tel @tab Telescope                  @tab 19.3 @tab @minus{}52 @tab 4
+@item Triangulum @tab Tri @tab Triangle                    @tab 2.2 @tab @math{+}33 @tab 4
+@item Triangulum Australe @tab TrA @tab Southern Triangle  @tab 16 @tab @minus{}65 @tab 3
+@item Tucana @tab Tuc @tab Toucan                          @tab 23.7 @tab @minus{}67 @tab 4
+@item Ursa Major @tab UMa @tab Great Bear                  @tab 11.5 @tab @math{+}55 @tab 6
+@item Ursa Minor @tab UMi @tab Little Bear                 @tab 15 @tab @math{+}78 @tab 4
+@item Vela @tab Vel @tab Sails                             @tab 9.6 @tab @minus{}48 @tab 4
+@item Virgo @tab Vir @tab Virgin                           @tab 13 @tab @math{+}3 @tab 5
+@item Volans @tab Vol @tab Flying Fish                     @tab 7.8 @tab @minus{}70 @tab 4
+@item Vulpecula @tab Vul @tab Fox                          @tab 20.2 @tab @math{+}25 @tab 4
+@end multitable
 
 
 @node Index
