@@ -1,0 +1,238 @@
+ORI 19  ORI 34  ORI 24 ;
+ORI 53  ORI 50  ORI 46  ORI 34 ;
+ORI 50  ORI 58 ;
+
+PER 44  PER 45  PER 39  PER 33  PER 23 ;
+PER 33  PER 26 ;
+
+AUR 13  AUR 34  AUR 37  TAU 112  AUR 3 AUR 7  AUR 13 ;
+
+LEO 32  LEO 30  LEO 41  LEO 68  LEO 94  LEO 70  LEO 32 ;
+LEO 41  LEO 36  LEO 24  LEO 17 ;
+
+VIR 67  VIR 51  VIR 29  VIR 15  VIR 5  VIR 3 ;
+VIR 29  VIR 43  VIR 47 ;
+VIR 51  VIR 79 ;
+
+UMI 16  UMI 21  UMI 13  UMI 7  UMI 16  UMI 22  UMI 23  UMI 1 ;
+
+UMA 50  UMA 48  UMA 64  UMA 69  UMA 77  UMA 79  UMA 85 ;
+UMA 50  UMA 69 ;
+
+CVN 12  CVN 8 ;
+
+LYN 31  HD 76943 LYN 38  LYN 40 ;  #  HD 76943 is 10 UMi in Lynx
+
+LMI 46  LMI 31 ;
+COM 42  COM 43  COM 15 ;
+
+DRA 32  DRA 33  DRA 23  DRA 25  DRA 32  DRA 57  DRA 63  DRA 44  DRA 22  
+DRA 14  DRA 13  DRA 12  DRA 11  DRA 5  DRA 1 ;
+
+TAU 123  TAU 87  TAU 78  TAU 54  TAU 61  TAU 74  TAU 112 ;
+
+
+LEP 16  LEP 14  LEP 11 ;
+LEP 5  LEP 11  LEP 9 ;
+LEP 15  LEP 13  LEP 9  LEP 2 ;
+
+
+ERI 67  ERI 57  ERI 48  ERI 38  ERI 34  ERI 23  ERI 18  ERI 3  CET 89  ERI 1
+ERI 11  ERI 16  ERI 19  ERI 27  ERI 52  ERI 43  ERI 41  
+HD 24071  # f ERI
+HD 18622  # theta ERI
+HD 16815  # iota ERI
+HD 15371  # kappa ERI
+HD 14228  # phi ERI
+HD 11937  # chi ERI
+HD 10144  # Achernar
+;
+
+CET 86  CET 78  CET 73  CET 87  CET 91  CET 92  CET 86  CET 82  CET 68  
+CET 55  CET 45  CET 31  CET 8  CET 16  CET 31 ;
+CET 55  CET 52  CET 59 ;
+
+PSC 83  PSC 90  PSC 85  PSC 84  PSC 99  PSC 110  PSC 113  PSC 111  
+PSC 106  PSC 98  PSC 86  PSC 71  PSC 63  PSC 28  PSC 17  PSC 10  
+PSC 7  PSC 6  PSC 8  PSC 18  PSC 17 ;
+PSC 6  PSC 4 ;
+
+ARI 13  ARI 6  ARI 5 ;
+
+TRI 2  TRI 4  TRI 9  TRI 2 ;
+
+AND 57  AND 43  AND 31  AND 21 ;
+
+AND 21  PEG 88  PEG 54  PEG 53  AND 21 ;
+PEG 53  PEG 44 ;
+PEG 54  PEG 46  PEG 42  PEG 26  PEG 8 ;
+
+AQR 2  AQR 22  AQR 34  AQR 48  AQR 55  AQR 62  AQR 73  AQR 71  AQR 76  
+AQR 88 ;
+
+EQU 8  EQU 7  EQU 5 ;
+
+CAP 5  CAP 9  CAP 11  CAP 16  CAP 18  CAP 34  CAP 49  CAP 40  CAP 32  
+CAP 23  CAP 9 ;
+
+DEL 2  DEL 6  DEL 9  DEL 12  DEL 11  DEL 6 ;
+
+PSA 18  PSA 24  PSA 23  PSA 22  PSA 17 ;
+
+CMI 10  CMI 3 ;
+
+GEM 7  GEM  13  GEM 27  GEM 66  GEM 78  GEM 55  GEM 43  GEM 24 ;
+
+CNC 65  CNC 47  CNC 43  CNC 48 ;
+CNC 47  CNC 17 ;
+
+HYA 11  HYA 13  HYA 7  HYA 5  HYA 4  HYA 11  HYA 16  HYA 22  HYA 35  HYA 30  
+HYA 39  HYA 41  HYA 42  
+HD 93813  # nu Hya
+CRT 7  CRT 11
+HD 100407  # xi Hya
+HD 103192  # beta Hya
+HYA 46  HYA 49 ;
+
+CRT 7  CRT 12  CRT 15  CRT 11 ;
+
+MON 26  MON 22  MON 11  MON 5 ;
+
+
+CMA 2  CMA 9  CMA 24  CMA 25  CMA 22  CMA 21  CMA 1 ;
+CMA 31  CMA 25 ;
+
+# Columba
+
+HD 44762  # delta Col
+HD 40494  # gamma Col
+HD 39425  # beta Col
+HD 37795  # alpha Col
+HD 36597 ; # epsilon Col
+
+CRB 4  CRB 3  CRB 5  CRB 8  CRB 10  CRB 13 ;
+
+
+BOO 8  BOO 16  BOO 25  BOO 27  BOO 42  BOO 49  BOO 36  BOO 16 ;
+
+
+HER 20  HER 27  HER 40  HER 44 HER 35  HER 22 ;
+HER 40  HER 58 ;  HER 44  HER 67 ;
+HER 91  HER 75  HER 67  HER 58  HER 65  HER 86  HER 92  HER 103 ;
+
+# Ophiuchus & Serpens
+
+SER 41  SER 28 ;
+SER 35  SER 28  SER 13  SER 24  SER 37  OPH 1  OPH 2  OPH 13  OPH 35  
+SER 55  OPH 64  OPH 69  SER 58  SER 63 ;
+OPH 64  OPH 62  OPH 60  OPH 55  HER 64  OPH 27  OPH 10  OPH 1 ;
+OPH 35  OPH 42 ;
+
+CEP 3  CEP 5  CEP 21  CEP 27  CEP 32  CEP 35  CEP 8  CEP 5 ;
+
+CYG 64  CYG 53  CYG 37  CYG 18  CYG 10  CYG 1 ;
+CYG 50  CYG 37  CYG 21 CYG 6 ;
+
+LAC 3  LAC 7  LAC 4  LAC 5  LAC 2 ;
+
+LYR 3  LYR 6  LYR  12  LYR 14  LYR 10  LYR 6 ;
+
+SGE 5  SGE 7  SGE 12 ;
+SGE 6  SGE 7 ;
+
+# Scorpion
+
+SCO 6  SCO 20 ;  SCO 8 SCO 20 ;
+SCO 7  SCO 20  SCO 21  SCO 23  SCO 26  HD 151890  HD 152334  HD 155203
+HD 159532  HD 161471  HD 160578  SCO 35 ;
+
+# Sagittarius
+
+SGR 41  SGR 39  SGR 34  SGR 27  SGR 22  SGR 19  SGR 20
+HD 167618 ; # eta Sgr
+SGR 34  SGR 40  SGR 38 ;
+SGR 22  SGR 13 ;
+SGR 19  SGR 10 ;
+SGR 39  SGR 37 ;
+
+LIB 20  LIB 9  LIB 27  LIB 38 ;
+
+# Altar
+
+HD 158427  # alpha Ara
+HD 157244  # beta Ara
+HD 157246  # gamma Ara
+HD 158094 ; # delta Ara
+
+HD 157244  # beta Ara
+HD 152786 ; # zeta Ara
+
+HD 152980  # epsilon1 Ara
+HD 152786  # zeta Ara
+HD 151249 ; # eta Ara
+
+# Norma
+
+HD 147971  # epsilon Nor
+HD 146686 ; # gamma2 Nor
+
+# Centaurus
+
+HD 128620  # Toliman
+HD 122451  # Agena
+HD 118716  # epsilon Cen
+HD 121263  # zeta Cen
+HD 120324  # mu Cen
+HD 120307  # nu Cen
+HD 123139  # theta Cen
+HD 127972  # eta Cen
+HD 132200 ; # kappa Cen
+HD 120307  # nu Cen
+HD 115892 ; # iota Cen
+HD 118716  # epsilon Cen
+HD 110304  # gamma Cen
+HD 105435 ; # gamma Cen
+
+# Lupus
+
+HD 134505  # zeta Lup
+HD 134481  # kappa Lup
+HD 136504  # epsilon Lup
+HD 138690  # gamma Lup
+HD 143118 ;  # eta Lup
+HD 138690  # gamma Lup
+HD 136298 ;  # delta Lup
+HD 136422  # phi1 Lup
+HD 136298  # delta Lup
+HD 132058  # beta Lup
+HD 129056 ; # alpha Lup
+
+# Circinus
+
+HD 135379  # beta Cir
+HD 128898  # alpha Cir
+HD 136415 ;  # gamma Cir
+
+# Telescopium
+
+HD 169467  # alpha Tel
+HD 169767 ; # zeta Tel
+
+# Indus and Pavo
+
+HD 196171  # alpha Ind
+HD 198700  # beta Ind
+HD 193924  # alpha Pav
+HD 197051  # beta Pav
+HD 188228  # epsilon Pav
+HD 171759  # zeta Pav
+HD 160635  # eta Pav
+HD 173948  # lambda Pav
+HD 190248  # delta Pav
+HD 197051 ; # beta Pav
+
+# Triangulum Australis
+
+HD 150798  # alpha TrA
+HD 141891  # beta TrA
+HD 135382 ; # gamma TrA
