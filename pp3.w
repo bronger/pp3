@@ -154,12 +154,12 @@
 
 \def\sloppy{\tolerance9999\emergencystretch3em\hfuzz .5pt\vfuzz\hfuzz}
 
-\def\title{PP3 (Version 1.1)}
+\def\title{PP3 (Version 1.2)}
 \def\topofcontents{\null\vfill\vskip-1.5cm
   \centerline{\titlefont The Sky Map Creator 
                {\sbtitlefont PP\lower.35ex\hbox{3}}}
   \vskip 15pt
-  \centerline{(Version 1.1)}
+  \centerline{(Version 1.2)}
   \vfill}
 \def\botofcontents{\parindent2em\vfill\vfill\vfill\vfill\vfill
 \noindent
@@ -341,22 +341,33 @@ I really found no alternative to~|OUT|.  No |const| construct worked, and if it
 had done, I'd have to use it in every single routine.  And ubiquitous
 |*params.out|'s are ugly.
 
-In contrast to that, |DATADIR| is a harmless symbol.  It makes it possible to
-compile a directory prefix into \PPTHREE/ for the data files.  By default, the
-data files must be in the current directory.  You may say e.\,g.\
-$$\hbox{\.{g++ -DDATADIR=\BS"/usr/share/pp3/\BS" -O2 -s pp3.cc -o pp3}}$$ then
-they are searched in \.{/usr/share/pp3/}.  But don't forget the closing
-`\.{/}'.
-
-I declare {\it and\/} define the structure here.
-
 @d OUT (*params.out)
 
-@c
-#ifndef DATADIR
-#define DATADIR ""
-#endif
 
+@ The following makes it possible to compile a directory prefix into \PPTHREE/
+for the data files.  By default, the data files must be in the current
+directory.  You may say e.\,g.\ $$\hbox{\.{g++
+-DPP3DATA=\BS"/usr/share/pp3/\BS" -O2 -s pp3.cc -o pp3}}$$ then they are
+searched in \.{/usr/share/pp3/}.  If set, an environment variable called
+\.{PP3DATA} has highest priority though.
+
+@c
+const char* pp3data_env_raw = getenv("PP3DATA");
+const string pp3data_env = (pp3data_env_raw == NULL ?
+                            "" : pp3data_env_raw);
+#ifdef PP3DATA
+const string pp3data(PP3DATA);
+#else
+const string pp3data;
+#endif
+const string filename_prefix(!pp3data_env.empty() ?
+                             pp3data_env + '/' : (pp3data.empty() ?
+						  "" : pp3data + "/"));
+
+
+@ I declare {\it and\/} define the structure |parameters| here.
+
+@c
 @<Define |color| data structure@>@;@#
 
 struct parameters {
@@ -416,12 +427,12 @@ center_rectascension(5.8), center_declination(0.0),
                    penalties_boundary_rim(1.0), penalties_cline(1.0),
                    penalties_cline_rim(1.0), penalties_threshold(1.0),
                    penalties_rim(1.0), @/
-                   filename_stars(DATADIR"stars.dat"),
-                   filename_nebulae(DATADIR"nebulae.dat"),
+                   filename_stars(filename_prefix + "stars.dat"),
+                   filename_nebulae(filename_prefix + "nebulae.dat"),
                    filename_dimensions("labeldimens.dat"),
-                   filename_lines(DATADIR"lines.dat"),
-                   filename_boundaries(DATADIR"boundaries.dat"),
-                   filename_milkyway(DATADIR"milkyway.dat"), @/
+                   filename_lines(filename_prefix + "lines.dat"),
+                   filename_boundaries(filename_prefix + "boundaries.dat"),
+                   filename_milkyway(filename_prefix + "milkyway.dat"), @/
                    filename_preamble(), filename_include(), 
                    filename_output(), out(&cout), in(0), input_file(false), @/
                    bgcolor("bgcolor", 0, 0, 0.4),
@@ -1613,7 +1624,8 @@ istream& operator>>(istream& in, star& s) {
 @c
 void read_stars(stars_list& stars) {
     ifstream stars_file(params.filename_stars.c_str());
-    if (!stars_file) throw string("No stars file found");
+    if (!stars_file) throw string("No stars file found: " 
+				  + params.filename_stars);
     star current_star;
     stars_file >> current_star;
     while (stars_file) {
@@ -2170,6 +2182,11 @@ between the pixels.
 \itemitem{--} The declination in degrees.
 \itemitem{--} The grey value of the pixel from $1$ to~$255$.  Zero is not used
 because zero-value pixels are not included into the data file anyway.
+
+In \PPTHREE/'s standard distribution, this file was produced with the helper
+program \.{milkydigest.cc}, and the original Milky Way bitmap was photographed
+and compiled by \pdfURL{Axel
+Mellinger}{http://home.arcor-online.de/axel.mellinger/}.
 
 |pixels| is a |vector<vector<point> >|.  The outer (first) index is the grey
  value, and for every grey value there is an inner vector (second index) with a
