@@ -163,6 +163,7 @@ flexibility of the LaTeX language.
 * Successful use of PP3::       Things that have been done using PP3.
 @end menu
 
+
 @node What it is
 @section What it is
 
@@ -280,6 +281,7 @@ Obviously you need only @emph{one} of these files.
 * Increase TeX's memory::       If you want to see the Milky Way.
 @end menu
 
+
 @node Windows
 @section Installation on Windows
 
@@ -299,6 +301,7 @@ not difficult, and both programs may be useful for other purposes, too.
                                   handling.
 * Installing PP3::              Finally installing PP3 itself.
 @end menu
+
 
 @node Getting TeX
 @subsection Getting @TeX{}
@@ -550,6 +553,7 @@ two star catalogues and three nebulae catalogues supported in
 * Denoting nebulae::            How nebulae get a name in PP3.
 @end menu
 
+
 @node Denoting stars
 @subsection Denoting stars
 
@@ -617,6 +621,7 @@ the space between the catalogue abbreviation and the number.
                                   reason.
 @end menu
 
+
 @node Invocation
 @section Starting PP3
 
@@ -654,7 +659,6 @@ write to standard output.  I don't think that this is sensible for
 `@code{-}' as the only parameter, @PPTHREE{} reads the input script from
 standard input, and if you don't give an output filename in the input
 script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
-
 
 
 @node Input scripts
@@ -930,7 +934,7 @@ reposition M 39  S ;
 
 @noindent
 This puts the label for the nebula M@s{}39 @emph{below} the nebula.
-`@code{S}' means `south'.  The following diagram shows the possible
+`@code{S}'@tie{}means `south'.  The following diagram shows the possible
 values for the direction, by and large you know it from the wind rose:
 
 @image{pp3rose,,,Possible values for `reposition' and `towards'}
@@ -972,7 +976,9 @@ text "Virgo galaxy cluster" at 12.7 10
 @noindent
 This places the text `Virgo galaxy cluster' at the celestial coordinates
 12.7@dmn{h} rectascension and @math{+10^\circ} declination in blue
-colour.
+colour.  @xref{Colours} for how to denote colours in @PPTHREE{}.
+
+The keyword `@code{towards}'
 
 
 @node Using flexes
@@ -1103,6 +1109,7 @@ before the @code{objects_and_labels} command (if there is one).
 * Highlighted constellation::   Highlight one constellation.
 @end menu
 
+
 @node View control
 @subsubsection Map view, scale, and size
 @kwindex set
@@ -1228,7 +1235,6 @@ see @ref{Colours}.
 
 Default: on
 @end deffn
-
 
 
 @node Filtering by brightness
@@ -1617,7 +1623,6 @@ Way)
 @end deffn
 
 
-
 @node Commands
 @section Setting or deleting celestial objects and their labels
 
@@ -1638,6 +1643,7 @@ script.  If never, the whole script consists of parameters.
 * Changeing labels::            
 * Arbitrary text::              How to place arbitrary text on the map.
 @end menu
+
 
 @node Changing sky objects
 @subsection Adding and deleting stars and nebulae
@@ -1710,6 +1716,7 @@ respective declination circle.
 
 @noindent
 For further options see @ref{Arbitrary text}.
+
 
 @node Tic mark labels
 @subsubsection Tic mark labels
@@ -1806,6 +1813,7 @@ completeness.
 * Milky Way data file::         The Milky Way brightness bitmap.
 * Label dimensions file::       Typographic dimensions of all labels.
 @end menu
+
 
 @node Stars data file
 @section Stars data file
@@ -2160,8 +2168,6 @@ Pleiades
 \FlexLabel@{Antlia@}
 0.93945 0.25076 0.00316
 @end smallexample
-
-
 
 
 @node Index
