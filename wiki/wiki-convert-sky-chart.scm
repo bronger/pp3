@@ -1,6 +1,6 @@
 ;	$Id$	
 
-(define (wiki-convert-sky-chart in-filename out-filename-base number-colors)
+(define (wiki-convert-sky-chart in-filename out-filename-base number-colors sharpness)
   (file-ps-load-setargs 300 0 0 1 "1" 6 4 4)
   (let* ((img (car (file-ps-load 1 in-filename in-filename)))
 	 (drawable (car (gimp-image-active-drawable img)))
@@ -14,7 +14,7 @@
     (gimp-image-scale img-small (* image-width 0.28) (* image-height 0.28))
     (gimp-image-set-resolution img 120 120)
     (gimp-image-set-resolution img-small 120 120)
-    (plug-in-sharpen 1 img-small drawable-small 50)
+    (plug-in-sharpen 1 img-small drawable-small sharpness)
     (gimp-convert-indexed img 0 0 number-colors 0 1 "")
     (gimp-convert-indexed img-small 0 0 number-colors 0 1 "")
     (file-png-save 1 img drawable out-filename out-filename 0 9 0 0 0 1 1)
@@ -33,4 +33,5 @@
  SF-VALUE "Input filename" "leo.eps"
  SF-VALUE "Output filename without extension" "leo_constellation_map"
  SF-VALUE "Number of output colors" "64"
+ SF-VALUE "Sharpness" "50"
 )
