@@ -25,82 +25,103 @@
 @q       http://www-cs-faculty.stanford.edu/~knuth/cweb.html            @>
 @q======================================================================@>
 
-\iffalse
-Todo:
- - Final webpage
-\fi
-
 \catcode`@@=11
 
-\font\tenrm=pplr7t % roman text
-\font\ninerm=pplr7t scaled 900
-\font\eightrm=pplr7t scaled 800
-\font\sevenrm=pplr7t scaled 700
-\font\fiverm=pplr7t scaled 500
+% First the default font setup
 
-\font\teni=zplmr7m % math italic    (zptmcm7m for Times)
-\font\seveni=zplmr7m scaled 700
-\font\fivei=zplmr7m scaled 500
+\font\ninett=cmtt9
+\font\nineit=cmti9
 
-\font\tensy=zplmr7y % math symbols  (zptmcm7y for Times)
-\font\sevensy=zplmr7y scaled 700
-\font\fivesy=zplmr7y scaled 500
+\font\stitlefont=cmss10 scaled\magstep3      % sans serif type in title
+\font\sbtitlefont=cmssbx10 scaled\magstep3   % sans bold type in title
+\font\sf=cmss10 \font\sfbf=cmssbx10
+\font\sfa=cmss7
 
-\font\tenex=zplmr7v % math extension  (zptmcm7v for Times)
+%% From here with Palatino
+%% \font\tenrm=pplr7t % roman text
+%% \font\ninerm=pplr7t scaled 900
+%% \font\eightrm=pplr7t scaled 800
+%% \font\sevenrm=pplr7t scaled 700
+%% \font\fiverm=pplr7t scaled 500
 
-\font\tenbf=pplb7t % boldface extended
-\font\sevenbf=pplb7t scaled 700
-\font\fivebf=pplb7t scaled 500
+%% \font\teni=zplmr7m % math italic    (zptmcm7m for Times)
+%% \font\seveni=zplmr7m scaled 700
+%% \font\fivei=zplmr7m scaled 500
 
-\font\tentt=cmtt10 % typewriter
-\font\ninett=cmtt9 % typewriter
+%% \font\tensy=zplmr7y % math symbols  (zptmcm7y for Times)
+%% \font\sevensy=zplmr7y scaled 700
+%% \font\fivesy=zplmr7y scaled 500
 
-\font\tensl=pplro7t % slanted roman
+%% \font\tenex=zplmr7v % math extension  (zptmcm7v for Times)
 
-\font\tenit=pplri7t % text italic
+%% \font\tenbf=pplb7t % boldface extended
+%% \font\sevenbf=pplb7t scaled 700
+%% \font\fivebf=pplb7t scaled 500
 
-\skewchar\teni='177 \skewchar\seveni='177 \skewchar\fivei='177
-\skewchar\tensy='60 \skewchar\sevensy='60 \skewchar\fivesy='60
+%% \font\tentt=cmtt10 % typewriter
+%% \font\ninett=cmtt9 % typewriter
 
-\textfont0=\tenrm \scriptfont0=\sevenrm \scriptscriptfont0=\fiverm
-\def\rm{\fam\z@@\tenrm}
-\textfont1=\teni \scriptfont1=\seveni \scriptscriptfont1=\fivei
-\def\mit{\fam\@@ne} \def\oldstyle{\fam\@@ne\teni}
-\textfont2=\tensy \scriptfont2=\sevensy \scriptscriptfont2=\fivesy
-\def\cal{\fam\tw@@}
-\textfont3=\tenex \scriptfont3=\tenex \scriptscriptfont3=\tenex
-\newfam\itfam \def\it{\fam\itfam\tenit} % \it is family 4
-\textfont\itfam=\tenit
-\newfam\slfam \def\sl{\fam\slfam\tensl} % \sl is family 5
-\textfont\slfam=\tensl
-\newfam\bffam \def\bf{\fam\bffam\tenbf} % \bf is family 6
-\textfont\bffam=\tenbf \scriptfont\bffam=\sevenbf
-\scriptscriptfont\bffam=\fivebf
-\newfam\ttfam \def\tt{\fam\ttfam\tentt} % \tt is family 7
-\textfont\ttfam=\tentt
+%% \font\tensl=pplro7t % slanted roman
 
-\catcode`@@=12
+%% \font\tenit=pplri7t % text italic
 
-\font\eightpplr=pplr7t scaled 800
-\font\ninepplr=pplr7t scaled 900
-\font\ninepplri=pplri7t scaled 900
-\font\tenpplr=pplr7t
-\font\tenpplb=pplb7t
-\font\tenpplri=pplri7t
-\font\titlefont=pplr7t scaled 1728 % title on the contents page
-\font\ttitlefont=cmtt10 scaled\magstep2 % typewriter type in title
-\font\tentex=cmtex10 % TeX extended character set (used in strings)
-\fontdimen7\tentex=0pt % no double space after sentences
+%% \skewchar\teni='177 \skewchar\seveni='177 \skewchar\fivei='177
+%% \skewchar\tensy='60 \skewchar\sevensy='60 \skewchar\fivesy='60
 
-\let\mainfont=\tenpplr
-\let\sc=\ninepplr
-\let\mc=\ninepplr
-\let\it=\tenpplri
-\let\nineit=\ninepplri
-\let\tt=\tentt
-\let\cmntfont\tenpplr
+%% \textfont0=\tenrm \scriptfont0=\sevenrm \scriptscriptfont0=\fiverm
+%% \def\rm{\fam\z@@\tenrm}
+%% \textfont1=\teni \scriptfont1=\seveni \scriptscriptfont1=\fivei
+%% \def\mit{\fam\@@ne} \def\oldstyle{\fam\@@ne\teni}
+%% \textfont2=\tensy \scriptfont2=\sevensy \scriptscriptfont2=\fivesy
+%% \def\cal{\fam\tw@@}
+%% \textfont3=\tenex \scriptfont3=\tenex \scriptscriptfont3=\tenex
+%% \newfam\itfam \def\it{\fam\itfam\tenit} % \it is family 4
+%% \textfont\itfam=\tenit
+%% \newfam\slfam \def\sl{\fam\slfam\tensl} % \sl is family 5
+%% \textfont\slfam=\tensl
+%% \newfam\bffam \def\bf{\fam\bffam\tenbf} % \bf is family 6
+%% \textfont\bffam=\tenbf \scriptfont\bffam=\sevenbf
+%% \scriptscriptfont\bffam=\fivebf
+%% \newfam\ttfam \def\tt{\fam\ttfam\tentt} % \tt is family 7
+%% \textfont\ttfam=\tentt
 
-\mainfont\baselineskip12.7pt
+%% \catcode`@@=12
+
+%% \font\eightpplr=pplr7t scaled 800
+%% \font\ninepplr=pplr7t scaled 900
+%% \font\ninepplri=pplri7t scaled 900
+%% \font\tenpplr=pplr7t
+%% \font\tenpplb=pplb7t
+%% \font\tenpplri=pplri7t
+%% \font\titlefont=pplr7t scaled 1728 % title on the contents page
+%% \font\ttitlefont=cmtt10 scaled\magstep2 % typewriter type in title
+%% \font\tentex=cmtex10 % TeX extended character set (used in strings)
+%% \fontdimen7\tentex=0pt % no double space after sentences
+
+%% \let\mainfont=\tenpplr
+%% \let\sc=\ninepplr
+%% \let\mc=\ninepplr
+%% \let\it=\tenpplri
+%% \let\nineit=\ninepplri
+%% \let\tt=\tentt
+%% \let\cmntfont\tenpplr
+
+%% \mainfont\baselineskip12.7pt
+
+%% %% Now for the title page
+
+%% \font\sf=bfrr8t \font\sfbf=bfrb8t
+%% \font\sfa=bfrr8t scaled 700
+
+%% \font\stitlefont=phvr7t scaled\magstep3    % sans serif type in title
+%% \font\sbtitlefont=phvb7t scaled\magstep3   % sans bold type in title
+%% \font\ttitlefont=pcrb7t scaled\magstep3    % typewriter type in title
+
+%% \font\stitlefont=bfrr8t scaled\magstep3    % sans serif type in title
+%% \font\sbtitlefont=0t3x8r scaled\magstep3   % sans bold type in title
+%% \font\sf=0t3r8r \font\sfbf=0t3b8r
+%% \font\sfa=0t3r8r scaled 700
+
 
 \hyphenation{white-space}
 
@@ -131,18 +152,6 @@ Todo:
 \def\HD/{{\mc HD\spacefactor1000}}
 
 \def\sloppy{\tolerance9999\emergencystretch3em\hfuzz .5pt\vfuzz\hfuzz}
-
-\font\sf=bfrr8t \font\sfbf=bfrb8t
-\font\sfa=bfrr8t scaled 700
-
-\font\stitlefont=phvr7t scaled\magstep3    % sans serif type in title
-\font\sbtitlefont=phvb7t scaled\magstep3   % sans bold type in title
-\font\ttitlefont=pcrb7t scaled\magstep3    % typewriter type in title
-
-\font\stitlefont=bfrr8t scaled\magstep3    % sans serif type in title
-\font\sbtitlefont=0t3x8r scaled\magstep3   % sans bold type in title
-\font\sf=0t3r8r \font\sfbf=0t3b8r
-\font\sfa=0t3r8r scaled 700
 
 \def\title{PP3 (Version 1.0)}
 \def\topofcontents{\null\vfill\vskip-1.5cm
@@ -216,8 +225,9 @@ input script is read from standard input.  So if you write\medskip
 
 \.{pp3 - > test.tex \AM\AM{} latex test \AM\AM{} dvips test}
 
-\medskip\noindent and type \.{\CF D} (\hbox{Control-D}), a file \.{test.ps}
-should be produced that contains a sample chart.
+\medskip\noindent and type \.{\CF D} (\hbox{Control-D})\footnote{$^1$}{it's
+Control-Z-Return on Windows}, a file \.{test.ps} should be produced that
+contains a sample chart.
 
 Very important is to know how to write an input script.  Please consult the
 following section ``The input script'' for this.  Here is an example input
@@ -261,6 +271,19 @@ fact the preamble is rather small.  This makes it possible to copy the (maybe
 huge) \.{\BS vbox} with the complete map into an own \LaTeX\ file.  However
 this may be a stupid decision because (especially if the Milky Way is switched
 on) this consumes much of \TeX's pool size.
+
+Some \PPTHREE/ figures will need a lot of \TeX's memory.  Normally this is
+problematic only if the Milky Way is included.  If you show a too large portion
+of the sky, and a lot of Milky Way area is involved, it may even happen that
+\LaTeX\ simply cannot process it.  You should use Milky Way data with lower
+resolution in this case.
+
+Make sure that the \PS/Tricks package is properly installed.
+
+Please note that you cannot use pdf\/\LaTeX\ with \PPTHREE/, because \PS/Tricks
+can't be used with pdf\/\LaTeX\spacefactor1000.  This is not a problem.  First,
+you can convert all \EPS/ files easily to \PDF/ by hand, and secondly \PPTHREE/
+can even call \PS/2\PDF/ for you.
 
 @ In order to use the program, you must have a complete and modern \LaTeX\
 distribution installed, and a modern Ghostscript.  On a Linux system, both
@@ -307,12 +330,15 @@ actually drawn.  So memory usage could be reduced drastically.
 #include <cstdlib>
 #include <cmath>
 #include <cfloat>@#
+
+using namespace std;
+
 @<Missing math routines@>@;@#
 
 @* Global parameters and default values.  I have to break a strict \CPLUSPLUS/
-rule here: Never use |#@t\hskip-\fontdimen2\mainfont@>define|!  However I
-really found no alternative to it.  No |const| construct worked, and if it had
-done, I'd have to use it in every single routine.  And ubiquitous
+rule here: Never use \hbox{|#@t\hskip-\fontdimen2\mainfont@>define|}!  However
+I really found no alternative to it.  No |const| construct worked, and if it
+had done, I'd have to use it in every single routine.  And ubiquitous
 |*params.out|'s are ugly.
 
 I declare {\it and\/} define the structure here.
@@ -340,6 +366,7 @@ struct parameters {
         filename_preamble, filename_include;
     string filename_output;
     ostream* out;
+    istream* in;
     color bgcolor, gridcolor, eclipticcolor, boundarycolor, hlboundarycolor,
         starcolor, nebulacolor, labelcolor, textlabelcolor, clinecolor, 
         milkywaycolor;
@@ -384,7 +411,7 @@ center_rectascension(5.8), center_declination(0.0),
                    filename_boundaries("boundaries.dat"),
                    filename_milkyway("milkyway.dat"), @/
                    filename_preamble(), filename_include(), 
-                   filename_output(), out(&cout), @/
+                   filename_output(), out(&cout), in(0), @/
                    bgcolor("bgcolor", 0, 0, 0.4),
                    gridcolor("gridcolor", 0, 0.298, 0.447),
                    eclipticcolor("eclipticcolor", 1, 0, 0),
@@ -414,7 +441,7 @@ center_rectascension(5.8), center_declination(0.0),
 @** The input script.  The input script is a text file that is given as the
 first and only parameter to \PPTHREE/.  Its format is very simple: First, a
 `\.{\#}' introduces a comment and the rest of the line is ignored.  Secondly,
-every commend has an opcode--parameter(s) form.  Thirdly, opcodes and
+every command has an opcode--parameter(s) form.  Thirdly, opcodes and
 parameters are separated by whitespace (no matter which type and how much).
 Forthly, parameters and celestial objects must be separated by
 ``\.{objects\_and\_labels}''.
@@ -513,19 +540,20 @@ void read_parameters_from_script(istream& script) {
             @<Set filename parameters@>@;
         else
             @<Set single value parameters@>@;
-        else throw string("Undefined opcode in input script");
+        else throw string("Undefined opcode in input script: \"") 
+                 + opcode + '"';
         script >> opcode;
     }       
 }
 
-@ Colours are given as red--green--blue values from $0$ to~$1$.  For example,
+@ {\sloppy Colours are given as red--green--blue values from $0$ to~$1$.  For example,
 $$\hbox{\.{color labels 1 0 0}}$$ which makes all labels red.  The following
-sub-keywords can be used: ``\.{background}'', ``\.{grid}'', ``\.{ecliptic}'',
-``\.{boundaries}'', ``\.{highlighted\_boundaries}'', ``\.{stars}'',
-``\.{nebulae}'', ``\.{labels}'', ``\.{text\_labels}'',
-``\.{constellation\_lines}'', and ``\.{milky\_way}''.  In case of the milky
-way, the colour denotes the brightest regions.  (The darkest have
-\.{back}\-\.{ground} colour.)
+sub-keywords can be used: ``\.{background}'', ``\.{grid}'',
+``\.{eclip}\-\.{tic}'', ``\.{boundaries}'', ``\.{highlighted\_boundaries}'',
+``\.{stars}'', ``\.{nebulae}'', ``\.{labels}'',
+``\.{text\_}\hskip0pt\.{labels}'', ``\.{constellation\_}\hskip0pt\.{lines}'',
+and ``\.{milky\_way}''.  In case of the milky way, the colour denotes the
+brightest regions.  (The darkest have \.{back}\-\.{ground} colour.)\par}
 
 @.color@>
 @.background@>
@@ -560,13 +588,13 @@ way, the colour denotes the brightest regions.  (The darkest have
                 script >> params.clinecolor;
             else if (color_name == "milky_way") script >> params.milkywaycolor;
             else throw string("Undefined \"color\" construct"
-                              " in input script");
+                              " in input script: \"") + color_name + '"';
         }
 
 @ {\sloppy\raggedright The following lines can be modified: ``\.{grid}'',
-``\.{ecliptic}'', ``\.{boundaries}'', ``\.{highlighted\_boundaries}'',
-``\.{nebulae}'', and ``\.{constellation\_lines}''.  The linewidth in
-centimetres must follow.\par}
+``\.{ecliptic}'', ``\.{boundaries}'',
+``\.{highlighted\_}\hskip0pt\.{boundaries}'', ``\.{nebulae}'', and
+``\.{constellation\_lines}''.  The linewidth in centimetres must follow.\par}
 
 @.line\_width@>
 @.grid@>
@@ -592,13 +620,14 @@ centimetres must follow.\par}
             else if (line_name == "constellation_lines")
                 script >> params.linewidth_cline;
             else throw string("Undefined \"line_width\" construct"
-                              " in input script");
+                              " in input script: \"") + line_name + '"';
         }
 
 @ {\sloppy\raggedright The following lines can be modified: ``\.{grid}'',
-``\.{ecliptic}'', ``\.{boundaries}'', ``\.{highlighted\_boundaries}'',
-``\.{nebulae}'', and ``\.{constellation\_lines}''.  You can set the respective
-line style to ``\.{solid}'', ``\.{dashed}'', and ``\.{dotted}''.\par}
+``\.{ecliptic}'', ``\.{boundaries}'',
+``\.{highlighted\_}\hskip0pt\.{boundaries}'', ``\.{nebulae}'', and
+``\.{constellation\_lines}''.  You can set the respective line style to
+``\.{solid}'', ``\.{dashed}'', and ``\.{dotted}''.\par}
 
 @.line\_style@>
 @.solid@>
@@ -627,7 +656,7 @@ line style to ``\.{solid}'', ``\.{dashed}'', and ``\.{dotted}''.\par}
             else if (line_name == "constellation_lines")
                 script >> params.linestyle_cline;
             else throw string("Undefined \"line_width\" construct"
-                              " in input script");
+                              " in input script: \"") + line_name + '"';
         }
 
 
@@ -672,7 +701,7 @@ line style to ``\.{solid}'', ``\.{dashed}'', and ``\.{dotted}''.\par}
             else if (switch_name == "pdf_output")
                 params.create_pdf = read_boolean(script);
             else throw string("Undefined \"switch\" construct"
-                              " in input script");
+                              " in input script: \"") + switch_name + '"';
         }
 
 @ In order to avoid overlaps, \PPTHREE/ uses a simple penalty algorithm.  The
@@ -740,7 +769,7 @@ $$\hbox{\.{penalties threshold 10000}}$$ probably all labels are printed.
             else if (penalty_name == "rim")
                 params.penalties_rim = value;
             else throw string("Undefined \"penalties\" construct"
-                              " in input script");
+                              " in input script: \"") + penalty_name + '"';
         }
 
 @ @q(@> The most important filename is ``\.{output}''.  By default it's unset
@@ -808,7 +837,7 @@ certain regions of the sky, typically stellar constellations.
                 read_parameters_from_script(included_script);
             }
             else throw string("Undefined \"filename\" construct"
-                              " in input script");
+                              " in input script: \"") + object_name + '"';
         }
 
 
@@ -906,7 +935,9 @@ commands in the second part of the input script.
                 script >> params.star_scaling;
             else if (param_name == "fontsize")
                 script >> params.font_size;
-            else throw string("Undefined \"set\" construct in input script");
+            else
+                throw string("Undefined \"set\" construct in input script: \"")
+                    + param_name + '"';
         }
 
 @* Part~II: Change printed objects and labels.  Here I read and interpret the
@@ -1055,7 +1086,8 @@ void read_objects_and_labels(istream& script,
                 @<Celestial object deletion@>@;
             else
                 @<Celestial object activation@>@;
-            else throw string("Undefined opcode in input script");
+            else throw string("Undefined opcode in input script: \"")
+                + opcode + '"';
         } 
         script >> opcode;
     }
@@ -1341,7 +1373,7 @@ this is just the overlap itself in square centimetres, like here.
 @c
 double view_data::penalties_with(const double left, const double right,
                                  const double top, const double bottom,
-                                 bool core = true) const {
+                                 bool core) const {
     if (with_label == visible && label_arranged) {
         double left2, right2, top2, bottom2;
         get_label_boundaries(left2,right2,top2,bottom2);
@@ -1418,7 +1450,7 @@ and not rectangles.  FixMe: This should be done justice to.
 @c
 double star::penalties_with(const double left, const double right,
                             const double top, const double bottom,
-                            bool core = true) const {
+                            bool core) const {
     double penalties = view_data::penalties_with(left, right, top, bottom,
                                                  core);
     const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
@@ -1536,7 +1568,7 @@ are circles and not rectangles.  FixMe: This should be done justice to.
 @c
 double nebula::penalties_with(const double left, const double right,
                               const double top, const double bottom,
-                              bool core = true) const {
+                              bool core) const {
     double penalties = view_data::penalties_with(left, right, top, bottom, core);
     const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
         bottom2 = y - radius;
@@ -1605,7 +1637,7 @@ contains the number within that catalogue.  I just concatenate both to the
         } else if (current_nebula.ic > 0) {
             catalogue = "\\IC{";
             number << current_nebula.ic;
-        } else throw string("Invalid catalogue");
+        } else throw string("Invalid catalogue: \"") + catalogue + '"';
         current_nebula.label = catalogue + number.str() + '}';
 
 
@@ -1764,7 +1796,7 @@ Objects of this type are created in |@<Create a |boundary_atom| for the
 
 double boundary_atom::penalties_with(const double left,const double right,
                                      const double top, const double bottom,
-                                     bool core = true)
+                                     bool core)
     const {
     double intersection;
     point r(end.x - start.x, end.y - start.y);
@@ -1893,7 +1925,7 @@ with the rim, it's only 0.5\,pt.
 @c
 double connection::penalties_with(const double left, const double right,
                                   const double top, const double bottom,
-                                  bool core = true) const
+                                  bool core) const
 {
     double intersection;
     point r(end.x - start.x, end.y - start.y);
@@ -2532,23 +2564,18 @@ void read_label_dimensions(dimensions_list& dimensions) {
     }
 }
 
-@*1 Determining label dimensions.  Here I go through all |objects| and set the
-|label_width| and |label_height| which have been zero so far.  It may happen
-that a label is not found (possibly because |dimensions| is totally empty
-because no label dimensions file could be found).  In this case I call
+@*1 Determining label dimensions.  {\sloppy Here I go through all |objects| and
+set the |label_width| and |label_height| which have been zero so far.  It may
+happen that a label is not found (possibly because |dimensions| is totally
+empty because no label dimensions file could be found).  In this case I call
 |recalculate_dimensions()| to get all labels recalculated via an extra \LaTeX\
-run.
+run.\par}
 
 |dimensions_recalculated| is |true| if |recalculate_dimensions()| has been
  called and thus one can assume that all needed labels are now available.  It
- is merely to remove unnecessary tests and make the procedure faster.  If the
- recalculation fails, I set it to |true| nevertheless because I want a failed
- recalculation to be non-fatal and \PPTHREE/ mustn't try to recalculate over
- and over again.
+ is merely to remove unnecessary tests and make the procedure faster.
 
 The |throw| command should never happen.  It means an internal error.
-
-@q'@>
 
 @<Set label dimensions@>=
 bool dimensions_recalculated = false;
@@ -2557,15 +2584,12 @@ for (int i = 0; i < objects.size(); i++) {
     if (current_object->with_label == visible) {
         if (!dimensions_recalculated &&
             dimensions.find(current_object->label) == dimensions.end()) {
-            if (!recalculate_dimensions(dimensions,objects)) {
-                cerr << "pp3: LaTeX call for label creation failed";
-                dimensions_recalculated = true;
-            }
+            recalculate_dimensions(dimensions,objects);
+            dimensions_recalculated = true;
             if (dimensions.find(current_object->label) == dimensions.end())
                 throw string("Update of label dimensions file failed: \"") +
                     current_object->label + "\" not found";
-            dimensions_recalculated = true;
-        } 
+        }
         current_object->label_width = dimensions[current_object->label].width;
         current_object->label_height =
             dimensions[current_object->label].height;
@@ -2599,7 +2623,7 @@ meaning in \LaTeX, and I'm unable to avoid any tampering.
 @q'@>
 
 @<Helping routines for nebulae labels@>=
-bool recalculate_dimensions(dimensions_list& dimensions,
+void recalculate_dimensions(dimensions_list& dimensions,
                             const objects_list& objects)
 {
     list<string> required_names;
@@ -2625,7 +2649,12 @@ bool recalculate_dimensions(dimensions_list& dimensions,
                      "\\the\\wd0s \\the\\ht0s}\n";
     temp_file << "\\immediate\\closeout\\labelsfile\n\\end{document}\n";
     temp_file.close();
-    if (system("latex pp3temp > pp3dump.log") != 0) return false;
+    string commandline("latex pp3temp");
+    if (params.in == &cin)
+        commandline += " > pp3dump.log";
+    if (system(commandline.c_str()) != 0)
+        throw string("Label dimensions calculations: LaTeX call failed: ")
+            + commandline;
 
     ifstream raw_labels_file("pp3temp.dat");
     ofstream cooked_labels_file("labeldimens.dat");
@@ -2649,7 +2678,6 @@ bool recalculate_dimensions(dimensions_list& dimensions,
                            << dimensions[current_name].height
                            << '\n';
     }
-    return true;
 }
 
 @*1 User labels.  The user should be able to insert arbitaray text into the
@@ -2860,16 +2888,16 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
         << params.linestyle_nebula << ",curvature=1 .5 -1}%\n";
     for (int i = 0; i < nebulae.size(); i++)
         if (nebulae[i].in_view == visible ||
-	    (nebulae[i].in_view == undecided &&
-	     (((nebulae[i].kind == open_cluster ||
-		nebulae[i].kind == globular_cluster)
-	       && nebulae[i].magnitude < params.faintest_cluster_magnitude)
+            (nebulae[i].in_view == undecided &&
+             (((nebulae[i].kind == open_cluster ||
+                nebulae[i].kind == globular_cluster)
+               && nebulae[i].magnitude < params.faintest_cluster_magnitude)
              || @/
-	      ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
-		nebulae[i].kind == emission) &&
-	       nebulae[i].magnitude < params.faintest_diffuse_nebula_magnitude)
+              ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
+                nebulae[i].kind == emission) &&
+               nebulae[i].magnitude < params.faintest_diffuse_nebula_magnitude)
              ||
-	      nebulae[i].messier > 0 ))) {
+              nebulae[i].messier > 0 ))) {
             if (mytransform.polar_projection(nebulae[i].rectascension,
                                              nebulae[i].declination,
                                              nebulae[i].x,nebulae[i].y)) {
@@ -3316,11 +3344,10 @@ programs.
 @<Routines for reading the input script@>@#@;
 
 int main(int argc, char **argv) {
-    istream* in = 0;
     bool input_file = false;
     try {
         @<Dealing with command line arguments@>@;
-        read_parameters_from_script(*in);
+        read_parameters_from_script(*params.in);
         if (!params.filename_output.empty())
             params.out = new ofstream(params.filename_output.c_str());
         transformation mytransform(params.center_rectascension,
@@ -3331,22 +3358,22 @@ int main(int argc, char **argv) {
 
         @<Definition and filling of the containers@>@;
 
-        read_objects_and_labels(*in, dimensions, objects, stars, nebulae, 
-                                texts, mytransform);
+        read_objects_and_labels(*params.in, dimensions, objects, stars,
+                                nebulae, texts, mytransform);
 
         OUT.setf(ios::fixed);  // otherwise \LaTeX\ gets confused
         OUT.precision(3);
         @<Create \LaTeX\ header@>@;
-        OUT << "\\psclip{\\psframe(0bp,0bp)("
+        OUT << "\\psclip{\\psframe[linestyle=none](0bp,0bp)(" 
             << params.view_frame_width_in_bp()
-            << ',' << params.view_frame_height_in_bp() << ")}%\n";
-        OUT << "\\psframe*[linestyle=none,linecolor=bgcolor](0bp,0bp)("
-            << params.view_frame_width_in_bp() << "bp,"
-            << params.view_frame_height_in_bp() << "bp)%\n";
+            << "bp," << params.view_frame_height_in_bp() << "bp)}%\n"
+            << "\\psframe*[linecolor=bgcolor,linestyle=none](-1bp,-1bp)("
+            << params.view_frame_width_in_bp() + 1
+            << "bp," << params.view_frame_height_in_bp() + 1 << "bp)%\n";
         @<Draw all celestial objects and labels@>@;
         OUT << "\\endpsclip\n";
         @<Create \LaTeX\ footer@>@;
-        if (input_file) delete in;
+        if (input_file) delete params.in;
         @<Create \EPS/ or \PDF/ file if requested@>@;
     }
     catch (string s) {
@@ -3365,14 +3392,15 @@ the input script.
 @<Dealing with command line arguments@>=
         if (argc == 2) {
             if (argv[1][0] != '-') {
-                in = new ifstream(argv[1]);
-                if (!in->good()) throw string("Input script file ") + argv[1]
-                                     + " not found";
+                params.in = new ifstream(argv[1]);
+                if (!params.in->good())
+                    throw string("Input script file ") + argv[1]
+                        + " not found";
                 else input_file = true;
-            } else if (!strcmp(argv[1],"-")) in = &cin; else
+            } else if (!strcmp(argv[1],"-")) params.in = &cin; else
                 cerr << "Invalid argument: " << argv[1] << endl;
         }
-        if (in == 0) {
+        if (params.in == 0) {
             cerr << "Syntax:\n  pp3 {input-file}\n\n" @/
                  << "{input-file} may be \"-\" to denote standard input.\n" @/
                  << "You may give an empty file to get a default plot.\n" @/
@@ -3431,9 +3459,7 @@ to the actual view frame plus 2~millimetres.  So I create a buffer border of
     OUT << "\\usepackage[nohead,nofoot,margin=0cm," @/
         << "paperwidth=" << params.view_frame_width_in_bp() << "bp," @/
         << "paperheight=" << params.view_frame_height_in_bp() << "bp" @/
-        << "]{geometry}\n" @/
-        << "\n\\pagecolor[rgb]{" << params.bgcolor.red << ','
-        << params.bgcolor.green << ',' << params.bgcolor.blue << "}\n" @/
+        << "]{geometry}\n\n" @/
         << "\n\\begin{document}\\parindent0pt\n" @/
         << "\\pagestyle{empty}\\thispagestyle{empty}%\n" @/
         << "\\special{papersize=" << params.view_frame_width_in_bp() - 0.1
