@@ -1,3 +1,4 @@
+#	$Id$	
 .PHONY: distri distri-cripple rpm distri-win all doc
 
 # you may set this to empty in order to install the files
@@ -15,7 +16,10 @@ DOCDIR= $(USRDIR)/share/doc/pp3
 # destination directory for executables
 DESTDIR= $(USRDIR)/bin
 
+# If your compiler says "implicit declaration of function `int fmin(...)'"
+# then set "CHANGEFILE" to "fmax.ch", otherwise leave the "-".
 CHANGEFILE=-
+
 CXXFLAGS=-s -O2
 
 all: pp3
@@ -58,7 +62,7 @@ install: all
 	install -d $(ROOT)$(DOCDIR)/examples
 	cp -p examples/* $(ROOT)$(DOCDIR)/examples
 
-DISTRINAME= pp3-1.2
+DISTRINAME= pp3-1.3
 RPMNAME= $(DISTRINAME)-1tb.spec
 
 distri:
