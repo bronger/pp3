@@ -75,7 +75,7 @@ distri:
 	cp stars.dat milkyway.dat nebulae.dat lines.dat boundaries.dat \
 	  $(DISTRINAME)
 	mkdir $(DISTRINAME)/examples
-	cp wiki/*.pp3 wiki/wiki.tex $(DISTRINAME)/examples
+	cp wiki/*.pp3 wiki/wiki.tex wiki/Makefile $(DISTRINAME)/examples
 	tar -cf $(DISTRINAME).tar $(DISTRINAME)
 	bzip2 $(DISTRINAME).tar
 
