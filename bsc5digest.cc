@@ -371,3 +371,6 @@ int main() {
     b_v_of_complete_class_letter("O", stars, cout);
     cout << b_v_of_SC("C", stars) << '\n';
 }
+
+// Necessary patches:
+// HD 18242 (R Hor) has brightness of 4.7 rather than 4.
