@@ -3889,8 +3889,8 @@ the input script.
                 cerr << "Invalid argument: " << argv[1] << endl;
         }
         if (params.in == 0) {
-            cerr << "PP3 1.3  Copyright (c) 2003 Torsten Bronger\n" @/
-                 << "         http://pp3.sourceforge.net\n\n" @/
+            cerr << "PP3 1.3.2  Copyright (c) 2003 Torsten Bronger\n" @/
+                 << "           http://pp3.sourceforge.net\n\n" @/
                  << "Syntax:\n  pp3 {input-file}\n\n" @/
                  << "{input-file} may be \"-\" to denote standard input.\n" @/
                  << "You may give an empty file to get a default plot.\n" @/
