@@ -1,7 +1,7 @@
 .PHONY: webmanual
 
 INFODIR=/usr/share/info
-DOCDIR= /usr/share/doc/tbook
+DOCDIR= /usr/share/doc/pp3
 PERMS= a+r,u+w
 
 COREIMAGES=orion swan swan1 swan2 pp3rose leo1 betelg
