@@ -1,0 +1,24 @@
+# Columba, the Dove
+#
+
+filename output columba.tex
+filename include wiki.pp3
+
+set constellation COL
+set center_rectascension   5.8
+set center_declination   -35
+set box_width  6.3
+set box_height 6
+
+objects_and_labels
+
+add_labels HD 40494  HD 44762  HD 36597 ;  # gamma--epsilon Col
+
+reposition HD 47670 SW ;  # nu Pup
+
+text Columba at 5.1 -27.5 along declination towards SW ;
+text Lepus at 5.5 -26 along declination towards N ;
+text \vtop{\hbox{Canis}\hbox{Major}} at 6.25 -24.5 along declination towards W ;
+text Cae at 5.05 -38 along declination towards E ;
+text Puppis at 6.2 -43.5 along declination towards SW ;
+text Pictor at 5. -43.5 along declination towards SW ;
