@@ -616,6 +616,56 @@ completeness.
 @node Stars data file
 @section Stars data file
 
+This is a text file usually called @file{stars.dat}.  Four consecutive
+lines belong together and refer to one particular star.  There is no
+header.
+
+@table @asis
+@item Line 1
+A row with seven fields separated by whitespace:
+
+@enumerate
+@item
+Henry Draper Catalogue number (`@code{0}' if unknown),
+
+@item 
+BSC catalogue number (`@code{0}' if unknown),
+
+@item
+rectascension in hours,
+
+@item
+declination in degrees,
+
+@item
+visual brightness in magnitudes,
+
+@item
+B@math{-}V brightness in magnitudes (`@code{99.0}' if unknown), and
+
+@item
+Flamsteed number (`@code{0}' if unknown).
+
+@end enumerate
+
+@item Line 2
+The label (astronomical name) for the star, as a @LaTeX{}-ready string,
+e.@s{}g.@: ``@code{$\alpha$}'', ``@code{$\phi^{2}$}'', or simply
+``@code{$23$}''.  May be the empty string.
+
+@item Line 3
+The astronomical abbreviation of the constellation.  It must be all
+uppercase.
+
+@item Line 4
+The spectral class.  It must start with the spectral class letter,
+followed by the fraction digit, followed by the luminosity class as a
+Roman number, e.@s{}g.@: ``@code{F5III}''.  Anything may follow as in
+``@code{K2-IIICa-1}'', however the mandatory parts must not contain any
+whitespace.
+
+@end table
+
 
 @node Nebulae data file
 @section Nebulae data file
