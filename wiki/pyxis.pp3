@@ -1,0 +1,23 @@
+# Pyxis, the Compass
+#
+
+filename output pyxis.tex
+filename include wiki.pp3
+
+set constellation PYX
+set center_rectascension   8.95
+set center_declination   -30
+set box_width 6.3
+set box_height 7
+
+set faintest_star_disk_magnitude 5
+
+objects_and_labels
+
+add_labels HD 74006  HD 75691 ;  # beta and gammy Pyx
+
+text Pyxis at 9.4 -36.5 along declination ;
+text Puppis at 8.4 -28 along declination towards E ;
+text Antlia at 9.5 -33 along declination towards W ;
+text Hydra at 9.2 -24 along declination towards NW ;
+text Vela at 9.9 -41 along declination towards SE ;
