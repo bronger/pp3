@@ -13,8 +13,6 @@ sculptor serpens taurus tucana ursa_major ursa_minor vela virgo vulpecula
 all: $(addsuffix _constellation_map.png,$(CONSTELLATIONS))
 
 %_constellation_map.png : %.eps
-	pp3 $(basename $<).pp3
-	rm $(basename $<).dvi $(basename $<).log $(basename $<).tex
 	gimp --console-messages -i -d -b \
 	  '(wiki-convert-sky-chart "$<" "$(basename $@)" 64)' '(gimp-quit 0)'
 
