@@ -778,6 +778,7 @@ want to be created.
 @menu
 * Minimal example::             The first four PP3 lines.
 * More bells and wistles::      How to make it look nicer.
+* Dimensions and scale::        Set size and magnification of the map.
 * Parameters and commands::     The two parts of an input script.
 * Labels::                      Changing implicitly created labels.
 * Deleting and adding objects::  Remove or insert stars and nebulae.
@@ -955,6 +956,52 @@ This is the map that results from all this (I removed the Milky Way from
 this figure in order to keep the @acronym{PDF} manual small):
 
 @image{swan,10cm,,Constellation map of the Swan}
+
+
+@node Dimensions and scale
+@section Dimensions and scale
+@cindex size of the map
+@cindex dimensions of the map
+@cindex width
+@cindex height
+
+When you include a map in a text of yours, usually you can scale the
+graphics to fit your needs.  The exact procedure depends on the program
+you use of course.  Such additional scaling is helpful, but actually it
+should be superfluous since @PPTHREE{} can deliver the map with the
+desired size.
+
+@kwindex box_width
+@kwindex box_height
+@kwindex grad_per_cm
+
+The parameters
+
+@example
+set box_width 10
+set box_height 5
+@end example
+
+@noindent
+set the width of the map to 15@dmn{cm} and the height to 10@dmn{cm}.
+(By the way, all dimensions are given in centimetres in @PPTHREE{}.)
+The only thing that's still missing is the scale of the map.  It is set
+with
+
+@example
+set grad_per_cm 6
+@end example
+
+@cindex map projection
+@cindex projection
+@cindex azimuthal projection
+@cindex equidistant azimuthal projection
+
+@noindent
+which sets it to 6 degrees per centimetre.  With the current projection
+method@footnote{the equidistant azimuthal projection}, the given scale
+is only exactly true for the centre of the map.  Towards the rim there
+is a slight magnification (and distortion).
 
 
 @node Parameters and commands
