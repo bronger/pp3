@@ -3,7 +3,7 @@ cancer cassiopeia cygnus monoceros perseus ursa_major aquila canes_venatici	\
 centaurus delphinus pisces ursa_minor ara canis_major cetus eridanus norma	\
 sagittarius virgo aries canis_minor coma_berenices gemini octans scorpius	\
 vulpecula auriga capricornus corvus leo ophiuchus serpens hercules hydra	\
-camelopardalis cepheus pegasus
+camelopardalis cepheus pegasus draco
 
 %.eps : %.pp3 wiki.pp3 wiki.tex
 	pp3 $<
