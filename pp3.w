@@ -891,6 +891,7 @@ brightness.\par}
 Many of these parameters trigger the default behaviour that you can overrule by
 commands in the second part of the input script.
 
+@.set@>
 @.center\_rectascension@>
 @.center\_declination@>
 @.box\_width@>
@@ -1117,18 +1118,21 @@ view_data* identify_object(istream& script, index_list& ngc,
                                          catalogue_name,flamsteed))
             return &stars[flamsteed[catalogue_name][catalogue_index]];
    }
+   return 0;
 }
 
 @ Here now the main routine for the second part of the input script.  The
 top-level commands in this section are: ``\.{reposition}'',
-``\.{delete\_labels}'', ``\.{add\_labels}'', ``\.{delete}'', ``\.{add}'', and
-``\.{text}''.
+``\.{delete\_labels}'', ``\.{add\_labels}'', ``\.{delete}'', ``\.{add}'',
+``\.{set\_text\_label}'', and ``\.{text}''.
 
 @.reposition@>
 @.delete\_labels@>
 @.add\_labels@>
 @.delete@>
 @.add@>
+@.text@>
+@.set\_label\_text@>
 
 @<Routines for reading the input script@>=
 void read_objects_and_labels(istream& script,
@@ -1155,6 +1159,8 @@ void read_objects_and_labels(istream& script,
             getline(script,rest_of_line);
         } else 
             @<Label repositioning@>@;
+        else
+            @<Change label text@>@;
         else
             @<Text labels@>@;
         else {  // command with objects list
@@ -1216,9 +1222,11 @@ semicolon is necessary.
             if (semicolon != ";") 
                 throw string("Expected \";\" after \"reposition\" command");
             @<Map a wind rose |position| to an |angle| in degrees@>@;
-            current_object->label_angle = angle;
-            current_object->with_label = visible;
-            current_object->label_arranged = true;
+            if (current_object) {
+                current_object->label_angle = angle;
+                current_object->with_label = visible;
+                current_object->label_arranged = true;
+            }
         }
 
 @ @<Map a wind rose |position| to an |angle| in degrees@>=
@@ -1231,6 +1239,19 @@ semicolon is necessary.
             else if (position =="S") angle = 6;
             else if (position =="SE") angle = 7;
             else throw string("Undefined position angle: ") + position;
+
+@ \PPTHREE/ reads default labels from the stars and nebulae data files.  But
+you may say e.\,g.\ $$\hbox{\.{set\_label\_text ORI 19 Rigel}}$$ to rename
+``$\alpha$'' (Orionis) to ``Rigel''.
+
+@<Change label text@>=
+        if (opcode == "set_label_text") {
+            view_data* current_object =
+                identify_object(script, ngc, ic, messier, henry_draper,
+                                flamsteed, stars, nebulae);
+            if (current_object) current_object->label = read_string(script);
+        }
+
 
 @ With e.\,g.\ $$\hbox{\.{delete\_labels  M 35  M 42 ;}}$$ you delete the labels
 (not the nebulae themselves!)\ of M\,35 and M\,42.
@@ -1317,6 +1338,8 @@ of equal declination which can look very nice.  You get it with the option
 ``\.{along declination}'' in the parameter list of the text label.
 
 @.text@>
+@.along@>
+@.declination@>
 
 @q'@>
 
@@ -1355,7 +1378,8 @@ if (opcode == "text") {
         break;
     case kind_flex_declination: 
         flexes.push_back(new declination_flex(contents, rectascension,
-                                              declination,angle));
+                                              declination,
+                                              params.textlabelcolor, angle));
         break;
     }
 }
@@ -1613,6 +1637,7 @@ void read_stars(stars_list& stars) {
     star current_star;
     stars_file >> current_star;
     while (stars_file) {
+        current_star.label = string("\\Starname{") + current_star.name + '}';
         stars.push_back(current_star);
         stars_file >> current_star;
     }
@@ -2101,12 +2126,12 @@ void read_constellation_lines(connections_list& connections,
 `to'~star.
 
 @<Create one connection@>=
-            int from_index = 0, to_index = 0;
+            int from_index = -1, to_index = -1;
             for (int i = 0; i < stars.size(); i++) {
                 @<Test whether |stars[i]| is the `from' star@>@;
                 @<Test whether |stars[i]| is the `to' star@>@;
             }
-            if (from_index == 0 || to_index == 0) {
+            if (from_index == -1 || to_index == -1) {
                 stringstream error_message;
                 error_message << "Unrecognised star in constellation lines: ";
                 if (from_index == 0)
@@ -2127,14 +2152,14 @@ both stars have been found already, I leave the loop immediately.
 
 @<Test whether |stars[i]| is the `from' star@>=
 @q'@>
-                if (from_index == 0)
+                if (from_index == -1)
                     if (from_catalogue_name == "HD") {
                         if (stars[i].hd == from_catalogue_index) from_index = i;
                     } else {
                         if (from_catalogue_name == stars[i].constellation)
                             if (stars[i].flamsteed == from_catalogue_index)
                                 from_index = i;
-                    } else if (to_index != 0) break;
+                    } else if (to_index != -1) break;
 
 @ Perfectly analogous to |@<Test whether |stars[i]| is the `from' star@>|.
 
@@ -2142,14 +2167,14 @@ both stars have been found already, I leave the loop immediately.
 
 @<Test whether |stars[i]| is the `to' star@>=
 @q'@>
-                if (to_index == 0)
+                if (to_index == -1)
                     if (to_catalogue_name == "HD") {
                         if (stars[i].hd == to_catalogue_index) to_index = i;
                     } else {
                         if (to_catalogue_name == stars[i].constellation)
                             if (stars[i].flamsteed == to_catalogue_index)
                                 to_index = i;
-                    } else if (from_index != 0) break;
+                    } else if (from_index != -1) break;
 
 
 @* The Milky Way.  The file is a text file as usual with the following
@@ -2208,7 +2233,7 @@ struct color {
         : red(red), green(green), blue(blue), name(name) { }
     color(double red, double green, double blue)
         : red(red), green(green), blue(blue), name() { }
-    void set(ostream& out);
+    void set(ostream& out) const;
 };
 
 @ This routine is used when the name of the colour is not necessary, because
@@ -2218,7 +2243,7 @@ dots.
 @q'@>
 
 @c
-void color::set(ostream& out) {
+void color::set(ostream& out) const {
     out << "\\newrgbcolor{dummycolor}{" << red << ' ' << green << ' ' << blue
         << "}\\dummycolor\n  \\psset{linecolor=dummycolor}%\n";
 }
@@ -2860,7 +2885,7 @@ read\_flexes\/}(\,), and no file format associated with it.
 @c
 struct flex_label : public view_data {
     double rectascension, declination;
-    flex_label(string s, double r, double d, int a);
+    flex_label(string s, double r, double d, color c, int a);
     virtual bool draw(const transformation& mytransform,
                       dimensions_list& dimensions, objects_list& objects)
         const = 0;
@@ -2872,9 +2897,10 @@ label isn't printed anyway because the coodrinates |x| and |y| are invalid
 anyway and therefore printing will be rejected in |print_labels()|..
 
 @c
-flex_label::flex_label(string s, double r, double d, int a)
+flex_label::flex_label(string s, double r, double d, color c, int a)
     : rectascension(r), declination(d) {
-    label = s;
+    label_color = c;
+    label = string("\\FlexLabel{") + s + '}';
     label_angle = a;
     in_view = visible;
     with_label = hidden;
@@ -2888,8 +2914,8 @@ declination.  This looks very nice on the chart.
 
 @c
 struct declination_flex : public flex_label {
-    declination_flex(string s, double r, double d, int a)
-        : flex_label(s,r,d,a) { }
+    declination_flex(string s, double r, double d, color c, int a)
+        : flex_label(s,r,d,c,a) { }
     virtual bool draw(const transformation& mytransform,
                       dimensions_list& dimensions, objects_list& objects)
         const;
@@ -2960,12 +2986,13 @@ bool declination_flex::draw(const transformation& mytransform,
         if (!mytransform.polar_projection(path_point_rectascension[i],
                                           declination, x[i],y[i]))
             return false;
-    
+
+    label_color.set(OUT);
     OUT << "\\FlexLabel{\\pstextpath[" << justification
-        << "](0," << lower << "em){\\pscurve[linestyle=none]";
+        << "](0," << lower << "em){\\pscurve[linestyle=none]%\n  ";
     for (int i = 0; i < 3; i++)
         OUT << '(' << x[i] << "cm," << y[i] << "cm)";
-    OUT << "}{" << label << "}}%\n";
+    OUT << "}{\\dummycolor" << label << "}}%\n";
     
     return true;
 }
@@ -3038,7 +3065,6 @@ void draw_stars(const transformation& mytransform, stars_list& stars,
                         (stars[i].magnitude <
                          params.faintest_star_with_label_magnitude &&
                          !stars[i].name.empty()) ? visible : hidden;
-                stars[i].label = string("\\Starname{") + stars[i].name + '}';
                 if (params.colored_stars) {
                     OUT << "\\newhsbcolor{starcolor}{";
                     create_hs_colour(stars[i].b_v,stars[i].spectral_class);
@@ -3401,7 +3427,6 @@ because $\arctan$ only returns values between $-\pi/2$ and $+\pi/2$.
         const int number_of_points = int(scans_per_fullcircle);
         within_curve = false;
         for (int i = 0; i <= number_of_points; i++) {
-            double x,y;
             const double phi0 = double(i)/double(number_of_points)*2.0*M_PI;
             const double m_sin_phi0 = -sin(phi0);
             const double phi = atan2(m_sin_phi0 * cos(epsilon),cos(phi0));
