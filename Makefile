@@ -17,7 +17,7 @@ PP3DATA= $(DATADIR)/pp3
 DOCDIR= $(DATADIR)/doc/pp3
 
 # Texinfo documentation
-DOCDIR= $(DATADIR)/info
+INFODIR= $(DATADIR)/info
 
 # destination directory for executables
 DESTDIR= $(USRDIR)/bin
@@ -74,11 +74,9 @@ install: all
 	install -s pp3 $(ROOT)$(DESTDIR)
 	install -d $(ROOT)$(PP3DATA)
 	install --mode=$(PERMS) *.dat $(ROOT)$(PP3DATA)
-	install -d $(ROOT)$(DATADIR)/doc/pp3
-	install --mode=$(PERMS) pp3-source.ps $(ROOT)$(DATADIR)/doc/pp3
 	install -d $(ROOT)$(DATADIR)/doc/pp3/examples
 	install --mode=$(PERMS) examples/* $(ROOT)$(DATADIR)/doc/pp3/examples
-	$(MAKE) --directory=info/ install ROOT=$(ROOT) PERMS=$(PERMS) \
+	$(MAKE) --directory=info install ROOT=$(ROOT) PERMS=$(PERMS) \
 	  INFODIR=$(INFODIR) DOCDIR=$(DOCDIR)
 
 DISTRINAME= pp3-1.3.3
@@ -114,7 +112,7 @@ rpm:
 	rm -f pp3.cc
 	make distri CXXFLAGS="$(CXXFLAGS)"
 	cp $(DISTRINAME).tar.bz2 $(HOME)/packages/pp3/
-	rpm -ba $(RPMNAME)
+	rpmbuild -ba $(RPMNAME)
 
 distri-win:
 	rm -f $(DISTRINAME)-win.zip
