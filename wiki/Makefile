@@ -7,7 +7,7 @@ lepus libra lupus lynx lyra microscopium monoceros norma octans ophiuchus orion	
 pavo pegasus perseus phoenix pictor pisces piscis_austrinus puppis pyxis	\
 sagitta sagittarius scorpius sculptor scutum serpens sextans taurus telescopium	\
 triangulum triangulum_australe tucana ursa_major ursa_minor vela virgo		\
-vulpecula hydrus horologium
+vulpecula hydrus horologium reticulum
 
 %.eps : %.pp3 wiki.pp3 wiki.tex
 	pp3 $<
