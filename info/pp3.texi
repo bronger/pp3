@@ -301,7 +301,8 @@ of Wikipedia} wanted to translate the maps to French.  They wanted
 another background colour and French labels and constellation names.
 They provided me with a translation table.  It took me three hours to
 adjust the scripts, to run @file{make} again, and to upload the
-@acronym{ZIP} file with all the demanded bitmaps.
+@acronym{ZIP} file with all the demanded bitmaps.  See for example the
+@uref{http://fr.wikipedia.org/wiki/Aquarius,Aquarius entry}.
 
 @unnumberedsubsec h2g2
 @cindex h2g2
@@ -874,7 +875,9 @@ set center_declination    40.8
 denotes the area of the sky that we want to be displayed.  Both values
 indicate the celestial point that we want to have in the centre of the
 map.  In this case, 19.95@dmn{h} rectascension and @math{+40.8^\circ}
-declination which is the centre of the constellation Swan.
+declination which is the centre of the constellation Swan.  @xref{List
+of all constellations}, for a complete list of all constellations, along
+with their coordinates and more.
 
 
 @node More bells and wistles
@@ -2418,7 +2421,7 @@ packages.
 
 @item Line 2
 activates the so-called T1 font encoding.  It's not important to know
-what this means, but it is recommended and doen't do any harm.
+what this means, but it is recommended and doesn't do any harm.
 
 @item Line 3
 activates nicer Greek letters.  Well, your taste may be different.  This
@@ -2464,35 +2467,35 @@ program at certain points.
 @table @samp
 @item \Label
 @cindex Label (@LaTeX{} hook)
-Argument: The label text.
+Argument: the label text.
 
 @item \TextLabel
 @cindex TextLabel (@LaTeX{} hook)
-Argument: The label text.
+Argument: the label text.
 
 @item \FlexLabel
 @cindex FlexLabel (@LaTeX{} hook)
-Argument: The label text.
+Argument: the label text.
 
 @item \Starname
 @cindex Starname (@LaTeX{} hook)
-Argument: The star name.
+Argument: the star name.
 
 @item \Messier
 @cindex Messier (@LaTeX{} hook)
-Argument: The Messier number.
+Argument: the Messier number.
 
 @item \NGC
 @cindex NGC (@LaTeX{} hook)
-Argument: The @acronym{NGC} number.
+Argument: the @acronym{NGC} number.
 
 @item \IC
 @cindex IC (@LaTeX{} hook)
-Argument: The @acronym{IC} number.
+Argument: the @acronym{IC} number.
 
 @item \TicMark
 @cindex TicMark (@LaTeX{} hook)
-Argument: The tic mark label text.
+Argument: the tic mark label text.
 
 @item \DP
 @cindex DP (@LaTeX{} hook)
@@ -3010,9 +3013,9 @@ Pleiades
 
 @node List of all constellations
 @appendix List of all constellations
-@cindex constallations
+@cindex constellations
 @cindex list of constellations
-@cindex coodinates of constellations
+@cindex coordinates of constellations
 
 @table @asis
 @item first column
@@ -3170,5 +3173,9 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  cindex kwindex byfmt ini flexes xref ifinfo ifnotinfo tics Cyg
 @c  LocalWords:  deffn deffnx ifhtml todo xmarksthespot miktex Cnc hskip psdots
 @c  LocalWords:  leo nofiles pst TicMark TextLabel AtBeginDocument mypreamble
-@c  LocalWords:  IfFileExists eulervm pmy phv riptsize mdseries atid betelg
-@c  LocalWords:  PSTricks
+@c  LocalWords:  IfFileExists eulervm pmy phv riptsize mdseries atid betelg MMM
+@c  LocalWords:  PSTricks AMSMath aller Australe dec Aps Aqr Aql Ari Aur Cae
+@c  LocalWords:  Camelopardalis Venatici CVn CMa CMi Cas Cen Cet Cha Cir CrA
+@c  LocalWords:  CrB Crv Crt Dra Equ Eri Gru Hor Hya Lac LMi Lep Lup Lyn Lyr
+@c  LocalWords:  Mic Mus Oph Phe Psc Austrinus PsA Sge Sgr Sco Scl Sct TrA UMi
+@c  LocalWords:  Vel Vir Vul
