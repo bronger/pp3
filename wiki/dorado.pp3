@@ -1,0 +1,27 @@
+# Dorado, the Dolphinfish (UNFINISHED)
+#
+
+filename output dorado.tex
+filename include wiki.pp3
+
+set constellation DOR
+set center_rectascension   5.1
+set center_declination   -60
+set box_height 8
+set box_width 6.3
+
+set faintest_star_disk_magnitude 5
+
+
+objects_and_labels
+
+text Dorado at 4.7 -65 along declination towards W ;
+text Reticulum at 4.5 -66.5 along declination ;
+delete HD 22634  HD 22252 ;   # Making space for "Reticulum"
+text Horologium at 3.8 -52 along declination ;
+text Hydrus at 3.8 -67.5 along declination towards S ;
+text Mensa at 4.65 -71 along declination towards SW ;
+text Pictor at 4.6 -53 along declination towards NW ;
+
+text "\\footnotesize L\\kern0.1emM\\kern0.1emC" 
+  at 5.3 -70 color 0.0 0.0 0.9333 towards S ;
