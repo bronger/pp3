@@ -401,8 +401,8 @@ struct parameters {
         linewidth_hlboundary, linewidth_cline, linewidth_nebula;
     string linestyle_grid, linestyle_ecliptic, linestyle_boundary,
         linestyle_hlboundary, linestyle_cline, linestyle_nebula;
-    bool milkyway_visible, colored_stars, show_grid, show_ecliptic,
-        show_boundaries, show_lines, show_labels;
+    bool milkyway_visible, nebulae_visible, colored_stars, show_grid,
+        show_ecliptic, show_boundaries, show_lines, show_labels;
     bool create_eps, create_pdf;
     parameters() : @<Default values of all global parameters@> { }
     int view_frame_width_in_bp() {
@@ -457,7 +457,8 @@ center_rectascension(5.8), center_declination(0.0),
                    linestyle_boundary("dashed"),
                    linestyle_hlboundary("dashed"), linestyle_cline("solid"),
                    linestyle_nebula("solid"), @/
-                   milkyway_visible(true),
+                   milkyway_visible(false),
+                   nebulae_visible(true),
                    colored_stars(true),
                    show_grid(true), show_ecliptic(true), show_boundaries(true),
                    show_lines(true), show_labels(true), @/
@@ -688,14 +689,16 @@ brightest regions.  (The darkest have \.{back}\-\.{ground} colour.)\par}
 
 
 @ {\sloppy There are the following boolean values: ``\.{milky\_may}'',
-``\.{colored\_stars}'', ``\.{grid}'', ``\.{ecliptic}'', ``\.{boundaries}'',
-``\.{constellation\_lines}'', ``\.{labels}'', ``\.{eps\_output}'', and
-``\.{pdf\_output}''.  You can switch them ``\.{on}'' or ``\.{off}''.\par}
+``\.{nebulae}'', ``\.{colored\_stars}'', ``\.{grid}'', ``\.{ecliptic}'',
+``\.{boundaries}'', ``\.{constellation\_lines}'', ``\.{labels}'',
+``\.{eps\_output}'', and ``\.{pdf\_output}''.  You can switch them ``\.{on}''
+or ``\.{off}''.\par}
 
 @.switch@>
 @.on@>
 @.off@>
 @.milky\_way@>
+@.nebulae@>
 @.colored\_stars@>
 @.grid@>
 @.ecliptic@>
@@ -711,6 +714,8 @@ brightest regions.  (The darkest have \.{back}\-\.{ground} colour.)\par}
             script >> switch_name;
             if (switch_name == "milky_way")
                 params.milkyway_visible = read_boolean(script);
+            else if (switch_name == "nebulae")
+                params.nebulae_visible = read_boolean(script);
             else if (switch_name == "colored_stars")
                 params.colored_stars = read_boolean(script);
             else if (switch_name == "grid")
@@ -1016,7 +1021,7 @@ want it to be a warning because it would be very annowing to delete all such
 opcodes from an input script only because one wants to dispense with e.\,g.\
 nebulae.
 
-I need three incarnation of this function: One for nebulae, one for Flamsteed
+I need three incarnations of this function: One for nebulae, one for Flamsteed
 number, and one for Henry Draper catalogue numbers.
 
 @<Routines for reading the input script@>=
@@ -1075,25 +1080,30 @@ void search_objects(istream& script,
             error_message << "Invalid index: " << catalogue_index;
             throw error_message.str();
         }
-        if (!script) throw string("Unexpected end of input script");
-        if (catalogue_name == "NGC") {
-            if (assure_valid_catalogue_index(catalogue_index,ngc,"NGC"))
-                found_nebulae.push_back(ngc[catalogue_index]);
-        } else if (catalogue_name == "IC") {
-            if (assure_valid_catalogue_index(catalogue_index,ic,"IC"))
-                found_nebulae.push_back(ic[catalogue_index]);
-        } else if (catalogue_name == "M") {
-            if (assure_valid_catalogue_index(catalogue_index,messier,"M"))
-                found_nebulae.push_back(messier[catalogue_index]);
-        } else if (catalogue_name == "HD") {
-            if (assure_valid_catalogue_index(catalogue_index,henry_draper))
-                found_stars.push_back(henry_draper[catalogue_index]);
-        } else {
-            if (assure_valid_catalogue_index(catalogue_index,
-                                             catalogue_name,flamsteed))
-                found_stars.
-                    push_back(flamsteed[catalogue_name][catalogue_index]);
-        }
+	if (!script) throw string("Unexpected end of input script");
+
+        if (params.nebulae_visible ||
+	    (catalogue_name != "NGC" && catalogue_name != "IC" &&
+	     catalogue_name != "M")) {
+	    if (catalogue_name == "NGC") {
+		if (assure_valid_catalogue_index(catalogue_index,ngc,"NGC"))
+		    found_nebulae.push_back(ngc[catalogue_index]);
+	    } else if (catalogue_name == "IC") {
+		if (assure_valid_catalogue_index(catalogue_index,ic,"IC"))
+		    found_nebulae.push_back(ic[catalogue_index]);
+	    } else if (catalogue_name == "M") {
+		if (assure_valid_catalogue_index(catalogue_index,messier,"M"))
+		    found_nebulae.push_back(messier[catalogue_index]);
+	    } else if (catalogue_name == "HD") {
+		if (assure_valid_catalogue_index(catalogue_index,henry_draper))
+		    found_stars.push_back(henry_draper[catalogue_index]);
+	    } else {
+		if (assure_valid_catalogue_index(catalogue_index,
+						 catalogue_name,flamsteed))
+		    found_stars.
+			push_back(flamsteed[catalogue_name][catalogue_index]);
+	    }
+	}
         script >> catalogue_name;
     }
 }
@@ -3843,7 +3853,7 @@ that are actually used.
                                data files can be found */
         if (params.show_boundaries) read_constellation_boundaries(boundaries);
         read_label_dimensions(dimensions);
-        read_nebulae(nebulae);
+        if (params.nebulae_visible) read_nebulae(nebulae);
         if (params.show_lines) read_constellation_lines(connections, stars);
 
 @ Three calls here are not preceded by an |if| clause: |create_grid()| contains
@@ -3861,7 +3871,7 @@ visibility anyway.
                             params.constellation);
         draw_flex_labels(mytransform, flexes, objects, dimensions);
         draw_text_labels(mytransform, texts, objects);
-        draw_nebulae(mytransform, nebulae, objects);
+        if (params.nebulae_visible) draw_nebulae(mytransform, nebulae, objects);
         draw_stars(mytransform, stars, objects);
         if (params.show_lines)
             draw_constellation_lines(connections, stars, objects);
