@@ -38,14 +38,14 @@ name="http://www.wikipedia.org/wiki/Cygnus">Cygnus</url> entry.)</p>
     <heading style="clear: none">Motivation</heading>
 
     <p>You can find very many programs on the Internet or elsewhere that draw
-star charts.  Most of them try to imitate a planetarium or your eyepiece view.
+star charts.  Most of them try to imitate a planetarium or the eyepiece view.
 However sometimes one needs such charts for presentational purposes, and the
 number of stars or info pop-up windows with distances or diameters are not
-important.  For example books normally have a high typographic standard, and
+important.  For example books have a high typographic standard normally, and
 most chart programs would produce output that does not do justice to it.</p>
 
-    <p>Here &PP3; comes into play.  It produces charts that may not be rich in
-detail enough for the professional astronomer but they are perfect as
+    <p>Here &PP3; comes into play.  It produces charts that may not be rich
+enough in detail for the professional astronomer but they are perfect as
 illustrations.</p>
 
   </section>
@@ -81,18 +81,19 @@ as well.</p>
       <p skip="med">The only full documentation is the <url
 name="pp3.pdf">source code</url> itself.  Please don't be afraid – the program
 is written in <url
-name="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">&CWEB;</url> so it's
-very easy to read.  On the first pages you can find a short introduction with
-an example and references within the source code where to find further info.
-Some example charts are included in the distribution.  Additionally a reference
-card exists.  If someone wants to contribute, contact me.</p>
+name="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">&CWEB;</url>, so
+it's full of “human language&rdquo; explanations, and rather easy to read.  The
+source is structured so that all relevant information can be found on the first
+pages.  There one finds a short introduction with an example and references
+within the source code where to get further info.  If someone wants to
+contribute, contact me.</p>
     </subsection>
 
     <subsection>
       <heading>Reference card</heading>
 
       <p>As already mentioned, there is a neat <url name=
-"http://sourceforge.net/project/showfiles.php?group_id=71469&amp;release_id=158044"
+"http://sourceforge.net/project/showfiles.php?group_id=71469&amp;release_id=174617"
 >reference card</url>.  It can be downloaded for A4 and letter paper in &PDF;
 and PostScript format.  If you fold it twice to a zigzag, it's very handy,
 too.  <verb>:-)</verb></p>
@@ -215,6 +216,8 @@ easy and the programs are very useful also for many many other purposes.</p>
     <p>&PP3;'s standard distribution bases on the following original data
 compilations:</p>
 
+<latex code="\par"/>
+
     <tabular>
       <tabhead>
 	<srow>class of object(s) | data base name | authors of compilation</srow>
@@ -228,9 +231,9 @@ name="http://www.ngcic.com/steinicke/default.htm">NGC/IC</url></cell>
 	  <cell>Wolfgang Steinicke</cell>
 	</row>
 	<row>
-	  <cell>boundaries</cell>
-	  <cell>Cat.&sf; of Constell.&sf; Boundary Data</cell>
-	  <cell>Davenhall &amp; Leggett</cell>
+	  <cell>boundaries</cell> <cell><url
+name="ftp://cdsarc.u-strasbg.fr/cats/VI/49">Cat.&sf; of Constell.&sf; Boundary
+Data</url></cell> <cell>Davenhall &amp; Leggett</cell>
 	</row>
 	<row>
 	  <cell>Milky Way</cell>
@@ -247,10 +250,10 @@ Mellinger</url></cell>
 
     <p>The author of this text and of &PP3; is <url
 name="mailto:bronger@users.sourceforge.net">Torsten Bronger</url>.  The name
-`&PP3;' is an abbreviation of „Parvum Planetarium“ (Latin for „Little
-Planetarium“), version 3.  The first two versions were totally different and
-are missing.  PP1 was a project during the author's childhood, PP2 never made
-it beyond the logo screen.</p>
+`&PP3;' is an abbreviation of “Parvum Planetarium&rdquo; (Latin for “Little
+Planetarium&rdquo;), version 3.  The first two versions were totally different
+and are missing.  PP1 was a project during the author's childhood, PP2 never
+made it beyond the logo screen.</p>
 
     <p>This document was created with the &XML; authoring tool <url
 name="http://tbookdtd.sourceforge.net">&tbook;</url>.</p>
@@ -258,4 +261,3 @@ name="http://tbookdtd.sourceforge.net">&tbook;</url>.</p>
 <p skip="small">Copyright © 2003 Torsten Bronger.</p>
   </section>
 </article>
-
