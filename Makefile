@@ -122,8 +122,8 @@ distri-win:
 	make distri
 	mv $(DISTRINAME) $(DISTRINAME)-win
 	rm $(DISTRINAME)-win/pp3.cc $(DISTRINAME)-win/pp3.w
+	mv $(DISTRINAME)/info/pp3 $(DISTRINAME)/manual
 	rm -Rf $(DISTRINAME)/info/
-#	Doku noch machen.
 	cp win-bin/* $(DISTRINAME)-win
 	zip -9 -r $(DISTRINAME)-win.zip $(DISTRINAME)-win/
 
