@@ -32,18 +32,8 @@ files with the .dat extension).  By default,
 
 If you don't like that, you can move them to another directory and set the
 environment variable PP3DATA to that directory.  It it also possible to
-recompile PP3 with a different default data directory.
-
-
-    If you compile PP3 you may have problems with the fmax, fmin, and fdim
-    functions that may be undefined for certain compiler versions.  In this
-    case recreate PP3's C++ source code from the CWEB source code by deleting
-    the file pp3.cc and calling
-
-    make CHANGEFILE=fmax.ch
-
-    You first may want to change some paths at the beginning of the Makefile
-    before you use it.
+recompile PP3 with a different default data directory.  For this, change the
+beginning of the Makefile.
 
 
 USAGE

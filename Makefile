@@ -16,8 +16,6 @@ DOCDIR= $(USRDIR)/share/doc/pp3
 # destination directory for executables
 DESTDIR= $(USRDIR)/bin
 
-# If your compiler says "implicit declaration of function `int fmin(...)'"
-# then set "CHANGEFILE" to "fmax.ch", otherwise leave the "-".
 CHANGEFILE=-
 
 CXXFLAGS=-s -O2
@@ -72,7 +70,7 @@ distri:
 	mkdir $(DISTRINAME)
 	make pp3.cc
 	make pp3.ps
-	cp pp3.w pp3.cc fmax.ch pp3.ps $(DISTRINAME)
+	cp pp3.w pp3.cc pp3.ps $(DISTRINAME)
 	cp COPYING README WHATSNEW Makefile $(DISTRINAME)
 	cp stars.dat milkyway.dat nebulae.dat lines.dat boundaries.dat \
 	  $(DISTRINAME)
@@ -91,7 +89,7 @@ distri-cripple:
 
 rpm:
 	rm -f pp3.cc
-	make distri CHANGEFILE=fmax.ch CXXFLAGS="$(CXXFLAGS)"
+	make distri CXXFLAGS="$(CXXFLAGS)"
 	cp $(DISTRINAME).tar.bz2 $(HOME)/packages/pp3/
 	rpm -ba $(RPMNAME)
 
