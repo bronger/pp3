@@ -1,0 +1,26 @@
+# Piscis Austrinus, the Southern Fish
+#
+
+filename output piscis_austrinus.tex
+filename include wiki.pp3
+
+set constellation PSA
+set center_rectascension  22.3
+set center_declination   -31
+set box_height 5
+set box_width  6.3
+
+set faintest_star_disk_magnitude 5
+
+objects_and_labels
+
+delete PSA 21 ;
+
+add_labels PSA 23  PSA 22  PSA 17  PSA 14  PSA 9  PSA 18 ;
+
+text "Piscis Austrinus" at 22.3 -35.5 along declination towards N ;
+text Grus at 22.5 -37 along declination towards S ;
+text Scl at 23.15 -35.5 along declination towards NW ;
+text Mic at 21.45 -37 along declination towards E ;
+text Aquarius at 22.05 -23.5 along declination towards NW ;
+text Cap at 21.94 -24 along declination ;

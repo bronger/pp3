@@ -1,0 +1,26 @@
+# Indus
+#
+
+filename output indus.tex
+filename include wiki.pp3
+
+set constellation IND
+set center_rectascension  21.5
+set center_declination   -60
+set box_height 9
+set box_width  6.3
+
+set faintest_star_disk_magnitude 5
+
+objects_and_labels
+
+add_labels HD 208450  HD 209100  HD 198048  HD 197157  HD 202730 ; # delta--theta Ind
+
+text Indus at 22 -50 along declination towards SE ;
+text Grus at 21.6 -49 along declination towards NW ;
+text Mic at 21.4 -44 along declination ;
+text Sgr at 20.35 -44.5 along declination towards NW ;
+text Tel at 20.4 -51 along declination towards E ;
+text Pavo at 21.4 -60 along declination towards SE ;
+text Tucana at 22.2 -66.5 along declination towards NW ;
+text \FlexLabel{Octans} at 23 -75.5 towards SE ;
