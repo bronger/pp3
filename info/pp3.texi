@@ -1,0 +1,541 @@
+% -*-texinfo-*-
+%\def\rmdefault{ppl}\def\ne{\mathrel{\not{}\mskip-8mu=}}\input pstexinfo
+\def\niceracronym#1{#1}
+\input texinfo
+@let@acronym@niceracronym
+
+@c 	$Id$	
+
+@c======================================================================@>
+@c    pp3.texi - Part of the PP3 Program                                @>
+@c    Copyright 2002, 2003 Torsten Bronger                              @>
+@c                         <bronger@users.sourceforge.net>              @>
+@c                                                                      @>
+@c  This program may be distributed and/or modified under the           @>
+@c  conditions of the MIT licence with the following contraint:         @>
+@c  If you copy or distribute a modified version of this Software, the  @>
+@c  entire resulting derived work must be given a different name and    @>
+@c  distributed under the terms of a permission notice identical to     @>
+@c  this one.                                                           @>
+@c                                                                      @>
+@c  Permission is hereby granted, free of charge, to any person         @>
+@c  obtaining a copy of this software and associated documentation      @>
+@c  files (the ``Software''), to deal in the Software without           @>
+@c  restriction, including without limitation the rights to use, copy,  @>
+@c  modify, merge, publish, distribute, sublicense, and/or sell copies  @>
+@c  of the Software, and to permit persons to whom the Software is      @>
+@c  furnished to do so, subject to the following conditions:            @>
+@c                                                                      @>
+@c      The above copyright notice and this permission notice shall be  @>
+@c      included in all copies or substantial portions of the           @>
+@c      Software.                                                       @>
+@c                                                                      @>
+@c      If you copy or distribute a modified version of this Software,  @>
+@c      the entire resulting derived work must be given a different     @>
+@c      name and distributed under the terms of a permission notice     @>
+@c      identical to this one.                                          @>
+@c                                                                      @>
+@c  The Software is provided ``as is'', without warranty of any kind,   @>
+@c  express or implied, including but not limited to the warranties of  @>
+@c  merchantability, fitness for a particular purpose and               @>
+@c  noninfringement.  In no event shall the authors or copyright        @>
+@c  holders be liable for any claim, damages or other liability,        @>
+@c  whether in an action of contract, tort or otherwise, arising from,  @>
+@c  out of or in connection with the Software or the use or other       @>
+@c  dealings in the Software.                                           @>
+@c======================================================================@>
+
+@c %**start of header
+@setchapternewpage odd
+@setfilename pp3.info
+@settitle PP3 @value{VERSION}
+@documentencoding ISO-8859-1
+@c %**end of header
+
+@set VERSION 1.3.2
+@set SHORTVERSION 132
+
+@defindex el
+@syncodeindex el cp
+
+@macro PPTHREE {}
+@acronym{PP3}
+@end macro
+
+@macro LaTeX {}
+@tex
+L@kern-.36em%
+        {@setbox0=@hbox{T}%
+         @vbox to@ht0{@hbox{@sevenrm A}@vss}%
+        }%
+        @kern-.15em%
+        @TeX
+@end tex
+@ifnottex
+La@TeX{}@c
+@end ifnottex
+@end macro
+
+@macro keyword {name}
+@code{\name\}
+@end macro
+
+@macro beforerefheading {}
+@tex
+@penalty-6000@vskip5ex
+@end tex
+@end macro
+
+@macro afterrefheading {}
+@tex
+@vskip-8ex@leavevmode
+@end tex
+@end macro
+
+@macro s {}
+@tex
+@kern0.1667em%
+@end tex
+@end macro
+
+@copying
+This manual is for @PPTHREE{} (version @value{VERSION}),
+which is a celestial charts drawing tool.
+
+Copyright @copyright{} 2003 Torsten Bronger
+@t{<}@email{bronger@@users.sourceforge.net}@t{>}.
+
+
+@quotation
+This documentation is free software; you can redistribute it and/or
+modify it under the terms of the @acronym{MIT} licence.  Please see the
+@t{COPYING} file of the @PPTHREE{} distribution for further information.
+@end quotation
+@end copying
+
+@finalout
+@titlepage
+@title PP3
+@subtitle drawing beautiful celestial maps
+@subtitle version @value{VERSION}
+@author Torsten Bronger
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@dircategory Individual utilities
+@direntry
+* PP3: (PP3).   Drawing celestial maps.
+@end direntry
+
+@iftex
+@hyphenation{}
+@end iftex
+
+
+@ifnottex
+@node Top
+@top The PP3 program for drawing celestial maps.
+
+@PPTHREE{} generates celestial charts of high (typo)graphical quality.
+It uses @LaTeX{} + pstricks for this, so the end formats are
+@acronym{EPS} and @acronym{PDF} (in contrast to mere bitmaps).
+
+The program automatically avoids labels that overlap, and you can change
+many parameters.  You can place arbitrary text on the map using the
+flexibility of the LaTeX language.
+
+@menu
+* Introduction::                The ideas behind it.
+* Installation::                Some ways to set PP3 up.
+* Usage::                       How to invoke PP3.
+@c * Input scripts::               Telling PP3 what to do.
+@c * Keywords reference::          List of all PP3 keywords.
+@c * Data file formats::           Internal structure of the database files.
+@c * Known problems::              List of known shortcomings and bugs.
+@c * PP3 source code::             Making the PP3 source readable.
+* Input scripts::               Telling PP3 what to do.
+@c * Keywords reference::          List of all PP3 keywords.
+@c * Data file formats::           Internal structure of the database files.
+@c * Known problems::              List of known shortcomings and bugs.
+@c * PP3 source code::             Making the PP3 source readable.
+* Keywords reference::          List of all PP3 keywords.
+@c * Data file formats::           Internal structure of the database files.
+@c * Known problems::              List of known shortcomings and bugs.
+@c * PP3 source code::             Making the PP3 source readable.
+* Data file formats::           Internal structure of the database files.
+@c * Known problems::              List of known shortcomings and bugs.
+@c * PP3 source code::             Making the PP3 source readable.
+* Known problems::              List of known shortcomings and bugs.
+@c * PP3 source code::             Making the PP3 source readable.
+* Index::                       General index.
+@end menu
+@end ifnottex
+
+@c Output the table of the contents at the beginning.
+@contents
+
+@ifnottex
+@insertcopying
+@end ifnottex
+
+
+@node Introduction
+@chapter Introduction
+
+
+@menu
+* What it is::                  Features of PP3.
+* What it is not::              Limitations of PP3.
+* The success of PP3::          Things that have been done using PP3.
+* Astronomical basic terms::    Two or three words for non-astronomers.
+@end menu
+
+@node What it is
+@section What it is
+
+There are many programs that can create stellar maps.  But none of them
+reaches @PPTHREE{}'s typographic and graphical quality.  In contrast to
+other programs @PPTHREE{} produces vector images
+(e.@s{}g.@:@tie{}@acronym{PDFs}) rather than mere bitmaps.  Therefore it
+is perfectly suited for creating illustrations for books or other print
+media, and for web pages.
+
+@PPTHREE{} is optimised for the semi-automatic generation of large sets
+of sky maps.  It has decent default behaviour, however it can be very
+flexibly customised.  It tries to take as much fine-tuning work away
+from you as possible.
+
+
+@node What it is not
+@section What it is not
+
+But I must also point out what @PPTHREE{} is @emph{not}.  It cannot help
+you to professionally prepare your next observation night, nor is
+@PPTHREE{} a visualisation tool for astronomical databases, with pop-up
+window information for every sky object on the screen.
+
+In fact, @PPTHREE{} not even has a graphical user interface.  So don't
+expect any windows at all, and your mouse will be useless.  Instead,
+@PPTHREE{} reads from one file and writes to another file.  (This is
+done not only because its author was lazy but because it increases
+efficiency, too.)  So, the program itself is quite stinted, but its
+results are worth it!
+
+
+@node The success of PP3
+@section The success of @PPTHREE{}
+
+@unnumberedsubsec Wikipedia
+
+@begingroup
+@rightskip0pt plus 1fil @PPTHREE{} has been used for the celestial maps
+of all 88 constellations on @uref{http://www.wikipedia.org,Wikipedia},
+the free encyclopedia.  Feel free to browse through a
+@uref{http://wikipedia.org/w/wiki.phtml?title=List_of_constellations,list
+of all constellations}.
+@par
+@endgroup
+
+This is a web page, so you need bitmaps@footnote{as long as we don't
+have @acronym{SVG}}, so a short @uref{http://www.gimp.org,Gimp}
+script@footnote{which is included into the distribution} helped me to
+convert @PPTHREE{}'s @acronym{EPS} vector output to @acronym{PNG}
+bitmaps.  Additionally, this scripts creates smaller thumbnail version
+for all charts that exceed a certain width.
+
+The result is that one can create all maps plus their thumbnails with
+one simple command call:
+
+@example
+make
+@end example
+
+@noindent
+Surely it can't become simpler.  You may retort ``Well, but creating the
+maps must have been the actual work''.  Of course it was, but first it
+took only 10--15 minutes eventually, because much work is done by the
+default behaviour of @PPTHREE{} itself.  And secondly:
+
+@unnumberedsubsec French Wikipedia
+
+Several months later the @uref{http://fr.wikipedia.org,French division
+of Wikipedia} wanted to translate the maps to French.  They wanted
+another background colour and French labels and constellation names.
+They provided me with a translation table.  It took me three hours to
+adjust the scripts, to run @file{make} again, and to upload the ZIP file
+will all the demanded bitmaps.
+
+@unnumberedsubsec h2g2
+
+Originally @PPTHREE{} was written for a project on
+@uref{http://www.bbc.co.uk/h2g2/guide/,h2g2}, an @emph{edited} Internet
+encyclopedia.  Unfortunately the BBC editors wanted very small bitmaps
+that would not have been helpful, and they were too lazy to include all
+the 88@tie{}bitmaps.  So the project died, but on a smaller scale (for
+ten constellations or so), it indeed motivated authors to constribute
+articles about constellations.  The maps were externally linked.
+
+@node Astronomical basic terms
+@section Astronomical basic terms
+
+
+@node Installation
+@chapter Installation
+
+You can get the latest @PPTHREE{} file releases from
+@uref{http://sf.net/projects/pp3,@PPTHREE{}'s project page on
+Sourceforge}.  The main @PPTHREE{} distrubution comes as several files,
+namely
+
+@table @file
+@item pp3-@var{version}-win.zip
+is the complete Windows distribution.
+
+@item pp3-@var{version}-1tb.i386.rpm
+is the complete Linux RPM distribution.  (There is also the
+corresponding source RPM called @file{pp3-@var{version}-1tb.src.rpm}.)
+
+@item pp3-@var{version}.tar.bz2
+is the complete source distribution.
+
+@item pp3-@var{version}-cripple.tar.gz
+is a partial source distribution.  Milky Way, Nebulae, and the
+@acronym{CWEB} source code are omitted.
+
+@end table
+
+@noindent
+Obviously you need only @emph{one} of these files.
+
+@menu
+* Windows::                     Installation on Windows.
+* Linux::                       Installation on Linux.
+@end menu
+
+@node Windows
+@section Installation on Windows
+
+Although @PPTHREE{} runs independently from other programs, it is not
+useful when it's alone.  It needs two external tools in order to work
+properly: @TeX{} and Ghostscript.  @emph{You need not know how to use
+@TeX{} and Ghostscript!}
+
+On most Unix/Linux systems @TeX{} and Ghostscript are already installed.
+But on Windows, you have to install them yourself.  Fortunately this is
+not difficult, and both programs may be useful for other puposes, too.
+
+@menu
+* Getting TeX::                 Installing the TeX typesetting engine.
+* Getting Ghostscript::         Installing Ghostscript for Postscript
+                                  handling.
+* Installing PP3::              Finally installing PP3 itself.
+@end menu
+
+@node Getting TeX
+@subsection Getting @TeX{}
+
+@TeX{} is a mighty typesetter.  @PPTHREE{} calls @TeX{} in order to
+actually create the stellar map.  The result is a Postscript file.
+
+The are two major @TeX{} variants for Windows, namely
+@uref{http://www.miktex.org,Mik@TeX{}} and
+@uref{http://www.tug.org/texlive/,@TeX{}@tie{}Live}.  Both are rather
+similar in their functionality, and both come with a nice installation
+tool.  Please assure that the @t{pstricks} package as part of @TeX{} is
+installed, however this is highly probable anyway.
+
+@node Getting Ghostscript
+@subsection Getting Ghostscript
+
+@begingroup
+@rightskip0pt plus 1fil
+The best tool for dealing with Postscript files is
+@uref{http://www.cs.wisc.edu/~ghost/doc/AFPL/get811.htm,Ghostscript}.
+In particular, if you've installed Ghostscript, PP3 is able to generate
+PDF files for you.  It is wise (although not necessary) to install
+@uref{http://www.cs.wisc.edu/~ghost/gsview/get45.htm,GhostGum}, too.  It
+lets you view arbitrary Postscript files on screen.
+@par
+@endgroup
+
+@node Installing PP3
+@subsection Installation of @PPTHREE{} itself
+
+When @TeX{} and Ghostscript are in the right place, you finish the
+installation by unpacking the @PPTHREE{} ZIP file and copying its
+content in the proper directories:
+
+@enumerate
+@item
+Copy @file{pp3.exe} to an arbitrary directory that is in your
+@env{PATH}.
+
+@item
+Copy all the other files to @emph{one single} arbitary directory.  Then
+set the environment variable @env{PP3DATA} to this directory.
+
+@end enumerate
+
+For the sake of simplicity, I recommend to copy everything to
+@file{C:\Programs\pp3} and to set your @env{PATH} environment variable
+to
+
+@display
+@code{@var{old PATH};C:\Programs\pp3}
+@end display
+
+@noindent
+and to set the @env{PP3DATA} environment variable to
+@file{C:\Programs\pp3}.  That's it.
+
+
+@node Linux
+@section Installation on Linux
+
+@menu
+* RPM installation::            The simple way.
+* Building from sources::       The hard way.
+@end menu
+
+Before you install @PPTHREE{}, ensure that @TeX{} and Ghostscript are
+installed.
+
+
+@node RPM installation
+@subsection @acronym{RPM} installation
+
+You should consider to use the @acronym{RPM} file, because it is the
+simplest installation.  It works for SuSE Linux and probably also for
+Red@s{}Hat.  Just enter (as root)
+
+@display
+@code{rpm -i @var{RPM-file-name}}
+@end display
+
+@noindent
+That's it.
+
+
+@node Building from sources
+@subsection Building from sources
+
+(Actually you can compile the sources on Windows, too (of course), but
+since most people who do compile are Linux users, I dare to put it in
+the Linux section.)
+
+@begingroup
+@rightskip0pt plus 1fil @PPTHREE{} is written in @acronym{CWEB}@.  This
+is special form of C++ and can be transformed to real C++ trivially.
+You only need the
+@uref{http://www-cs-faculty.stanford.edu/~knuth/cweb.html,@acronym{CWEB}
+programs} installed.  For your convenience the C++ code of @PPTHREE{} is
+included into the source distribution, so you need @acronym{CWEB} only
+if you want to modify the program.
+@par
+@endgroup
+
+There is no @file{configure} script.  Just call @code{make} and (as
+root) @code{make install}.  Before that, you may want to adjust some
+paths in the @file{Makefile}.
+
+@PPTHREE{} looks for its data files (all files with the @file{.dat}
+extension) in a special directory that is pre-compiled in the
+executable.  The Makefile assures that this is the correct one, but you
+can override that with the environment variable @env{PP3DATA}.  That's
+it.
+
+
+@node Usage
+@chapter Usage
+
+@menu
+* Invokation::                  Starting PP3.
+* Using pipes::                 If you really need pipes for some
+                                  reason.
+@end menu
+
+@node Invokation
+@section Starting PP3
+
+Invoking @PPTHREE{} is very straightforward.  Since it is a command line
+program you only have to call it somehow and give a so-called input
+script as the parameter, see @ref{Input scripts}.  For example, entering
+
+@example
+pp3 orion.pp3
+@end example
+
+@noindent
+on the command line starts @PPTHREE{} and lets it generate the file
+@file{orion.pdf}, which is a @acronym{PDF} file with a star map of
+Orion.  You can view this @acronym{PDF} with Acrobat Viewer, convert it
+to a bitmap, or you can embed it into a text of yours.
+
+To be honest, there are three possible output formats.  By default,
+@PPTHREE{} generates a @LaTeX{} file in the current directory.  But most
+people cannot do much with it, therefore certain commands in the input
+script trigger @acronym{EPS} or @acronym{PDF} output.
+
+@PPTHREE{} can't generate bitmaps.  If you need bitmaps you must use a
+bitmap program (e.@s{}g.@: Corel Draw or the
+@uref{http://www.gimp.org,Gimp}) for that.
+
+
+@node Using pipes
+@section Using pipes
+
+Especially on Unix it is very common to read from standard input and to
+write to standard output.  I don't think that this is sensible for
+@PPTHREE{}, but anyway, I included this facility.  If you give
+`@code{-}' as the only parameter, @PPTHREE{} reads the input script from
+standard input, and if you don't give an output filename in the input
+script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
+
+
+
+@node Input scripts
+@chapter Writing input scripts
+
+On @uref{http://sf.net/projects/pp3,@PPTHREE{}'s project page} you can
+download a neat reference card.  If you fold it twice it is a handy
+zigzag.
+
+@menu
+* General parameters::          
+* Objects and labels::          
+@end menu
+
+@node General parameters
+@section Setting general parameters
+
+
+@node Objects and labels
+@section Setting celestial objects and their labels
+
+
+@node Keywords reference
+@chapter Kewords reference
+
+
+@node Data file formats
+@chapter Data file formats
+
+
+@node Known problems
+@chapter Known problems
+
+
+
+@node Index
+@unnumbered Index
+
+@iftex
+All @PPTHREE{} keywords are printed in @t{typewriter} style.
+@end iftex
+
+@printindex cp
+
+@bye
+
