@@ -27,7 +27,6 @@
 
 \iffalse
 Todo:
- - Final documentation
  - Final webpage
 \fi
 
@@ -147,8 +146,7 @@ Todo:
 
 \def\title{PP3 (Version 0.99)}
 \def\topofcontents{\null\vfill\vskip-2cm
-  \centerline{\titlefont The Sky Map
-  Creator {\sbtitlefont PP3}}
+  \centerline{\titlefont The Sky Map Creator {\sbtitlefont PP3}}
   \vskip 15pt
   \centerline{(Version 0.99)}
   \vfill}
@@ -258,21 +256,6 @@ reposition SCO 20 S             \# Force sig Sco to be labelled.
 text "\BS\BS{}Huge Sco" at 16.2 -41.5 color 0 0 0 towards NW ;
 }
 
-@ Many flaws and bugs in this program are already known to its author.
-
-The input script processing is shaky.  The comment character `\.{\#}' must be
-at the beginning of a line or must be preceded by whitespace.  The special
-token ``\.{objects\UL and\UL labels}'' must not occur within strings.  If an
-error is found in the input script, \PPTHREE/ doesn't tell the line number.  It
-should be possible to include more than one file, and it should allow for a
-nesting depth greater than one.
-
-At the moment almost all data structures are kept in memory completely.  For
-the author's needs this is perfectly sufficient, however if you want to use
-data bases with hundreds of thousands of objects, you will run into trouble.
-On the other hand it's only necessary to keep all object in memory that are
-actually drawn.  So memory usage could be reduced drastically.
-
 @ The resulting \LaTeX\ file doesn't use packages special to \PPTHREE/.  In
 fact the preamble is rather small.  This makes it possible to copy the (maybe
 huge) \.{\BS vbox} with the complete map into an own \LaTeX\ file.  However
@@ -293,6 +276,21 @@ notice that \pdfURL{{\mc
 GS}View}{http://www.cs.wisc.edu/\TILDE/ghost/gsview/get43.htm} is a very
 sensible program, too.\par}
 
+@ Some flaws and bugs in this program are already known to its author.
+
+The input script processing is shaky.  The comment character `\.{\#}' must be
+at the beginning of a line or must be preceded by whitespace.  The special
+token ``\.{objects\UL and\UL labels}'' must not occur within strings.  If an
+error is found in the input script, \PPTHREE/ doesn't tell the line number.  It
+should be possible to include more than one file, and it should allow for a
+nesting depth greater than one.
+
+At the moment almost all data structures are kept in memory completely.  For
+the author's needs this is perfectly sufficient, however if you want to use
+data bases with hundreds of thousands of objects, you will run into trouble.
+On the other hand it's only necessary to keep all object in memory that are
+actually drawn.  So memory usage could be reduced drastically.
+ 
 @ Okay, let's start with the header files~\dots
 
 @q'}}}}@>
@@ -343,7 +341,8 @@ struct parameters {
     string filename_output;
     ostream* out;
     color bgcolor, gridcolor, eclipticcolor, boundarycolor, hlboundarycolor,
-        starcolor, nebulacolor, labelcolor, clinecolor, milkywaycolor;
+        starcolor, nebulacolor, labelcolor, textlabelcolor, clinecolor, 
+        milkywaycolor;
     double linewidth_grid, linewidth_ecliptic, linewidth_boundary,
         linewidth_hlboundary, linewidth_cline, linewidth_nebula;
     string linestyle_grid, linestyle_ecliptic, linestyle_boundary,
@@ -394,6 +393,7 @@ center_rectascension(5.8), center_declination(0.0),
                    starcolor("starcolor", 1, 1, 1),
                    nebulacolor("nebulacolor", 1, 1, 1),
                    labelcolor("labelcolor", 0, 1, 1),
+                   textlabelcolor(1, 1, 0),
                    clinecolor("clinecolor", 0, 1, 0),
                    milkywaycolor(0, 0, 1), @/
                    linewidth_grid(0.025), linewidth_ecliptic(0.018),
@@ -522,9 +522,10 @@ void read_parameters_from_script(istream& script) {
 $$\hbox{\.{color labels 1 0 0}}$$ which makes all labels red.  The following
 sub-keywords can be used: ``\.{background}'', ``\.{grid}'', ``\.{ecliptic}'',
 ``\.{boundaries}'', ``\.{highlighted\_boundaries}'', ``\.{stars}'',
-``\.{nebulae}'', ``\.{labels}'', ``\.{constellation\_lines}'', and
-``\.{milky\_way}''.  In case of the milky way, the colour denotes the brightest
-regions.  (The darkest have \.{back}\-\.{ground} colour.)
+``\.{nebulae}'', ``\.{labels}'', ``\.{text\_labels}'',
+``\.{constellation\_lines}'', and ``\.{milky\_way}''.  In case of the milky
+way, the colour denotes the brightest regions.  (The darkest have
+\.{back}\-\.{ground} colour.)
 
 @.color@>
 @.background@>
@@ -535,6 +536,7 @@ regions.  (The darkest have \.{back}\-\.{ground} colour.)
 @.stars@>
 @.nebulae@>
 @.labels@>
+@.text\_labels@>
 @.constellation\_lines@>
 @.milky\_way@>
 
@@ -552,6 +554,8 @@ regions.  (The darkest have \.{back}\-\.{ground} colour.)
             else if (color_name == "stars") script >> params.starcolor;
             else if (color_name == "nebulae") script >> params.nebulacolor;
             else if (color_name == "labels") script >> params.labelcolor;
+            else if (color_name == "text_labels") 
+                script >> params.textlabelcolor;
             else if (color_name == "constellation_lines")
                 script >> params.clinecolor;
             else if (color_name == "milky_way") script >> params.milkywaycolor;
@@ -1171,30 +1175,50 @@ then printed even if it lies outside the view frame (it may be clipped though).
 itself, rectascension, declination, \RGB/ colour, and the relative position
 (uppercase wind rose), followed by a semicolon.  For example,
 $$\hbox{\.{text Leo at 11 10 color 1 0 0 towards S ;}}$$ puts a red ``Leo''
-centered below the point $(11\,\hbox{h}, +10^\circ)$ in the Lion.  At the
-moment, all fields are mandatory.
+centered below the point $(11\,\hbox{h}, +10^\circ)$ in the Lion.  You may
+leave out the ``\.{color}'' and/or the ``\.{towards}'' option.  The default
+colour is the last given colour in a previous \.{text} command, or if this
+doesn't exist the current text label colour.  The default value of
+``\.{towards}'' is~|"NE"|.
 
-The contents of a text label is eventually in an \.{\BS hbox}, so you can
-use that fact.
+The contents of a text label is eventually in an \.{\BS hbox}, so you can use
+that fact.  You can also use all \PS/Tricks commands.  For example, with
+\medskip
+
+{\parindent2em\tentt
+text "\BS\BS psdots[dotstyle=+,dotangle=45](0,0)\BS\BS scriptsize\BS\BS{} N 
+           pole of ecliptic"\par
+\ \ \ \ \ at 18 66.56 ;
+}
+
+\medskip\noindent the $\times$ marks the northern ecliptical pole, together
+with a small label text.  If such things occur frequently, define it as a
+\LaTeX\ macro.
 
 @.text@>
 
 @<Text labels@>=
-            if (opcode == "text") {
-                string contents, op1, op2, op3, position, semicolon;
-                double rectascension, declination;
-                color textcolor(params.labelcolor);
-                contents = read_string(script);
-                script >> op1 >> rectascension >> declination >> op2
-                       >> textcolor >> op3 >> position >> semicolon;
-                if (!script || op1 != "at" || op2 != "color" ||
-                    op3 != "towards" || semicolon != ";")
-                    throw string("Invalid text label command");
-                int angle;
-                @<Map a wind rose |position| to an |angle| in degrees@>@;
-                texts.push_back(text(contents, rectascension, declination,
-                                     textcolor, angle));
-            }
+if (opcode == "text") {
+    string token, contents, position("NE");
+    double rectascension, declination;
+    contents = read_string(script);
+    script >> token;
+    if (token != "at") throw string("\"at\" in \"text\" command expected");
+    script >> rectascension >> declination;
+    script >> token;
+    while (script && token != ";") {
+        if (token == "color") script >> params.textlabelcolor;
+        else if (token == "towards") script >> position;
+        else throw string("Invalid \"text\" option");
+        script >> token;
+    }
+    if (!script)
+        throw string("Unexpected end of script while scanning \"text\"");
+    int angle;
+    @<Map a wind rose |position| to an |angle| in degrees@>@;
+    texts.push_back(text(contents, rectascension, declination,
+                         params.textlabelcolor, angle));
+}
 
 
 @** Data structures and file formats.  First I describe the data structures that
@@ -2334,12 +2358,9 @@ labels.  They are read from the file \.{labeldims.dat} and stored in a
 
 @c
 struct dimension {
-    string name;
     double width, height;
-    dimension() : name(), height(0.0), width(0.0) { }
-    dimension(string name) : name(name), height(0.0), width(0.0) { }
-    dimension(const dimension& d) : name(d.name), width(d.width),
-                                    height(d.height) { }
+    dimension() : height(0.0), width(0.0) { }
+    dimension(const dimension& d) : width(d.width), height(d.height) { }
 };
 
 typedef map<string,dimension> dimensions_list;
@@ -2374,16 +2395,16 @@ void arrange_labels(objects_list& objects, dimensions_list& dimensions) {
                     get_label_boundaries(on_object_left, on_object_right,
                                          on_object_top, on_object_bottom);
                 double penalty = 0.0;
-                double shell_width = 2.0 * objects[i]->skip;
+                double rim_width = 2.0 * objects[i]->skip;
                 for (int j = 0; j < vicinity.size(); j++) {
                     penalty += vicinity[j]->
                         penalties_with(on_object_left, on_object_right,
-                                       on_object_top, on_object_bottom) +
+                                       on_object_top, on_object_bottom) + @|
                         vicinity[j]->
-                        penalties_with(on_object_left - shell_width,
-                                       on_object_right + shell_width,
-                                       on_object_top + shell_width,
-                                       on_object_bottom - shell_width,
+                        penalties_with(on_object_left - rim_width,
+                                       on_object_right + rim_width,
+                                       on_object_top + rim_width,
+                                       on_object_bottom - rim_width,
                                        false) * params.penalties_rim;
                 }
                 if (on_object_left < 0.0 || on_object_bottom < 0.0 ||
@@ -2407,7 +2428,7 @@ void arrange_labels(objects_list& objects, dimensions_list& dimensions) {
                             <<  best_penalty /
                         (objects[i]->label_height * objects[i]->label_width)
                         * 100 << "%)";
-                //                objects[i]->label += penalty.str();
+                //  |objects[i]->label += penalty.str();|
                     cerr << "pp3DEBUG: Object " << objects[i]->label << ' ';
                     const star* s = dynamic_cast<star*>(objects[i]);
                     if (s) cerr << s->constellation;
@@ -2426,13 +2447,9 @@ void arrange_labels(objects_list& objects, dimensions_list& dimensions) {
 the neighbours, so there will probably be too many of them, but it makes
 calculation much easier.
 
-The variable |last_object_with_labels| holds the index in |vicinity| the
-divides it into two sets: The first set comes before |objects[i]| in |objects|,
-the second after it.  Only the first set must be checked for label collisions,
-because otherwise labels would be re-arranges twice.  The practical thing is
-that neighbouring objects are ordered in increasing brightness in star data
-file, which means that lables of bright stars are arranged first, and labels of
-fainter stars must cope with these positions.
+The practical thing is that neighbouring objects are ordered in increasing
+brightness in star data file, which means that lables of bright stars are
+arranged first, and labels of fainter stars must cope with these positions.
 
 Of course, it's guaranteed that |objects[i]| is not part of its vicinity.
 
@@ -2500,7 +2517,6 @@ void read_label_dimensions(dimensions_list& dimensions) {
     string name,dummy;
     getline(file,name);
     while (file) {
-        dimensions[name].name = name;
         file >> dimensions[name].width >> dimensions[name].height;
         getline(file,dummy);  // Read the |'\n'|
         getline(file,name);
@@ -2513,9 +2529,6 @@ that a label is not found (possibly because |dimensions| is totally empty
 because no label dimensions file could be found).  In this case I call
 |recalculate_dimensions()| to get all labels recalculated via an extra \LaTeX\
 run.
-
-I have to distinguish whether the label is a nebula label or not.  Both cases
-do similar things, but nevertheless different action is necessary.
 
 |dimensions_recalculated| is |true| if |recalculate_dimensions()| has been
  called and thus one can assume that all needed labels are now available.  It
@@ -2563,7 +2576,7 @@ Here I do this.  First I store all label names (not only the missing!)\ in
 |required_names|.  I assure that every label occurs only once.
 
 Then I create a |temp_file| which is a \LaTeX\ file that -- if sent through
-<\LaTeX\ -- is able to create another temporary file called |raw_labels_file|.
+\LaTeX\ -- is able to create another temporary file called |raw_labels_file|.
 This is read and stored directly in |dimensions| (where it belongs to
 naturally).  At the same time a new, updated |cooked_labels_file| (aka
 \.{labeldimens.dat}) is created.
@@ -2617,7 +2630,6 @@ bool recalculate_dimensions(dimensions_list& dimensions,
         raw_labels_file >> current_width >> current_height;
         current_width.substr(0,current_width.length() - 3);
         current_height.substr(0,current_height.length() - 3);
-        dimensions[current_name].name = current_name;
         dimensions[current_name].width = strtod(current_width.c_str(), 0)
             / 72.27 * 2.54;
         dimensions[current_name].height = strtod(current_height.c_str(), 0)
@@ -2687,10 +2699,249 @@ void draw_text_labels(transformation& mytransform, texts_list& texts,
     }
 }
 
+@* Drawing stars.  Stars are a little bit simpler than nebulae because they are
+mere disks.  They are only included if they have a certain minimal magnitude.
+The disk radius is calculated according to $$\eqalign{ \hbox{|radius|} &=
+\sqrt{m_{\hbox{\sevenrm min}} - m + \hbox{\it radius}_{\hbox{\sevenrm
+min}}^2}\,,\quad\hbox{if $m<m_{\hbox{\sevenrm min}}$\,,}\cr
+\noalign{\vskip0.5ex} \hbox{|radius|} &= m_{\hbox{\sevenrm min}}\,,\quad
+\hbox{otherwise}.}$$
+
+The star gets a label by default only if it has a certain magnitude.  This is
+even a little bit stricter than the related condition above.
+
+Then only the stellar colour has yet to be calculated, and it can be printed.
+
+@q;@>
+
+@c
+@<|create_hs_colour()| for star colour determination@>@;@#
+
+void draw_stars(const transformation& mytransform, stars_list& stars,
+                objects_list& objects) {
+    for (int i = 0; i < stars.size(); i++)
+        if (stars[i].in_view != hidden &&
+            stars[i].magnitude < params.faintest_star_magnitude) {
+                // Effectively all stars of the \BSC/
+            if (mytransform.polar_projection(stars[i].rectascension,
+                                             stars[i].declination,
+                                             stars[i].x,stars[i].y)) {
+                stars[i].in_view = visible;
+                const double m_dot = params.faintest_star_disk_magnitude;
+                const double r_min = params.minimal_star_radius /
+                    params.star_scaling;
+                stars[i].radius = params.star_scaling *
+                    (stars[i].magnitude < m_dot ?
+                     sqrt((m_dot - stars[i].magnitude)/300.0 + r_min*r_min)
+                     : r_min);
+                if (stars[i].with_label == undecided) 
+                    stars[i].with_label =
+                        (stars[i].magnitude <
+                         params.faintest_star_with_label_magnitude &&
+                         !stars[i].name.empty()) ? visible : hidden;
+                stars[i].label = stars[i].name;
+                if (params.colored_stars) {
+                    OUT << "\\newhsbcolor{starcolor}{";
+                    create_hs_colour(stars[i].b_v,stars[i].spectral_class);
+                    OUT << " 1}%\n";
+                } else OUT << params.starcolor;
+                OUT << "\\pscircle*[linecolor=starcolor]("
+                    << stars[i].x << ","
+                    << stars[i].y << "){"
+                    << stars[i].radius / 2.54 * 72.27 << "pt}%\n";
+                objects.push_back(&stars[i]);
+            } else stars[i].in_view = hidden;
+        } else stars[i].in_view = stars[i].with_label = hidden;
+}
+
+@ I want to use the B$-$V magnitude for the colour of the star disks on the
+maps.  Here I map the value of the B$-$V magnitude to a colour in the \HSB/
+space.  `\HSB/' -- `Hue, Saturation, Brightness' (all three fom $0$ to~$1$).
+Brightness is always~$1$, so only hue and saturation have to be calculated.
+
+There are three intervals for B$-$V with the boundaries |bv0|, |bv1|, |bv2|,
+and |bv3|.  |bv0|--|bv1| is blue, |bv1|--|bv2| is white, and |bv2|--|bv3| is
+red.  On each boundary, the hue values |hue0|--|hue3| respectively are valid.
+Inbetween I interpolate linearly (rule of three).
+
+@q;@>
+
+@<|create_hs_colour()| for star colour determination@>=
+void create_hs_colour(double b_v, string spectral_class) {
+    double hue, saturation;
+    const double bv0 = -0.1, bv1 = 0.001, bv2 = 0.62, bv3 = 1.7;
+    const double hue0 = 0.6, hue1 = 0.47, hue2 = 0.17, hue3 = 0.0;
+    const double min_saturation = 0.0, max_saturation = 0.2;
+    @<Handle missing B$-$V value@>@;
+    if (b_v < bv0) b_v = bv0;  // cut off extreme values
+    if (b_v > bv3) b_v = bv3;
+    if (b_v < bv1) {  // blue star
+        hue = (b_v - bv0) / (bv1 - bv0)
+            * (hue1 - hue0) + hue0;
+        saturation = (b_v - bv0) / (bv1 - bv0)
+            * (min_saturation - max_saturation) + max_saturation;
+    }
+    else if (b_v < bv2) { // white star: constantly white.
+        hue = 0.3;  // could be anything
+        saturation = 0;
+    }
+    else {  // red star
+        hue =  (b_v - bv2) / (bv3 - bv2)
+            * (hue3 - hue2) + hue2;
+        saturation = (b_v - bv2) / (bv3 - bv2)
+            * (max_saturation - min_saturation) + min_saturation;
+    }
+    OUT << hue << ' ' << saturation;
+}
+
+@ Since there are some stars in the stellar catalogue without a B$-$V
+brightness, I need a fallback on the spectral class.  For such stars is
+$\hbox{|b_v|} = 99$.  In this routine I use the very first character in the
+string with the spectral class for determining an estimated value for
+B$-$V\spacefactor1000.  The values are averages of all stars in the \BSC/ with
+the respective spectral class.
+
+@<Handle missing B$-$V value@>=
+    if (b_v > 90.0) {
+        switch (spectral_class[0]) {
+        case 'O': b_v = 0.0; @+ break;
+        case 'B': b_v = -0.07; @+ break;
+        case 'A': b_v = 0.11; @+ break;
+        case 'F': b_v = 0.43; @+ break;
+        case 'G': b_v = 0.89; @+ break;
+        case 'K': b_v = 1.24; @+ break;
+        case 'M': b_v = 1.62; @+ break;
+        case 'N': b_v = 2.88; @+ break;
+        case 'S': b_v = 1.84; @+ break;
+        case 'C': b_v = 3.02; @+ break;
+        default: b_v = 0.0; @+ break;
+        }
+    }
+
+
+@* Drawing nebulae.  Only nebulae with a certain minimal brightness are
+included, and all Messier objects, but all of these get a label by default.
+
+The first decision I have to make here is whether the nebula has all necessary
+data for drawing a neat ellipsis that has the correct diameters and the correct
+angle.  If this is not anvailable (|horizontal_angle|${}=720^\circ$), the
+nebula ellipsis is re-calculated so that $$\eqalign{ \hbox{|diameter_x|}_
+{\hbox{\sevenrm new}} &= \hbox{|diameter_y|}_ {\hbox{\sevenrm
+new}}\quad\hbox{and}\cr \noalign{\vskip0.5ex} \hbox{|diameter_x|}_
+{\hbox{\sevenrm new}} \cdot \hbox{|diameter_y|}_ {\hbox{\sevenrm new}} &=
+\hbox{|diameter_x|}_ {\hbox{\sevenrm old}} \cdot \hbox{|diameter_y|}_
+{\hbox{\sevenrm old}}}$$ (make the ellipsis a circle of the same area) which
+means $$\hbox{|diameter_x|}_ {\hbox{\sevenrm new}} \mathrel{:=}
+\hbox{|diameter_y|}_ {\hbox{\sevenrm new}} \mathrel{:=}
+\sqrt{\hbox{|diameter_x|}_ {\hbox{\sevenrm old}} \cdot \hbox{|diameter_y|}_
+{\hbox{\sevenrm old}}}.$$
+
+The |radius| of the nebula is a rough estimate: It is simply the half of
+|diameter_x|.  If the nebula is too small, it is printed as a minimal circle.
+If it's large enough, it is printed in its (almost) full beauty, see |@<Draw
+nebula shape@>|.
+
+@q'@>
+
+@c
+void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
+                  objects_list& objects) {
+    OUT << "\\psset{linecolor=nebulacolor,linewidth="
+        << params.linewidth_nebula << "cm,linestyle="
+        << params.linestyle_nebula << ",curvature=1 .5 -1}%\n";
+    for (int i = 0; i < nebulae.size(); i++)
+        if (nebulae[i].in_view != hidden &&
+            (((nebulae[i].kind == open_cluster ||
+               nebulae[i].kind == globular_cluster)
+              && nebulae[i].magnitude < params.faintest_cluster_magnitude)
+             || @/
+             ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
+              nebulae[i].kind == emission) &&
+              nebulae[i].magnitude < params.faintest_diffuse_nebula_magnitude)
+             ||
+             nebulae[i].messier > 0 )) {
+            if (mytransform.polar_projection(nebulae[i].rectascension,
+                                             nebulae[i].declination,
+                                             nebulae[i].x,nebulae[i].y)) {
+                nebulae[i].in_view = visible;
+                if (nebulae[i].horizontal_angle > 360.0)
+                    nebulae[i].diameter_x = nebulae[i].diameter_y =
+                        sqrt(nebulae[i].diameter_x * nebulae[i].diameter_y);
+                nebulae[i].radius = nebulae[i].diameter_x/2.0 /
+                    mytransform.get_rad_per_cm() * M_PI / 180.0;
+                nebulae[i].with_label = visible;
+                if (nebulae[i].radius > params.minimal_nebula_radius) {
+                    @<Draw nebula shape@>@;
+                } else {
+                    nebulae[i].radius = params.minimal_nebula_radius;
+                    OUT << "\\pscircle("
+                        << nebulae[i].x << ","
+                        << nebulae[i].y << "){"
+                        << nebulae[i].radius / 2.54 * 72.27 << "pt}%\n";
+                }
+                objects.push_back(&nebulae[i]);
+            } else nebulae[i].in_view = hidden;
+        } else nebulae[i].in_view = nebulae[i].with_label = hidden;
+}
+
+@ This is the core of |draw_nebula()|.  In order to draw the (almost) ellipsis,
+I define four reference points at the vertexes of the ellipsis.  In the loop
+they are then transformed to screen coordinates and printed.
+
+Mathematically, the algorithm used here works only for infitesimally small
+nebulae on the equator.  The problem of ``finding a point that is $x$ degrees
+left from the current point with an angle of $\alpha$ degrees'' is actually
+much more difficult.  This is also the reason for this special case
+|nebulae[i]|\hskip0pt|@[.diameter_x@] == nebulae[i]|\hskip0pt|@[.diameter_y@]|.
+It shouldn't be necessary, and at the rim of the view frame it's even wrong due
+to the different circular scale.  FixMe: Improve this. (Via rotation matrices.)
+
+@q;@>
+
+@<Draw nebula shape@>=
+    if (nebulae[i].diameter_x == nebulae[i].diameter_y)
+        OUT << "\\pscircle(" << nebulae[i].x << ',' << nebulae[i].y
+            << "){" << nebulae[i].radius << "}%\n";
+    else {
+        double rectascension[4], declination[4];
+        const double r_scale = 1.0 / cos(nebulae[i].declination * M_PI/180.0);
+        const double cos_angle
+            = cos(nebulae[i].horizontal_angle * M_PI/180.0);
+        const double sin_angle
+            = sin(nebulae[i].horizontal_angle * M_PI/180.0);
+        const double half_x = nebulae[i].diameter_x/2.0;
+        const double half_y = nebulae[i].diameter_y/2.0;
+        rectascension[0] = nebulae[i].rectascension -
+            half_x * cos_angle / 15.0 * r_scale;
+        declination[0] = nebulae[i].declination -
+            half_x * sin_angle;
+        rectascension[1] = nebulae[i].rectascension +
+            half_y * sin_angle / 15.0 * r_scale;
+        declination[1] = nebulae[i].declination -
+            half_y * cos_angle;
+        rectascension[2] = nebulae[i].rectascension +
+            half_x * cos_angle / 15.0 * r_scale;
+        declination[2] = nebulae[i].declination +
+            half_x * sin_angle;
+        rectascension[3] = nebulae[i].rectascension -
+            half_y * sin_angle / 15.0 * r_scale;
+        declination[3] = nebulae[i].declination +
+            half_y * cos_angle;
+        OUT << "\\psccurve";
+        for (int j = 0; j < 4; j++) {
+            double x,y;
+            mytransform.polar_projection(rectascension[j],
+                                         declination[j], x, y);
+            OUT << '(' << x << ',' << y << ')';
+        }
+    }
+    OUT << "\\relax\n";
+
+
 @* Grid and other curves.  It's boring to have only stars on the map.  I want
 to have the usual coordinate grid with rectascension and declination lines,
 plus the ecliptic and maybe the galactic equator, plus the constellation
-borders.  This is done here.
+borders and constellation lines.  This is done here.
 
 @ The first routine is basic for all the following: It
 helps to draw a smooth curve through the given points.  Actually it's a mere
@@ -2786,7 +3037,7 @@ void create_grid(const transformation transform,
 
 @ As mentioned before, declination circles are smaller than the full circle of
 the celestial sphere.  Therefore I reduce the |scans_per_fullcircle| by
-$cos(\hbox{|declination|})$ in order to the the number of scan points.  The
+$cos(\hbox{|declination|})$ in order to decrese the number of scan points.  The
 equator is drawn with a slightly bigger line width.
 
 This strange construction with ``|i==number_of_points?1:steps|'' is necessary
@@ -2954,8 +3205,8 @@ void draw_boundaries(const transformation& mytransform,
 }
 
 @*1 Constellation lines.  In the loop I test all lines available in
-|connections|.  The first thing in the loop is to assure that both stars are
-actually visible.  At the beginning $(\hbox{|x1|}, \hbox{|y1|})$ and
+|connections|.  The first thing in the loop is to assure that at least one of
+stars is actually visible.  At the beginning $(\hbox{|x1|}, \hbox{|y1|})$ and
 $(\hbox{|x2|}, \hbox{|y2|})$ are the screen coordinates of the two stars that
 are supposed to be connected by a line.  Then I move from there to the
 respective other star by the amount of |skip|.  The current length of the
@@ -3034,244 +3285,6 @@ void draw_milky_way(const transformation& mytransform) {
                 << "){" << radius << "pt}%\n";
     }
 }
-
-@* Drawing nebulae.  Only nebulae with a certain minimal brightness and a
-minimal diameter are included, but all of these get a label by default.
-
-The first decision I have to make here is whether the nebula has all necessary
-data for drawing a neat ellipsis that has the correct diameters and the correct
-angle.  If this is not anvailable (|horizontal_angle|${}=720^\circ$), the
-nebula ellipsis is re-calculated so that $$\eqalign{ \hbox{|diameter_x|}_
-{\hbox{\sevenrm new}} &= \hbox{|diameter_y|}_ {\hbox{\sevenrm
-new}}\quad\hbox{and}\cr \noalign{\vskip0.5ex} \hbox{|diameter_x|}_
-{\hbox{\sevenrm new}} \cdot \hbox{|diameter_y|}_ {\hbox{\sevenrm new}} &=
-\hbox{|diameter_x|}_ {\hbox{\sevenrm old}} \cdot \hbox{|diameter_y|}_
-{\hbox{\sevenrm old}}}$$ (make the ellipsis a circle of the same area) which
-means $$\hbox{|diameter_x|}_ {\hbox{\sevenrm new}} \mathrel{:=}
-\hbox{|diameter_y|}_ {\hbox{\sevenrm new}} \mathrel{:=}
-\sqrt{\hbox{|diameter_x|}_ {\hbox{\sevenrm old}} \cdot \hbox{|diameter_y|}_
-{\hbox{\sevenrm old}}}.$$
-
-The |radius| of the label is a rough estimate: It is simply the half of
-|diameter_x|.  If the nebula is too small, it is printed as a minimal circle.
-If it's large enough, it is printed in its (almost) full beauty, see |@<Draw
-nebula shape@>|.
-
-@q'@>
-
-@c
-void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
-                  objects_list& objects) {
-    OUT << "\\psset{linecolor=nebulacolor,linewidth="
-        << params.linewidth_nebula << "cm,linestyle="
-        << params.linestyle_nebula << ",curvature=1 .5 -1}%\n";
-    for (int i = 0; i < nebulae.size(); i++)
-        if (nebulae[i].in_view != hidden &&
-            (((nebulae[i].kind == open_cluster ||
-               nebulae[i].kind == globular_cluster)
-              && nebulae[i].magnitude < params.faintest_cluster_magnitude)
-             || @/
-             ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
-              nebulae[i].kind == emission) &&
-              nebulae[i].magnitude < params.faintest_diffuse_nebula_magnitude)
-             ||
-             nebulae[i].messier > 0 )) {
-            if (mytransform.polar_projection(nebulae[i].rectascension,
-                                             nebulae[i].declination,
-                                             nebulae[i].x,nebulae[i].y)) {
-                nebulae[i].in_view = visible;
-                if (nebulae[i].horizontal_angle > 360.0)
-                    nebulae[i].diameter_x = nebulae[i].diameter_y =
-                        sqrt(nebulae[i].diameter_x * nebulae[i].diameter_y);
-                nebulae[i].radius = nebulae[i].diameter_x/2.0 /
-                    mytransform.get_rad_per_cm() * M_PI / 180.0;
-                nebulae[i].with_label = visible;
-                if (nebulae[i].radius > params.minimal_nebula_radius) {
-                    @<Draw nebula shape@>@;
-                } else {
-                    nebulae[i].radius = params.minimal_nebula_radius;
-                    OUT << "\\pscircle("
-                        << nebulae[i].x << ","
-                        << nebulae[i].y << "){"
-                        << nebulae[i].radius / 2.54 * 72.27 << "pt}%\n";
-                }
-                objects.push_back(&nebulae[i]);
-            } else nebulae[i].in_view = hidden;
-        } else nebulae[i].in_view = nebulae[i].with_label = hidden;
-}
-
-@ This is the core of |draw_nebula()|.  In order to draw the (almost) ellipsis,
-I define four reference points at the vertexes of the ellipsis.  In the loop
-they are then transformed to screen coordinates and printed.
-
-Mathematically, the algoritm used here works only for infitesimally small
-nebulae on the equator.  The problem of ``finding a point that is $x$ degrees
-left from the current point with an angle of $\alpha$ degrees'' is actually
-much more difficult.  This is also the reason for this special case
-|nebulae[i]|\hskip0pt|@[.diameter_x@] == nebulae[i]|\hskip0pt|@[.diameter_y@]|.
-It shouldn't be necessary, and at the rim of the view frame it's even wrong due
-to the different circular scale.  FixMe: Improve this. (Via rotation matrices.)
-
-@q;@>
-
-@<Draw nebula shape@>=
-    if (nebulae[i].diameter_x == nebulae[i].diameter_y)
-        OUT << "\\pscircle(" << nebulae[i].x << ',' << nebulae[i].y
-            << "){" << nebulae[i].radius << "}%\n";
-    else {
-        double rectascension[4], declination[4];
-        const double r_scale = 1.0 / cos(nebulae[i].declination * M_PI/180.0);
-        const double cos_angle
-            = cos(nebulae[i].horizontal_angle * M_PI/180.0);
-        const double sin_angle
-            = sin(nebulae[i].horizontal_angle * M_PI/180.0);
-        const double half_x = nebulae[i].diameter_x/2.0;
-        const double half_y = nebulae[i].diameter_y/2.0;
-        rectascension[0] = nebulae[i].rectascension -
-            half_x * cos_angle / 15.0 * r_scale;
-        declination[0] = nebulae[i].declination -
-            half_x * sin_angle;
-        rectascension[1] = nebulae[i].rectascension +
-            half_y * sin_angle / 15.0 * r_scale;
-        declination[1] = nebulae[i].declination -
-            half_y * cos_angle;
-        rectascension[2] = nebulae[i].rectascension +
-            half_x * cos_angle / 15.0 * r_scale;
-        declination[2] = nebulae[i].declination +
-            half_x * sin_angle;
-        rectascension[3] = nebulae[i].rectascension -
-            half_y * sin_angle / 15.0 * r_scale;
-        declination[3] = nebulae[i].declination +
-            half_y * cos_angle;
-        OUT << "\\psccurve";
-        for (int j = 0; j < 4; j++) {
-            double x,y;
-            mytransform.polar_projection(rectascension[j],
-                                         declination[j], x, y);
-            OUT << '(' << x << ',' << y << ')';
-        }
-    }
-    OUT << "\\relax\n";
-
-
-@* Drawing stars.  Stars are a little bit simpler than nebulae because they are
-mere disks.  They are only included if they have a certain minimal magnitude.
-The disk radius is calculated according to $$\eqalign{ \hbox{|radius|} &=
-\sqrt{m_{\hbox{\sevenrm min}} - m + \hbox{\it radius}_{\hbox{\sevenrm
-min}}^2}\,,\quad\hbox{if $m<m_{\hbox{\sevenrm min}}$\,,}\cr
-\noalign{\vskip0.5ex} \hbox{|radius|} &= m_{\hbox{\sevenrm min}}\,,\quad
-\hbox{otherwise}.}$$
-
-The star gets a label by default only if it has a certain magnitude.  This is
-even a little bit stricter than the related condition above.
-
-Then only the stellar colour has yet to be calculated, and it can be printed.
-
-@q;@>
-
-@c
-@<|create_hs_colour()| for star colour determination@>@;@#
-
-void draw_stars(const transformation& mytransform, stars_list& stars,
-                objects_list& objects) {
-    for (int i = 0; i < stars.size(); i++)
-        if (stars[i].in_view != hidden &&
-            stars[i].magnitude < params.faintest_star_magnitude) {
-                // Effectively all stars of the \BSC/
-            if (mytransform.polar_projection(stars[i].rectascension,
-                                             stars[i].declination,
-                                             stars[i].x,stars[i].y)) {
-                stars[i].in_view = visible;
-                const double m_dot = params.faintest_star_disk_magnitude;
-                const double r_min = params.minimal_star_radius /
-                    params.star_scaling;
-                stars[i].radius = params.star_scaling *
-                    (stars[i].magnitude < m_dot ?
-                     sqrt((m_dot - stars[i].magnitude)/300.0 + r_min*r_min)
-                     : r_min);
-                if (stars[i].with_label == undecided) 
-                    stars[i].with_label =
-                        (stars[i].magnitude <
-                         params.faintest_star_with_label_magnitude &&
-                         !stars[i].name.empty()) ? visible : hidden;
-                stars[i].label = stars[i].name;
-                if (params.colored_stars) {
-                    OUT << "\\newhsbcolor{starcolor}{";
-                    create_hs_colour(stars[i].b_v,stars[i].spectral_class);
-                    OUT << " 1}%\n";
-                } else OUT << params.starcolor;
-                OUT << "\\pscircle*[linecolor=starcolor]("
-                    << stars[i].x << ","
-                    << stars[i].y << "){"
-                    << stars[i].radius / 2.54 * 72.27 << "pt}%\n";
-                objects.push_back(&stars[i]);
-            } else stars[i].in_view = hidden;
-        } else stars[i].in_view = stars[i].with_label = hidden;
-}
-
-@ I want to use the B$-$V magnitude for the colour of the star disks on the
-maps.  Here I map the value of the B$-$V magnitude to a colour in the \HSB/
-space.  `\HSB/' -- `Hue, Saturation, Brightness' (all three fom $0$ to~$1$).
-Brightness is always~$1$, so only hue and saturation have to be calculated.
-
-There are three intervals for B$-$V with the boundaries |bv0|, |bv1|, |bv2|,
-and |bv3|.  |bv0|--|bv1| is blue, |bv1|--|bv2| is white, and |bv2|--|bv3| is
-red.  On each boundary, the hue values |hue0|--|hue3| respectively are valid.
-Inbetween I interpolate linearly (rule of three).
-
-@q;@>
-
-@<|create_hs_colour()| for star colour determination@>=
-void create_hs_colour(double b_v, string spectral_class) {
-    double hue, saturation;
-    const double bv0 = -0.1, bv1 = 0.001, bv2 = 0.62, bv3 = 1.7;
-    const double hue0 = 0.6, hue1 = 0.47, hue2 = 0.17, hue3 = 0.0;
-    const double min_saturation = 0.0, max_saturation = 0.2;
-    @<Handle missing B$-$V value@>@;
-    if (b_v < bv0) b_v = bv0;  // cut off extreme values
-    if (b_v > bv3) b_v = bv3;
-    if (b_v < bv1) {  // blue star
-        hue = (b_v - bv0) / (bv1 - bv0)
-            * (hue1 - hue0) + hue0;
-        saturation = (b_v - bv0) / (bv1 - bv0)
-            * (min_saturation - max_saturation) + max_saturation;
-    }
-    else if (b_v < bv2) { // white star: constantly white.
-        hue = 0.3;  // could be anything
-        saturation = 0;
-    }
-    else {  // red star
-        hue =  (b_v - bv2) / (bv3 - bv2)
-            * (hue3 - hue2) + hue2;
-        saturation = (b_v - bv2) / (bv3 - bv2)
-            * (max_saturation - min_saturation) + min_saturation;
-    }
-    OUT << hue << ' ' << saturation;
-}
-
-@ Since there are some stars in the stellar catalogue without a B$-$V
-brightness, I need a fallback on the spectral class.  For such stars is
-$\hbox{|b_v|} = 99$.  In this routine I use the very first character in the
-string with the spectral class for determining an estimated value for
-B$-$V\spacefactor1000.  The values are averages of all stars in the \BSC/ with
-the respective spectral class.
-
-@<Handle missing B$-$V value@>=
-    if (b_v > 90.0) {
-        switch (spectral_class[0]) {
-        case 'O': b_v = 0.0; @+ break;
-        case 'B': b_v = -0.07; @+ break;
-        case 'A': b_v = 0.11; @+ break;
-        case 'F': b_v = 0.43; @+ break;
-        case 'G': b_v = 0.89; @+ break;
-        case 'K': b_v = 1.24; @+ break;
-        case 'M': b_v = 1.62; @+ break;
-        case 'N': b_v = 2.88; @+ break;
-        case 'S': b_v = 1.84; @+ break;
-        case 'C': b_v = 3.02; @+ break;
-        default: b_v = 0.0; @+ break;
-        }
-    }
 
 
 @** The main function.  This consists of six parts: \medskip
@@ -3398,18 +3411,14 @@ visibility anyway.
             print_labels(objects);
         }
 
-@ This is the preamble and the beginning of the resulting \LaTeX\ file.  Notice
-that all font specific commands here should be also used during the generation
-of the label dimensions file.  I use the \.{geometry} package and a dvips
-\.{\\special} command to set the papersize to the actual view frame plus
-2~millimetres.  So I create a buffer border of 1\,mm thickness.
+@ This is the preamble and the beginning of the resulting \LaTeX\ file.  I use
+the \.{geometry} package and a dvips \.{\\special} command to set the papersize
+to the actual view frame plus 2~millimetres.  So I create a buffer border of
+1\,mm thickness.
 
 @<Create \LaTeX\ header@>=
     create_preamble(OUT);
-    OUT << "\\nofiles\n" @/
-        << "\\usepackage[dvips]{color}\n" @/
-        << "\\usepackage{pstricks}\n" @/
-        << "\\usepackage[nohead,nofoot,margin=0cm," @/
+    OUT << "\\usepackage[nohead,nofoot,margin=0cm," @/
         << "paperwidth=" << params.view_frame_width_in_bp() << "bp," @/
         << "paperheight=" << params.view_frame_height_in_bp() << "bp" @/
         << "]{geometry}\n" @/
@@ -3454,10 +3463,14 @@ to re-define that, because it's not defined then.  You can assume a naked plain
 
 @<|create_preamble()| for writing the \LaTeX\ preamble@>=
 void create_preamble(ostream& out) {
-    out << "\\documentclass[" << params.font_size << "pt]{article}\n\n";
-    out << "\\newcommand*{\\Messier}[1]{M\\,#1}\n" @/
+    out << "\\documentclass[" << params.font_size << "pt]{article}\n\n" @/
+        << "\\nofiles" @/
+        << "\\usepackage[dvips]{color}\n" @/
+        << "\\usepackage{pstricks}\n" @/
+        << "\\newcommand*{\\Messier}[1]{M\\,#1}\n" @/
         << "\\newcommand*{\\NGC}[1]{NGC\\,#1}\n" @/
         << "\\newcommand*{\\IC}[1]{IC\\,#1}\n\n";
+
     if (params.filename_preamble.empty()) @/
         out << "\\usepackage{mathptmx}\n" @/
             << "\\usepackage{helvet}\n" @/
