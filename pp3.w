@@ -3079,6 +3079,9 @@ values can only be estimates.  (For example, the scale is not constant on the
 map, so it cannot work perfectly.  However I try to assure that the path will
 be too long rather than too short.)
 
+FixMe: This routine should take distortions due to the used map projection into
+account.
+
 Then I calculate the coordinates of three points that form the path.  Start
 point, end point, and one exactly in between.  Of course all have the same
 declination.  |lower| is measured in em and denotes the amount by which the
@@ -3743,6 +3746,16 @@ a simple concept, however difficult to digest for \LaTeX\ due to many many
 Postscipt objects.  But for this program it's so simple that I can do the
 reading and drawing in one small routine and I even don't need any large data
 structures.
+
+FixMe: Actually, under very adverse circumstances, it is possible that gaps
+occur between the pixels.  This is when polar regions (that fully use the
+maximal pixel distance with \PPTHREE/'s original Milky Way data) lie on the rim
+of a full hemisphere plot.  This doesn't do much harm though.
+
+FixMe: Additionally, this routine should take into account a)~that the original
+Milky Way data was in azimuthal equidistant projection and b)~the current map
+projection.  Both should result in optimised radii which would solve the above
+problem too.
 
 See |@<Reading the milkyway into |pixels|@>| for more information on |pixels|.
 
