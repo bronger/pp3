@@ -66,7 +66,7 @@ pp3-source.ps.gz: pp3.dvi
 	mv pp3.ps.gz $@
 
 info:
-	$(MAKE) --directory=$@ ROOT=$(ROOT) PERMS=$(PERMS) INFODIR=$(INFODIR) \
+	$(MAKE) --directory=info ROOT=$(ROOT) PERMS=$(PERMS) INFODIR=$(INFODIR) \
 	  DOCDIR=$(DOCDIR)
 
 install: all
@@ -120,8 +120,10 @@ distri-win:
 	make distri
 	mv $(DISTRINAME) $(DISTRINAME)-win
 	rm $(DISTRINAME)-win/pp3.cc $(DISTRINAME)-win/pp3.w
-	mv $(DISTRINAME)/info/pp3 $(DISTRINAME)/manual
-	rm -Rf $(DISTRINAME)/info/
-	cp win-bin/* $(DISTRINAME)-win
+	$(MAKE) --directory=$(DISTRINAME)-win/info pp3/index.html ROOT=$(ROOT) PERMS=$(PERMS) \
+	  INFODIR=$(INFODIR) DOCDIR=$(DOCDIR)
+	mv $(DISTRINAME)-win/info/pp3 $(DISTRINAME)-win/manual
+	rm -Rf $(DISTRINAME)-win/info/
+	cp win-bin/*.* $(DISTRINAME)-win
 	zip -9 -r $(DISTRINAME)-win.zip $(DISTRINAME)-win/
 
