@@ -1,12 +1,28 @@
-# Octans (Just a boundary test!!)
+# Octans
 #
 
 filename output octans.tex
 filename include wiki.pp3
 
 set constellation OCT
-set center_rectascension  12
-set center_declination  -90
+set center_rectascension  22
+set center_declination   -85
 set box_height 8
-set box_width 8
+set box_width 6.3
 
+objects_and_labels
+
+add_labels HD 205478  HD 214846  HD 124882 ;  # nu, beta, and delta Oct
+
+text \FlexLabel{Octans} at 21 -80 ;
+text Pavo at 21 -74 along declination ;
+text Indus at 22.5 -74 along declination towards N ;
+text Tucana at 23.5 -69 along declination towards W ;
+text \FlexLabel{Mensa} at 6 -80 ;
+text \FlexLabel{Chamaeleon} at 11.5 -81 ;
+text \FlexLabel{Apus} at 17.7 -81.5 ;
+text Hydrus at 3.3 -81.5 along declination ;
+
+delete NGC 292 ;  # SMC
+text "\\footnotesize S\\kern0.1emM\\kern0.1emC" 
+  at 1 -72.5 color 0.0 0.0 0.9333 towards SE ;
