@@ -5,7 +5,7 @@ delphinus draco equuleus eridanus fornax gemini grus hercules hydra indus	\
 lacerta leo leo_minor libra lupus lynx lyra microscopium monoceros norma octans	\
 ophiuchus orion pavo pegasus perseus phoenix pictor pisces piscis_austrinus	\
 puppis sagittarius scorpius sculptor scutum serpens taurus triangulum tucana	\
-ursa_major ursa_minor vela virgo vulpecula sextans
+ursa_major ursa_minor vela virgo vulpecula sextans sagitta corona_borealis
 
 %.eps : %.pp3 wiki.pp3 wiki.tex
 	pp3 $<
