@@ -1,5 +1,5 @@
 #	$Id$	
-.PHONY: distri distri-cripple rpm distri-win all doc
+.PHONY: distri distri-cripple rpm distri-win all info doc
 
 # you may set this to empty in order to install the files
 # non-locally.
@@ -7,11 +7,17 @@ LOCAL=local
 
 USRDIR=/usr/$(LOCAL)
 
-# directory for pp3 databases
-PP3DATA= $(USRDIR)/share/pp3
+# Standard share directory
+DATADIR= $(USRDIR)/share
 
-# directory for pp3 documentation and examples
-DOCDIR= $(USRDIR)/share/doc/pp3
+# directory for pp3 databases
+PP3DATA= $(DATADIR)/pp3
+
+# General documentation
+DOCDIR= $(DATADIR)/doc/pp3
+
+# Texinfo documentation
+DOCDIR= $(DATADIR)/info
 
 # destination directory for executables
 DESTDIR= $(USRDIR)/bin
@@ -20,9 +26,16 @@ CHANGEFILE=-
 
 CXXFLAGS=-s -O2
 
+# The standard file permissions for installed 
+# non-executables
+PERMS= a+r,u+w
+
+# No changes should be necessary below this line 
+# -----------------------------------------------------
+
 all: pp3
 
-doc: pp3.pdf
+doc: pp3-source.pdf
 
 %.cc : %.w
 	$(CTANGLE) $* $(CHANGEFILE) $@
@@ -37,30 +50,38 @@ pp3: pp3.cc
 ephem: ephem.cc
 	$(CXX) ephem.cc $(CXXFLAGS) -o ephem
 
-pp3.pdf: pp3.w
+pp3-source.pdf: pp3.w
 	$(CWEAVE) pp3.w
 	pdftex pp3.tex
+	mv pp3.pdf $@
 
-pp3.ps: pp3.dvi
+pp3-source.ps: pp3.dvi
 	dvips pp3
 	psselect -p_1,_,1-_2 pp3.ps pp3_.ps
-	mv pp3_.ps pp3.ps
+	mv pp3_.ps $@
 
-pp3.ps.gz: pp3.dvi
+pp3-source.ps.gz: pp3.dvi
 	make pp3.ps
 	gzip -f pp3.ps
+	mv pp3.ps.gz $@
+
+info:
+	$(MAKE) --directory=$@ ROOT=$(ROOT) PERMS=$(PERMS) INFODIR=$(INFODIR) \
+	  DOCDIR=$(DOCDIR)
 
 install: all
 	install -d $(ROOT)$(DESTDIR)
 	install -s pp3 $(ROOT)$(DESTDIR)
 	install -d $(ROOT)$(PP3DATA)
-	cp -p *.dat $(ROOT)$(PP3DATA)
-	install -d $(ROOT)$(DOCDIR)
-	cp -p pp3.ps $(ROOT)$(DOCDIR)
-	install -d $(ROOT)$(DOCDIR)/examples
-	cp -p examples/* $(ROOT)$(DOCDIR)/examples
+	install --mode=$(PERMS) *.dat $(ROOT)$(PP3DATA)
+	install -d $(ROOT)$(DATADIR)/doc/pp3
+	install --mode=$(PERMS) pp3-source.ps $(ROOT)$(DATADIR)/doc/pp3
+	install -d $(ROOT)$(DATADIR)/doc/pp3/examples
+	install --mode=$(PERMS) examples/* $(ROOT)$(DATADIR)/doc/pp3/examples
+	$(MAKE) --directory=info/ install ROOT=$(ROOT) PERMS=$(PERMS) \
+	  INFODIR=$(INFODIR) DOCDIR=$(DOCDIR)
 
-DISTRINAME= pp3-1.3.2
+DISTRINAME= pp3-1.3.3
 RPMNAME= $(DISTRINAME)-1tb.spec
 
 distri:
@@ -69,8 +90,8 @@ distri:
 	- rm pp3.cc
 	mkdir $(DISTRINAME)
 	make pp3.cc
-	make pp3.ps
-	cp pp3.w pp3.cc pp3.ps $(DISTRINAME)
+	make pp3-source.ps
+	cp pp3.w pp3.cc pp3-source.ps $(DISTRINAME)
 	cp COPYING README WHATSNEW Makefile $(DISTRINAME)
 	cp stars.dat milkyway.dat nebulae.dat lines.dat boundaries.dat \
 	  $(DISTRINAME)
