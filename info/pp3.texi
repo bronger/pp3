@@ -838,9 +838,8 @@ filename output swan.tex
 @end example
 
 @noindent
-makes @PPTHREE{} to write the generated map to the file
-@file{swan.tex}.  But such a file is rarely the desired output.
-Therefore the next line
+makes @PPTHREE{} write the generated map to the file @file{swan.tex}.
+But such a file is rarely the desired output.  Therefore the next line
 
 @kwindex switch
 @kwindex pdf_output
@@ -1112,7 +1111,7 @@ data file with @PPTHREE{}, see @ref{Stars data file}.
 @node Deleting and adding labels
 @subsection Deleting and adding labels
 
-@PPTHREE{} decides which labels are printed on the may by itself.  But,
+@PPTHREE{} decides which labels are printed on the map by itself.  But,
 of course, you can configure this behaviour, and you can delete or add
 any label.
 
@@ -1173,9 +1172,9 @@ reposition M 39  S ;
 @noindent
 This puts the label for the nebula M@s{}39 @emph{below} the nebula.
 `@code{S}'@tie{}means `south'.  The following table shows all possible
-values, however you know it by and large from the wind rose probably:
+values, however you know it by and large from the windrose probably:
 
-@cindex wind rose
+@cindex windrose
 
 @table @samp
 @item E
@@ -2363,6 +2362,10 @@ Here your own preamble is included, if you have provided one.
 
 @node User preamble
 @subsection User preamble
+@cindex La@TeX{} preamble
+@cindex preamble, La@TeX{}
+@cindex preamble, user provided
+@cindex user preamble
 
 You tell @PPTHREE{} where your own preamble is with the filename
 parameter `@code{latex_preamble}' in the input script, for example:
@@ -2382,7 +2385,7 @@ the Wikipedia Project, see @ref{Successful use of PP3}.
 @r{01 @ @ }\usepackage@{amsmath@}
 @r{02 @ @ }\usepackage[T1]@{fontenc@}
 @r{03 @ @ }\IfFileExists@{eulervm.sty@}@{\usepackage@{eulervm@}@}@{@}
-@r{04 @ @ }\IfFileExists@{relsize.sty@}@{\usepackage@{relsize@}@}@{@}
+@r{04 @ @ }\usepackage@{relsize@}
 @r{05 @ @ }\IfFileExists@{t1pmy.fd@}@{
 @r{06 @ @ }  \renewcommand*@{\sfdefault@}@{pmy@}
 @r{07 @ @ }@}@{
@@ -2396,11 +2399,80 @@ the Wikipedia Project, see @ref{Successful use of PP3}.
 @r{15 @ @ }\AtBeginDocument@{\sffamily\boldmath@}
 @end smallexample
 
+@noindent
+And this is what it does:
+
+@table @asis
+@item Line 1
+includes the AMSMath package which provides additional macros that can
+be useful in text labels.  You can include almost arbitrary @LaTeX{}
+packages.
+
+@item Line 2
+activates the so-called T1 font encoding.  It's not important to know
+what this means, but it is recommended and doen't do any harm.
+
+@item Line 3
+activates nicer Greek letters.  Well, your taste may be different.  This
+@samp{\IfFileExists} thing tests whether the package is available on the
+current computer.  The package is included only if it exists.
+
+@item Line 4
+enables the macro @samp{\smaller} which can be very useful in text
+labels.  It reduces the current font size.  For example I can say
+
+@example
+set_label_text LEO 32 "\\smaller Regulus"
+@end example
+
+@item Lines 5--9
+test whether the font Myriad is available on the current computer, and
+if it does, it makes it the new standard sans-serif font.  Else it uses
+Helvetica for that.
+
+@item Lines 10--14
+re-defines various @LaTeX{} hooks in order to have nicer looking
+automatic labels, see @ref{LaTeX hooks}.
+
+@item Line 15
+switches to sans-serif font (Myriad/Helvetica) with @samp{\sffamily} and
+to bold Greek letters with @samp{\boldmath}.
+
+@end table
+
 
 @node LaTeX hooks
 @section LaTeX hooks
+@cindex La@TeX{} hooks
+@cindex hooks, La@TeX{}
 
-@b{To be done.}
+First of all -- what is a hook?  A hook in general is a macro or command
+that can be re-defined by the user, and that is called implicitly.
+Thus, by re-defining a hook, the user can modify the behaviour of the
+program at certain points.
+
+@PPTHREE{} knows nine hard-wired @LaTeX{} hooks:
+
+@table @samp
+@item \Label
+
+@item \TextLabel
+
+@item \FlexLabel
+
+@item \Starname
+
+@item \Messier
+
+@item \NGC
+
+@item \IC
+
+@item \DP
+
+@item \TicMark
+
+@end table
 
 
 @node Known problems
