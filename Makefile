@@ -60,7 +60,7 @@ install: all
 	install -d $(ROOT)$(DOCDIR)/examples
 	cp -p examples/* $(ROOT)$(DOCDIR)/examples
 
-DISTRINAME= pp3-1.3
+DISTRINAME= pp3-1.3.1
 RPMNAME= $(DISTRINAME)-1tb.spec
 
 distri:
