@@ -157,7 +157,6 @@ flexibility of the LaTeX language.
 @node Introduction
 @chapter Introduction
 
-
 @menu
 * What it is::                  Features of PP3.
 * What it is not::              Limitations of PP3.
@@ -208,7 +207,7 @@ Feel free to browse through a
 of all constellations}.
 
 This is a web page, so you need bitmaps@footnote{as long as we don't
-have @acronym{SVG}}, so a short @uref{http://www.gimp.org,Gimp}
+have @acronym{SVG}}, and a short @uref{http://www.gimp.org,Gimp}
 script@footnote{which is included into the distribution} helped me to
 convert @PPTHREE{}'s @acronym{EPS} vector output to @acronym{PNG}
 bitmaps.  Additionally, this script creates smaller thumbnail version
@@ -669,7 +668,7 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 * Reposition labels::           Reposition a text label.
 * Text labels::                 How to put arbitrary text on the map.
 * Using flexes::                Labels that are curved.
-* Tics::                        Automatically generated tic marks.
+* Tic labels::                  Automatically generated tic mark labels.
 @end menu
 
 
@@ -982,10 +981,10 @@ colour.
 But the `@code{text}' keyword can do more.  When you include the
 keywords `@code{along declination}' the label becomes a @emph{flex}.
 This is printed along a declination circle as a curved text.  It's
-especially nice for constellation name.  So let's try it out:
+especially nice for constellation names.  So let's try it out:
 
 @example
-text "\\bfseries Swan" at 20.5 47.5 along declination towards N ;
+text "\\bfseries Swan" at 20.05 49.8 along declination towards SW ;
 @end example
 
 @noindent
@@ -1023,11 +1022,11 @@ face}, see @ref{LaTeX in labels}.  The result is the following:
 @c set_label_text CYG 50 Deneb
 @c set_label_text NGC 7000 "N. America Neb."
 @c
-@c text "\\bfseries Swan" at 20.5 47.5 along declination towards N ;
+@c text "\\bfseries Swan" at 20.05 49.8 along declination towards SW ;
 
 
-@node Tics
-@section Tic marks
+@node Tic labels
+@section Tic mark labels
 
 But `@code{text}' can do even more.  With
 
@@ -1039,8 +1038,8 @@ text "$#5$" at 11 0 along declination
 @end example
 
 @noindent
-You create automatic tic marks at the declination and rectascension
-circles.
+you create automatic tic mark labels at the declination and
+rectascension circles.
 
 
 @node Keywords reference
@@ -1692,12 +1691,12 @@ mostly.
 
 All user defines texts on the map are generated with the keyword
 `@code{text}'.  However there are two sub-variants, namely @emph{flexes}
-and @emph{tic marks}.  Note that they can have the @code{color} and
-@code{towards} keywords as well.
+and @emph{tic mark labels}.  Note that they can have the @code{color}
+and @code{towards} keywords as well.
 
 @menu
 * Flexes::                      Labels on a declination circle.
-* Tic marks::                   Marks for the coordinate grid.
+* Tic mark labels::             Labels for the coordinate grid.
 @end menu
 
 
@@ -1712,7 +1711,7 @@ respective declination circle.
 @noindent
 For further options see @ref{Arbitrary text}.
 
-@node Tic marks
+@node Tic mark labels
 @subsubsection Tic mark labels
 
 @deffn Command text {label-text} @code{at} rectascension declination [@code{tics} (@code{rectascension} | @code{declination}) step] @code{;}
@@ -1745,8 +1744,8 @@ Declination in rounded integer degrees.
 
 @end table
 
-For further options see @ref{Arbitrary text}.  Tic marks can also be
-flexes, see @ref{Flexes}.
+For further options see @ref{Arbitrary text}.  Tic mark labels can also
+be flexes, see @ref{Flexes}.
 
 
 @node PP3 and LaTeX
@@ -2007,8 +2006,9 @@ HD 108903 ;  # gamma Cru
 @subheading PP3's constellation lines origin
 
 I created the lines after my fancy.  The @emph{Atlas f@"ur
-Himmelsbeobachter}@footnote{in German; @acronym{ISBN}@tie{}3440074889}
-was an important source of inspiration though.
+Himmelsbeobachter}@footnote{by Erich Karkoschka, in German;
+@acronym{ISBN}@tie{}3440074889} was an important source of inspiration
+though.
 
 
 @node Boundaries data file
