@@ -366,7 +366,7 @@ const string pp3data;
 #endif
 const string filename_prefix(!pp3data_env.empty() ?
                              pp3data_env + '/' : (pp3data.empty() ?
-						  "" : pp3data + "/"));
+                                                  "" : pp3data + "/"));
 
 
 @ I declare {\it and\/} define the structure |parameters| here.
@@ -1219,6 +1219,10 @@ to the right of it.  (Abbreviations are taken from the wind rose.)  You may use
 this command to force a certain label to be drawn although \PPTHREE/ has
 decided that there is no space for it and didn't print it in the first place.
 
+If you write ``\.{E\UL}'' or ``\.{W\UL}'' the label text is not vertically
+centred but aligned with the celestrial coordinates at the {\it baseline\/} of
+the label text.
+
 At the moment, this command takes exactly one argument.  However the closing
 semicolon is necessary.
 
@@ -1231,27 +1235,32 @@ semicolon is necessary.
                 identify_object(script, ngc, ic, messier, henry_draper,
                                 flamsteed, stars, nebulae);
             int angle;
+            bool on_baseline = false;
             script >> position >> semicolon;
             if (semicolon != ";") 
                 throw string("Expected \";\" after \"reposition\" command");
-            @<Map a wind rose |position| to an |angle|@>@;
+            @<Map a wind rose |position| to an |angle|
+              and determine |on_baseline|@>@;
             if (current_object) {
                 current_object->label_angle = angle;
                 current_object->with_label = visible;
+                current_object->on_baseline = on_baseline;
                 current_object->label_arranged = true;
             }
         }
 
-@ @<Map a wind rose |position| to an |angle|@>=
-            if (position == "E") angle = 0;
+@ @<Map a wind rose |position| to an |angle| and determine |on_baseline|@>=
+            if (position == "E" || position == "E_") angle = 0;
             else if (position =="NE") angle = 1;
             else if (position =="N") angle = 2;
             else if (position =="NW") angle = 3;
-            else if (position =="W") angle = 4;
+            else if (position =="W" || position == "W_") angle = 4;
             else if (position =="SW") angle = 5;
             else if (position =="S") angle = 6;
             else if (position =="SE") angle = 7;
             else throw string("Undefined position angle: ") + position;
+            on_baseline = position[position.length()-1] == '_';
+
 
 @ \PPTHREE/ reads default labels from the stars and nebulae data files.  But
 you may say e.\,g.\ $$\hbox{\.{set\_label\_text ORI 19 Rigel}}$$ to rename
@@ -1339,12 +1348,16 @@ that fact.  You can also use all \PS/Tricks commands.  For example, with
 {\parindent2em\tentt
 text "\BS\BS psdots[dotstyle=+,dotangle=45](0,0)\BS\BS scriptsize\BS\BS{} N 
            pole of ecliptic"\par
-\ \ \ \ \ at 18 66.56 ;
+\ \ \ \ \ at 18 66.56 towards E\UL{} ;
 }
 
 \medskip\noindent the $\times$ marks the northern ecliptical pole, together
 with a small label text.  If such things occur frequently, define it as a
 \LaTeX\ macro.
+
+If you write ``\.{E\UL}'' or ``\.{W\UL}'' the label text is not vertically
+centred but aligned with the celestrial coordinates at the {\it baseline\/} of
+the label text.
 
 \medskip A ``declination flex'' is a special text label that stands on a circle
 of equal declination which can look very nice.  You get it with the option
@@ -1366,13 +1379,15 @@ if (opcode == "text") {
     script >> rectascension >> declination;
     script >> token;
     int angle = 1;  // |"NE"|
+    bool on_baseline = false;
     enum { kind_text_label, kind_flex_declination} label_kind
         = kind_text_label;
     while (script && token != ";") {
         if (token == "color") script >> params.textlabelcolor;
         else if (token == "towards") {
             script >> position;
-            @<Map a wind rose |position| to an |angle|@>@;
+            @<Map a wind rose |position| to an |angle|
+              and determine |on_baseline|@>@;
         }
         else if (token == "along") {
             script >> token;
@@ -1387,12 +1402,13 @@ if (opcode == "text") {
     switch (label_kind) {
     case kind_text_label:
         texts.push_back(text(contents, rectascension, declination,
-                             params.textlabelcolor, angle));
+                             params.textlabelcolor, angle, on_baseline));
         break;
     case kind_flex_declination: 
         flexes.push_back(new declination_flex(contents, rectascension,
                                               declination,
-                                              params.textlabelcolor, angle));
+                                              params.textlabelcolor, angle,
+                                              on_baseline));
         break;
     }
 }
@@ -1423,11 +1439,20 @@ size.
  |y| contain the screen coordinates in centimetres.  |radius| is the radial
  size of the object in centimetres.  |skip| is given in centimetres, too.  It
  denotes the space between the outer boundary of the object (enclosed by
- |radius|) and the label.  |with_label| is |visible| if the object has a label, with
- |label_width| and |label_height| (estimated in centimetres) and
- |label_angle|. |label_arranged| is |true| if the best place for the label has
- been found already.  Only then the label should be really printed, but the
- real use of |label_arranged| is that it avoids the label to be arranged
+ |radius|) and the label.
+
+|with_label| is |visible| if the object has a label, with |label_width|,
+ |label_height|, |label_depth| (estimated in centimetres) and |label_angle|.
+ {\it Please note the all heights in \PPTHREE/ are {\rm total} heights, thus
+ the same as \TeX's height${}+{}$depth!}
+
+|on_baseline| is true, if the {\it baseline\/} of the label text is supposed to
+ be vertically aligned with the celestial position.  (This works not for all
+ |label_angle|s.)
+
+|label_arranged| is |true| if the best place for the label has been found
+ already.  Only then the label should be really printed, but the real use of
+ |label_arranged| is that it avoids the label to be arranged
  twice. |lable_angle| can only have eight possible values: 0:~$0^\circ\!$,
  1:~$45^\circ\!$, 2:~$90^\circ\!$, 3:~$135^\circ\!$, 4:~$180^\circ\!$,
  5:~$225^\circ\!$, 6:~$270^\circ\!$, and 7:~$315^\circ\!$.
@@ -1448,13 +1473,15 @@ struct view_data {
     visibility with_label;
     bool label_arranged;
     string label;
-    double label_width, label_height;
+    double label_width, label_height, label_depth;
+    bool on_baseline;
     color label_color;
     int label_angle;
     view_data() : in_view(undecided), x(DBL_MAX), y(DBL_MAX), radius(0.0), 
                   skip(params.label_skip),
                   with_label(undecided), label_arranged(false), label(), 
-                  label_width(0.24), label_height(0.36),
+                  label_width(0.0), label_height(0.0),
+                  label_depth(0.0), on_baseline(false),
                   label_color(params.labelcolor), label_angle(0) { }
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
@@ -1496,10 +1523,12 @@ void view_data::get_label_boundaries(double& left,double& right,double& top,
     }
     right = left + label_width;
     switch (label_angle) {
-    case 0: case 4: bottom = origin_y - label_height / 2.0; break;
+    case 0: case 4: bottom = origin_y -
+                             (on_baseline? 0.0 : label_height / 2.0); break;
     case 1: case 2: case 3: bottom = origin_y; break;
     case 5: case 6: case 7: bottom = origin_y - label_height; break;
     }
+    if (on_baseline) bottom -= label_depth;
     top = bottom + label_height;
 }
 
@@ -1629,7 +1658,7 @@ istream& operator>>(istream& in, star& s) {
 void read_stars(stars_list& stars) {
     ifstream stars_file(params.filename_stars.c_str());
     if (!stars_file) throw string("No stars file found: " 
-				  + params.filename_stars);
+                                  + params.filename_stars);
     star current_star;
     stars_file >> current_star;
     while (stars_file) {
@@ -2523,12 +2552,14 @@ labels.  They are read from the file \.{labeldims.dat} and stored in a
 
 @s dimensions_list int
 @s dimension int
+@q'@>
 
 @c
 struct dimension {
-    double width, height;
-    dimension() : height(0.0), width(0.0) { }
-    dimension(const dimension& d) : width(d.width), height(d.height) { }
+    double width, height, depth;
+    dimension() :  width(0.0), height(0.0), depth(0.0) { }
+    dimension(const dimension& d) : width(d.width), height(d.height), 
+                                    depth(d.depth) { }
 };
 
 typedef map<string,dimension> dimensions_list;
@@ -2664,6 +2695,8 @@ void print_labels(const objects_list& objects) {
             OUT << "}}\\vskip" << bottom << "cm";
             OUT << "\\hrule height 0pt}\\hss}%\n";
 #ifdef DEBUG
+            OUT << "\\psframe[linewidth=0.1pt](" << left << ',' << bottom
+                << ")(" << right << ',' << bottom+objects[i]->label_depth << ")%\n";
             OUT << "\\psframe[linewidth=0.3pt](" << left << ',' << bottom
                 << ")(" << right << ',' << top << ")%\n";
 #endif
@@ -2674,7 +2707,7 @@ void print_labels(const objects_list& objects) {
 \medskip
 
 \item{1.} The \LaTeX\ representation of the label on a line of its own.
-\item{2.} In the following line, width and height of the label in
+\item{2.} In the following line, width, height, and depth of the label in
 centimetres (both |double|), separated by whitespace.
 
 \medskip This is repeated for every data record.
@@ -2685,18 +2718,19 @@ void read_label_dimensions(dimensions_list& dimensions) {
     string name,dummy;
     getline(file,name);
     while (file) {
-        file >> dimensions[name].width >> dimensions[name].height;
+        file >> dimensions[name].width >> dimensions[name].height
+             >> dimensions[name].depth;
         getline(file,dummy);  // Read the |'\n'|
         getline(file,name);
     }
 }
 
 @*1 Determining label dimensions.  {\sloppy Here I go through all |objects| and
-set the |label_width| and |label_height| which have been zero so far.  It may
-happen that a label is not found (possibly because |dimensions| is totally
-empty because no label dimensions file could be found).  In this case I call
-|recalculate_dimensions()| to get all labels recalculated via an extra \LaTeX\
-run.\par}
+set the |label_width|, |label_height|, and |label_depth| which have been zero
+so far.  It may happen that a label is not found (possibly because |dimensions|
+is totally empty because no label dimensions file could be found).  In this
+case I call |recalculate_dimensions()| to get all labels recalculated via an
+extra \LaTeX\ run.\par}
 
 |dimensions_recalculated| is |true| if |recalculate_dimensions()| has been
  called and thus one can assume that all needed labels are now available.  It
@@ -2720,13 +2754,14 @@ for (int i = 0; i < objects.size(); i++) {
         current_object->label_width = dimensions[current_object->label].width;
         current_object->label_height =
             dimensions[current_object->label].height;
+        current_object->label_depth = dimensions[current_object->label].depth;
     }
 }
 
 
 @ When \PPTHREE/ is started it reads a file usually called \.{labeldimens.dat}
-in order to know width and height (in centimetres) of all labels.  This is
-vital for the penalty (i.\,e.\ overlap) calculations.  But it may be that a
+in order to know width, height, and depth (in centimetres) of all labels.  This
+is vital for the penalty (i.\,e.\ overlap) calculations.  But it may be that a
 label that you want to include can't be found in this file, or you have deleted
 it because you've changed the \LaTeX\ preamble of the output (i.\,e.\ the
 fonts).  In these cases \PPTHREE/ automatically creates a new one.  It is then
@@ -2769,11 +2804,9 @@ void recalculate_dimensions(dimensions_list& dimensions,
               << "\\catcode`\\_=8\n";
     list<string>::const_iterator p = required_names.begin();
     while (p != required_names.end())
-        temp_file << "\\setbox0 = \\vbox{\\hbox{"
-                  << *(p++)
-                  << "}\\hrule height 0pt}\n"
-                  << "  \\immediate\\write\\labelsfile{"
-                     "\\the\\wd0s \\the\\ht0s}\n";
+        temp_file << "\\setbox0 = \\hbox{" << *(p++)
+                  << "}\n  \\immediate\\write\\labelsfile{"
+                     "\\the\\wd0s \\the\\ht0s \\the\\dp0s}\n";
     temp_file << "\\immediate\\closeout\\labelsfile\n\\end{document}\n";
     temp_file.close();
     string commandline("latex pp3temp");
@@ -2789,27 +2822,31 @@ void recalculate_dimensions(dimensions_list& dimensions,
     cooked_labels_file.precision(5);
     p = required_names.begin();
     while (p != required_names.end()) {
-        string current_width, current_height;
+        string current_width, current_height, current_depth;
         string current_name;
         current_name = *(p++);
-        raw_labels_file >> current_width >> current_height;
+        raw_labels_file >> current_width >> current_height >> current_depth;
         current_width.substr(0,current_width.length() - 3);
         current_height.substr(0,current_height.length() - 3);
+        current_depth.substr(0,current_depth.length() - 3);
         dimensions[current_name].width = strtod(current_width.c_str(), 0)
             / 72.27 * 2.54;
         dimensions[current_name].height = strtod(current_height.c_str(), 0)
             / 72.27 * 2.54;
+        dimensions[current_name].depth = strtod(current_depth.c_str(), 0)
+            / 72.27 * 2.54;
+        dimensions[current_name].height += dimensions[current_name].depth;
         cooked_labels_file << current_name << '\n'
-                           << dimensions[current_name].width
-                           << ' '
-                           << dimensions[current_name].height
+                           << dimensions[current_name].width << ' '
+                           << dimensions[current_name].height << ' '
+                           << dimensions[current_name].depth
                            << '\n';
     }
 }
 
 @*1 User labels.  The user should be able to insert arbitaray text into the
 chart.  The code for this is provided here.  The data type of them, |text|, is
-of course a classical derivative of |view_data|.  It only holds the celetial
+of course a classical derivative of |view_data|.  It only holds the celestial
 coordinates and the text (\LaTeX) string of the label.
 
 @s text int
@@ -2818,7 +2855,7 @@ coordinates and the text (\LaTeX) string of the label.
 struct text : public view_data {
     string contents;
     double rectascension, declination;
-    text(string t, double r, double d, color c, int angle);
+    text(string t, double r, double d, color c, int angle, bool on_baseline);
 };
 
 typedef list<text> texts_list;
@@ -2830,11 +2867,12 @@ already.  And it gets another colour (if wanted).
 @q'@>
 
 @c
-text::text(string t, double r, double d, color c, int angle)
+text::text(string t, double r, double d, color c, int angle, bool on_baseline)
     : contents(t), rectascension(r), declination(d) {
     label = string("\\TextLabel{") + t + '}';
     with_label = visible;
     label_angle = angle;
+    view_data::on_baseline = on_baseline;
     label_arranged = true;
     label_color = c;
     radius = skip = 0.0;
@@ -2886,7 +2924,7 @@ read\_flexes\/}(\,), and no file format associated with it.
 @c
 struct flex_label : public view_data {
     double rectascension, declination;
-    flex_label(string s, double r, double d, color c, int a);
+    flex_label(string s, double r, double d, color c, int a, bool b);
     virtual bool draw(const transformation& mytransform,
                       dimensions_list& dimensions, objects_list& objects)
         const = 0;
@@ -2895,14 +2933,17 @@ struct flex_label : public view_data {
 @ Of course I need no extra label because a flex is a label of its own.  So a
 flex only uses |label| and |label_angle|.  The rest is unimportant because the
 label isn't printed anyway because the coodrinates |x| and |y| are invalid
-anyway and therefore printing will be rejected in |print_labels()|..
+anyway and therefore printing will be rejected in |print_labels()|.
+
+Actually |on_baseline| is insignificant for flexes.
 
 @c
-flex_label::flex_label(string s, double r, double d, color c, int a)
+flex_label::flex_label(string s, double r, double d, color c, int a, bool b)
     : rectascension(r), declination(d) {
     label_color = c;
     label = string("\\FlexLabel{") + s + '}';
     label_angle = a;
+    on_baseline = b;
     in_view = visible;
     with_label = hidden;
     label_arranged = true;
@@ -2915,8 +2956,8 @@ declination.  This looks very nice on the chart.
 
 @c
 struct declination_flex : public flex_label {
-    declination_flex(string s, double r, double d, color c, int a)
-        : flex_label(s,r,d,c,a) { }
+    declination_flex(string s, double r, double d, color c, int a, bool b)
+        : flex_label(s,r,d,c,a,b) { }
     virtual bool draw(const transformation& mytransform,
                       dimensions_list& dimensions, objects_list& objects)
         const;
@@ -2932,9 +2973,9 @@ values can only be estimates.  (For example, the scale is not constant on the
 map, so it cannot work perfectly.  However I try to assure that the path will
 be too long rather than too short.)
 
-Then I calculate the coordinates of three point that form tha path.  Start
+Then I calculate the coordinates of three points that form the path.  Start
 point, end point, and one exactly in between.  Of course all have the same
-declination.  |lower| is measured in em and denotes the amout by which the
+declination.  |lower| is measured in em and denotes the amount by which the
 whole text is shifted downwards.  This is sub-optimal because it may affect
 letterspacing disadvantageously.
 
@@ -2999,7 +3040,7 @@ bool declination_flex::draw(const transformation& mytransform,
 }
 
 @ As I've already said, a flex is (at the moment) excluded from the penalty
-algorithm.  This is realised here:  This routine always returns zero.
+algorithm.  This is realised here: This routine always returns zero.
 
 @c
 double declination_flex::penalties_with(const double left, const double right,
