@@ -2968,7 +2968,7 @@ void recalculate_dimensions(dimensions_list& dimensions,
 }
 
 @ Here I create the new, updated |cooked_labels_file| (aka
-\.{labeldimens.dat}).  So all already calculate dimensions can be used for the
+\.{labeldimens.dat}).  So all already calculated dimensions can be used for the
 following runs.
 
 @<Write updated \.{labeldimens.dat} file@>=
