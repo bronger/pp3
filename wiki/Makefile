@@ -1,10 +1,10 @@
-CONSTELLATIONS = andromeda bootes carina crux libra orion taurus aquarius	\
-cancer cassiopeia cygnus monoceros perseus ursa_major aquila canes_venatici	\
-centaurus delphinus pisces ursa_minor ara canis_major cetus eridanus norma	\
-sagittarius virgo aries canis_minor coma_berenices gemini octans scorpius	\
-vulpecula auriga capricornus corvus leo ophiuchus serpens hercules hydra	\
-camelopardalis cepheus pegasus draco apus antlia caelum vela puppis lynx	\
-sculptor phoenix fornax pictor pavo microscopium
+CONSTELLATIONS = andromeda antlia apus aquarius aquila ara aries auriga bootes	\
+caelum camelopardalis cancer canes_venatici canis_major canis_minor capricornus	\
+carina cassiopeia centaurus cepheus cetus coma_berenices corvus crux cygnus	\
+delphinus draco eridanus fornax gemini grus hercules hydra indus leo libra	\
+lupus lynx microscopium monoceros norma octans ophiuchus orion pavo pegasus	\
+perseus phoenix pictor pisces piscis_austrinus puppis sagittarius scorpius	\
+sculptor serpens taurus tucana ursa_major ursa_minor vela virgo vulpecula
 
 %.eps : %.pp3 wiki.pp3 wiki.tex
 	pp3 $<
