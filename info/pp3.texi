@@ -1083,7 +1083,7 @@ set_label_text HD 128620 "\\footnotesize Toliman"
 
 @noindent
 prints @samp{Toliman} with small letters, see @ref{LaTeX in labels}.
-Quotes must be entred as @samp{\"}.
+Quotes must be entered as @samp{\"}.
 
 
 @node Changing label texts
@@ -2222,7 +2222,7 @@ the @LaTeX{} language.
 
 I can't explain @LaTeX{} itself though.  So I must assume that you've
 been taught the basics elsewhere.  On the other hand, the @LaTeX{}
-snippets that I will give in this chapter may be enough for most
+snippets that I will give in this chapter may be enough for many
 purposes.
 
 It is @emph{not} necessary to use the features described here, so it's
@@ -2351,7 +2351,10 @@ By default, the @LaTeX{} document that @PPTHREE{} creates begins with
 @r{19 @ @ }@emph{[optional input of user provided file]}
 @end smallexample
 
-Let's skim through it line by line:
+@emph{The above is not provided by you}, it is the @LaTeX{} code that
+@PPTHREE{} generates every time.  If you don't look at its @LaTeX{}
+output file, you never see it.  But it may be helpful to know what
+happens here, so let's skim through it line by line:
 
 @table @asis
 @item Line 1
@@ -2394,10 +2397,12 @@ filename latex_preamble mypreamble.tex
 
 @noindent
 The file @file{mypreamble.tex} contains your @LaTeX{} preamble macros
-and must reside in the current directory.
+and must reside in the current directory, or in another directory where
+@TeX{} looks for its files.
 
-The following is the original user @LaTeX{} preamble that was used for
-the Wikipedia Project, see @ref{Successful use of PP3}.
+The following is the contents of the file @file{wiki.tex} of the
+@PPTHREE{} distribution.  It is the original user @LaTeX{} preamble that
+was used for the Wikipedia Project, see @ref{Successful use of PP3}.
 
 @smallexample
 @r{01 @ @ }\usepackage@{amsmath@}
@@ -2469,46 +2474,99 @@ that can be re-defined by the user, and that is called implicitly.
 Thus, by re-defining a hook, the user can modify the behaviour of the
 program at certain points.
 
+In @PPTHREE{}, hooks are called for printing text of various kinds.  For
+example, every implicit (i.@s{}e.@: automatically generated) star name
+is printed by @samp{\Starname} as in @samp{\Starname@{$\gamma$@}}.  By
+default, this macro does nothing more than printing its argument:
+
+@example
+\newcommand*@{\Starname@}[1]@{#1@}
+@end example
+
+@noindent
+But if you re-define it, you can make every (implicit!)@: star label a
+little bit larger:
+
+@example
+\renewcommand*@{\Starname@}[1]@{\larger #1@}
+@end example
+
+@noindent
+Notice that the macro @samp{\larger} is provided by the `relsize'
+package that must be loaded before, see @ref{User preamble}.  So, just
+write the lines
+
+@example
+\usepackage@{relsize@}
+\renewcommand*@{\Starname@}[1]@{\larger #1@}
+@end example
+
+@noindent
+in the file @file{mypreamble.tex}, say
+
+@example
+set latex_preamble mypreamble.tex
+@end example
+
+@noindent
+in the @PPTHREE{} input script, and voil@`a -- all star labels are
+larger.
+
+@sp 1
+
 @PPTHREE{} knows nine hard-wired @LaTeX{} hooks:
 
 @table @samp
 @item \Label
 @cindex Label (@LaTeX{} hook)
-Argument: the label text.
+Argument: the label text.  It applies to all labels except for flexes.
 
 @item \TextLabel
 @cindex TextLabel (@LaTeX{} hook)
-Argument: the label text.
+Argument: the label text.  It applies to all labels that the user
+creates with @samp{text}.
 
 @item \FlexLabel
 @cindex FlexLabel (@LaTeX{} hook)
-Argument: the label text.
+Argument: the label text.  It applies to all flexes.
 
 @item \Starname
 @cindex Starname (@LaTeX{} hook)
-Argument: the star name.
+Argument: the star name.  It applies to all automatically generated star
+names, in particular @emph{not} to user-defined names given by
+@samp{set_label_text}.
 
 @item \Messier
+@itemx \NGC
+@itemx \IC
 @cindex Messier (@LaTeX{} hook)
-Argument: the Messier number.
+@cindex @acronym{NGC} (@LaTeX{} hook)
+@cindex @acronym{IC} (@LaTeX{} hook)
+Argument: the respective catalogue number.  This generates the labels
+for nebulae.  Notice that you must provide the catalogue name, or you
+can leave it as well.  For example, many people prefer @acronym{NGC}
+numbers as plain numbers without an `NGC' before it.  You achieve this
+effect with
 
-@item \NGC
-@cindex NGC (@LaTeX{} hook)
-Argument: the @acronym{NGC} number.
-
-@item \IC
-@cindex IC (@LaTeX{} hook)
-Argument: the @acronym{IC} number.
+@example
+\renewcommand*@{\NGC@}[1]@{#1@}
+@end example
 
 @item \TicMark
 @cindex TicMark (@LaTeX{} hook)
-Argument: the tic mark label text.
+Argument: the tic mark label text.  It applies to all tic mark labels,
+see @ref{Tic labels}.
 
 @item \DP
 @cindex DP (@LaTeX{} hook)
 @cindex decimal point (DP, @LaTeX{} hook)
 @cindex point, decimal (DP, @LaTeX{} hook)
-No argument.
+No argument.  This generates the decimal point.  By default, it's a `.',
+however in many countries a `,' is used instead.  You get this with
+
+@example
+\renewcommand@{\DP@}@{,@}
+@end example
 
 @end table
 
@@ -3074,7 +3132,7 @@ Project, see @ref{Successful use of PP3}.
 @item Ara @tab Ara @tab Altar                              @tab 17.5 @tab @minus{}53 @tab 4
 @item Aries @tab Ari @tab Ram                              @tab 2.8 @tab @math{+}18.8 @tab 4
 @item Auriga @tab Aur @tab Charioteer                      @tab 5.6 @tab @math{+}38 @tab 4
-@item Bootes @tab Boo @tab Herdsman                        @tab 14.7 @tab @math{+}34 @tab 4
+@item Bo@"otes @tab Boo @tab Herdsman                      @tab 14.7 @tab @math{+}34 @tab 4
 @item Caelum @tab Cae @tab Chisel                          @tab 4.8 @tab @minus{}38 @tab 3
 @item Camelopardalis @tab Cam @tab Giraffe                 @tab 5.5 @tab @math{+}75 @tab 5
 @item Cancer @tab Cnc @tab Crab                            @tab 8.7 @tab @math{+}20 @tab 4
@@ -3185,4 +3243,4 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  Camelopardalis Venatici CVn CMa CMi Cas Cen Cet Cha Cir CrA
 @c  LocalWords:  CrB Crv Crt Dra Equ Eri Gru Hor Hya Lac LMi Lep Lup Lyn Lyr
 @c  LocalWords:  Mic Mus Oph Phe Psc Austrinus PsA Sge Sgr Sco Scl Sct TrA UMi
-@c  LocalWords:  Vel Vir Vul
+@c  LocalWords:  Vel Vir Vul wiki voil itemx otes
