@@ -1,0 +1,32 @@
+filename output leo1.tex
+switch colored_stars off
+color stars 0 0 0
+color nebulae 0 0 0
+color background 1 1 1
+color grid 0.7 0.7 0.7
+color ecliptic 0.3 0.3 0.3
+color constellation_lines 0.7 0.7 0.7
+color labels 0 0 0
+color text_labels 0 0 0
+color boundaries 0.8 0.8 0.8
+color highlighted_boundaries 0 0 0
+color milky_way 0.5 0.5 0.5
+switch pdf_output on
+
+set constellation LEO
+set center_rectascension  10.702
+set center_declination     7.32
+set box_height 4
+set box_width 5
+
+
+objects_and_labels
+
+text "\\small Wolf 359\\hskip0.3em\\psdots[dotstyle=+,dotangle=45](0,0)" 
+ at 10.902 7.32 towards W_ ;
+
+set_label_text LEO 32 "\\footnotesize Regulus"
+reposition LEO 32 W ;
+
+delete LEO 63  HD 97605 ;
+delete_labels M 105  M 66;
