@@ -527,7 +527,7 @@ Pole (near the Polar Star), a sky South Pole, and a sky equator.  You
 can make globes of the sky like of the Earth, with the only difference
 that you must imagine being @emph{inside} the globe.
 
-So the rectascension is the @math{x} coordinate in a way.  It is given
+So, in a way, the rectascension is the @math{x} coordinate.  It is given
 in `hours' (h) from 0@dmn{h} to 24@dmn{h}.  Since the sky is round, both
 0@dmn{h} and 24@dmn{h} are the same rectascension, and 12@dmn{h} is the
 opposite to it.
@@ -546,7 +546,7 @@ from @math{-90^\circ} (South Pole) over @math{0^\circ} (equator) to
 @cindex magnitudes
 @cindex brightness, astronomical
 
-Theoretically you could measure the brightness of stars in Watts like
+Theoretically you could measure the brightness of stars in Watt like
 the power of a light bulb.  But this is rather awkward.  Instead,
 astronomers use the system of @emph{magnitudes}@tie{}(m).
 
@@ -704,7 +704,7 @@ script trigger @acronym{EPS} or @acronym{PDF} output, see @ref{Output
 control}.
 
 @PPTHREE{} can't generate bitmaps.  If you need bitmaps you must use a
-bitmap program (e.@s{}g.@: Corel Draw or the
+bitmap program (e.@s{}g.@: Corel Photo Paint or the
 @uref{http://www.gimp.org,Gimp}) for that.
 
 
@@ -724,6 +724,10 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 @chapter Writing input scripts
 @cindex scripts
 @cindex input scripts
+
+Input scripts are the most important part of @PPTHREE{}, at least for
+the user.  They contain some sort of wishlist about the map that you
+want to be created.
 
 @menu
 * Minimal example::             The first four PP3 lines.
@@ -864,9 +868,9 @@ color milky_way               0.5  0.5  0.5
 @end smallexample
 
 @noindent
-Colours are given as red--green--blue values, for forther information
+Colours are given as red--green--blue values, for further information
 see @ref{Colours}.  With these redefinitions, all elements on the map
-are printed either in black, or in white, or in shades of grey.
+are printed either in black or in shades of grey.
 
 @cindex spectral class
 @cindex B@minus{}V brightness
@@ -953,7 +957,8 @@ objects_and_labels
 @noindent
 and then the commands.  The purpose of the commands is adding and
 deleting objects and their labels, to reposition the labels, and to add
-arbitrary text on the map.  Let's begin with that.
+arbitrary text on the map.  You can also change the contents of
+automatically generated labels.  Let's begin with that.
 
 
 @node Changing label texts
@@ -1064,7 +1069,7 @@ coordinates given after the `@code{at}' keyword.
 @end ifnotinfo
 
 Using `@code{reposition}' is also necessary if @PPTHREE{} has suppressed
-a label because it hadn't found a good place for it, because
+a label because it hadn't found a good place for it.
 `@code{reposition}' forces a label to be printed.
 
 
