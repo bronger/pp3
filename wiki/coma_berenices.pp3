@@ -3,7 +3,6 @@
 
 filename output coma_berenices.tex
 filename include wiki.pp3
-filename stars stars.dat
 
 set constellation COM
 set center_rectascension 12.4
