@@ -2,6 +2,15 @@ What's new in PP3?
 ==================
 
 
+Version 1.3.3:
+--------------
+
+* Documentation added.
+
+* Fixed serious bug that caused the output file to be crippled under
+  Windows in some cases.
+
+
 Version 1.3.2:
 --------------
 
