@@ -105,7 +105,7 @@ too.  <verb>:-)</verb></p>
       <p>&PP3; is responsible for almost all star maps on English <url
 name="http://www.wikipedia.org">Wikipedia</url>, the free encyclopedia.  Since
 they can serve very well as examples, all of their source scripts are included
-in &PP3;'s distrbution, together with all associated files.</p>
+in &PP3;'s distribution, together with all associated files.</p>
     </subsection>
   </section>
 
@@ -197,7 +197,8 @@ manager.  This enables you to use two important commands:<itemize>
 file to a <verb>.dvi</verb> file.</item>
 	    <item><verb>dvips</verb> for transforming the <verb>.dvi</verb>
 file to a Postscript or EPS file.</item>
-	  </itemize></item>
+	  </itemize>
+&PP3; can call these programs for you if you wish.</item>
 	<term>Ghostscript:</term><item>This is a program for viewing and
 printing Postscript files, and for converting them to &PDF;&sf;.  You need <url
 name="http://www.cs.wisc.edu/~ghost/doc/AFPL/get704.htm">Ghostscript</url>
@@ -252,7 +253,7 @@ Mellinger</url></cell>
 name="mailto:bronger@users.sourceforge.net">Torsten Bronger</url>.  The name
 `&PP3;' is an abbreviation of “Parvum Planetarium&rdquo; (Latin for “Little
 Planetarium&rdquo;), version 3.  The first two versions were totally different
-and are missing.  PP1 was a project during the author's childhood, PP2 never
+and are missing.  PP1 was a project during the author's adolescence, PP2 never
 made it beyond the logo screen.</p>
 
     <p>This document was created with the &XML; authoring tool <url
@@ -261,3 +262,6 @@ name="http://tbookdtd.sourceforge.net">&tbook;</url>.</p>
 <p skip="small">Copyright © 2003 Torsten Bronger.</p>
   </section>
 </article>
+
+<!--  LocalWords:  DVI dat ori png tex eps sco Mik dvi
+ -->
