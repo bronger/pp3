@@ -8,7 +8,7 @@
 
 @c======================================================================@>
 @c    pp3.texi - Part of the PP3 Program                                @>
-@c    Copyright 2002, 2003 Torsten Bronger                              @>
+@c    Copyright 2002--2004 Torsten Bronger                              @>
 @c                         <bronger@users.sourceforge.net>              @>
 @c                                                                      @>
 @c  This program may be distributed and/or modified under the           @>
@@ -83,7 +83,7 @@
 This manual is for @PPTHREE{} (version @value{VERSION}),
 which is a celestial charts drawing tool.
 
-Copyright @copyright{} 2003 Torsten Bronger
+Copyright @copyright{} 2002--2004 Torsten Bronger
 @t{<}@email{bronger@@users.sourceforge.net}@t{>}.
 
 
@@ -541,7 +541,7 @@ The following is a mere crash course.  It is supposed to enable you to
 use @PPTHREE{} even if you didn't know how astronomers describe the sky.
 
 Readers competent in astronomy may skip it, although
-@ref{Constellations} and @ref{Catalogues}, contain minor program
+@ref{Constellations} and @ref{Catalogues} contain minor program
 peculiarities, too.
 
 @menu
