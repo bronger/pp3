@@ -1,4 +1,4 @@
-# Dorado, the Dolphinfish (UNFINISHED)
+# Dorado, the Dolphinfish
 #
 
 filename output dorado.tex
@@ -15,13 +15,19 @@ set faintest_star_disk_magnitude 5
 
 objects_and_labels
 
+add_labels HD 37350  HD 27290  HD 39014 ;  # beta, gamma, and delta Dor
+
 text Dorado at 4.7 -65 along declination towards W ;
 text Reticulum at 4.5 -66.5 along declination ;
 delete HD 22634  HD 22252 ;   # Making space for "Reticulum"
-text Horologium at 3.8 -52 along declination ;
+text Hor at 4.2 -48 along declination ;
 text Hydrus at 3.8 -67.5 along declination towards S ;
 text Mensa at 4.65 -71 along declination towards SW ;
 text Pictor at 4.6 -53 along declination towards NW ;
+text Cae at 4.85 -46 along declination ;
+text Vol at 6.7 -65 along declination towards SW ;
+text Car at 6.1 -51.5 along declination towards W ;
+text Pup at 6.1 -50 along declination towards NW ;
 
 text "\\footnotesize L\\kern0.1emM\\kern0.1emC" 
   at 5.3 -70 color 0.0 0.0 0.9333 towards S ;
