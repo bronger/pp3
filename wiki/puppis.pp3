@@ -1,0 +1,24 @@
+# Puppis, the Stern of the Argo Navis
+#
+
+filename output puppis.tex
+filename include wiki.pp3
+
+set constellation PUP
+set center_rectascension   7.6
+set center_declination   -31
+set box_width 9
+set box_height 12
+
+penalties boundaries 0
+
+objects_and_labels
+
+text Puppis at 8.4 -28 along declination towards E ;
+text Vela at 8.5 -41 along declination towards W ;
+text Carina at 7.3 -53 along declination towards S ;
+text Pyxis at 8.5 -25 along declination towards W ;
+text "Canis Major" at 7.4 -13 along declination towards SE ;
+text Monoceros at 8.15 -10.5 along declination ;
+text Hydra at 8.5 -17 along declination towards NW ;
+text Columba at 6.6 -42 along declination ;

@@ -1,0 +1,24 @@
+# Vela, the Sail
+#
+
+filename output vela.tex
+filename include wiki.pp3
+
+set constellation VEL
+set center_rectascension   9.6
+set center_declination   -48
+set box_width 9
+set box_height 8
+
+penalties boundaries 0
+
+objects_and_labels
+
+reposition HD 68273 NE ;  # gamma Vel
+
+text Vela at 10 -50 along declination towards N ;
+text Carina at 8.5 -56 along declination towards S ;
+text Puppis at 8.4 -40.5 along declination towards SE ;
+text Pyxis at 9.4 -36.5 along declination ;
+text Cen at 11.2 -50 along declination towards SW ;
+text Antlia at 11 -40 along declination ;

@@ -1,0 +1,28 @@
+# Caelum, the Chisel
+#
+
+filename output caelum.tex
+filename include wiki.pp3
+
+set constellation CAE
+set center_rectascension   4.8
+set center_declination   -38
+set box_width 9
+set box_height 8
+
+set grad_per_cm 3
+
+set faintest_star_disk_magnitude 5.5
+
+objects_and_labels
+
+add_labels HD 29875  HD 29992  HD 32831  HD 28873 ;  # alpha--delta Cae
+
+reposition HD 32831 NE ;  # gamma Cae
+
+text Caelum at 5.05 -30 along declination towards SE ;
+text Lepus at 5.7 -26.8 along declination ;
+text Columba at 5.1 -30 along declination towards SW ;
+text Eridanus at 4.3 -39 along declination ;
+text Horologium at 4.3 -46 along declination ;
+text Pictor at 5 -43.5 along declination towards SW ;

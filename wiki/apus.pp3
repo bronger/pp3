@@ -1,0 +1,30 @@
+# Apus, the Bird of Paradise
+#
+
+filename output apus.tex
+filename include wiki.pp3
+
+set constellation APS
+set center_rectascension  16
+set center_declination   -75
+set box_width 9
+set box_height 9
+
+set grad_per_cm 3
+
+set faintest_star_disk_magnitude 5.0
+
+objects_and_labels
+
+add_labels HD 129078  HD 149324  HD 147675  HD 145366 ;  # alpha--delta Aps
+add_labels HD 156277 ;  # zeta Aps
+
+text Apus at 16 -75 along declination towards N ;
+text Circinus at 14.85 -70 along declination ;
+text Centaurus at 14.6 -64 along declination ;
+text Musca at 13.8 -73 along declination towards E ;
+text Pavo at 19 -74 along declination towards N ;
+text Ara at 17.7 -67 along declination ;
+text \FlexLabel{Octans} at 20 -82 ;
+text Chamaeleon at 13.8 -80 along declination towards SE ;
+text "\\vtop{\\hbox{Triangulum}\\hbox{Australe}}" at 16.95 -64 along declination towards SE ;
