@@ -210,18 +210,15 @@ results are worth it!
 
 
 @node The success of PP3
-@section The success of @PPTHREE{}
+@section The success of PP3
 
 @unnumberedsubsec Wikipedia
 
-@begingroup
-@rightskip0pt plus 1fil @PPTHREE{} has been used for the celestial maps
-of all 88 constellations on @uref{http://www.wikipedia.org,Wikipedia},
-the free encyclopedia.  Feel free to browse through a
+@PPTHREE{} has been used for the celestial maps of all 88 constellations
+on @uref{http://www.wikipedia.org,Wikipedia}, the free encyclopedia.
+Feel free to browse through a
 @uref{http://wikipedia.org/w/wiki.phtml?title=List_of_constellations,list
 of all constellations}.
-@par
-@endgroup
 
 This is a web page, so you need bitmaps@footnote{as long as we don't
 have @acronym{SVG}}, so a short @uref{http://www.gimp.org,Gimp}
@@ -324,33 +321,27 @@ not difficult, and both programs may be useful for other puposes, too.
 @TeX{} is a mighty typesetter.  @PPTHREE{} calls @TeX{} in order to
 actually create the stellar map.  The result is a Postscript file.
 
-@begingroup
-@rightskip0pt plus 1fil
 There are two major @TeX{} variants for Windows, namely
-@uref{http://www.miktex.org,Mik@TeX{}} and
+@uref{http://www.miktex.@/org,Mik@TeX{}} and
 @uref{http://www.tug.org/texlive/,@TeX{}@tie{}Live}.  Both are rather
 similar in their functionality, and both come with a nice installation
 tool.  Please assure that the @t{pstricks} package as part of @TeX{} is
 installed, however this is highly probable anyway.
-@par
-@endgroup
+
 
 @node Getting Ghostscript
 @subsection Getting Ghostscript
 
-@begingroup
-@rightskip0pt plus 1fil
 The best tool for dealing with Postscript files is
-@uref{http://www.cs.wisc.edu/~ghost/doc/AFPL/get811.htm,Ghostscript}.
+@uref{http://www.cs.wisc.edu/@/~ghost/doc/AFPL/get811.htm,Ghostscript}.
 In particular, if you've installed Ghostscript, PP3 is able to generate
 PDF files for you.  It is wise (although not necessary) to install
 @uref{http://www.cs.wisc.edu/~ghost/gsview/get45.htm,GhostGum}, too.  It
 lets you view arbitrary Postscript files on screen.
-@par
-@endgroup
+
 
 @node Installing PP3
-@subsection Installation of @PPTHREE{} itself
+@subsection Installation of PP3 itself
 
 When @TeX{} and Ghostscript are in the right place, you finish the
 installation by unpacking the @PPTHREE{} @acronym{ZIP} file and copying
@@ -414,16 +405,12 @@ That's it.
 since most people who do compile are Linux users, I dare to put it in
 the Linux section.)
 
-@begingroup
-@rightskip0pt plus 1fil @PPTHREE{} is written in @acronym{CWEB}@.  This
-is special form of C++ and can be transformed to real C++ trivially.
-You only need the
-@uref{http://www-cs-faculty.stanford.edu/~knuth/cweb.html,@acronym{CWEB}
+@PPTHREE{} is written in @acronym{CWEB}@.  This is special form of C++
+and can be transformed to real C++ trivially.  You only need the
+@uref{http://www-cs-faculty.stanford.edu/@/~knuth/cweb.html,@acronym{CWEB}
 programs} installed.  For your convenience the C++ code of @PPTHREE{} is
 included into the source distribution, so you need @acronym{CWEB} only
 if you want to modify the program.
-@par
-@endgroup
 
 There is no @file{configure} script.  Just call @code{make} and (as
 root) @code{make install}.  Before that, you may want to adjust some
@@ -650,7 +637,7 @@ Flamsteed number (`@code{0}' if unknown).
 
 @item Line 2
 The label (astronomical name) for the star, as a @LaTeX{}-ready string,
-e.@s{}g.@: ``@code{$\alpha$}'', ``@code{$\phi^{2}$}'', or simply
+e.@s{}g.@: ``@code{$\alpha$}'', ``@code{$\phi^@{2@}$}'', or simply
 ``@code{$23$}''.  May be the empty string.
 
 @item Line 3
@@ -684,9 +671,17 @@ B2IV
 @end smallexample
 
 
+@subheading @PPTHREE{}'s star data origin
+
+It's the Bright Stars Catalogue (@acronym{BSC}) as distributed with the
+program @uref{http://www.stargazing.net/astropc/,Cartes du Ciel}.  It
+contains almost 10,000@tie{} stars.  I corrected minor mistakes and let
+all double stars collapse, i.@s{}e.@: their visual brightnesses were
+summed up and the respective minor partner was removed from the file.
+
+
 @node Nebulae data file
 @section Nebulae data file
-
 
 This is a text file usually called @file{nebulae.dat}.  There is no
 header.  The file is just a whitespace separated stream of numbers and
@@ -747,6 +742,11 @@ unknown).
 7000 0 0 CYG 20.9806 44.5167 4 2 1.66667 720 2
 @end smallexample
 
+@subheading @PPTHREE{}'s nebulae data origin
+
+It's the @acronym{NGC}/@acronym{IC} catalogues as compiled by
+@uref{http://www.ngcic.com/@/steinicke/,Wolfgang Steinicke}.
+
 
 @node Lines data file
 @section Constellation lines data file
@@ -790,6 +790,12 @@ HD 106490 ; # delta Cru
 HD 108248  # alpha Cur
 HD 108903 ;  # gamma Cru
 @end smallexample
+
+@subheading @PPTHREE{}'s constellation lines origin
+
+I created the lines according to my taste.  The @emph{Atlas f@"ur
+Himmelsbeobachter}@footnote{@acronym{ISBN}@tie{}3440074889} was an
+important source of inspiration though.
 
 
 @node Boundaries data file
@@ -841,6 +847,14 @@ the adjacent constellation. It may distinguish between @code{SER1} and
   17.24970 -67.65515 17.21616 -67.66108 2 ARA APS
 @end smallexample
 
+@subheading @PPTHREE{}'s boundary data origin
+
+It's the @uref{ftp://cdsarc.u-strasbg.fr/cats/@/VI/49/,Catalogue of
+Constellation Boundary Data} by Davenhall and Leggett.  I had to fix
+some bugs though, because the Ophiuchus/Serpens region was flawed.
+Additionally, the original data has peculiarities because it tries to be
+useful for bounded maps, e.@s{}g.@: in Mercator projection.  I removed
+the resulting spurious lines.
 
 
 @node Milky Way data file
@@ -884,6 +898,16 @@ because zero-value pixels are not included into the data file anyway.
 17.982 -27.899 199
 17.981 -28.199 235
 @end smallexample
+
+
+@subheading @PPTHREE{}'s boundary data origin
+
+I used the
+@uref{http://home.arcor-online.de/axel.@/mellinger/,@emph{All-Sky Milky
+Way Panorama}} by Axel Mellinger.  His bitmap with the two hemispheres
+in equidistant azimuthal projection were greyscaled and smoothed with
+the Gimp, and then transformed to @PPTHREE{}'s format with a small
+hand-written C program.
 
 
 @node Label dimensions file
