@@ -1,8 +1,8 @@
 % -*-texinfo-*-
 \def\niceracronym#1{#1}
-\def\rmdefault{ppl}\def\ne{\mathrel{\not{}\mskip-8mu=}}\input pstexinfo
-@c\input texinfo
-@let@acronym@niceracronym
+%\def\rmdefault{ppl}\def\ne{\mathrel{\not{}\mskip-8mu=}}\input pstexinfo
+\input texinfo
+@c@let@acronym@niceracronym
 
 @c 	$Id$	
 
@@ -62,20 +62,6 @@
 
 @macro PPTHREE {}
 @acronym{PP3}
-@end macro
-
-@macro LaTeX {}
-@tex
-L@kern-.36em%
-        {@setbox0=@hbox{T}%
-         @vbox to@ht0{@hbox{@sevenrm A}@vss}%
-        }%
-        @kern-.15em%
-        @TeX
-@end tex
-@ifnottex
-La@TeX{}@c
-@end ifnottex
 @end macro
 
 @macro s {}
@@ -403,9 +389,9 @@ installed, however this is highly probable anyway.
 The best tool for dealing with Postscript files is
 @uref{http://www.cs.wisc.edu/~ghost/doc/AFPL/get811.htm,Ghostscript}.
 In particular, if you've installed Ghostscript, PP3 is able to generate
-PDF files for you.  It is wise (although not necessary) to install
-@uref{http://www.cs.wisc.edu/~ghost/gsview/get45.htm,GSView}, too.  It
-lets you view arbitrary Postscript files on screen.
+@acronym{PDF} files for you.  It is wise (although not necessary) to
+install @uref{http://www.cs.wisc.edu/~ghost/gsview/get45.htm,GSView},
+too.  It lets you view arbitrary Postscript files on screen.
 
 
 @node Installing PP3
@@ -555,7 +541,7 @@ The following is a mere crash course.  It is supposed to enable you to
 use @PPTHREE{} even if you didn't know how astronomers describe the sky.
 
 Readers competent in astronomy may skip it, although
-@ref{Constellations} and @ref{Catalogues} contain minor program
+@ref{Constellations} and @ref{Catalogues}, contain minor program
 peculiarities, too.
 
 @menu
@@ -1986,7 +1972,7 @@ Default: @code{""} (empty)
 If non-empty, the contents of the file @var{filename} is included at an
 appropriate position in the resulting @LaTeX{} file.  This enables you
 to use arbitrary @LaTeX{} macros to customise the map, see @ref{LaTeX
-preamble}@.
+preamble}.
 
 Default: @code{""} (empty)
 @end deffn
@@ -2213,8 +2199,8 @@ be flexes, see @ref{Flexes}.
 
 
 @node PP3 and LaTeX
-@chapter PP3 and LaTeX
-@cindex La@TeX{}
+@chapter PP3 and @LaTeX{}
+@cindex @LaTeX{}
 
 We're entering now the phase of sophistication.  Here you learn how to
 customise the graphical appearance of all text on your sky map almost
@@ -2239,10 +2225,10 @@ competence is unavoidable.
 
 
 @node LaTeX in labels
-@section Using LaTeX in labels
+@section Using @LaTeX{} in labels
 @cindex PSTricks
 @kwindex text
-@cindex labels with La@TeX{}
+@cindex labels with @LaTeX{}
 
 You can use all @LaTeX{} macros in @PPTHREE{} labels that are allowed in
 horizontal boxes (like @samp{\mbox@{...@}}).  Additionally, you can use
@@ -2252,8 +2238,8 @@ package}.
 The most important pitfall is the backslash@tie{}@samp{\}, because when
 using quotes as string delimiters, you have to write is as `@code{\\}'.
 
-@cindex \small (La@TeX{})
-@cindex \hskip (La@TeX{})
+@cindex \small (@LaTeX{})
+@cindex \hskip (@LaTeX{})
 @cindex \psdots (PSTricks)
 @cindex dotstyle (PSTricks)
 @cindex dotangle (PSTricks)
@@ -2305,9 +2291,9 @@ option.
 
 
 @node LaTeX preamble
-@section LaTeX preamble
-@cindex La@TeX{} preamble
-@cindex preamble, La@TeX{}
+@section @LaTeX{} preamble
+@cindex @LaTeX{} preamble
+@cindex preamble, @LaTeX{}
 
 Providing a @LaTeX{} preamble is the most elegant, mighty, but also --
 if you know @LaTeX{} -- the easiest way to adjust the map layout
@@ -2325,8 +2311,8 @@ preamble as much as you want.
 
 @node Default preamble
 @subsection Default preamble
-@cindex La@TeX{} preamble, default
-@cindex preamble, La@TeX{}, default
+@cindex @LaTeX{} preamble, default
+@cindex preamble, @LaTeX{}, default
 
 By default, the @LaTeX{} document that @PPTHREE{} creates begins with
 
@@ -2384,8 +2370,8 @@ Here your own preamble is included, if you have provided one.
 
 @node User preamble
 @subsection User preamble
-@cindex La@TeX{} preamble
-@cindex preamble, La@TeX{}
+@cindex @LaTeX{} preamble
+@cindex preamble, @LaTeX{}
 @cindex preamble, user provided
 @cindex user preamble
 
@@ -2464,11 +2450,16 @@ to bold Greek letters with @samp{\boldmath}.
 
 @end table
 
+Please note that you have to delete the file @file{labeldimens.dat} in
+the current directory if you have changes the font setup with a new own
+@LaTeX{} preamble.  This forces @PPTHREE{} to recalculate the dimensions
+of all labels -- and since the fonts have changed, this is necessary.
+
 
 @node LaTeX hooks
-@section LaTeX hooks
-@cindex La@TeX{} hooks
-@cindex hooks, La@TeX{}
+@section @LaTeX{} hooks
+@cindex @LaTeX{} hooks
+@cindex hooks, @LaTeX{}
 
 First of all -- what is a hook?  A hook in general is a macro or command
 that can be re-defined by the user, and that is called implicitly.
@@ -2520,7 +2511,8 @@ larger.
 @table @samp
 @item \Label
 @cindex Label (@LaTeX{} hook)
-Argument: the label text.  It applies to all labels except for flexes.
+Argument: the label text.  It applies to all labels, @emph{before} any
+specific hook of the following is applied.
 
 @item \TextLabel
 @cindex TextLabel (@LaTeX{} hook)
