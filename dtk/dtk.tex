@@ -1,0 +1,75 @@
+%%*****************************************************************************
+%% $Id$
+%%*****************************************************************************
+%% Author: Gerd Neugebauer
+%%-----------------------------------------------------------------------------
+%%
+%% Dies ist ein Beispieldokument zu einem Artikel für "`Die TeXnische
+%% Kom"odie"'. In dieser Datei befindet sich der Treiber für den
+%% Beitrag. Der Beitrag wird mit
+%%
+%%      latex beispiel.ltx
+%%
+%% übersetzt.
+%%
+%%-----------------------------------------------------------------------------
+%%
+%% Die folgende Zeile ist f"ur LaTeX n"otig.
+\documentclass{dtk}
+%%
+%% Packete/Style-Optionen und anderes Material in der Pr"aambel:
+%%
+\makeatletter
+\ifx\pdfoutput\@undefined\else
+  \usepackage{dtk-pdf}
+  \usepackage[T1]{fontenc}
+  \renewcommand{\sfdefault}{cmss}\renewcommand{\rmdefault}{cmr}
+  \renewcommand{\ttdefault}{cmtt}\rmfamily
+\fi
+\makeatother
+\usepackage{booktabs,textcomp,listings}
+%% \makeatletter
+%% \let\WinEdt\@undefined
+%% \makeatother
+%% \usepackage{srcltx}
+\usepackage{graphicx}
+%% \usepackage[scaled=0.8]{luximono}
+\usepackage{psfrag}
+%% 
+%% Die Vereinszeitschrift wird (meistens) mit dem Input-Encoding
+%% latin1 gesetzt.
+%% 
+\usepackage[latin1]{inputenc}
+%%
+%% Das Packet german/ngerman wird automatisch geladen und sollte nicht
+%% explizit angefordert werden. 
+%%
+%% Regel: Es sollten so wenig wie m"oglich zus"atzliche Packete
+%%        angefordert werden, da diese mit anderen Packeten in Konflikt
+%%        geraten k"onnten, die in anderen Artikeln unbedingt
+%%        ben"otigt werden.
+%% Regel: Es sollten nicht unn"otig viele Kommandos oder Umgebungen
+%%        definiert werden (aus demselben Grund). N"otigenfalls
+%%        sollte die Definition im Artikel und nicht in der Pr"aambel
+%%        geschehen. 
+%% Regel: Bei der Produktion der Zeitschrift wird normalerweise das
+%%        Input-Encoding latin1 verwendet, sofern nicht ein Beitrag
+%%        unbedingt etwas anderes erforderlich macht.
+%%        Es darf kein anderes Input-Encoding verwendet werden.
+%%        Die Eingabe sollte nach Möglichkeit sogar reines ASCII sein
+%%        -- mit Sonderzeichen nach german.sty.
+%%
+\begin{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Nun wird nur noch der eigentliche Beitrag geladen. Alles weitere
+% findet in der Datei beispiel.tex statt.
+%
+\input{dtk_pp3.tex}
+%
+%
+\end{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Local Variables: 
+% mode: latex
+% TeX-master: nil
+% End: 
