@@ -274,4 +274,150 @@ HD 197051 ; # beta Pav
 
 HD 150798  # alpha TrA
 HD 141891  # beta TrA
-HD 135382 ; # gamma TrA
+HD 135382  # gamma TrA
+HD 150798 ; # alpha TrA
+
+
+# Phoenix
+
+HD 2261  # alpha Phe
+HD 6595  # beta Phe
+HD 9362  # delta Phe
+HD 9053  # gamma Phe
+HD 2261 ; # alpha Phe
+
+
+# Hydrus
+
+HD 12311  # alpha Hyi
+HD 24512  # gamma Hyi
+HD 2151 ;  # beta Hyi
+
+
+# Grus
+
+HD 215789  # epsilon Gru
+HD 214952  # beta Gru
+HD 213080  # delta2 Gru
+HD 209952 ; # alpha Gru
+HD 213009  # delta1 Gru
+HD 211088  # mu1 Gru
+HD 209688  # lambda Gru
+HD 207971 ; # gamma Gru
+
+
+# Tucana
+
+HD 211416  # alpha Tuc
+HD 219571  # gamma Tuc
+HD 2884 ;   # beta Tuc
+
+
+# Pictor
+
+HD 50241  # alpha Pic
+HD 39523  # gamma Pic
+HD 39060 ; # beta Pic
+
+
+# Dorado
+
+HD 37350  # beta Dor
+HD 29305  # alpha Dor
+HD 27290 ; # gamma Dor
+
+
+# Volans
+
+HD 78045  # alpha Vol
+HD 71878  # beta Vol
+HD 57623  # delta Vol
+HD 55865  # gamma2 Vol
+HD 63295 ; # zeta Vol
+
+
+# Reticulum
+
+HD 27256  # alpha Ret
+HD 27442  # epsilon Ret
+HD 25422  # delta Ret
+HD 23817  # beta Ret
+HD 27256 ; # alpha Ret
+
+
+# Carina
+
+HD 45348  # alpha Car
+HD 71129  # epsilon Car
+HD 80404  # iota Car
+HD 89388  # q Car
+HD 91465  # p Car
+HD 93030  # theta Car
+HD 89080  # omega Car
+HD 80007  # beta Car
+HD 85123  # upsilon Car
+HD 80404 ; # iota Car
+
+
+# Chamaeleon
+
+HD 71243  # alpha Cha
+HD 92305  # gamma Cha
+HD 93779 ; # delta1 Cha
+
+
+# Octans
+
+HD 124882  # delta Oct
+HD 214846  # beta Oct
+HD 205478 ; # nu Oct
+
+
+# Apus
+
+HD 129078  # alpha Aps
+HD 145366  # delta Aps
+HD 147675  # gamma Aps
+HD 149324 ; # beta Aps
+
+
+# Vela
+
+HD 81188  # kappa Vel
+HD 78647  # lambda Vel
+HD 74956  # delta Vel
+HD 68273  # gamma Vel
+HD 78647 ; # lambda Vel
+HD 74956  # delta Vel
+HD 81188  # kappa Vel
+HD 82668 ; # N Vel
+
+
+# Puppis
+
+HD 56855  # pi Pup
+HD 66811  # zeta Pup
+HD 59717  # sigma Pup
+HD 50310  # tau Pup
+HD 47670  # nu Pup
+HD 56855 ; # pi Pup
+HD 57219  # v2 Pup
+HD 61555  # kappa Pup
+PUP 7  PUP 11  PUP 15 ;
+
+
+# Pyxis
+
+HD 74006  # beta Pyx
+HD 74575  # alpha Pyx
+HD 75691 ; # gamma Pyx
+
+
+# Corona Australis
+
+HD 175813  # epsilon CrA
+HD 177474  # gamma CrA
+HD 178253  # alpha CrA
+HD 178345  # beta CrA
+HD 177873  # delta CrA
+HD 176638 ; # zeta CrA
