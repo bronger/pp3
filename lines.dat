@@ -79,7 +79,7 @@ CAP 23  CAP 9 ;
 
 DEL 2  DEL 6  DEL 9  DEL 12  DEL 11  DEL 6 ;
 
-PSA 18  PSA 24  PSA 23  PSA 22  PSA 17 ;
+PSA 18  PSA 24  PSA 23  PSA 22  PSA 17  PSA 14  PSA 9  PSA 18 ;
 
 CMI 10  CMI 3 ;
 
@@ -260,6 +260,7 @@ HD 169767 ; # zeta Tel
 # Indus and Pavo
 
 HD 196171  # alpha Ind
+HD 197157  # eta Ind
 HD 198700  # beta Ind
 HD 193924  # alpha Pav
 HD 197051  # beta Pav
