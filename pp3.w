@@ -3867,6 +3867,8 @@ int main(int argc, char **argv) {
         OUT << "\\endpsclip\n";
         @<Create \LaTeX\ footer@>@;
         if (params.input_file) delete params.in;
+        if (!params.filename_output.empty())
+            delete params.out; else OUT.flush();
         @<Create \EPS/ or \PDF/ file if requested@>@;
     }
     catch (string s) {
@@ -4053,7 +4055,6 @@ output the user wanted to have eventually in the input script.
 @<Create \EPS/ or \PDF/ file if requested@>=
         if (!params.filename_output.empty() && (params.create_eps
                                                 || params.create_pdf)) {
-            OUT.flush();
             string commandline = string("latex ") + params.filename_output;
             if (system(commandline.c_str()) == 0) {
                 string base_filename(params.filename_output);
