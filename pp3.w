@@ -44,15 +44,15 @@
 %% \font\sevenrm=pplr7t scaled 700
 %% \font\fiverm=pplr7t scaled 500
 
-%% \font\teni=zplmr7m % math italic    (zptmcm7m for Times)
+%% \font\teni=zplmr7m % math italic    (zpplcm7m for Times, zplmr7m for Palatino)
 %% \font\seveni=zplmr7m scaled 700
 %% \font\fivei=zplmr7m scaled 500
 
-%% \font\tensy=zplmr7y % math symbols  (zptmcm7y for Times)
+%% \font\tensy=zplmr7y % math symbols  (zpplcm7y for Times, zplmr7y for Palatino)
 %% \font\sevensy=zplmr7y scaled 700
 %% \font\fivesy=zplmr7y scaled 500
 
-%% \font\tenex=zplmr7v % math extension  (zptmcm7v for Times)
+%% \font\tenex=zplmr7v % math extension (zpplcm7v for Times, zplmr7v f. Palatino)
 
 %% \font\tenbf=pplb7t % boldface extended
 %% \font\sevenbf=pplb7t scaled 700
@@ -108,19 +108,20 @@
 
 %% \mainfont\baselineskip12.7pt
 
-%% %% Now for the title page
+%% Now for the title page
 
-%% \font\sf=bfrr8t \font\sfbf=bfrb8t
-%% \font\sfa=bfrr8t scaled 700
+\font\sf=bfrr8t \font\sfbf=bfrb8t
+\font\sfa=bfrr8t scaled 700
 
-%% \font\stitlefont=phvr7t scaled\magstep3    % sans serif type in title
-%% \font\sbtitlefont=phvb7t scaled\magstep3   % sans bold type in title
-%% \font\ttitlefont=pcrb7t scaled\magstep3    % typewriter type in title
+\font\stitlefont=phvr7t scaled\magstep3    % sans serif type in title
+\font\sbtitlefont=phvb7t scaled\magstep3   % sans bold type in title
+\font\ttitlefont=pcrb7t scaled\magstep3    % typewriter type in title
 
-%% \font\stitlefont=bfrr8t scaled\magstep3    % sans serif type in title
-%% \font\sbtitlefont=0t3x8r scaled\magstep3   % sans bold type in title
-%% \font\sf=0t3r8r \font\sfbf=0t3b8r
-%% \font\sfa=0t3r8r scaled 700
+\font\stitlefont=bfrr8t scaled\magstep3    % sans serif type in title
+\font\sbtitlefont=bfrb8t scaled\magstep3   % sans serif type in title
+%\font\sbtitlefont=0t3x8r scaled\magstep3   % sans bold type in title
+%\font\sf=0t3r8r \font\sfbf=0t3b8r
+%\font\sfa=0t3r8r scaled 700
 
 
 \hyphenation{white-space}
@@ -155,7 +156,8 @@
 
 \def\title{PP3 (Version 1.0)}
 \def\topofcontents{\null\vfill\vskip-1.5cm
-  \centerline{\titlefont The Sky Map Creator {\sbtitlefont PP3}}
+  \centerline{\titlefont The Sky Map Creator 
+               {\sbtitlefont PP\lower.35ex\hbox{3}}}
   \vskip 15pt
   \centerline{(Version 1.0)}
   \vfill}
@@ -194,7 +196,7 @@ or other liability, whether in an action of contract, tort or otherwise,
 arising from, out of or in connection with the Software or the use or other
 dealings in the Software.\vskip-1cm}
 
-\def\PPTHREE/{{\sf PP3}}
+\def\PPTHREE/{{\sf PP\lower.35ex\hbox{3}}}
 
 @i c++lib.w
 @s ios int
@@ -337,15 +339,26 @@ using namespace std;
 
 @* Global parameters and default values.  I have to break a strict \CPLUSPLUS/
 rule here: Never use \hbox{|#@t\hskip-\fontdimen2\mainfont@>define|}!  However
-I really found no alternative to it.  No |const| construct worked, and if it
+I really found no alternative to~|OUT|.  No |const| construct worked, and if it
 had done, I'd have to use it in every single routine.  And ubiquitous
 |*params.out|'s are ugly.
+
+In contrast to that, |DATADIR| is a harmless symbol.  It makes it possible to
+compile a directory prefix into \PPTHREE/ for the data files.  By default, the
+data files must be in the current directory.  You may say e.\,g.\
+$$\hbox{\.{g++ -DDATADIR=\BS"/usr/share/pp3/\BS" -O2 -s pp3.cc -o pp3}}$$ then
+they are searched in \.{/usr/share/pp3/}.  But don't forget the closing
+`\.{/}'.
 
 I declare {\it and\/} define the structure here.
 
 @d OUT (*params.out)
 
 @c
+#ifndef DATADIR
+#define DATADIR ""
+#endif
+
 @<Define |color| data structure@>@;@#
 
 struct parameters {
@@ -367,6 +380,7 @@ struct parameters {
     string filename_output;
     ostream* out;
     istream* in;
+    bool input_file;
     color bgcolor, gridcolor, eclipticcolor, boundarycolor, hlboundarycolor,
         starcolor, nebulacolor, labelcolor, textlabelcolor, clinecolor, 
         milkywaycolor;
@@ -404,14 +418,14 @@ center_rectascension(5.8), center_declination(0.0),
                    penalties_boundary_rim(1.0), penalties_cline(1.0),
                    penalties_cline_rim(1.0), penalties_threshold(1.0),
                    penalties_rim(1.0), @/
-                   filename_stars("stars.dat"),
-                   filename_nebulae("nebulae.dat"),
+                   filename_stars(DATADIR"stars.dat"),
+                   filename_nebulae(DATADIR"nebulae.dat"),
                    filename_dimensions("labeldimens.dat"),
-                   filename_lines("lines.dat"),
-                   filename_boundaries("boundaries.dat"),
-                   filename_milkyway("milkyway.dat"), @/
+                   filename_lines(DATADIR"lines.dat"),
+                   filename_boundaries(DATADIR"boundaries.dat"),
+                   filename_milkyway(DATADIR"milkyway.dat"), @/
                    filename_preamble(), filename_include(), 
-                   filename_output(), out(&cout), in(0), @/
+                   filename_output(), out(&cout), in(0), input_file(false), @/
                    bgcolor("bgcolor", 0, 0, 0.4),
                    gridcolor("gridcolor", 0, 0.298, 0.447),
                    eclipticcolor("eclipticcolor", 1, 0, 0),
@@ -949,7 +963,7 @@ mapping from a catalogue number on the index in \PPTHREE/'s internal |vectors|.
 This makes access a lot faster.
 
 @<Routines for reading the input script@>=
-typedef vector<int> index_list;
+typedef map<int,int> index_list;
 
 @ Here I create the data structures that make the above mentioned mapping
 possible.  FixMe: They should be defined globally, so that the constellation
@@ -964,7 +978,7 @@ or \HD/ number.  This is probably way to inefficient.
 
 @<Create mapping structures for direct catalogue access@>=
     const int max_ngc = 7840, max_ic = 5386, max_messier = 110;
-    index_list ngc(max_ngc+1), ic(max_ic+1), messier(max_messier+1);
+    index_list ngc, ic, messier;
     for (int i = 0; i < nebulae.size(); i++) {
         if (nebulae[i].ngc > 0 && nebulae[i].ngc <= max_ngc)
             ngc[nebulae[i].ngc] = i;
@@ -973,14 +987,54 @@ or \HD/ number.  This is probably way to inefficient.
         if (nebulae[i].messier > 0 && nebulae[i].messier <= max_messier)
             messier[nebulae[i].messier] = i;
     }
-    map<int,int> henry_draper;
-    map<string, map<int,int> > flamsteed;
+    index_list henry_draper;
+    map<string, index_list> flamsteed;
     for (int i = 0; i < stars.size(); i++) {
         if (stars[i].hd > 0) henry_draper[stars[i].hd] = i;
         if (stars[i].flamsteed > 0) 
             flamsteed[stars[i].constellation][stars[i].flamsteed] = i;
     }
 
+
+@ This is a general warning producing routine.  Such tests are vital,
+especially if the nebulae file has been deleted in order to save disk space.  I
+want it to be a warning because it would be very annowing to delete all such
+opcodes from an input script only because one wants to dispense with e.\,g.\
+nebulae.
+
+I need three incarnation of this function: One for nebulae, one for Flamsteed
+number, and one for Henry Draper catalogue numbers.
+
+@<Routines for reading the input script@>=
+bool assure_valid_catalogue_index(const int index, const index_list& catalogue,
+                                  const string catalogue_name) {
+    if (catalogue.find(index) == catalogue.end()) {
+        cerr << "pp3: Warning: Invalid " << catalogue_name << " index: "
+             << index << ".\n";
+        return false;
+    } else return true;
+}
+
+bool assure_valid_catalogue_index(const int index,
+                                  const string constellation,
+                                  map<string,index_list>& flamsteed) {
+    bool found = true;
+    if (flamsteed.find(constellation) == flamsteed.end()) found = false;
+    else if (flamsteed[constellation].find(index) ==
+             flamsteed[constellation].end()) found = false;
+    if (!found) cerr << "pp3: Warning: Invalid Flamsteed number: "
+                     << index << ".\n";
+    return found;
+}
+
+bool assure_valid_catalogue_index(const int index,
+                                  const index_list& henry_draper) {
+    if (henry_draper.find(index) == henry_draper.end()) {
+        cerr << "pp3: Warning: Invalid HD number: "
+             << index << ".\n";
+        return false;
+    } else return true;
+}
 
 @ In this routine I scan a list of stellar objects, given by a token pair of
 catalogue name and catalogue index.  Such lists are used after some top-level
@@ -991,10 +1045,10 @@ program `Celestia' to get the \HD/ numbers for the stars.
 
 @<Routines for reading the input script@>=
 void search_objects(istream& script,
-                    const index_list& ngc, const index_list& ic,
-                    const index_list& messier, map<int,int>& henry_draper,
-                    map<string, map<int,int> >& flamsteed,
-                    index_list& found_stars, index_list& found_nebulae) {
+                    index_list& ngc, index_list& ic,
+                    index_list& messier, index_list& henry_draper,
+                    map<string, index_list>& flamsteed,
+                    vector<int>& found_stars, vector<int>& found_nebulae) {
     found_stars.clear();
     found_nebulae.clear();
     string catalogue_name;
@@ -1002,16 +1056,30 @@ void search_objects(istream& script,
     script >> catalogue_name;
     while (script && catalogue_name != ";") {
         script >> catalogue_index;
+        if (catalogue_index <= 0) {
+            stringstream error_message;
+            error_message << "Invalid index: " << catalogue_index;
+            throw error_message.str();
+        }
         if (!script) throw string("Unexpected end of input script");
-        if (catalogue_name == "NGC")
-            found_nebulae.push_back(ngc[catalogue_index]);
-        else if (catalogue_name == "IC")
-            found_nebulae.push_back(ic[catalogue_index]);
-        else if (catalogue_name == "M")
-            found_nebulae.push_back(messier[catalogue_index]);
-        else  if (catalogue_name == "HD")
-            found_stars.push_back(henry_draper[catalogue_index]);
-        else found_stars.push_back(flamsteed[catalogue_name][catalogue_index]);
+        if (catalogue_name == "NGC") {
+            if (assure_valid_catalogue_index(catalogue_index,ngc,"NGC"))
+                found_nebulae.push_back(ngc[catalogue_index]);
+        } else if (catalogue_name == "IC") {
+            if (assure_valid_catalogue_index(catalogue_index,ic,"IC"))
+                found_nebulae.push_back(ic[catalogue_index]);
+        } else if (catalogue_name == "M") {
+            if (assure_valid_catalogue_index(catalogue_index,messier,"M"))
+                found_nebulae.push_back(messier[catalogue_index]);
+        } else if (catalogue_name == "HD") {
+            if (assure_valid_catalogue_index(catalogue_index,henry_draper))
+                found_stars.push_back(henry_draper[catalogue_index]);
+        } else {
+            if (assure_valid_catalogue_index(catalogue_index,
+                                             catalogue_name,flamsteed))
+                found_stars.
+                    push_back(flamsteed[catalogue_name][catalogue_index]);
+        }
         script >> catalogue_name;
     }
 }
@@ -1023,21 +1091,32 @@ object list but only one object.
 @q'@>
 
 @<Routines for reading the input script@>=
-view_data* identify_object(istream& script, const index_list& ngc,
-                           const index_list& ic, const index_list& messier,
-                           map<int,int>& henry_draper,
-                           map<string, map<int,int> >& flamsteed,
+view_data* identify_object(istream& script, index_list& ngc,
+                           index_list& ic, index_list& messier,
+                           index_list& henry_draper,
+                           map<string, index_list>& flamsteed,
                            stars_list& stars, nebulae_list& nebulae) {
     string catalogue_name;
     int catalogue_index;
     script >> catalogue_name >> catalogue_index;
     if (!script) throw string("Unexpected end of input script");
-    if (catalogue_name == "NGC") return &nebulae[ngc[catalogue_index]];
-    else if (catalogue_name == "IC") return &nebulae[ic[catalogue_index]];
-    else if (catalogue_name == "M") return &nebulae[messier[catalogue_index]];
-    else if (catalogue_name == "HD")
-        return &stars[henry_draper[catalogue_index]];
-    else return &stars[flamsteed[catalogue_name][catalogue_index]];
+    if (catalogue_name == "NGC") {
+        if (assure_valid_catalogue_index(catalogue_index,ngc,"NGC"))
+            return &nebulae[ngc[catalogue_index]];
+    } else if (catalogue_name == "IC") {
+        if (assure_valid_catalogue_index(catalogue_index,ic,"IC"))
+            return &nebulae[ic[catalogue_index]];
+    } else if (catalogue_name == "M") {
+        if (assure_valid_catalogue_index(catalogue_index,messier,"M"))
+            return &nebulae[messier[catalogue_index]];
+    } else if (catalogue_name == "HD") {
+        if (assure_valid_catalogue_index(catalogue_index,henry_draper))
+            return &stars[henry_draper[catalogue_index]];
+    } else {
+        if (assure_valid_catalogue_index(catalogue_index,
+                                         catalogue_name,flamsteed))
+            return &stars[flamsteed[catalogue_name][catalogue_index]];
+   }
 }
 
 @ Here now the main routine for the second part of the input script.  The
@@ -1057,13 +1136,14 @@ void read_objects_and_labels(istream& script,
                              objects_list& objects, stars_list& stars,
                              nebulae_list& nebulae,
                              texts_list& texts,
+                             flexes_list& flexes,
                              const transformation& mytransform,
                              bool included = false) {
     if (!params.filename_include.empty() && !included) {
         ifstream included_file(params.filename_include.c_str());
         @<Skip everything till |"objects_and_labels"|@>@;
         read_objects_and_labels(included_file, dimensions, objects, stars,
-                                nebulae, texts, mytransform, true);
+                                nebulae, texts, flexes, mytransform, true);
     }
     string opcode;
     script >> opcode;
@@ -1078,7 +1158,7 @@ void read_objects_and_labels(istream& script,
         else
             @<Text labels@>@;
         else {  // command with objects list
-            index_list found_stars, found_nebulae;
+            vector<int> found_stars, found_nebulae;
             @<Label deletion@>@;
             else
                 @<Label activation@>@;
@@ -1232,6 +1312,10 @@ text "\BS\BS psdots[dotstyle=+,dotangle=45](0,0)\BS\BS scriptsize\BS\BS{} N
 with a small label text.  If such things occur frequently, define it as a
 \LaTeX\ macro.
 
+\medskip A ``declination flex'' is a special text label that stands on a circle
+of equal declination which can look very nice.  You get it with the option
+``\.{along declination}'' in the parameter list of the text label.
+
 @.text@>
 
 @q'@>
@@ -1245,18 +1329,35 @@ if (opcode == "text") {
     if (token != "at") throw string("\"at\" in \"text\" command expected");
     script >> rectascension >> declination;
     script >> token;
+    int angle = 1;  // |"NE"|
+    enum { kind_text_label, kind_flex_declination} label_kind
+        = kind_text_label;
     while (script && token != ";") {
         if (token == "color") script >> params.textlabelcolor;
-        else if (token == "towards") script >> position;
-        else throw string("Invalid \"text\" option");
+        else if (token == "towards") {
+            script >> position;
+            @<Map a wind rose |position| to an |angle| in degrees@>@;
+        }
+        else if (token == "along") {
+            script >> token;
+            if (token == "declination") {
+                label_kind = kind_flex_declination;
+            } else throw string("Invalid \"along\" option");
+        } else throw string("Invalid \"text\" option");
         script >> token;
     }
     if (!script)
         throw string("Unexpected end of script while scanning \"text\"");
-    int angle;
-    @<Map a wind rose |position| to an |angle| in degrees@>@;
-    texts.push_back(text(contents, rectascension, declination,
-                         params.textlabelcolor, angle));
+    switch (label_kind) {
+    case kind_text_label:
+        texts.push_back(text(contents, rectascension, declination,
+                             params.textlabelcolor, angle));
+        break;
+    case kind_flex_declination: 
+        flexes.push_back(new declination_flex(contents, rectascension,
+                                              declination,angle));
+        break;
+    }
 }
 
 
@@ -2628,8 +2729,8 @@ void recalculate_dimensions(dimensions_list& dimensions,
 {
     list<string> required_names;
     for (int i = 0; i < objects.size(); i++) {
-        string current_name = objects[i]->label;
-        if (!current_name.empty()) required_names.push_back(objects[i]->label);
+        const string current_name = objects[i]->label;
+        if (!current_name.empty()) required_names.push_back(current_name);
     }
     required_names.unique();
 
@@ -2650,7 +2751,7 @@ void recalculate_dimensions(dimensions_list& dimensions,
     temp_file << "\\immediate\\closeout\\labelsfile\n\\end{document}\n";
     temp_file.close();
     string commandline("latex pp3temp");
-    if (params.in == &cin)
+    if (params.filename_output.empty())
         commandline += " > pp3dump.log";
     if (system(commandline.c_str()) != 0)
         throw string("Label dimensions calculations: LaTeX call failed: ")
@@ -2734,6 +2835,167 @@ void draw_text_labels(transformation& mytransform, texts_list& texts,
         }
         p++;
     }
+}
+
+@*1 Flex labels.  ``Flex labels'' are drawn along a path that needn't (and
+usually isn't) be a straight line.  Unfortunately, due to this, their
+dimensions are very difficult to predict and therefore they are {\it not\/}
+part of the penalty algorithm -- at least not in the current version.
+
+Eventually \PPTHREE/ could have many kinds of flexes, therefore there is a
+common (abstract) ancestor for all of them called |flex_label|.  But at the
+moment I only implement the by far most important one, the |declination_flex|,
+see below.
+
+Flexes are special also in another respect: They are read from the input
+script.  This means that the |flexes_list| that contains all flexes (of all
+kinds) is filled during reading the input script.  Therefore there is no {\it
+read\_flexes\/}(\,), and no file format associated with it.
+
+@s flex_label int
+@s declination_flex int
+
+@q')}@>
+
+@c
+struct flex_label : public view_data {
+    double rectascension, declination;
+    flex_label(string s, double r, double d, int a);
+    virtual bool draw(const transformation& mytransform,
+                      dimensions_list& dimensions, objects_list& objects)
+        const = 0;
+};
+
+@ Of course I need no extra label because a flex is a label of its own.  So a
+flex only uses |label| and |label_angle|.  The rest is unimportant because the
+label isn't printed anyway because the coodrinates |x| and |y| are invalid
+anyway and therefore printing will be rejected in |print_labels()|..
+
+@c
+flex_label::flex_label(string s, double r, double d, int a)
+    : rectascension(r), declination(d) {
+    label = s;
+    label_angle = a;
+    in_view = visible;
+    with_label = hidden;
+    label_arranged = true;
+}
+
+typedef list<flex_label*> flexes_list;
+
+@ |declination_flex| enables us to write a text along a path of constant
+declination.  This looks very nice on the chart.
+
+@c
+struct declination_flex : public flex_label {
+    declination_flex(string s, double r, double d, int a)
+        : flex_label(s,r,d,a) { }
+    virtual bool draw(const transformation& mytransform,
+                      dimensions_list& dimensions, objects_list& objects)
+        const;
+    virtual double penalties_with(const double left, const double right,
+                                  const double top, const double bottom,
+                                  bool core = true) const;
+};
+
+@ This is the main declination flex routine.  I calculate the dimensions of the
+label in oder to find out how long the path must be and how much it must be
+shifted vertically in order to get the desired angular positioning.  Both
+values can only be estimates.  (For example, the scale is not constant on the
+map, so it cannot work perfectly.  However I try to assure that the path will
+be too long rather than too short.)
+
+Then I calculate the coordinates of three point that form tha path.  Start
+point, end point, and one exactly in between.  Of course all have the same
+declination.  |lower| is measured in em and denotes the amout by which the
+whole text is shifted downwards.  This is sub-optimal because it may affect
+letterspacing disadvantageously.
+
+Finally the three coordinate pairs and the label text are sent to the output in
+form of a \PS/Tricks text path command.
+
+@c
+bool declination_flex::draw(const transformation& mytransform,
+                            dimensions_list& dimensions,
+                            objects_list& objects) const {
+    if (dimensions.find(label) == dimensions.end())
+        recalculate_dimensions(dimensions, objects);
+    if (dimensions.find(label) == dimensions.end())
+        throw string("Update of label dimensions file failed: \"") +
+            label + "\" not found";
+    const double label_width = dimensions[label].width;
+    const double label_height = dimensions[label].height;
+    const double rectascension_halfwidth = label_width
+        * mytransform.get_rad_per_cm() * 180.0/M_PI / 15.0
+        / cos(declination * M_PI/180.0) / 2.0;
+    char justification;
+    double path_point_rectascension[3];
+    path_point_rectascension[0] = rectascension;
+    path_point_rectascension[1] = rectascension - rectascension_halfwidth;
+    path_point_rectascension[2] = rectascension -
+        2.0 * rectascension_halfwidth;
+    switch (label_angle) {
+    case 0: case 1: case 7:
+        justification = 'l';
+        break;
+    case 2: case 6:
+        justification = 'c';
+        for (int i = 0; i < 3; i++)
+            path_point_rectascension[i] += rectascension_halfwidth;
+        break;
+    case 3: case 4: case 5:
+        justification = 'r';
+        for (int i = 0; i < 3; i++)
+            path_point_rectascension[i] += 2.0 * rectascension_halfwidth;
+        break;
+    }
+    double lower;
+    switch (label_angle) {
+    case 0: case 4: lower = -0.4; break;
+    case 1: case 2: case 3: lower = 0.0; break;
+    case 5: case 6: case 7: lower = -0.8; break;
+    }
+    double x[3],y[3];
+    for (int i = 0; i < 3; i++)
+        if (!mytransform.polar_projection(path_point_rectascension[i],
+                                          declination, x[i],y[i]))
+            return false;
+    
+    OUT << "\\FlexLabel{\\pstextpath[" << justification
+        << "](0," << lower << "em){\\pscurve[linestyle=none]";
+    for (int i = 0; i < 3; i++)
+        OUT << '(' << x[i] << "cm," << y[i] << "cm)";
+    OUT << "}{" << label << "}}%\n";
+    
+    return true;
+}
+
+@ As I've already said, a flex is (at the moment) excluded from the penalty
+algorithm.  This is realised here:  This routine always returns zero.
+
+@c
+double declination_flex::penalties_with(const double left, const double right,
+                   const double top, const double bottom,
+                   bool core = true) const {
+        return 0.0;
+}
+
+@ This is the drawing routine called from the main program.  It goes through
+all flexes twice: First it only fills |objects|.  Then it actually draws the
+flexes.  The reason is efficiency: This assures that all needed labels are
+available before the first flex is about to be draw which may mean a
+reclaculation of the label dimensions.  If I realised this in one pass, the
+needed labels would occure over and over again, and every time it would be
+necessary to recalculate the dimensions.
+
+@c
+void draw_flex_labels(const transformation& mytransform,
+                      const flexes_list& flexes, objects_list& objects,
+                      dimensions_list& dimensions) {
+    flexes_list::const_iterator p = flexes.begin();
+    while (p != flexes.end()) objects.push_back(*p++);
+    p = flexes.begin();
+    while (p != flexes.end()) (*p++)->draw(mytransform,dimensions,objects);
 }
 
 @* Drawing stars.  Stars are a little bit simpler than nebulae because they are
@@ -2907,7 +3169,8 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
                         sqrt(nebulae[i].diameter_x * nebulae[i].diameter_y);
                 nebulae[i].radius = nebulae[i].diameter_x/2.0 /
                     mytransform.get_rad_per_cm() * M_PI / 180.0;
-                nebulae[i].with_label = visible;
+                if (nebulae[i].with_label != hidden) 
+                    nebulae[i].with_label = visible;
                 if (nebulae[i].radius > params.minimal_nebula_radius) {
                     @<Draw nebula shape@>@;
                 } else {
@@ -3344,7 +3607,6 @@ programs.
 @<Routines for reading the input script@>@#@;
 
 int main(int argc, char **argv) {
-    bool input_file = false;
     try {
         @<Dealing with command line arguments@>@;
         read_parameters_from_script(*params.in);
@@ -3359,7 +3621,7 @@ int main(int argc, char **argv) {
         @<Definition and filling of the containers@>@;
 
         read_objects_and_labels(*params.in, dimensions, objects, stars,
-                                nebulae, texts, mytransform);
+                                nebulae, texts, flexes, mytransform);
 
         OUT.setf(ios::fixed);  // otherwise \LaTeX\ gets confused
         OUT.precision(3);
@@ -3373,7 +3635,7 @@ int main(int argc, char **argv) {
         @<Draw all celestial objects and labels@>@;
         OUT << "\\endpsclip\n";
         @<Create \LaTeX\ footer@>@;
-        if (input_file) delete params.in;
+        if (params.input_file) delete params.in;
         @<Create \EPS/ or \PDF/ file if requested@>@;
     }
     catch (string s) {
@@ -3396,7 +3658,7 @@ the input script.
                 if (!params.in->good())
                     throw string("Input script file ") + argv[1]
                         + " not found";
-                else input_file = true;
+                else params.input_file = true;
             } else if (!strcmp(argv[1],"-")) params.in = &cin; else
                 cerr << "Invalid argument: " << argv[1] << endl;
         }
@@ -3419,6 +3681,7 @@ that are actually used.
         nebulae_list nebulae;
         connections_list connections;
         texts_list texts;
+        flexes_list flexes;
 
         if (params.show_boundaries) read_constellation_boundaries(boundaries);
         read_label_dimensions(dimensions);
@@ -3439,6 +3702,7 @@ visibility anyway.
         if (params.show_boundaries)
             draw_boundaries(mytransform, boundaries, objects,
                             params.constellation);
+        draw_flex_labels(mytransform, flexes, objects, dimensions);
         draw_text_labels(mytransform, texts, objects);
         draw_nebulae(mytransform, nebulae, objects);
         draw_stars(mytransform, stars, objects);
@@ -3499,8 +3763,8 @@ I define a couple of \LaTeX\ commands as hooks here, all of them take exactly
 one argument.  ``\.{\BS Label}'' encloses every label.  In addition to that,
 ``\.{\BS NGC}'', ``\.{\BS IC}'', and ``\.{\BS Messier}'' are built around the
 nebula label of the respective type, ``\.{\BS Starname}'' around all star
-labels, and ``\.{\BS TextLabel}'' around text labels.  By default, they do
-nothing.
+labels, ``\.{\BS TextLabel}'' around text labels, and ``\.{\BS FlexLabel}''
+around flex labels.  By default, they do nothing.  Well, nothing to speak of.
 
 @^preamble (\LaTeX)@>
 
@@ -3509,9 +3773,10 @@ void create_preamble(ostream& out) {
     out << "\\documentclass[" << params.font_size << "pt]{article}\n\n" @/
         << "\\nofiles" @/
         << "\\usepackage[dvips]{color}\n" @/
-        << "\\usepackage{pstricks}\n" @/
+        << "\\usepackage{pstricks,pst-text}\n" @/
         << "\\newcommand*{\\Label}[1]{#1}\n" @/
         << "\\newcommand*{\\TextLabel}[1]{#1}\n" @/
+        << "\\newcommand*{\\FlexLabel}[1]{#1}\n" @/
         << "\\newcommand*{\\Starname}[1]{#1}\n" @/
         << "\\newcommand*{\\Messier}[1]{M\\,#1}\n" @/
         << "\\newcommand*{\\NGC}[1]{NGC\\,#1}\n" @/
