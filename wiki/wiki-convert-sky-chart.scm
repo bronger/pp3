@@ -1,3 +1,5 @@
+;	$Id$	
+
 (define (wiki-convert-sky-chart in-filename out-filename-base number-colors)
   (file-ps-load-setargs 300 0 0 1 "1" 6 4 4)
   (let* ((img (car (file-ps-load 1 in-filename in-filename)))
@@ -16,8 +18,8 @@
     (gimp-convert-indexed img 0 0 number-colors 0 1 "")
     (gimp-convert-indexed img-small 0 0 number-colors 0 1 "")
     (file-png-save 1 img drawable out-filename out-filename 0 9 0 0 0 1 1)
-    (file-png-save 1 img-small drawable-small 
-		   out-filename-small out-filename-small 0 9 0 0 0 1 1))
+    (if (> (* image-width 0.4) 300) (file-png-save 1 img-small drawable-small 
+		   out-filename-small out-filename-small 0 9 0 0 0 1 1)))
 )
 
 (script-fu-register
