@@ -62,8 +62,9 @@ int main() {
 	    }
 	}
     out << 90.0 / (double(height)/2.0) / M_SQRT2 << '\n';
-        // maximal (=equatorial) diagonal half distance of two pixels in 
-        // degrees
+        // maximal (=radial) diagonal half distance of two pixels in 
+        // degrees; on the equator in circular direction smaller by
+        // 2/M_PI.
     double ratio = 255.0 / double(maxval);
     for (int i = 0; i < pixels.size(); i++)
 	out << pixels[i].rectascension << ' '
