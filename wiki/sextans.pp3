@@ -1,0 +1,24 @@
+# Sextans
+#
+
+filename output sextans.tex
+filename include wiki.pp3
+
+set constellation SEX
+set center_rectascension  10.2
+set center_declination    -1
+set box_height 7
+set box_width 6.3
+
+set faintest_star_disk_magnitude 5.5
+
+objects_and_labels
+
+add_labels SEX 15  SEX 8  SEX 30  SEX 29 ;
+
+reposition LEO 32 SE ;
+
+text Sextans at 10.8 -6 along declination towards E ;
+text Leo at 10.2 7 along declination towards N ;
+text Hydra at 9.65 3 along declination towards E ;
+text Crt at 10.9 -7 along declination towards SW ;
