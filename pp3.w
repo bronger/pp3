@@ -180,18 +180,127 @@ uses PSTricks to draw a nice sky chart containing a certain region of the sky.
 #include <cmath>
 #include <cfloat>
 
-@* Global parameters.
+@* Global parameters.  I have to break a strict \CPLUSPLUS/ rule here: Never
+use |#@t\hskip-\fontdimen2\mainfont@>define|!  However I really found no
+alternative to it.  No |const| construct worked, and if it had done, I'd have
+to use it in every single routine.  And ubiquitous |*params.out|'s are ugly.
+
+@d OUT (*params.out)
 
 @c
+@<Define color data structure@>@;@#
+
 struct parameters {
     double center_rectascension, center_declination;
     double view_frame_width, view_frame_height;
     double grad_per_cm;
     string constellation;
-    parameters() : center_rectascension(6.0), center_declination(0.0),
-		   view_frame_width(15.0), view_frame_height(15.0),
-		   grad_per_cm(4.0), constellation("ORI") { }
-} global_parameters;
+    string filename_stars, filename_nebulae, filename_dimensions,
+        filename_lines, filename_boundaries, filename_milkyway;
+    string filename_output;
+    ostream* out;
+    color bgcolor, gridcolor, eclipticcolor, boundarycolor, hlboundarycolor,
+        starcolor, nebulacolor, labelcolor, clinecolor, milkywaycolor;
+    bool milkyway_visible, colored_stars, show_grid, show_ecliptic,
+        show_boundaries, show_lines, show_labels;
+    bool create_eps, create_pdf;
+    parameters() : center_rectascension(5.8), center_declination(0.0),
+                   view_frame_width(15.0), view_frame_height(15.0),
+                   grad_per_cm(4.0), constellation("ORI"), @/
+                   filename_stars("stars.dat"),
+                   filename_nebulae("nebulae.dat"),
+                   filename_dimensions("labeldimens.dat"),
+                   filename_lines("lines.dat"),
+                   filename_boundaries("boundaries.dat"),
+                   filename_milkyway("milkyway.dat"), @/
+                   filename_output(), out(&cout), @/
+                   bgcolor("bgcolor", 0, 0, 0.4),
+                   gridcolor("gridcolor", 0, 0.298, 0.447),
+                   eclipticcolor("eclipticcolor", 1, 0, 0),
+                   boundarycolor("boundarycolor", 0.5, 0.5, 0),
+                   hlboundarycolor("hlboundarycolor", 1, 1, 0),
+                   starcolor("starcolor", 1, 1, 1),
+                   nebulacolor("nebulacolor", 1, 1, 1),
+                   labelcolor("labelcolor", 0, 1, 1),
+                   clinecolor("clinecolor", 0, 1, 0),
+                   milkywaycolor(0, 0, 1), @/
+                   milkyway_visible(true),
+                   colored_stars(true),
+                   show_grid(true), show_ecliptic(true), show_boundaries(true),
+                   show_lines(true), show_labels(true), @/
+                   create_eps(false),
+                   create_pdf(false)
+    { }
+    int view_frame_width_in_bp() {
+        return int(ceil(view_frame_width / 2.54 * 72));
+    }
+    int view_frame_height_in_bp() {
+        return int(ceil(view_frame_height / 2.54 * 72));
+    }
+} params;
+
+
+@ It's very convenient to have a unified data structure for all colours that
+appear in this program.  Its internat structure is trivial, and I only support
+the RGB colour model.  The only complicated thing is |name| here.  I need it
+because of PSTricks' way to activate colours: They must get names first.  I
+could get rid of it if I called all colours e.\,g.\ ``\.{tempcolor}'' or
+``\.{dummycolor}'' and activated them at once.  But this is not necessary.
+
+@<Define color data structure@>=
+struct color {
+    double red, green, blue;
+    string name;
+    color(string name, double red, double green, double blue)
+        : red(red), green(green), blue(blue), name(name) { }
+    color(double red, double green, double blue)
+        : red(red), green(green), blue(blue), name() { }
+};
+
+@ Both output and input of |color|s is asymmetric: When I {\it read\/} them I
+assume that I do it from an input script.  Then it's a mere sequence of the
+three colour values.
+
+@c
+istream& operator>>(istream& in, color& c) {
+    in >> c.red >> c.green >> c.blue;
+    if (!in @/
+        || c.red < 0.0 || c.red > 1.0 @/
+        || c.green < 0.0 || c.green > 1.0 @/
+        || c.blue < 0.0 || c.blue > 1.0)
+        throw string("Invalid RGB values in input script");
+    return in;
+}
+
+@ But when I {\it write\/} them, I assume that I do it into a \LaTeX\ file with
+PSTricks package activated.  Then I deploy a complete \.{\\newrgbcolor}
+command.
+
+@c
+ostream& operator<<(ostream& out, const color& c) {
+    if (c.name.empty()) throw string("Cannot write unnamed color to stream");
+    out << "\\newrgbcolor{" << c.name << "}{" << c.red << ' ' << c.green
+        << ' ' << c.blue << "}%\n";
+    return out;
+}
+
+@ This routine is hitherto only used when drawing the milky way.  It helps to
+find a colour between the two extremes |c1| and~|c2|.  The value of |x| is
+always between $0$ and~$1$ and denotes the point on the way between |c1| and
+|c1| in the RGB colour space where the new colour should be.  I interpolate
+linearly.  In order to create a new colour object, I need a |new_name| for it,
+too.
+
+@c
+color interpolate_colors(const double x, const color c1, const color c2,
+                         const string new_name) {
+    if (x < 0.0 || x > 1.0) throw string("Invalid x for color interpolation");
+    const double y = 1.0 - x;
+    return color(new_name,
+                 y * c1.red + x * c2.red,
+                 y * c1.green + x * c2.green,
+                 y * c1.blue + x * c2.blue);
+}
 
 
 @* Celestial data structures.  First I describe the data structures that
@@ -432,9 +541,8 @@ FixMe: I want |dimensions| to be |const|.
 @c
 @<The structure |dimension|@>@;@#
 
-void read_stars(const string filename, stars_list& stars,
-                dimensions_list& dimensions) {
-    ifstream stars_file(filename.c_str());
+void read_stars(stars_list& stars, dimensions_list& dimensions) {
+    ifstream stars_file(params.filename_stars.c_str());
     star current_star;
     stars_file >> current_star;
     while (stars_file.good()) {
@@ -545,9 +653,9 @@ The format is just a stream of |nebula|e.
 FixMe: I want |dimensions| to be |const|.
 
 @c
-void read_nebulae(const string filename, nebulae_list& nebulae,
+void read_nebulae(nebulae_list& nebulae,
                   dimensions_list& dimensions) {
-    ifstream nebulae_file(filename.c_str());
+    ifstream nebulae_file(params.filename_nebulae.c_str());
     nebula current_nebula;
     nebulae_file >> current_nebula;
     while (nebulae_file.good()) {
@@ -691,9 +799,8 @@ istream& operator>>(istream& in, boundary& p) {
 |boundary|'s.
 
 @c
-void read_constellation_boundaries(const string filename,
-                                   boundaries_list& boundaries) {
-    ifstream boundaryfile(filename.c_str());
+void read_constellation_boundaries(boundaries_list& boundaries) {
+    ifstream boundaryfile(params.filename_boundaries.c_str());
     boundary current_boundary;
     boundaryfile >> current_boundary;
     while (boundaryfile.good()) {
@@ -1114,10 +1221,9 @@ $(\hbox{|x2|}, \hbox{|y2|})$.
 void draw_constellation_lines(const transformation& mytransform,
                               connections_list& connections,
                               const stars_list& stars,
-                              objects_list& objects,
-                              ostream& out = cout) {
+                              objects_list& objects) {
     const double min_length = 0.2;
-    out << "\\psset{linecolor=green,linestyle=solid,linewidth=1pt}%\n";
+    OUT << "\\psset{linecolor=clinecolor,linestyle=solid,linewidth=1pt}%\n";
     for (int i = 0; i < connections.size(); i++)
         if (stars[connections[i].from].in_view &&
             stars[connections[i].to].in_view) {
@@ -1142,7 +1248,7 @@ void draw_constellation_lines(const transformation& mytransform,
             connections[i].x = (x1 + x2) / 2.0;
             connections[i].y = (y1 + y2) / 2.0;
             if (r > min_length && r > 0.0) {
-                out << "\\psline{cc-cc}(" << x1 << ',' << y1
+                OUT << "\\psline{cc-cc}(" << x1 << ',' << y1
                     << ")(" << x2 << ',' << y2 << ")%\n";
                 connections[i].start = point(x1,y1);
                 connections[i].end = point(x2,y2);
@@ -1161,10 +1267,9 @@ Constellation\/} must be given as an all uppercase three letter abbreviation.
 For example, \.{19\SP ORI} is $\alpha$~Ori (Rigel).
 
 @c
-void read_constellation_lines(const string filename,
-                              connections_list& connections,
+void read_constellation_lines(connections_list& connections,
                               const stars_list& stars) {
-    ifstream file(filename.c_str());
+    ifstream file(params.filename_lines.c_str());
     string current_line, last_line;
     getline(file,current_line);
     while (file) {
@@ -1285,8 +1390,8 @@ box lies within another one with zero dimensions in order to keep the point of
 origin (bottom left of the view frame) intact.
 
 @c
-void print_labels(const objects_list& objects, ostream& out = cout) {
-    out << "\\cyan\n";
+void print_labels(const objects_list& objects) {
+    OUT << "\\labelcolor\n";
     for (int i = 0; i < objects.size(); i++)
         if (objects[i]->in_view && objects[i]->with_label
             && objects[i]->label_arranged) {
@@ -1303,12 +1408,12 @@ void print_labels(const objects_list& objects, ostream& out = cout) {
             case 0: case 4: y -= objects[i]->label_height / 2.0; break;
             case 5: case 6: case 7: y -= objects[i]->label_height; break;
             }
-            out << "\\hbox to 0pt{";
-            out << "\\hskip" << x << "cm";
-            out << "\\vbox to 0pt{\\vss\\hbox{";
-            out << objects[i]->label;
-            out << "}\\vskip" << y << "cm";
-            out << "\\hrule height 0pt}\\hss}%\n";
+            OUT << "\\hbox to 0pt{";
+            OUT << "\\hskip" << x << "cm";
+            OUT << "\\vbox to 0pt{\\vss\\hbox{";
+            OUT << objects[i]->label;
+            OUT << "}\\vskip" << y << "cm";
+            OUT << "\\hrule height 0pt}\\hss}%\n";
         }
 }
 
@@ -1341,9 +1446,8 @@ typedef map<string,dimension> dimensions_list;
 centimetres (both |double|), separated by whitespace.
 
 @c
-void read_label_dimensions(const string filename, 
-                           dimensions_list& dimensions) {
-    ifstream file(filename.c_str());
+void read_label_dimensions(dimensions_list& dimensions) {
+    ifstream file(params.filename_dimensions.c_str());
     int number_of_label_dimensions;
     file >> number_of_label_dimensions;
     for (int i = 0; i < number_of_label_dimensions; i++) {
@@ -1390,19 +1494,19 @@ inline void add_curve_point(const double rectascension,
                             const double declination,
                             const transformation& transform,
                             const int i, bool& within_curve,
-                            const int steps, ostream& out) {
+                            const int steps) {
     static double last_x, last_y;
     double x,y;
     if (transform.polar_projection(rectascension, declination, x, y)) {
         if (!within_curve) {  // start a new one
-            out << "\\pscurve" << "(" << x << ',' << y << ")";
+            OUT << "\\pscurve" << "(" << x << ',' << y << ")";
             within_curve = true;
-        } else if (i % steps == 0) out << "(" << x << ',' << y << ")";
-        if (i % (steps*4) == 0 || steps == 1) out << "%\n";
+        } else if (i % steps == 0) OUT << "(" << x << ',' << y << ")";
+        if (i % (steps*4) == 0 || steps == 1) OUT << "%\n";
             /* line break every four coordinates */
     } else
         if (within_curve) { // end the current curve
-            out << "(" << last_x << ',' << last_y << ")" << "\\relax\n";
+            OUT << "(" << last_x << ',' << last_y << ")" << "\\relax\n";
             within_curve = false;
         }
     last_x = x;  last_y = y;
@@ -1430,21 +1534,26 @@ For a plot with closed lines (e.\,g.\ of one of the poles), you may set
 |point_distance| to |0| and |scans_per_cm| to a higher value, for avoiding a
 kink at the joint.
 
+@q'@>
+                                             
 @c
 void create_grid(const transformation transform,
                  const double scans_per_cm = 10,
-                 const double point_distance = 5.0,
-                 ostream& out = cout) {
+                 const double point_distance = 5.0) {
+    if (!params.show_grid && !params.show_ecliptic) return;
     const double scans_per_fullcircle =
         scans_per_cm / transform.get_rad_per_cm() * 2.0*M_PI;
     const int steps = int((point_distance * M_PI/180.0) *
                           (scans_per_fullcircle/(2.0*M_PI))) + 2;
     bool within_curve;
-    out << "\\newhsbcolor{gridblue}{0.555555556 1 0.45}%\n";
-    out << "\\psset{linestyle=solid,linecolor=gridblue,linewidth=0.7pt}%\n";
-    @<Create grid lines for equal declination@>@;
-    @<Create grid lines for equal rectascension@>@;
-    @<Draw the ecliptic@>@;
+    if (params.show_grid) {
+        OUT << "\\psset{linestyle=solid,linecolor=gridcolor,linewidth=0.7pt}%\n";
+        @<Create grid lines for equal declination@>@;
+        @<Create grid lines for equal rectascension@>@;
+    }
+    if (params.show_ecliptic) {
+        @<Draw the ecliptic@>@;
+    }
 }
 
 @ As mentioned before, declination circles are smaller than the full circle of
@@ -1457,15 +1566,15 @@ because the very last point {\it must\/} be drawn.
 
 @<Create grid lines for equal declination@>=
     for (int declination = -80; declination <= 80; declination += 10) {
-        if (declination == 0) out << "\\psset{linewidth=1.5pt}%\n";
+        if (declination == 0) OUT << "\\psset{linewidth=1.5pt}%\n";
         within_curve = false;
         const int number_of_points =
             int(cos(declination*M_PI/180.0)*scans_per_fullcircle);
         for (int i = 0; i <= number_of_points; i++)
             add_curve_point(double(i)/double(number_of_points)*24.0,
                             declination,transform,i,within_curve,
-                            i==number_of_points?1:steps,out);
-        if (declination == 0) out << "\\psset{linewidth=0.7pt}%\n";
+                            i==number_of_points?1:steps);
+        if (declination == 0) OUT << "\\psset{linewidth=0.7pt}%\n";
     }
 
 @ The only slightly interesting thing here is that I draw the lines of equal
@@ -1480,7 +1589,7 @@ otherwise it gets too populated in the pole regions.
             add_curve_point(double(rectascension),
                             double(i)/double(number_of_points)*160.0 - 80.0,
                             transform,i,within_curve,
-                            i==number_of_points?1:steps,out);
+                            i==number_of_points?1:steps);
     }
 
 @ Unfortunately the naive approach for drawing the ecliptic,
@@ -1501,7 +1610,8 @@ because $\arctan$ only returns values between $-\pi/2$ and $+\pi/2$.
 
 
 @<Draw the ecliptic@>=
-    out << "\\psset{linestyle=dashed,linecolor=red,linewidth=0.5pt}%\n";
+    OUT << "\\psset{linestyle=dashed,linecolor=eclipticcolor,"
+        << "linewidth=0.5pt}%\n";
     {
         const double epsilon = 23.44 * M_PI / 180.0;
         const int number_of_points = int(scans_per_fullcircle);
@@ -1514,7 +1624,7 @@ because $\arctan$ only returns values between $-\pi/2$ and $+\pi/2$.
             const double delta = asin(m_sin_phi0*sin(epsilon));
             add_curve_point(phi * 12.0 / M_PI, delta * 180.0 / M_PI,
                             transform,i,within_curve,
-                            i==number_of_points?1:steps,out);
+                            i==number_of_points?1:steps);
         }
     }
 
@@ -1551,17 +1661,17 @@ void draw_boundary_line(const boundary& b, const transformation& transform,
         current_line.push_back(point(x,y));
     }
     if (current_line.size() >= 2) {
-        if (current_line.size() == 2) cout << "\\psline";
-        else cout << "\\pscurve";
-        cout << "[liftpen=2]{c-c}";
+        if (current_line.size() == 2) OUT << "\\psline";
+        else OUT << "\\pscurve";
+        OUT << "[liftpen=2]{c-c}";
         for (int j = 0; j < current_line.size(); j++) {
-            cout << '(' << current_line[j].x << ','
+            OUT << '(' << current_line[j].x << ','
                  << current_line[j].y << ')';
-            if (j % 4 == 3) cout << "%\n";
+            if (j % 4 == 3) OUT << "%\n";
             if (highlighted)
                 @<Create a |boundary_atom| for the |objects|@>@;
         }
-        cout << "\\relax\n";
+        OUT << "\\relax\n";
     }
 }
 
@@ -1590,35 +1700,35 @@ style and {\it as one path\/} via \.{\\pscustom}.
 void draw_boundaries(const transformation& mytransform,
                      boundaries_list& boundaries,
                      objects_list& objects,
-                     string constellation = string(""), ostream& out = cout) {
-    out << "\\newrgbcolor{darkyellow}{0.5 0.5 0}";
-    out << "\\psset{linecolor=darkyellow,linewidth=1.0pt," @/
+                     string constellation = string("")) {
+    OUT << "\\psset{linecolor=boundarycolor,linewidth=1.0pt," @/
         << "linestyle=dashed}%\n";
     if (!constellation.empty()) {
         for (int i = 0; i < boundaries.size(); i++)
             if (!boundaries[i].belongs_to_constellation(constellation))
                 draw_boundary_line(boundaries[i], mytransform, objects);
-        out << "\\psset{linecolor=yellow,linewidth=1.0pt,"
+        OUT << "\\psset{linecolor=hlboundarycolor,linewidth=1.0pt,"
             << "linestyle=dashed}%\n";
-        out << "\\pscustom{";
+        OUT << "\\pscustom{";
         for (int i = 0; i < boundaries.size(); i++)
             if (boundaries[i].belongs_to_constellation(constellation))
                 draw_boundary_line(boundaries[i], mytransform, objects, true);
-        out << "}%\n";
+        OUT << "}%\n";
     } else
         for (int i = 0; i < boundaries.size(); i++)
             draw_boundary_line(boundaries[i], mytransform, objects);
 }
 
-@* The Milky Way. If a proper data file is available, the milky way is a simple
-concept, however difficult to digest for \LaTeX\ due to many many Postscipt
-objects.  But for this program it's to simple that I can do the reading and
-drawng in one small routine and I even don't need any large data structures.
+@* The Milky Way.  If a proper data file is available, the milky way is a
+simple concept, however difficult to digest for \LaTeX\ due to many many
+Postscipt objects.  But for this program it's so simple that I can do the
+reading and drawing in one small routine and I even don't need any large data
+structures.
 
 The file is a text file as usual with the following structure, everything
 separated by whitespace: \medskip
 
-\item{1.} The maximal ($={}$equatorial) diagonal distance of two pixels in
+\item{1.} The maximal ($={}$equatorial) diagonal half distance of two pixels in
 degrees (|double|).  This value is used as the |redius| for the milky way
 `pixels'.  Of course it must me the minimal radius for which there are no holes
 between the pixels.
@@ -1629,12 +1739,9 @@ between the pixels.
 \itemitem{--} The gray value of the pixel from $1$ to~$255$.  Zero is not used
 because zero-value pixels are not included into the data file anyway.
 
-@q'@>
-
 @c
-void draw_milky_way(const string filename, const transformation& mytransform,
-                    ostream& out = cout) {
-    ifstream file(filename.c_str());
+void draw_milky_way(const transformation& mytransform) {
+    ifstream file(params.filename_milkyway.c_str());
     double radius;
     file >> radius;
     double rectascension, declination, x, y;
@@ -1646,18 +1753,17 @@ void draw_milky_way(const string filename, const transformation& mytransform,
     file >> rectascension >> declination >> pixel;
     while (file) {
         if (mytransform.polar_projection(rectascension, declination, x,y))
-	    pixels[pixel].push_back(point(x,y));
+            pixels[pixel].push_back(point(x,y));
         file >> rectascension >> declination >> pixel;
     }
     for (int i = 1; i < pixels.size(); i++) {
-	if (pixels[i].size() == 0) continue;
-	out << "\\newhsbcolor{pixelcolor}{0.666667 "
-	    << "1 "
-	    << 0.4 + (double(i) / 255.0) * 0.6
-	    << "}\\psset{linecolor=pixelcolor}%\n";
-	for (int j = 0; j < pixels[i].size(); j++)
-            out << "\\qdisk(" << pixels[i][j].x << "," << pixels[i][j].y
-		<< "){" << radius << "pt}%\n";
+        if (pixels[i].size() == 0) continue;
+        OUT << interpolate_colors(double(i) / 255.0, params.bgcolor,
+                                  params.milkywaycolor, "pixelcolor")
+            << "\\psset{linecolor=pixelcolor}%\n";
+        for (int j = 0; j < pixels[i].size(); j++)
+            OUT << "\\qdisk(" << pixels[i][j].x << "," << pixels[i][j].y
+                << "){" << radius << "pt}%\n";
     }
 }
 
@@ -1698,11 +1804,16 @@ objects with |in_view|${}={}$|false| aren't in |objects| anyway.
 
 @c
 void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
-                  objects_list& objects, ostream& out = cout) {
-    out << "\\psset{linecolor=white,linewidth=0.5pt,linestyle=solid,"
+                  objects_list& objects) {
+    OUT << "\\psset{linecolor=nebulacolor,linewidth=0.5pt,linestyle=solid,"
         << "curvature=1 .5 -1}%\n";
     for (int i = 0; i < nebulae.size(); i++)
-        if (nebulae[i].magnitude < 8 && nebulae[i].diameter_x > 0.2) {
+        if (nebulae[i].in_view &&
+            (((nebulae[i].kind == open_cluster || nebulae[i].kind == globular_cluster)
+              && nebulae[i].magnitude < 4) || @/
+             ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
+              nebulae[i].kind == emission) && nebulae[i].magnitude < 8) ||
+             nebulae[i].M > 0 )) {
             double x,y;
             if (mytransform.polar_projection(nebulae[i].rectascension,
                                              nebulae[i].declination,
@@ -1719,7 +1830,7 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
                     @<Draw nebula shape@>@;
                 } else {
                     nebulae[i].radius = 0.1;
-                    out << "\\pscircle("
+                    OUT << "\\pscircle("
                         << nebulae[i].x << ","
                         << nebulae[i].y << "){"
                         << nebulae[i].radius / 2.54 * 72.27 << "pt}%\n";
@@ -1743,7 +1854,7 @@ to the different circular scale.  FixMe: Improve this. (Via rotation matrices.)
 
 @<Draw nebula shape@>=
     if (nebulae[i].diameter_x == nebulae[i].diameter_y)
-        out << "\\pscircle(" << nebulae[i].x << ',' << nebulae[i].y
+        OUT << "\\pscircle(" << nebulae[i].x << ',' << nebulae[i].y
             << "){" << nebulae[i].radius << "}%\n";
     else {
         double rectascension[4], declination[4];
@@ -1770,15 +1881,15 @@ to the different circular scale.  FixMe: Improve this. (Via rotation matrices.)
             half_y * sin_angle / 15.0 * r_scale;
         declination[3] = nebulae[i].declination +
             half_y * cos_angle;
-        out << "\\psccurve";
+        OUT << "\\psccurve";
         for (int j = 0; j < 4; j++) {
             double x,y;
             mytransform.polar_projection(rectascension[j],
                                          declination[j], x, y);
-            out << '(' << x << ',' << y << ')';
+            OUT << '(' << x << ',' << y << ')';
         }
     }
-    out << "\\relax\n";
+    OUT << "\\relax\n";
 
 
 @ Now for the stars.  Stars are a little bit simpler than nebulae because they
@@ -1798,9 +1909,10 @@ Then only the stellar colour has yet to be calculated, and it can be printed.
 @<|create_hs_colour()| for star colour determination@>@;@#
 
 void draw_stars(const transformation& mytransform, stars_list& stars,
-                objects_list& objects, ostream& out = cout) {
+                objects_list& objects) {
     for (int i = 0; i < stars.size(); i++)
-        if (stars[i].magnitude < 7) {  // Effectively all stars of the \BSC/
+        if (stars[i].in_view && stars[i].magnitude < 7) {
+                // Effectively all stars of the \BSC/
             double x,y;
             if (mytransform.polar_projection(stars[i].rectascension,
                                              stars[i].declination,
@@ -1810,13 +1922,15 @@ void draw_stars(const transformation& mytransform, stars_list& stars,
                 stars[i].radius = (stars[i].magnitude < 5 ?
                                    sqrt(5.09 - stars[i].magnitude) : 0.3)
                     / 72.27 * 2.54;
-                stars[i].with_label = stars[i].magnitude < 3.5 && 
+                stars[i].with_label = stars[i].magnitude < 3.7 && 
                     !stars[i].name.empty();
                 stars[i].label = stars[i].name;
-                out << "\\newhsbcolor{starcolor}{";
-                create_hs_colour(stars[i].b_v,stars[i].spectral_class,out);
-                out << " 1}%\n";
-                out << "\\pscircle*[linecolor=starcolor]("
+                if (params.colored_stars) {
+                    OUT << "\\newhsbcolor{starcolor}{";
+                    create_hs_colour(stars[i].b_v,stars[i].spectral_class);
+                    OUT << " 1}%\n";
+                } else OUT << params.starcolor;
+                OUT << "\\pscircle*[linecolor=starcolor]("
                     << stars[i].x << ","
                     << stars[i].y << "){"
                     << stars[i].radius / 2.54 * 72.27 << "pt}%\n";
@@ -1836,7 +1950,7 @@ red.  On each boundary, the hue values |hue0|--|hue3| respectively are valid.
 Inbetween I interpolate linearly (rule of three).
 
 @<|create_hs_colour()| for star colour determination@>=
-void create_hs_colour(double b_v, string spectral_class, ostream& out) {
+void create_hs_colour(double b_v, string spectral_class) {
     double hue, saturation;
     const double bv0 = -0.1, bv1 = 0.001, bv2 = 0.62, bv3 = 1.7;
     const double hue0 = 0.6, hue1 = 0.47, hue2 = 0.17, hue3 = 0.0;
@@ -1860,7 +1974,7 @@ void create_hs_colour(double b_v, string spectral_class, ostream& out) {
         saturation = (b_v - bv2) / (bv3 - bv2)
             * (max_saturation - min_saturation) + min_saturation;
     }
-    out << hue << ' ' << saturation;
+    OUT << hue << ' ' << saturation;
 }
 
 @ Since there are some stars in the Bright Star Catalogue without a B$-$V
@@ -1887,6 +2001,436 @@ the respective spectral class.
         }
     }
 
+@* Reading the input script.  The input script is a text file that is given as
+the first and only parameter to PP3.  It format is very simple: First, a
+`\.{\#}' introduces a comment and the rest of the line is ignored.  Secondy,
+every commend has an opcode--parameter(s) form.  Third, opcodes and parameters
+are separated by whitespace (no matter which type and how much).  Forthly,
+parameters and celestial objects must be separated by
+``\.{objects\_and\_labels}''.
+
+@*1 Global parameters.  This is the first part of the input script.  This part
+comes before an ``\.{objects\_and\_labels}'' in the input script.
+
+First two small helping routines that just read simple values from the file.
+
+@c
+bool read_boolean(istream& script) {
+    string boolean;
+    script >> boolean;
+    if (boolean == "on") return true;
+    else if (boolean == "off") return false;
+    else throw string("Expected \"on\" or \"off\" in \"switch\" construct "
+                      "in input script");
+}
+
+@ This one is sub-optimal, because it can only read strings that don't contain
+whitespace.  FixMe: It must be possible to use \.{"..."} and escaping
+sequences.
+
+@c
+string read_string(istream& script) {
+    string contents;
+    script >> contents;
+    if (!script) throw string("Unexpected end of input script while reading a"
+                              " string parameter");
+    if (contents == "\"\"") contents = "";
+    return contents;
+}
+
+@ Here the actual routine for this first part.  The top-level keywords are:
+``\.{color}'', ``\.{switch}'', ``\.{filename}'', and ``\.{set}''.
+
+@.color@>
+@.switch@>
+@.filename@>
+@.set@>
+
+@c
+void read_parameters_from_script(istream& script) {
+    string opcode;
+    script >> opcode;
+    while (opcode != "objects_and_labels" && script) {
+        if (opcode[0] == '#') {   // skip comment line
+            string rest_of_line;
+            getline(script,rest_of_line);
+        } else
+            @<Set color parameters@>@;
+        else
+            @<Set on/off parameters@>@;
+        else
+            @<Set filename parameters@>@;
+        else
+            @<Set single value parameters@>@;
+        else throw string("Undefined opcode in input script");
+        script >> opcode;
+    }       
+}
+
+@ Colors are given as red--green--blue values from $0$ to~$1$.  For example,
+$$\hbox{\.{color labels 1 0 0}}$$ which makes all labels red.  The following
+sub-keywords can be used: ``\.{background}'', ``\.{grid}'', ``\.{ecliptic}'',
+``\.{boundaries}'', ``\.{highlighted\_boundaries}'', ``\.{stars}'',
+``\.{nebulae}'', ``\.{labels}'', ``\.{constellation\_lines}'', and
+``\.{milky\_way}''.  In case of the milky way, the color denotes the brightest
+regions.  (The darkest have \.{back}\-\.{ground\_color}.)
+
+@.background@>
+@.grid@>
+@.ecliptic@>
+@.boundaries@>
+@.highlighted\_boundaries@>
+@.stars@>
+@.nebulae@>
+@.labels@>
+@.constellation\_lines@>
+@.milky\_way@>
+
+@<Set color parameters@>=
+        if (opcode == "color") {
+            string color_name;
+            script >> color_name;
+            if (color_name == "background") script >> params.bgcolor;
+            else if (color_name == "grid") script >> params.gridcolor;
+            else if (color_name == "ecliptic") script >> params.eclipticcolor;
+            else if (color_name == "boundaries")
+                script >> params.boundarycolor;
+            else if (color_name == "highlighted_boundaries")
+                script >> params.hlboundarycolor;
+            else if (color_name == "stars") script >> params.starcolor;
+            else if (color_name == "nebulae") script >> params.nebulacolor;
+            else if (color_name == "labels") script >> params.labelcolor;
+            else if (color_name == "constellation_lines")
+                script >> params.clinecolor;
+            else if (color_name == "milky_way") script >> params.milkywaycolor;
+            else throw string("Undefined \"color\" construct"
+                              " in input script");
+        }
+
+
+@ There are the following boolean values: ``\.{milky\_may}'',
+``\.{colored\_stars}'', ``\.{grid}'', ``\.{ecliptic}'', ``\.{boundaries}'',
+``\.{constellation\_lines}'', ``\.{labels}'', ``\.{eps\_output}'',
+and ``\.{pdf\_output}''.  You can switch them ``\.{on}'' or ``\.{off}''.
+
+@.milky\_way@>
+@.colored\_stars@>
+@.grid@>
+@.ecliptic@>
+@.boundaries@>
+@.constellation\_lines@>
+@.labels@>
+@.eps\_output@>
+@.pdf\_output@>
+
+@<Set on/off parameters@>=
+        if (opcode == "switch") {
+            string switch_name;
+            script >> switch_name;
+            if (switch_name == "milky_way")
+                params.milkyway_visible = read_boolean(script);
+            else if (switch_name == "colored_stars")
+                params.colored_stars = read_boolean(script);
+            else if (switch_name == "grid")
+                params.show_grid = read_boolean(script);
+            else if (switch_name == "ecliptic")
+                params.show_ecliptic = read_boolean(script);
+            else if (switch_name == "boundaries")
+                params.show_boundaries = read_boolean(script);
+            else if (switch_name == "constellation_lines")
+                params.show_lines = read_boolean(script);
+            else if (switch_name == "labels")
+                params.show_labels = read_boolean(script);
+            else if (switch_name == "eps_output")
+                params.create_eps = read_boolean(script);
+            else if (switch_name == "pdf_output")
+                params.create_pdf = read_boolean(script);
+            else throw string("Undefined \"switch\" construct"
+                              " in input script");
+        }
+
+@ The most important filename is ``\.{output}''.  By default it's unset so that
+the output is sent to standard output.  With $$\hbox{\.{filename output
+orion.tex}}$$ the output is written to \.{orion.tex}.  The other filenames
+denote the data files.  Their file format is described at the functions that
+read them.  Their names are: ``\.{stars}'', ``\.{nebulae}'',
+``\.{label\_dimensions}'', ``\.{constellation\_lines}'', ``\.{boundaries}'',
+and ``\.{milky\_way}''.
+
+@.output@>
+@.stars@>
+@.nebulae@>
+@.label\_dimensions@>
+@.constellation\_lines@>
+@.boundaries@>
+@.milky\_way@>
+
+@<Set filename parameters@>=
+        if (opcode == "filename") {
+            string object_name;
+            script >> object_name;
+            if (object_name == "output")
+                params.filename_output = read_string(script);
+            else if (object_name == "stars")
+                params.filename_stars = read_string(script);
+            else if (object_name == "nebulae") 
+                params.filename_nebulae = read_string(script);
+            else if (object_name == "label_dimensions")
+                params.filename_dimensions = read_string(script);
+            else if (object_name == "constellation_lines")
+                params.filename_lines = read_string(script);
+            else if (object_name == "boundaries")
+                params.filename_boundaries = read_string(script);
+            else if (object_name == "milky_way")
+                params.filename_milkyway = read_string(script);
+            else throw string("Undefined \"filename\" construct"
+                              " in input script");
+        }
+
+@ Most of these values are numeric, only \.{constellation} is a string, namely
+a three-letter all-uppercase astronomic abbreviation of the constellation to be
+highlighted.  It's default is ``\.{ORI}''  but you may set it to the empty
+string with $$\hbox{\.{set constellation ""}}$$ so no constellation gets
+highlighted.  At the moment highlighting means that the boundaries have a
+brighter color that normal.
+
+``\.{center\_rectascension}'' and ``\.{center\_declination}'' are the celestial
+coordinates of the view frame centre.  ``\.{box\_width}'' and
+``\.{box\_height}'' are the dimensions of the view frame in centimetres.
+``\.{grad\_per\_cm}'' is the magnification (scale).
+
+
+@.center\_rectascension@>
+@.center\_declination@>
+@.box\_width@>
+@.box\_height@>
+@.grad\_per\_cm@>
+@.constellation@>
+
+@<Set single value parameters@>=
+        if (opcode == "set") {
+            string param_name;
+            script >> param_name;
+            if (param_name == "center_rectascension")
+                script >> params.center_rectascension;
+            else if (param_name == "center_declination")
+                script >> params.center_declination;
+            else if (param_name == "box_width")
+                script >> params.view_frame_width;
+            else if (param_name == "box_height")
+                script >> params.view_frame_height;
+            else if (param_name == "grad_per_cm")
+                script >> params.grad_per_cm;
+            else if (param_name == "constellation")
+                params.constellation = read_string(script);
+            else throw string("Undefined \"set\" construct"
+                              " in input script");
+        }
+
+@*1 Change printed objects and labels.  Here I read and interpret the second
+part of the input script, {\it after\/} the |"objects_and_labels"|.  Not that
+none of both paths must be available in the script.
+
+First I define a type that is often used in the following routines for a
+mapping from a catalogue number on the intex in PP3's internal |vectors|.  This
+makes access a lot faster.  FixMe:  At least for stars this can be used for
+stellar constellation lines, too.
+
+@c
+typedef vector<int> index_list;
+
+@ Here I create the data structures that make the above mentioned mapping
+possible.  FixMe: They should be defined globally, so that they needn't be
+passed as arguments in almost every single routine here.
+
+This mapping is not vital for the program, but the alternative would be to look
+through the whole of |nebulae| or |stars| to find a star with a certain NGC or
+HD number.  This is probably way to inefficient.
+
+@<Create mapping structures for direct catalogue access@>=
+    const int max_NGC = 7840, max_IC=5386, max_M=110;
+    index_list NGC(max_NGC+1), IC(max_IC+1), M(max_M+1);
+    for (int i = 0; i < nebulae.size(); i++) {
+        if (nebulae[i].NGC > 0 && nebulae[i].NGC <= max_NGC)
+            NGC[nebulae[i].NGC] = i;
+        if (nebulae[i].IC > 0 && nebulae[i].IC <= max_IC)
+            IC[nebulae[i].IC] = i;
+        if (nebulae[i].M > 0 && nebulae[i].M <= max_M)
+            M[nebulae[i].M] = i;
+    }
+    map<int,int> henry_draper;
+    for (int i = 0; i < stars.size(); i++)
+        if (stars[i].hd > 0) henry_draper[stars[i].hd] = i;
+
+@ In this routine I can a list of stellar objects, given by a tokan pair of
+catalogue name and catalogue index.  Such lists are used after some top-level
+commands below.  A mandatory `\.{;}' ends such a list.  Four catalogues are
+supported:  NGC, IC, Messier, and Henry-Draper.  You may use the program
+`Celestia' to get the HD numbers for the stars.
+
+@c
+void search_objects(istream& script, const index_list& NGC,
+                    const index_list& IC, const index_list& M,
+                    map<int,int>& henry_draper,
+                    index_list& found_stars, index_list& found_nebulae) {
+    found_stars.resize(0);
+    found_nebulae.resize(0);
+    string catalogue_name;
+    int catalogue_index;
+    script >> catalogue_name;
+    while (script && catalogue_name != ";") {
+        script >> catalogue_index;
+        if (!script) throw string("Unexpected end of input script");
+        if (catalogue_name == "NGC")
+            found_nebulae.push_back(NGC[catalogue_index]);
+        else if (catalogue_name == "IC")
+            found_nebulae.push_back(IC[catalogue_index]);
+        else if (catalogue_name == "M")
+            found_nebulae.push_back(M[catalogue_index]);
+        else  if (catalogue_name == "HD")
+            found_stars.push_back(henry_draper[catalogue_index]);
+        else throw string("Unknown catalogue: ") + catalogue_name;
+        script >> catalogue_name;
+    }
+}
+
+@ This routine essentially does the same as the prevous one, however only for
+{\it one\/} celestial object.  This is used for commands that don't take an
+object list but only one object.
+
+@c
+view_data* identify_object(istream& script, const index_list& NGC,
+                           const index_list& IC, const index_list& M,
+                           map<int,int>& henry_draper,
+                           stars_list& stars, nebulae_list& nebulae) {
+    string catalogue_name;
+    int catalogue_index;
+    script >> catalogue_name >> catalogue_index;
+    if (!script) throw string("Unexpected end of input script");
+    if (catalogue_name == "NGC") return &nebulae[NGC[catalogue_index]];
+    else if (catalogue_name == "IC") return &nebulae[IC[catalogue_index]];
+    else if (catalogue_name == "M") return &nebulae[M[catalogue_index]];
+    else if (catalogue_name == "HD")
+        return &stars[henry_draper[catalogue_index]];
+    else throw string("Unknown catalogue: ") + catalogue_name;
+}
+
+@ Here now the main routine for the second part of the input script.  The
+top-level commands in this section are: ``\.{reposition}'',
+``\.{delete\_labels}'', ``\.{add\_labels}'', ``\.{delete}'', and ``\.{add}''.
+
+@.reposition@>
+@.delete\_labels@>
+@.add\_labels@>
+@.delete@>
+@.add@>
+
+@q'@>
+
+@c
+void read_objects_and_labels(istream& script,
+                             const dimensions_list& dimensions,
+                             objects_list& objects, stars_list& stars,
+                             nebulae_list& nebulae,
+                             const transformation& mytransform) {
+    string opcode;
+    script >> opcode;
+    if (!script) return;
+    @<Create mapping structures for direct catalogue access@>@;
+    while (script) {
+        if (opcode[0] == '#') {   // skip comment line
+            string rest_of_line;
+            getline(script,rest_of_line);
+        } else 
+            @<Label repositioning@>;
+        else {  // multi-parameter command
+            index_list found_stars, found_nebulae;
+            search_objects(script, NGC, IC, M, henry_draper, found_stars,
+                           found_nebulae);
+            cerr << "Found objects: "
+                 << found_stars.size() << " stars, "
+                 << found_nebulae.size() << " nebulae" << endl;
+            @<Label deletion@>@;
+            else
+                @<Label activation@>@;
+            else
+                @<Celestial object deletion@>@;
+            else
+                @<Celestial object activation@>@;
+            else throw string("Undefined opcode in input script");
+        } 
+        script >> opcode;
+    }
+}
+
+@ Sometimes labels have an unfortunate position.  But you may say e.\,g.\
+$$\hbox{\.{reposition M42 E}}$$ to position the label for the Orian Nebula to
+the right of it.  (Abbreviations are taken from the wind rose.)
+
+@<Label repositioning@>=
+        if (opcode == "reposition") {
+            string new_position;
+            view_data* current_object =
+                identify_object(script, NGC, IC, M, henry_draper, stars, nebulae);
+            int new_angle;
+            script >> new_position;
+            if (new_position == "E") new_angle = 0;
+            else if (new_position =="NE") new_angle = 1;
+            else if (new_position =="N") new_angle = 2;
+            else if (new_position =="NW") new_angle = 3;
+            else if (new_position =="W") new_angle = 4;
+            else if (new_position =="SW") new_angle = 5;
+            else if (new_position =="S") new_angle = 6;
+            else if (new_position =="SE") new_angle = 7;
+            else throw string("Undefined position angle: ") + new_position;
+            current_object->label_angle = new_angle;
+            current_object->with_label = true;
+        } 
+
+@ With e.\,g.\ $$\hbox{\.{delete\_labels M 35 M42 ;}}$$ you delete the labels
+(not the nebulae themselves!)\ of M\,35 and M\,42.
+
+@<Label deletion@>=
+            if (opcode == "delete_labels") {
+                for (int i = 0; i < found_stars.size(); i++)
+                    stars[found_stars[i]].with_label = false;
+                for (int i = 0; i < found_nebulae.size(); i++)
+                    nebulae[found_stars[i]].with_label = false;
+            }
+
+@ The counterpart of \.{delete\_labels}.  It makes sense first and formost for
+stars.  (Unfortunately this means that you have to use extensively the Henry
+Draper Catalogue.)
+
+@<Label activation@>=
+            if (opcode == "add_labels") {
+                for (int i = 0; i < found_stars.size(); i++)
+                    stars[found_stars[i]].with_label = true;
+                for (int i = 0; i < found_nebulae.size(); i++)
+                    nebulae[found_stars[i]].with_label = true;
+            }
+
+@ This adds objects (mostly nebulae) the the field.  Notice that this object is
+then printed even if it lies outside the view frame (it may be clipped though).
+
+@<Celestial object activation@>=
+            if (opcode == "add") {
+                for (int i = 0; i < found_stars.size(); i++)
+                    stars[found_stars[i]].in_view = true;
+                for (int i = 0; i < found_nebulae.size(); i++)
+                    nebulae[found_stars[i]].in_view = true;
+            }
+
+@ The opposite of |@<Celestial object activation@>|.
+
+@<Celestial object deletion@>=
+            if (opcode == "delete") {
+                for (int i = 0; i < found_stars.size(); i++)
+                    stars[found_stars[i]].in_view = false;
+                for (int i = 0; i < found_nebulae.size(); i++)
+                    nebulae[found_stars[i]].in_view = false;
+            }
+
 
 @* The main function.  This consists of four parts: \medskip
 
@@ -1901,51 +2445,101 @@ drawing routines.
 @q'@>
 
 @c
-int main() {
-    transformation mytransform(global_parameters.center_rectascension,
-			       global_parameters.center_declination,
-			       global_parameters.view_frame_width,
-			       global_parameters.view_frame_height,
-			       global_parameters.grad_per_cm);
-
-    boundaries_list boundaries;
-    dimensions_list dimensions;
-    objects_list objects;
-    stars_list stars;
-    nebulae_list nebulae;
-    connections_list connections;
-
-    read_constellation_boundaries("constborders.dat", boundaries);
-    read_label_dimensions("labeldims.dat",dimensions);
-    read_stars("bsc.dat", stars, dimensions);
-    read_nebulae("nebulae.dat", nebulae, dimensions);
+int main(int argc, char **argv) {
+    istream* in = 0;
+    bool input_file = false;
     try {
-        read_constellation_lines("lines.dat", connections, stars);
+        if (argc == 2) {
+            if (argv[1][0] != '-') {
+                in = new ifstream(argv[1]);
+                if (!in->good()) throw string("Input script file ") + argv[1]
+                                     + " not found";
+                else input_file = true;
+            } else if (!strcmp(argv[1],"-")) in = &cin; else
+                cerr << "Invalid argument: " << argv[1] << endl;
+        }
+        if (in == 0) {
+            cerr << "Syntax:\n  pp3 {input-file}\n\n" @/
+                 << "{input-file} may be \"-\" to denote standard input.\n" @/
+                 << "You may give an empty file to get a default plot.\n" @/
+                 << "The plot is sent to standard output by default.\n";
+            exit(0);
+        }
+        read_parameters_from_script(*in);
+        if (!params.filename_output.empty())
+            params.out = new ofstream(params.filename_output.c_str());
+        transformation mytransform(params.center_rectascension,
+                                   params.center_declination,
+                                   params.view_frame_width,
+                                   params.view_frame_height,
+                                   params.grad_per_cm);
+
+        boundaries_list boundaries;
+        dimensions_list dimensions;
+        objects_list objects;
+        stars_list stars;
+        nebulae_list nebulae;
+        connections_list connections;
+
+        if (params.show_boundaries) read_constellation_boundaries(boundaries);
+        read_label_dimensions(dimensions);
+        read_stars(stars, dimensions);
+        read_nebulae(nebulae, dimensions);
+        if (params.show_lines) read_constellation_lines(connections, stars);
+
+        read_objects_and_labels(*in, dimensions, objects, stars, nebulae,
+                                mytransform);
+
+        OUT.setf(ios::fixed);  // otherwise \LaTeX\ gets confused
+        OUT.precision(3);
+        @<Create \LaTeX\ header@>@;
+        OUT << "\\psclip{\\psframe(0bp,0bp)("
+            << params.view_frame_width_in_bp()
+            << ',' << params.view_frame_height_in_bp() << ")}%\n";
+        OUT << "\\psframe*[linestyle=none,linecolor=bgcolor](0bp,0bp)("
+            << params.view_frame_width_in_bp() << "bp,"
+            << params.view_frame_height_in_bp() << "bp)%\n";
+        if (params.milkyway_visible) draw_milky_way(mytransform);
+        create_grid(mytransform);
+        if (params.show_boundaries)
+            draw_boundaries(mytransform, boundaries, objects,
+                            params.constellation);
+        draw_nebulae(mytransform, nebulae, objects);
+        draw_stars(mytransform, stars, objects);
+        if (params.show_lines)
+            draw_constellation_lines(mytransform, connections, stars, objects);
+        if (params.show_labels) {
+            arrange_labels(objects);
+            print_labels(objects);
+        }
+        OUT << "\\endpsclip\n";
+        @<Create \LaTeX\ footer@>@;
+        if (input_file) delete in;
+        if (!params.filename_output.empty() && (params.create_eps
+                                                || params.create_pdf)) {
+            OUT.flush();
+            string commandline = string("latex ") + params.filename_output;
+            if (system(commandline.c_str()) == 0) {
+                string base_filename(params.filename_output);
+                if (base_filename.find('.') != string::npos)
+                    base_filename.erase(base_filename.find('.'));
+                commandline = string("dvips -o ") + base_filename + ".eps "
+                    + base_filename;
+                if (system(commandline.c_str()) == 0) {
+                    if (params.create_pdf) {
+                        commandline = string("ps2pdf ") +
+                            base_filename + ".eps";
+                        if (system(commandline.c_str()) != 0)
+                            throw string("ps2pdf call failed: ")+commandline;
+                    }
+                } else throw string("dvips call failed");
+            } else throw string("LaTeX call failed");
+        }
     }
     catch (string s) {
-        cerr << s << endl;
+        cerr << "pp3: " << s << '.' << endl;
         exit(1);
     }
-
-    cout.setf(ios::fixed);  // otherwise \LaTeX\ gets confused
-    cout.precision(3);
-    @<Create \LaTeX\ header@>@;
-    cout << "\\psclip{\\psframe(0,0)(" << global_parameters.view_frame_width
-         << ',' << global_parameters.view_frame_height << ")}%\n";
-    cout << "\\psframe*[linestyle=none,linecolor=darkblue](0,0)("
-	 << global_parameters.view_frame_width
-         << ',' << global_parameters.view_frame_height << ")%\n";
-    draw_milky_way("milkyway.dat", mytransform);
-    create_grid(mytransform);
-    draw_boundaries(mytransform, boundaries, objects,
-		    global_parameters.constellation);
-    draw_nebulae(mytransform, nebulae, objects);
-    draw_stars(mytransform, stars, objects);
-    draw_constellation_lines(mytransform, connections, stars, objects);
-    arrange_labels(objects);
-    print_labels(objects);
-    cout << "\\endpsclip\n";
-    @<Create \LaTeX\ footer@>@;
     return 0;
 }
 
@@ -1956,25 +2550,32 @@ of the label dimensions file.  I use the \.{geometry} package and a dvips
 2~millimetres.  So I create a buffer border of 1\,mm thickness.
 
 @<Create \LaTeX\ header@>=
-    cout << "\\documentclass{article}\n\n" @/
-         << "\\usepackage{eulervm}\n" @/
-         << "\\usepackage[T1]{fontenc}\n" @/
-         << "\\renewcommand*{\\rmdefault}{pmy}\n" @/
-         << "\\usepackage{pstricks}\n" @/
-         << "\\newrgbcolor{darkblue}{0 0 0.4}\n" @/
-         << "\\usepackage[nohead,nofoot,margin=0cm," @/
-         << "paperwidth=" << global_parameters.view_frame_width + 0.2 << "cm," @/
-         << "paperheight=" << global_parameters.view_frame_height + 0.2 << "cm" @/
-         << "]{geometry}\n" @/
-         << "\n\\begin{document}\\boldmath\\parindent0pt\n" @/
-         << "\\special{papersize=" << global_parameters.view_frame_width
-         << "cm," << global_parameters.view_frame_height << "cm}%\n" @/
-         << "\\vbox to \\vsize{\\vfill\\hbox{\\hspace{1mm}%\n";
+    OUT << "\\documentclass{article}\n\n" @/
+        << "\\usepackage{eulervm}\n" @/
+        << "\\usepackage[T1]{fontenc}\n" @/
+        << "\\renewcommand*{\\rmdefault}{pmy}\n" @/
+        << "\\usepackage[dvips]{color}\n" @/
+        << "\\usepackage{pstricks}\n" @/
+        << "\\usepackage[nohead,nofoot,margin=0cm," @/
+        << "paperwidth=" << params.view_frame_width_in_bp() << "bp," @/
+        << "paperheight=" << params.view_frame_height_in_bp() << "bp" @/
+        << "]{geometry}\n" @/
+        << "\n\\pagecolor[rgb]{" << params.bgcolor.red << ','
+        << params.bgcolor.green << ',' << params.bgcolor.blue << "}\n" @/
+        << "\n\\begin{document}\\parindent0pt\n" @/
+        << "\\pagestyle{empty}\\thispagestyle{empty}%\n" @/
+        << "\\special{papersize=" << params.view_frame_width_in_bp() - 0.1
+        << "bp," << params.view_frame_height_in_bp() - 0.1 << "bp}%\n" @/
+        << "\\vbox to \\vsize{\\vfill\\hbox to \\hsize{%\n" @/
+        << params.bgcolor << params.gridcolor << params.eclipticcolor
+        << params.boundarycolor << params.hlboundarycolor << params.starcolor
+        << params.nebulacolor << params.labelcolor << params.clinecolor @/
+        << "\\boldmath\n";
 
 @ This is almost trivial.  I just close the box structure I began at the end of
 |@<Create \LaTeX\ header@>| and close the document.
 
 @<Create \LaTeX\ footer@>=
-    cout << "}\\vskip1mm}\\end{document}\n";
+    OUT << "\\hfill}}\\end{document}\n";
 
 @* Index.
