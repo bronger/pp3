@@ -22,8 +22,8 @@ set box_width 5
 
 objects_and_labels
 
-text "\\small Wolf 359\\hskip0.3em\\psdots[dotstyle=+,dotangle=45](0,0)" 
- at 10.902 7.32 towards W_ ;
+text "\\small Wolf 359\\hskip0.3em
+      \\psdots[dotstyle=+,dotangle=45](0,0)" at 10.902 7.32 towards W_ ;
 
 set_label_text LEO 32 "\\footnotesize Regulus"
 reposition LEO 32 W ;
