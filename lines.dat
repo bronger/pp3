@@ -5,6 +5,8 @@ ORI 50  ORI 58 ;
 PER 44  PER 45  PER 39  PER 33  PER 23 ;
 PER 33  PER 26 ;
 
+CAS 45  CAS 37  CAS 27  CAS 18  CAS 11 ;
+
 AUR 13  AUR 34  AUR 37  TAU 112  AUR 3 AUR 7  AUR 13 ;
 
 LEO 32  LEO 30  LEO 41  LEO 68  LEO 94  LEO 70  LEO 32 ;
@@ -170,6 +172,27 @@ HD 152786 ; # zeta Ara
 HD 152980  # epsilon1 Ara
 HD 152786  # zeta Ara
 HD 151249 ; # eta Ara
+
+
+# Southern Cross
+
+HD 111123  # beta Cru
+HD 106490 ; # delta Cru
+
+HD 108248  # alpha Cur
+HD 108903 ;  # gamma Cru
+
+
+# Musca
+
+HD 102249  # lambda Mus
+HD 106849  # epsilon Mus
+HD 109668  # alpha Mus
+HD 110879  # beta Mus
+HD 112985  # delta Mus
+HD 109026  # gamma Mus
+HD 109668 ;  # alpha Mus
+
 
 # Norma
 
