@@ -4,7 +4,6 @@
 # No graphics must be wider than 9 cm (425px)
 
 filename latex_preamble wiki.tex
-filename constellation_lines lines.dat
 
 set box_width 7
 set box_height 7
