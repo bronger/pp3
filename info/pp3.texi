@@ -1919,7 +1919,61 @@ purposes.
 @appendix Known problems
 @cindex bugs
 
-@strong{To be done.}
+The following issues are known to the maintainer of @PPTHREE{}.  If you
+find another one, please report it on
+@uref{http://sourceforge.net/projects/pp3,@PPTHREE{}'s project page}.
+
+@itemize
+@item
+Unknown stars in constellation line data files (the default is the file
+@file{lines.dat}) result in an error message, which is good, but the
+error message may print another -- probably valid -- star name, which is
+bad.  Furtunately the actually wrong star and the printed star are
+within the same constellation line, the printed star coming first.
+
+@kwindex set_label_text
+
+@item
+The text argument of @code{set_label_text} must be enclosed with double
+quotes even if it doesn't contain whitespace.  This constraint applies
+only to @code{set_label_text}.
+
+@item
+The usage of semicolons in @PPTHREE{} input scripts is not
+consistent. For example, a `@code{reposition}' needs one, but a
+`@code{set_label_text}' not.
+
+@cindex Milky Way
+
+@item
+If you print a large portion of the sky, e.@s{}g.@: a hemisphere, and a
+pole-near region of the Milky Way (e.@s{}g.@tie{}Southern Cross) is at
+the very rim of the map, the Milky Way dots are printed a little bit too
+coarsely, leaving tiny gaps between the dots.
+
+@item
+The declination circles have slight kinks at 0@dmn{h} rectascension.
+Except for the @math{\pm 80^\circ} circles they are mostly invisible
+though.
+
+@kwindex ecliptic
+@kwindex grid
+@kwindex coordinate grid
+@kwindex penalty scheme
+
+@item
+Ecliptic and grid don't take part in @PPTHREE{}'s penalty scheme yet.
+
+@cindex Small Magellanic Cloud
+
+@item
+Great nebulae are drawn as ellipses representing their approximative
+shape in the sky.  However, the algorithm doing that is mathematically
+flawed and doesn't work for polar-near regions.  Fortunately this only
+affects the Small Magellanic Cloud, the actual shape of which is, by a
+curious coincidence, rendered very well by that algorithm.
+@end itemize
+
 
 @menu
 * Wishlist::                    PP3's todo list.  Feel free to contribute!
@@ -1953,7 +2007,7 @@ More map projections, in particular a real isogonal one.
 @item
 The resolution of the Milky Way should be determined in a way that
 @TeX{}'s memory doesn't overflow.  Maybe one should switch to contour
-plots instead of dot patterns for the Milky way.
+plots instead of dot patterns for the Milky Way.
 
 @item
 Create little bitmaps of all labels in order to determine kerning
