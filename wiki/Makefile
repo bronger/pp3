@@ -1,11 +1,11 @@
 CONSTELLATIONS = andromeda antlia apus aquarius aquila ara aries auriga bootes	\
 caelum camelopardalis cancer canes_venatici canis_major canis_minor capricornus	\
 carina cassiopeia centaurus cepheus cetus coma_berenices corvus crux cygnus	\
-delphinus draco eridanus fornax gemini grus hercules hydra indus leo libra	\
-lupus lynx microscopium monoceros norma octans ophiuchus orion pavo pegasus	\
-perseus phoenix pictor pisces piscis_austrinus puppis sagittarius scorpius	\
-sculptor serpens taurus tucana ursa_major ursa_minor vela virgo vulpecula	\
-scutum lyra leo_minor triangulum lacerta equuleus
+delphinus draco equuleus eridanus fornax gemini grus hercules hydra indus	\
+lacerta leo leo_minor libra lupus lynx lyra microscopium monoceros norma octans	\
+ophiuchus orion pavo pegasus perseus phoenix pictor pisces piscis_austrinus	\
+puppis sagittarius scorpius sculptor scutum serpens taurus triangulum tucana	\
+ursa_major ursa_minor vela virgo vulpecula sextans
 
 %.eps : %.pp3 wiki.pp3 wiki.tex
 	pp3 $<
