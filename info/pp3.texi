@@ -711,9 +711,9 @@ declination which is the centre of the constellation Swan.
 @chapter Keywords reference
 @cindex keywords
 
-On @uref{http://sf.net/projects/pp3,@PPTHREE{}'s project page} you can
-download a neat reference card.  If you fold it twice it is a handy
-zigzag.
+On @uref{http://sourceforge.net/projects/pp3,@PPTHREE{}'s project page}
+you can download a neat reference card.  If you fold it twice it is a
+handy zigzag.
 
 @menu
 * General structure::           The outline of a PP3 input script.
@@ -729,12 +729,17 @@ zigzag.
 @node Parameters
 @section Setting Parameters
 
+The keywords explained in this section are allowed only in the
+@emph{first} part of an input script, i.@s{}e.@: before the
+@code{objects_and_labels} command (if there is one).
+
 @menu
 * Essential parameters::        What probably all your input scripts
                                   will need.
 * Switching things on or off::  How to remove e.g. all nebulae easily.
 * Filtering by brightness::     Removing too faint objects.
 * Colour and line style and other layout::  Miscellaneous layout.
+* Implementing a global style::  Global PP3 file and LaTeX preamble.
 * Penalties::                   Finetune the overlap avoiding
                                   algorithm.
 * Filenames::                   Setting filenames for database files.
@@ -747,7 +752,6 @@ zigzag.
 @menu
 * View control::                Map view, scale, and size.
 * Output control::              Output filename and file format.
-* Implementing a global style::  Global PP3 file and LaTeX preamble.
 * Highlighted constellation::   Highlight one constellation.
 @end menu
 
@@ -760,16 +764,31 @@ zigzag.
 @kwindex box_height
 @kwindex grad_per_cm
 
+@deffn Parameter {set center_rectascension} rectascension
+@deffnx Parameter {set center_declination} declination
+Set the rectascension and declination of the centre of the map to
+@var{rectascension} (in hours) and @var{declination} (in degrees)
+respectively.
 
-set center_rectascension
+Defaults: 5.8 (@var{rectascension}), 0.0 (@var{declination})
+@end deffn
 
-set center_declination
 
-set box_width
+@deffn Parameter {set box_width} width
+@deffnx Parameter {set box_height} height
+Set the width and height of the resulting map to @var{width} and
+@var{height} (in centimetres) respectively.
 
-set box_height
+Defaults: 15 (@var{width}), 15 (@var{height})
+@end deffn
 
-set grad_per_cm
+
+@deffn Parameter {set grad_per_cm} scale
+Set the scale of the resulting map to @var{scale} (in degrees per
+centimetre).
+
+Default: 4.0
+@end deffn
 
 
 @node Output control
@@ -779,22 +798,29 @@ set grad_per_cm
 @kwindex output
 @kwindex pdf_output
 
-filename output
+@deffn Parameter {filename output} filename
+The resulting map will be written to the file @var{filename} in @LaTeX{}
+format.  It must habe the file extension @file{.tex}.  If @var{filename}
+is empty the map will be written to standard out.
 
-switch eps_output
+Default: @code{""} (empty)
+@end deffn
 
-switch pdf_output
+
+@deffn Parameter {switch eps_output} on/off
+If on, @PPTHREE{} creates a @acronym{PDF} file.  (Additionally to the
+@LaTeX{} file that you then can ignore.)
+
+Default: off
+@end deffn
 
 
-@node Implementing a global style
-@subsubsection Implementing a global style
-@kwindex filename
-@kwindex include
-@kwindex latex_preamble
+@deffn Parameter {switch pdf_output} on/off
+If on, @PPTHREE{} creates an @acronym{EPS} file.  (Additionally to the
+@LaTeX{} file that you then can ignore.)
 
-filename include
-
-filename latex_preamble
+Default: off
+@end deffn
 
 
 @node Highlighted constellation
@@ -802,7 +828,13 @@ filename latex_preamble
 @kwindex set
 @kwindex constellation
 
-set constellation
+@deffn Parameter {set constellation} abbreviation
+Highlight the constellation that is given by @var{abbreviation}.  If you
+don't want to hightlight anything, set it to @code{""} or to an invalid
+abbreviation.
+
+Default: @code{ORI}
+@end deffn
 
 
 @node Switching things on or off
@@ -818,21 +850,34 @@ set constellation
 @kwindex colored_stars
 
 
-switch milky_way
+@deffn Parameter {switch milky_way} on/off
+@deffnx Parameter {switch nebulae} on/off
+@deffnx Parameter {switch grid} on/off
+@deffnx Parameter {switch ecliptic} on/off
+@deffnx Parameter {switch boundaries} on/off
+@deffnx Parameter {switch constellation_lines} on/off
+@deffnx Parameter {switch labels} on/off
+Print or don't print the respective (class of) object(s) on the map.
+`Grid' means the coordinate grid, `boundaries' are the borderlines of
+the constellations, and `constellation lines' denote the lines between
+the brightest stars that are supposed to help to see the shape of a
+constellation.
 
-switch nebulae
+Defaults: off (Milky Way), on (all others)
+@end deffn
 
-switch grid
 
-switch ecliptic
+@deffn Parameter {switch colored_stars} on/off
+If switched on, all stars get a colour that represents their real colour
+according to their spectral class.  This may be unsuitable on a bright
+background since most stars are pretty white.
 
-switch boundaries
+If switched off, all stars get the colour given by `@code{color stars}',
+see @ref{Colours}.
 
-switch constellation_lines
+Default: on
+@end deffn
 
-switch labels
-
-switch colored_stars
 
 
 @node Filtering by brightness
@@ -845,18 +890,28 @@ switch colored_stars
 @kwindex faintest_star_disk_magnitude
 @kwindex minimal_star_radius
 
+@deffn Parameter {set faintest_cluster_magnitude} magnitude
+@end deffn
 
-set faintest_cluster_magnitude
 
-set faintest_diffuse_nebula_magnitude
+@deffn Parameter {set faintest_diffuse_nebula_magnitude} magnitude
+@end deffn
 
-set faintest_star_magnitude
 
-set faintest_star_with_label_magnitude
+@deffn Parameter {set faintest_star_magnitude} magnitude
+@end deffn
 
-set faintest_star_disk_magnitude
 
-set minimal_star_radius
+@deffn Parameter {set faintest_star_with_label_magnitude} magnitude
+@end deffn
+
+
+@deffn Parameter {set faintest_star_disk_magnitude} magnitude
+@end deffn
+
+
+@deffn Parameter {set minimal_star_radius} radius
+@end deffn
 
 
 @node Colour and line style and other layout
@@ -886,28 +941,78 @@ set minimal_star_radius
 @kwindex labels
 @kwindex text_labels
 
+@deffn Parameter {color background} red green blue
 
-color background
+Default: 0 @ 0 @ 0.4 @ (dark blue)
+@end deffn
 
-color grid
 
-color ecliptic
+@deffn Parameter {color grid} red green blue
 
-color boundaries
+Default: 0 @ 0.298 @ 0.447 @ (dark blue-grey)
+@end deffn
 
-color highlighted_boundaries
 
-color constellation_lines
+@deffn Parameter {color ecliptic} red green blue
 
-color milky_way
+Default: 1 @ 0 @ 0 @ (red)
+@end deffn
 
-color nebulae
 
-color stars
+@deffn Parameter {color boundaries} red green blue
 
-color labels
+Default: 0.5 @ 0.5 @ 0 @ (dark yellow)
+@end deffn
 
-color text_labels
+
+@deffn Parameter {color highlighted_boundaries} red green blue
+
+Default: 1 @ 1 @ 0 @ (yellow)
+@end deffn
+
+
+@deffn Parameter {color constellation_lines} red green blue
+
+Default: 0 @ 1 @ 0 @ (green)
+@end deffn
+
+
+@deffn Parameter {color milky_way} red green blue
+The Milky Way is printed in shades of different colour, representing the
+of its brightness.  The darkest areas of the Milky Way get the
+background colour, and the brightest the colour that you give here.
+
+The Milky way must be switched on of course in order to savour it, which
+is not the case by default, see @ref{Switching things on or off}.
+
+Default: 0 @ 0 @ 1 @ (blue)
+@end deffn
+
+
+@deffn Parameter {color nebulae} red green blue
+
+Default: 1 @ 1 @ 1 @ (white)
+@end deffn
+
+
+@deffn Parameter {color stars} red green blue
+Please note this this only has effect if the switch
+`@code{colored_stars}' is off, see @ref{Switching things on or off}.
+
+Default: 1 @ 1 @ 1 @ (white)
+@end deffn
+
+
+@deffn Parameter {color labels} red green blue
+
+Default: 0 @ 1 @ 1 @ (cyan)
+@end deffn
+
+
+@deffn Parameter {color text_labels} red green blue
+
+Default: 1 @ 1 @ 0 @ (yellow)
+@end deffn
 
 
 @node Line widths
@@ -978,6 +1083,33 @@ set star_scaling
 set fontsize
 
 
+@node Implementing a global style
+@subsection Implementing a global style
+@kwindex filename
+@kwindex include
+@kwindex latex_preamble
+
+@deffn Parameter {filename include} filename
+If non-empty, the file @var{filename} is interpreted as a @PPTHREE{}
+input script and read before the keywords in the current script are
+interpreted.  This enables you to enforce global style parameters and
+other commands for all maps in a set of maps.  The included script must
+not include yet another file.
+
+Default: @code{""} (empty)
+@end deffn
+
+
+@deffn Parameter {filename latex_preamble} filename
+If non-empty, the contents of the file @var{filename} is included at an
+appropriate position in the resulting @LaTeX{} file.  This enables you
+to use arbitrary @LaTeX{} macros to customise the map, see @ref{LaTeX
+preamble}@.
+
+Default: @code{""} (empty)
+@end deffn
+
+
 @node Penalties
 @subsection Penalties
 @kwindex penalties
@@ -1039,6 +1171,41 @@ filename milky_way
 @section Setting or deleting celestial objects and their labels
 
 
+@menu
+* Changing sky objects::        Adding and deleting stars and nebulae.
+* Changeing labels::            
+* Arbitrary text::              How to place arbitrary text on the map.
+@end menu
+
+@node Changing sky objects
+@subsection Adding and deleting stars and nebulae
+@kwindex add
+@kwindex delete
+
+add
+
+delete
+
+@node Changeing labels
+@subsection How to add, delete, and reposition labels
+@kwindex add_labels
+@kwindex delete_labels
+@kwindex set_label_text
+
+add_labels
+
+delete_labels
+
+set_label_text
+
+
+@node Arbitrary text
+@subsection How to place text on the map
+@kwindex text
+
+text
+
+
 @node PP3 and LaTeX
 @chapter PP3 and LaTeX
 
@@ -1049,7 +1216,7 @@ the @LaTeX{} language.
 
 I can't explain @LaTeX{} itself though.  So I must assume that you've
 been taught the basics elsewhere.  On the other hand, the @LaTeX{}
-excerpts that I will give in this chapter may be enough for most
+snippets that I will give in this chapter may be enough for most
 purposes.
 
 @menu
