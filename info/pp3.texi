@@ -118,7 +118,7 @@ modify it under the terms of the @acronym{MIT} licence.  Please see the
 @title PP3
 @subtitle drawing beautiful celestial maps
 @subtitle version @value{VERSION}
-@author Torsten Bronger
+@author Torsten Bronger, RWTH Aachen
 @page
 @vskip 0pt plus 1filll
 @insertcopying
@@ -666,25 +666,263 @@ whitespace.
 
 @end table
 
+@subheading Example
+
+@smallexample
+358 15 0.139805 29.0906 2.06 -0.11 21
+$\alpha$
+AND
+B8IVpMnHg
+11636 553 1.91067 20.8081 2.64 0.13 6
+$\beta$
+ARI
+A5V
+886 39 0.220611 15.1836 2.83 -0.23 88
+$\gamma$
+PEG
+B2IV
+@end smallexample
+
 
 @node Nebulae data file
 @section Nebulae data file
 
 
+This is a text file usually called @file{nebulae.dat}.  There is no
+header.  The file is just a whitespace separated stream of numbers and
+constellation abbreviations.  In order to make it more readable though,
+the standard @PPTHREE{} nebulae file has every nebula on one single line
+of its own.
+
+Each dataset has the following ten fields:
+
+@enumerate
+@item
+@acronym{NGC} catalogue number (`@code{0}' is not listed there),
+
+@item
+@acronym{IC} catalogue number(`@code{0}' is not listed there),
+
+@item
+Messier Catalogue number(`@code{0}' is not listed there),
+
+@item
+The astronomical abbreviation of the constellation.  It must be all
+uppercase.
+
+@item
+rectascension in hours,
+
+@item
+declination in degrees,
+
+@item
+visual brightness in magnitudes,
+
+@item
+large diameter in degree minutes,
+
+@item
+small diameter in degree minutes (must be equal to the large diameter if
+unknown), and
+
+@item
+the horizontal angle if the large diameter in degrees (`@code{720.0}' if
+unknown).
+
+@end enumerate
+
+@subheading Example
+
+@smallexample
+1 0 0 PEG 0.121083 27.7089 13.6 0.0283333 0.02 -30 1
+2 0 0 PEG 0.121417 27.6786 15 0.0166667 0.01 -22 1
+3 0 0 PSC 0.121333 8.30139 14.4 0.0183333 0.01 -21 1
+4 0 0 PSC 0.123472 8.37389 16.9 0.01 0.005 55 1
+5 0 0 AND 0.130222 35.3628 14.8 0.02 0.0116667 -25 1
+6 0 0 AND 0.159056 33.3089 14.1 0.0283333 0.0266667 -50 1
+
+1976 0 42 ORI 5.58808 -5.39028 4 1.08333 1 720 2
+3034 0 82 UMA 9.93167 69.6831 9.2 0.186667 0.0716667 25 1
+7000 0 0 CYG 20.9806 44.5167 4 2 1.66667 720 2
+@end smallexample
+
+
 @node Lines data file
 @section Constellation lines data file
+
+This is a text file usually called @file{lines.dat}.  It has no header.
+You can define paths of constellation lines by lists of stars that are
+ended with a semicolon@tie{}`@code{;}'.  You can insert superfluous
+whitespace as you wish, and comments after every@tie{}`@code{#}'.
+
+Stars are given in the usual way: Either by a pair of constellation
+abbreviation and Flamsteed number, as in
+
+@example
+ORI 19
+@end example
+
+@noindent
+(Rigel), or by `@code{HD}' and the Henry Draper catalogue number, as in
+
+@example
+HD 108248
+@end example
+
+@noindent
+(Acrux).
+
+@subheading Example
+
+@smallexample
+# Orion
+
+ORI 19  ORI 34  ORI 24 ;
+ORI 53  ORI 50  ORI 46  ORI 34 ;
+ORI 50  ORI 58 ;
+
+# Southern Cross
+
+HD 111123  # beta Cru
+HD 106490 ; # delta Cru
+
+HD 108248  # alpha Cur
+HD 108903 ;  # gamma Cru
+@end smallexample
 
 
 @node Boundaries data file
 @section Boundaries data file
 
+It doesn't make much sense to use an own boundaries file, unless you
+want to use a different equinox, but anyway.  This is a text file
+usually called @file{boundaries.dat}.  It has no header.
+
+The file is a sequence of elementary line segments.  Every segment is a
+whitespace separated sequence of entries.  The entries for each segment
+are:
+
+@enumerate
+@item
+Number of points @math{n_1} in the segment.
+
+@item
+Repeated @math{n_1} times:
+
+@enumerate
+@item
+rectascension of point in hours,
+@item
+declination of point in
+degrees.
+@end enumerate
+
+@item
+Number of constellations @math{n_2} touching this border line (is
+always@tie{}2, however it hasn't always been due to flawed raw data).
+
+@item
+Repeated @math{n_2} times: All uppercase astronomical abbreviation of
+the adjacent constellation. It may distinguish between @code{SER1} and
+@code{SER2} for Serpens Caput and Serpens Cauda.
+
+@end enumerate
+
+@subheading Example
+
+@smallexample
+3 20.63865 2.43608 20.63929 1.43613 20.63992 0.43617 2 AQL AQR
+10 20.63992 0.43617 20.64055 -0.56377 20.64118 -1.56373
+  20.64181 -2.56368 20.64245 -3.56364 20.64308 -4.56359 20.64372 -5.56355
+  20.64435 -6.56350 20.64500 -7.56346 20.64564 -8.56341 2 AQL AQR
+9 17.71838 -67.57110 17.65152 -67.58319 17.58465 -67.59526
+  17.51772 -67.60731 17.45076 -67.61933 17.38378 -67.63130 17.31676 -67.64324
+  17.24970 -67.65515 17.21616 -67.66108 2 ARA APS
+@end smallexample
+
+
 
 @node Milky Way data file
 @section Milky Way data file
 
+This is a text file usually called @file{milkyway.dat}.
+
+Its header is extremely simple: It consists of only one number which is
+the maximal (=@tie{}equatorial) diagonal half distance of two pixels in
+degrees (double). This value is used as the radius for the milky way
+pixels.  Of course it must be the minimal radius for which there are no
+gaps between the pixels.
+
+What follows are the Milky Way pixels themselves.  Each consists of tree
+entries, separated by white space:
+
+@enumerate
+@item
+The rectascension in hours,
+
+@item
+the declination in degrees, and
+
+@item
+the grey value of the pixel from 1@tie{}to@tie{}255.  Zero is not used
+because zero-value pixels are not included into the data file anyway.
+@end enumerate
+
+
+@subheading Example
+
+@smallexample
+0.212
+11.885 0.259 1
+11.962 0.295 5
+11.974 0.298 5
+
+17.982 -26.999 136
+17.982 -27.299 158
+17.982 -27.599 169
+17.982 -27.899 199
+17.981 -28.199 235
+@end smallexample
+
 
 @node Label dimensions file
 @section Label dimensions file
+
+This file is never user provided but generated by @PPTHREE{} itself in
+order to store typographic dimensions of all labels.  Highly probably
+you needn't know its structure.
+
+Every labels has two lines in the file:
+
+@table @asis
+@item Line 1
+The label itself in @LaTeX{} form.
+
+@item Line 2
+The typographic width, height, and depth of the label in centimetres,
+separated by whitespace.
+
+@end table
+
+@subheading Example
+
+@smallexample
+$10$~\footnotesize UMa
+0.97106 0.23043 0.00253
+$\omega$
+0.34197 0.17081 0.00000
+10 UMa
+1.11657 0.23389 0.00316
+47 Tuc
+0.94506 0.23389 0.00316
+Pleiades
+1.20865 0.24777 0.00316
+\FlexLabel@{Andromeda@}
+1.86061 0.25076 0.00316
+\FlexLabel@{Antlia@}
+0.93945 0.25076 0.00316
+@end smallexample
 
 
 @node Known problems
