@@ -1,0 +1,32 @@
+# Reticuklum, the Reticle
+#
+
+filename output reticulum.tex
+filename include wiki.pp3
+
+set constellation RET
+set center_rectascension   3.9
+set center_declination   -60
+set box_height 9
+set box_width 6.3
+
+set grad_per_cm 3
+
+set faintest_star_disk_magnitude 5
+
+
+objects_and_labels
+
+add_labels HD 23817  HD 25705  HD 25422  HD 27442 ;  # beta, gamma,
+                                                     # delta, and epsilon Ret
+reposition HD 27256 W ;  # alpha Ret
+
+text Reticulum at 4.5 -66.5 along declination ;
+text Horologium at 3.8 -52 along declination ;
+text Hydrus at 3.8 -67.5 along declination towards S ;
+text Mensa at 4.65 -71 along declination towards SW ;
+text Dorado at 4.7 -65 along declination towards W ;
+text Pictor at 4.6 -53 along declination towards NW ;
+
+text "\\footnotesize L\\kern0.1emM\\kern0.1emC" 
+  at 5.3 -70 color 0.0 0.0 0.9333 towards S ;
