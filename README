@@ -1,12 +1,14 @@
 
 		      PP3 -- Celestial charts generation
 
-			    Version 1.2  2003/04/29
+			    Version 1.3  2003/07/28
 			  http://pp3.sourceforge.net
 
 			   (c) 2003 Torsten Bronger
                			    <bronger@users.sourceforge.net>
 
+                                           See the file COPYING or the above
+                                           web address for licence information.
 INSTALLATION
 
 There is a binary distribution for the Linux (RPM) and one for the Windows
@@ -15,21 +17,33 @@ crippled version has no Milky Way and no nebulae data, and it doesn't contain
 the CWEB source code making it more difficult to adjust the source to your
 compiler's peculiarities.
 
+Please note that PP3 produces nothing else but a LaTeX file.  Thus you must
+have LaTeX installed if you want to get the actual map.  It is not necessary to
+be able to use LaTeX though.  If you want PP3 to produce an EPS or a PDF, dvips
+and ps2pdf must be installed properly, too.  (However mostly they are part of
+the TeX distribution anyway.)
+
 The only really critical point is that PP3 needs to find its data files (all
-files with the .dat extension).  By default it looks for them in the current
-directory.  If you don't like that, you can move them to another directory and
-set the environment variable PP3DATA to that directory.  It it also possible to
+files with the .dat extension).  By default,
+
+  * the Windows version looks for them in the current directory, and
+
+  * the Linux version looks for them in the directory /usr/local/share/pp3
+
+If you don't like that, you can move them to another directory and set the
+environment variable PP3DATA to that directory.  It it also possible to
 recompile PP3 with a different default data directory.
 
-If you compile PP3 you may have problems with the fmax, fmin, and fdim
-functions that may be undefined for certain compiler versions.  In this case
-recreate PP3's C++ source code from the CWEB source code by deleting the file
-pp3.cc and calling
 
-make CHANGEFILE=fmax.ch
+    If you compile PP3 you may have problems with the fmax, fmin, and fdim
+    functions that may be undefined for certain compiler versions.  In this
+    case recreate PP3's C++ source code from the CWEB source code by deleting
+    the file pp3.cc and calling
 
-You first may want to change some paths at the beginning of the Makefile before
-you use it.
+    make CHANGEFILE=fmax.ch
+
+    You first may want to change some paths at the beginning of the Makefile
+    before you use it.
 
 
 USAGE
@@ -41,6 +55,14 @@ pp3 leo.pp3
 
 The result should be a file leo.eps with the constellation of Lion.
 
+    If you want to see the Milky Way on your maps, you probably have to set the
+    main memory size (pool size) of your TeX distribution to its maximal value.
+    This is very implementation specific.  With teTeX (Linux) you have to find
+    the file texmf.cnf and set main_memory.latex to 7500000.  Then call
+    "fmtutil --byfmt latex".  With fpTeX/TeXLive (Windows) it's probably
+    similar, however MikTeX (Windows too) is different.  Have a look in the
+    manual of your TeX distribution for definitive information.
+
 
 DOCUMENTATION
 
@@ -49,11 +71,15 @@ you how you can make a neat pp3.ps from it.  This may have been done already
 for your distribution.  In this case, just print pp3.ps or read it with your
 favourite PostScript viewer.
 
-Especially the first pages are important, because there usage of PP3 and the
-file format of the input scripts is explained.
+Please don't be afraid -- if you skip the C++ code, there is much useful,
+readable, and neatly printed information.  Especially the first pages are
+important, because there the usage of PP3 and the file format of the input
+scripts are explained.
 
 Another important source of information are the example input scripts in
 examples/.
+
+On PP3's project web page you can download a concise reference card.
 
 
 DATABASES
