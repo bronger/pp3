@@ -80,42 +80,6 @@ as well.</p>
 
   </section>
 
-  <section>
-    <heading>Documentation</heading>
-
-    <subsection>
-      <heading>Source code</heading>
-
-      <p skip="med">The only full documentation is the <url
-name="pp3.pdf">source code</url> itself.  Please don't be afraid – the program
-is written in <url
-name="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">&CWEB;</url>, so
-it's full of “human language&rdquo; explanations, and rather easy to read.  The
-source is structured so that all relevant information can be found on the first
-pages.  There one finds a short introduction with an example and references
-within the source code where to get further info.  If someone wants to
-contribute, contact me.</p>
-    </subsection>
-
-    <subsection>
-      <heading>Reference card</heading>
-
-      <p>As already mentioned, there is a neat <url name=
-"http://sourceforge.net/project/showfiles.php?group_id=71469&amp;release_id=174617"
->reference card</url>.  It can be downloaded for A4 and letter paper in &PDF;
-and PostScript format.  If you fold it twice to a zigzag, it's very handy,
-too.  <verb>:-)</verb></p>
-    </subsection>
-
-    <subsection>
-      <heading>Wikipedia example scripts</heading>
-
-      <p>&PP3; is responsible for almost all star maps on English <url
-name="http://www.wikipedia.org">Wikipedia</url>, the free encyclopedia.  Since
-they can serve very well as examples, all of their source scripts are included
-in &PP3;'s distribution, together with all associated files.</p>
-    </subsection>
-  </section>
 
   <section>
     <heading>Examples</heading>
@@ -189,6 +153,44 @@ Most of the commands change colour to get this black-and-white effect.  There
 are also gzipped &EPS; versions of both the <url name="ori.eps.gz">Orion</url>
 and the <url name="sco.eps.gz">Scorpion</url> graphics available.</p>
   </section>
+
+  <section>
+    <heading>Documentation</heading>
+
+    <subsection>
+      <heading>Source code</heading>
+
+      <p skip="med">The only full documentation is the <url
+name="pp3.pdf">source code</url> itself.  Please don't be afraid – the program
+is written in <url
+name="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">&CWEB;</url>, so
+it's full of “human language&rdquo; explanations, and rather easy to read.  The
+source is structured so that all relevant information can be found on the first
+pages.  There one finds a short introduction with an example and references
+within the source code where to get further info.  If someone wants to
+contribute, contact me.</p>
+    </subsection>
+
+    <subsection>
+      <heading>Reference card</heading>
+
+      <p>As already mentioned, there is a neat <url name=
+"http://sourceforge.net/project/showfiles.php?group_id=71469&amp;release_id=174617"
+>reference card</url>.  It can be downloaded for A4 and letter paper in &PDF;
+and PostScript format.  If you fold it twice to a zigzag, it's very handy,
+too.  <verb>:-)</verb></p>
+    </subsection>
+
+    <subsection>
+      <heading>Wikipedia example scripts</heading>
+
+      <p>&PP3; is responsible for almost all star maps on English <url
+name="http://www.wikipedia.org">Wikipedia</url>, the free encyclopedia.  Since
+they can serve very well as examples, all of their source scripts are included
+in &PP3;'s distribution, together with all associated files.</p>
+    </subsection>
+  </section>
+
 
   <section>
     <heading>Prerequisites</heading>
