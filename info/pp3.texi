@@ -12,7 +12,7 @@
 @c                         <bronger@users.sourceforge.net>              @>
 @c                                                                      @>
 @c  This program may be distributed and/or modified under the           @>
-@c  conditions of the MIT licence with the following contraint:         @>
+@c  conditions of the MIT licence with the following constraint:        @>
 @c  If you copy or distribute a modified version of this Software, the  @>
 @c  entire resulting derived work must be given a different name and    @>
 @c  distributed under the terms of a permission notice identical to     @>
@@ -149,11 +149,12 @@ flexibility of the LaTeX language.
 @menu
 * Introduction::                The ideas behind it.
 * Installation::                Some ways to set PP3 up.
+* Basic astronomical terms::    Rectascension, declination, and such.
 * Usage::                       How to invoke PP3.
 * Input scripts::               Telling PP3 what to do.
 * Keywords reference::          List of all PP3 keywords.
-* Data file formats::           Internal structure of the database files.
 * Known problems::              List of known shortcomings and bugs.
+* Data file formats::           Internal structure of the database files.
 * Index::                       General index.
 @end menu
 @end ifnottex
@@ -174,7 +175,6 @@ flexibility of the LaTeX language.
 * What it is::                  Features of PP3.
 * What it is not::              Limitations of PP3.
 * Successful use of PP3::       Things that have been done using PP3.
-* Basic astronomical terms::    Rectascension, declination, and such.
 @end menu
 
 @node What it is
@@ -259,128 +259,13 @@ the 88@tie{}bitmaps.  So the project died, but on a smaller scale (for
 ten constellations or so), it indeed motivated authors to contribute
 articles about constellations.  The maps were externally linked.
 
-@node Basic astronomical terms
-@section Basic astronomical terms
-
-The following is a mere crash course.  It is supposed to enable you to
-use @PPTHREE{} even if you have not the slightest idea about how
-astronomers describe the sky.
-
-@menu
-* Celestial coordinate system::  Rectascenson and declination.
-* Magnitudes::                  Stellar brightnesses.
-* Constellations::              Constellations and their boundaries.
-* Catalogues::                  How to name one particular sky
-                                  object properly.
-@end menu
-
-
-@node Celestial coordinate system
-@subsection Celestial coordinate system
-
-On a sheet of paper, every point has an @math{x} and a @math{y}
-coordinate (if you draw two axes).  On planet Earth, every location has
-a @emph{longitude} and a @emph{latitude}.
-
-With a very similar system astronomers give the coordinates of every
-point in the sky.  The sky longitude is called @emph{rectascension} and
-the sky latitude is called @emph{declination}.  There is a sky North
-Pole (near the Polar Star), a sky South Pole, and a sky equator.  You
-can make globes of the sky like of the Earth, with the only difference
-that you must imagine being @emph{inside} the globe.
-
-So the rectascension is the @math{x} coordinate in a way.  It is given
-in `hours' (h) from 0@s{}h to 24@s{}h.  Since the sky is round, both
-0@s{}h and 24@s{}h are the same rectascension, and 12@s{}h is the
-opposite to it.
-
-The declination corresponds to the @math{y} coordinate.  It is measured
-from @math{-90^\circ} (South Pole) over @math{0^\circ} (equator) to
-@math{+90^\circ} (North Pole).
-
-
-@node Magnitudes
-@subsection The system of magnitudes
-
-Theoretically you could measure the brightness of stars in Watts like
-the power of a light bulb.  But this is rather awkward.  Instead,
-astronomers use the system of @emph{magnitudes}@tie{}(m).
-
-The brighter a star, the smaller is its magnitude.  Sirius is the
-brightest star in the sky, and its brightness is @math{-1.6}@s{}m.  Vega
-has a brightness of @math{0.0}@s{}m, and Polaris, the Pole Star, of
-@math{2.0}@s{}m.  The faintest stars that you can see with the naked eye
-in a very clear sky have @math{6}@s{}m.
-
-The faintest stars in the standard catalogue of @PPTHREE{} are of
-approx.@tie{}@math{7}@s{}m, however extremely good terrestrial
-telescopes can see up to @math{22}@s{}m.
-
-
-@node Constellations
-@subsection Constellations
-
-Since the 1930s, the sky is officially divided into 88 constellations.
-At that time, the boundaries between the constellations were clearly
-defined, too: namely by the coordinates of sky points that, when
-connected with their respective neighbours, create the boundaries.
-
-Every constellation has a Latin name and a three letter abbreviation.
-For example ``Orion -- Ori'', or ``Ursa Major -- UMa'' (Great Bear), or
-``Hydrus -- Hyi'' (Male Water Snake).  This abbreviation plays a big
-role in @PPTHREE{} because it's the only way to denote a constellation.
-You must use only uppercase letters in the abbreviation.
-
-One constellation, the snake or ``Serpens'', is divided into two parts,
-``Serpens Caput'' (Head) and ``Serpens Cauda'' (Tail).  They are
-abbreviated @code{SER1} and @code{SER2} in @PPTHREE{}.  If you say
-@code{SER} only, you mean both parts.
-
-
-@node Catalogues
-@subsection Catalogues: Flamsteed, Henry Draper, NGC/IC and Messier
-
-By and large there are two kinds of objects in the sky: stars and
-nebulae.  Astronomers have created many catalogues of them.  There are
-two star catalogues and three nebulae catalogues supported in
-@PPTHREE{}.
-
-The two star catalogues are the Flamsteed and the Henry Draper
-(@acronym{HD}) numbers.  Flamsteed gave numbers beginning with `1' to
-stars in each constellation.  The Flamsteed catalogue is small and
-doesn't contain the complete southern sky.  In contrast to that, the
-@acronym{HD} catalogue doesn't distinguish between constellations, it
-covers the whole sky, and also contains faint stars.  However the
-@acronym{HD} names are harder to read.
-
-For example Rigel, @math{\beta}@tie{}Ori, can be identified in
-@PPTHREE{} with either
-
-@example
-ORI 19
-@end example
-
-@noindent
-where `@code{ORI}' is Rigel's constellation (Orion) and `@code{19}' the
-Flamsteed number; or with
-
-@example
-HD 34085
-@end example
-
-@noindent
-where `@code{34085}' is Rigel's Henry Draper catalogue number.  Both are
-totally equivalent.  The program
-@uref{http://@/www.@/shatters.@/net/@/celestia/,Celestia} is very useful
-for finding Flamsteed or @acronym{HD} numbers.
-
 
 @node Installation
 @chapter Installation
 
 You can get the latest @PPTHREE{} file releases from
 @uref{http://sf.net/projects/pp3,@PPTHREE{}'s project page on
-Sourceforge}.  The main @PPTHREE{} distrubution comes as several files,
+Sourceforge}.  The main @PPTHREE{} distribution comes as several files,
 namely
 
 @table @file
@@ -418,7 +303,7 @@ properly: @TeX{} and Ghostscript.  @emph{You need not know how to use
 
 On most Unix/Linux systems @TeX{} and Ghostscript are already installed.
 But on Windows, you have to install them yourself.  Fortunately this is
-not difficult, and both programs may be useful for other puposes, too.
+not difficult, and both programs may be useful for other purposes, too.
 
 @menu
 * Getting TeX::                 Installing the TeX typesetting engine.
@@ -465,7 +350,7 @@ Copy @file{pp3.exe} to an arbitrary directory that is in your
 @env{PATH}.
 
 @item
-Copy all the other files to @emph{one single} arbitary directory.  Then
+Copy all the other files to @emph{one single} arbitrary directory.  Then
 set the environment variable @env{PP3DATA} to this directory.
 
 @end enumerate
@@ -534,16 +419,177 @@ executable.  The Makefile assures that this is the correct one, but you
 can override that with the environment variable @env{PP3DATA}.
 
 
+@node Basic astronomical terms
+@chapter Basic astronomical terms
+
+The following is a mere crash course.  It is supposed to enable you to
+use @PPTHREE{} even if you have not the slightest idea about how
+astronomers describe the sky.
+
+Readers competent in astronomy may skip it, although
+@ref{Constellations} and @ref{Catalogues} contain minor program
+peculiarities, too.
+
+@menu
+* Celestial coordinate system::  Rectascension and declination.
+* Magnitudes::                  Stellar brightnesses.
+* Constellations::              Constellations and their boundaries.
+* Catalogues::                  How to name one particular sky
+                                  object properly.
+@end menu
+
+
+@node Celestial coordinate system
+@section Celestial coordinate system
+
+On a sheet of paper, every point has an @math{x} and a @math{y}
+coordinate (if you draw two axes).  On planet Earth, every location has
+a @emph{longitude} and a @emph{latitude}.
+
+With a very similar system astronomers give the coordinates of every
+point in the sky.  The sky longitude is called @emph{rectascension} and
+the sky latitude is called @emph{declination}.  There is a sky North
+Pole (near the Polar Star), a sky South Pole, and a sky equator.  You
+can make globes of the sky like of the Earth, with the only difference
+that you must imagine being @emph{inside} the globe.
+
+So the rectascension is the @math{x} coordinate in a way.  It is given
+in `hours' (h) from 0@dmn{h} to 24@dmn{h}.  Since the sky is round, both
+0@dmn{h} and 24@dmn{h} are the same rectascension, and 12@dmn{h} is the
+opposite to it.
+
+Usually the fraction of the rectascension that is smaller than 1@dmn{h}
+is given in minutes and seconds, however in @PPTHREE{} the rectascension
+is one decimal fraction number.
+
+The declination corresponds to the @math{y} coordinate.  It is measured
+from @math{-90^\circ} (South Pole) over @math{0^\circ} (equator) to
+@math{+90^\circ} (North Pole).
+
+
+@node Magnitudes
+@section The system of magnitudes
+
+Theoretically you could measure the brightness of stars in Watts like
+the power of a light bulb.  But this is rather awkward.  Instead,
+astronomers use the system of @emph{magnitudes}@tie{}(m).
+
+The brighter a star, the smaller is its magnitude.  Sirius is the
+brightest star in the sky, and its brightness is @math{-1.6}@dmn{m}.
+Vega has a brightness of @math{0.0}@dmn{m}, and Polaris, the Pole Star,
+of @math{2.0}@dmn{m}.  The faintest stars that you can see with the
+naked eye in a very clear sky have @math{6}@dmn{m}.
+
+The faintest stars in the standard catalogue of @PPTHREE{} are of
+approx.@tie{}@math{7}@dmn{m}, however extremely good terrestrial
+telescopes can see up to @math{22}@dmn{m}.
+
+
+@node Constellations
+@section Constellations
+
+Since the 1930s, the sky is officially divided into 88 constellations.
+At that time, the boundaries between the constellations were clearly
+defined, too: namely by the coordinates of sky points that, when
+connected with their respective neighbours, create the boundaries.
+
+Every constellation has a Latin name and a three letter abbreviation.
+For example ``Orion -- Ori'', or ``Ursa Major -- UMa'' (Great Bear), or
+``Hydrus -- Hyi'' (Male Water Snake).  This abbreviation plays a big
+role in @PPTHREE{} because it's the only way to denote a constellation.
+You must use only uppercase letters in the abbreviation.
+
+One constellation, the snake or ``Serpens'', is divided into two parts,
+``Serpens Caput'' (Head) and ``Serpens Cauda'' (Tail).  They are
+abbreviated @code{SER1} and @code{SER2} in @PPTHREE{}.  If you say
+@code{SER} only, you mean both parts.
+
+
+@node Catalogues
+@section Catalogues: Flamsteed, Henry Draper, NGC/IC and Messier
+
+When you use @PPTHREE{} you have to tell the program e.@s{}g.@: which
+star you want to delete from the map or which nebula shall get a
+different label.  For this, every sky object must have a distinct name
+in @PPTHREE{}.
+
+By and large there are two kinds of objects in the sky: stars and
+nebulae.  Astronomers have created many catalogues of them.  There are
+two star catalogues and three nebulae catalogues supported in
+@PPTHREE{}.
+
+@menu
+* Denoting stars::              How stars get a name in PP3.
+* Denoting nebulae::            How nebulae get a name in PP3.
+@end menu
+
+@node Denoting stars
+@subsection Denoting stars
+
+The two star catalogues are the Flamsteed and the Henry Draper
+(@acronym{HD}) numbers.  Flamsteed gave numbers beginning with `1' to
+stars in each constellation.  The Flamsteed catalogue is small and
+doesn't contain the complete southern sky.  In contrast to that, the
+@acronym{HD} catalogue doesn't distinguish between constellations, it
+covers the whole sky, and also contains faint stars.  However the
+@acronym{HD} names are harder to read.
+
+For example Rigel, @math{\beta}@tie{}Ori, can be identified in
+@PPTHREE{} with either
+
+@example
+ORI 19
+@end example
+
+@noindent
+where `@code{ORI}' is Rigel's constellation (Orion) and `@code{19}' the
+Flamsteed number; or with
+
+@example
+HD 34085
+@end example
+
+@noindent
+where `@code{34085}' is Rigel's Henry Draper catalogue number.  Both are
+totally equivalent.  The program
+@uref{http://@/www.@/shatters.@/net/@/celestia/,Celestia} is very useful
+for finding Flamsteed or @acronym{HD} numbers.
+
+
+@node Denoting nebulae
+@subsection Denoting nebulae
+
+The two nebula catalogues @acronym{NGC} and @acronym{IC} are
+complementary, i.@s{}e.@: they don't have@footnote{well, shouldn't have}
+any nebulae in common.  For example. the North America Nebula is called
+@code{NGC 7000} and the Orion Nebula is @code{NGC 1976}.
+
+Parallel to that there is the much older and much smaller Messier
+catalogue, abbreviated@tie{}`M'.  For example, the Orion Nebula can also
+be called @code{M 42}, whereas the North America Nebula isn't included
+in Messier's catalogue.
+
+Pay attention to
+
+@itemize
+@item
+the catalogue abbreviation in all uppercase and
+
+@item
+the space between the catalogue abbreviation and the number.
+@end itemize
+
+
 @node Usage
 @chapter Usage
 
 @menu
-* Invokation::                  Starting PP3.
+* Invocation::                  Starting PP3.
 * Using pipes::                 If you really need pipes for some
                                   reason.
 @end menu
 
-@node Invokation
+@node Invocation
 @section Starting PP3
 
 Invoking @PPTHREE{} is very straightforward.  Since it is a command line
@@ -655,7 +701,7 @@ set center_declination    40.8
 @noindent
 denotes the area of the sky that we want to be displayed.  Both values
 indicate the celestial point that we want to have in the centre of the
-map.  In this case, 19.95@s{}h rectascension and @math{+40.8^\circ}
+map.  In this case, 19.95@dmn{h} rectascension and @math{+40.8^\circ}
 declination which is the centre of the constellation Swan.
 
 
@@ -664,7 +710,7 @@ declination which is the centre of the constellation Swan.
 
 
 @node Keywords reference
-@chapter Kewords reference
+@chapter Keywords reference
 
 @menu
 * General structure::           
@@ -680,19 +726,48 @@ declination which is the centre of the constellation Swan.
 @section Setting Parameters
 
 
+@node Filenames and output control
+@section Filenames
+
+
+@node Colour, line style, and such
+@section 
+
+
+@node Filtering stars and nebulae by their brightness
+@section 
+
+
+@node 
+@section 
+
+
+@node 
+@section 
+
+
+@node 
+@section 
+
+
+
 @node Objects and Labels
 @section Setting or deleting celestial objects and their labels
 
 
+@node Known problems
+@chapter Known problems
+
+
 @node Data file formats
-@chapter Data file formats
+@appendix Data file formats
 
 Maybe you want to use you own data bases with @PPTHREE{}.  If they are
 not too large@footnote{Unfortunately @PPTHREE{} still has the
 disadvantageous behaviour of reading the @emph{whole} data base file.}
 you may well do so.  Of course, then you need to know the internal
 structure of the files.  Although they are so simple that reverse
-engeneering should be almost trivial, you find here a complete
+engineering should be almost trivial, you find here a complete
 description of all of them.
 
 Additionally I will give detailed information where the original data of
@@ -709,7 +784,7 @@ completeness.
                                   lines.
 * Boundaries data file::        The boundaries between constellations.
 * Milky Way data file::         The Milky Way brightness bitmap.
-* Label dimensions file::       Typographic diemsnions of all labels.
+* Label dimensions file::       Typographic dimensions of all labels.
 @end menu
 
 @node Stars data file
@@ -740,7 +815,7 @@ declination in degrees,
 visual brightness in magnitudes,
 
 @item
-B@math{-}V brightness in magnitudes (`@code{99.0}' if unknown), and
+B@minus{}V brightness in magnitudes (`@code{99.0}' if unknown), and
 
 @item
 Flamsteed number (`@code{0}' if unknown).
@@ -910,7 +985,7 @@ HD 108903 ;  # gamma Cru
 
 @subheading @PPTHREE{}'s constellation lines origin
 
-I created the lines according to my taste.  The @emph{Atlas f@"ur
+I created the lines according after my fancy.  The @emph{Atlas f@"ur
 Himmelsbeobachter}@footnote{@acronym{ISBN}@tie{}3440074889} was an
 important source of inspiration though.
 
@@ -981,9 +1056,9 @@ This is a text file usually called @file{milkyway.dat}.
 
 Its header is extremely simple: It consists of only one number which is
 the maximal (=@tie{}equatorial) diagonal half distance of two pixels in
-degrees (double). This value is used as the radius for the milky way
-pixels.  Of course it must be the minimal radius for which there are no
-gaps between the pixels.
+degrees. This value is used as the radius for the milky way pixels.  Of
+course it must be the minimal radius for which there are no gaps between
+the pixels.
 
 What follows are the Milky Way pixels themselves.  Each consists of tree
 entries, separated by white space:
@@ -1066,9 +1141,6 @@ Pleiades
 @end smallexample
 
 
-@node Known problems
-@chapter Known problems
-
 
 
 @node Index
@@ -1082,3 +1154,12 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 
 @bye
 
+
+@c  LocalWords:  texinfo def rmdefault ppl mathrel mskip pstexinfo texi bronger
+@c  LocalWords:  Exp PPTHREE tex hbox vbox sevenrm vss ifnottex vskip filll EPS
+@c  LocalWords:  leavevmode dircategory direntry iftex logue logues pstricks
+@c  LocalWords:  PDF Rectascension PDFs emph uref noindent rectascension dmn
+@c  LocalWords:  circ Ori UMa Hyi Cauda NGC Celestia itemize var Mik GhostGum
+@c  LocalWords:  exe env rpm dat pdf Corel pxref asis BSC IIICa IVpMnHg
+@c  LocalWords:  ARI Cartes Ciel PSC CYG Steinicke Himmelsbeobachter AQL AQR
+@c  LocalWords:  Davenhall Leggett otnotesize Tuc FlexLabel
