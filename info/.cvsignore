@@ -16,6 +16,7 @@ manual
 *.fns
 swan.tex
 orion.pdf
+leo1.pdf
 *.kws
 pp3.html
 pp3.pdf
@@ -29,6 +30,7 @@ swan2.pdf
 pp3man.zip
 pp3.info
 orion.tex
+leo1.tex
 pp3temp.tex
 pp3temp.dat
 title.pdf
