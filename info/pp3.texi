@@ -127,7 +127,7 @@ It uses @LaTeX{} + pstricks for this, so the end formats are
 
 The program automatically avoids labels that overlap, and you can change
 many parameters.  You can place arbitrary text on the map using the
-flexibility of the LaTeX language.
+flexibility of the @LaTeX{} language.
 
 @menu
 * Introduction::                The ideas behind it.
