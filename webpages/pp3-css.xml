@@ -3,7 +3,8 @@
   a:link { color: #ffcc99 }
   a:visited { color: #ff9966 }
   a:active { color: white }
-  body { font-family: sans-serif; background-color: #000066; color: white }
+  body { background-image: url('bg.png'); font-family: sans-serif;
+    background-color: #000066; color: white }
   body:before { content: ''}
   span.title { color: yellow }
   h1 { color: yellow }
