@@ -21,6 +21,6 @@ text "Leo Minor" at 10.05 28.5 along declination towards NW ;
 text "Ursa Major" at 12 30 along declination towards SE ;
 text Virgo at 11.65 10 along declination towards SW ;
 text "\\small Wolf 359\\hskip0.3em\\psdots[dotstyle=+,dotangle=45](0,0)" 
-  at 10.902 7.32 color 0.3 0.3 0.9333 towards NW ;
+ at 10.902 7.32 color 0.3 0.3 0.9333 towards W_ ;
 
 delete LEO 63  HD 97605 ;
