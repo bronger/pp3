@@ -174,7 +174,7 @@ flexibility of the LaTeX language.
 * What it is::                  Features of PP3.
 * What it is not::              Limitations of PP3.
 * The success of PP3::          Things that have been done using PP3.
-* Basic astronomical terms::    
+* Basic astronomical terms::    Rectascension, declination, and such.
 @end menu
 
 @node What it is
@@ -261,6 +261,85 @@ articles about constellations.  The maps were externally linked.
 
 @node Basic astronomical terms
 @section Basic astronomical terms
+
+The following is a mere crash course.  It is supposed to enable you to
+use @PPTHREE{} even if you have not the slightest idea about how
+astronomers describe the sky.
+
+@menu
+* Celestial coordinate system::  Rectascenson and declination.
+* Magnitudes::                  Stellar brightnesses.
+* Constellations::              Constellations and their boundaries.
+* Catalogues::                  How to name one particular sky
+                                  object properly.
+@end menu
+
+
+@node Celestial coordinate system
+@subsection Celestial coordinate system
+
+On a sheet of paper, every point has an @math{x} and a @math{y}
+coordinate (if you draw two axes).  On planet Earth, every location has
+a @emph{longitude} and a @emph{latitude}.
+
+With a very similar system astronomers give the coordinates of every
+point in the sky.  The sky longitude is called @emph{rectascension} and
+the sky latitude is called @emph{declination}.  There is a sky North
+Pole (near the Polar Star), a sky South Pole, and a sky equator.  You
+can make globes of the sky like of the Earth, with the only exception
+that you must imagine being @emph{inside} the globe.
+
+So the rectascension is the @math{x} coordinate in a way.  It is given
+in `hours' (h) from 0@s{}h to 24@s{}h.  Since the sky is round, both
+0@s{}h and 24@s{}h are the same rectascension, and 12@s{}h is the
+opposite to it.
+
+The declination corresponds to the @math{y} coordinate.  It is measured
+from @math{-90^\circ} (South Pole) over @math{0^\circ} (equator) to
+@math{+90^\circ} (North Pole).
+
+
+@node Magnitudes
+@subsection The system of magnitudes
+
+Theoretically you could measure the brightness of stars in Watts like
+the power of a light bulb.  But this is rather awkward.  Instead,
+astronomers use the system of @emph{magnitudes}@tie{}(m).
+
+The brighter a star, the smaller is its magnitude.  Sirius is the
+brightest star in the sky, and its brightness is @math{-1.6}@s{}m.  Vega
+has a brightness of @math{0.0}@s{}m, and Polaris, the Pole Star, of
+@math{2.0}@s{}m.  The faintest stars that you can see with the naked eye
+in a very clear sky have @math{6}@s{}m.
+
+The faintest stars in the standard catalogue of @PPTHREE{} are of
+approx.@tie{}@math{7}@s{}m, however extremely good terrestrial
+telescopes can see up to @math{22}@s{}m.
+
+
+@node Constellations
+@subsection Constellations
+
+Since the 1930s, the sky is officially divided into 88 constellations.
+At that time, the boundaries between the constellations were clearly
+defined, too: namely by the coordinates of sky points that, when
+connected with their respective neighbours, create the boundaries.
+
+Every constellation has a Latin name and a three letter abbreviation.
+For example ``Orion -- Ori'', or ``Ursa Major -- UMa'' (Great Bear), or
+``Hydrus -- Hyi'' (Male Water Snake).  This abbreviation plays a big
+role in @PPTHREE{} because it's the only way to denote a constellation.
+You must use only uppercase letters in the abbreviation.
+
+One constellation, the snake or ``Serpens'', is divided into two parts,
+``Serpens Caput'' (Head) and ``Serpens Cauda'' (Tail).  They are
+abbreviated @code{SER1} and @code{SER2} in @PPTHREE{}.  If you say
+@code{SER} only, you mean both parts.
+
+
+@node Catalogues
+@subsection Catalogues: Flamsteed, Henry Draper, NGC/IC and Messier
+
 
 
 @node Installation
@@ -675,7 +754,7 @@ B2IV
 
 It's the Bright Stars Catalogue (@acronym{BSC}) as distributed with the
 program @uref{http://www.stargazing.net/astropc/,Cartes du Ciel}.  It
-contains almost 10,000@tie{} stars.  I corrected minor mistakes and let
+contains almost 10,000@tie{}stars.  I corrected minor mistakes and let
 all double stars collapse, i.@s{}e.@: their visual brightnesses were
 summed up and the respective minor partner was removed from the file.
 
@@ -689,7 +768,7 @@ constellation abbreviations.  In order to make it more readable though,
 the standard @PPTHREE{} nebulae file has every nebula on one single line
 of its own.
 
-Each dataset has the following ten fields:
+Each dataset has the following eleven fields:
 
 @enumerate
 @item
@@ -719,11 +798,16 @@ large diameter in degree minutes,
 
 @item
 small diameter in degree minutes (must be equal to the large diameter if
-unknown), and
+unknown),
 
 @item
 the horizontal angle if the large diameter in degrees (`@code{720.0}' if
-unknown).
+unknown), and
+
+@item
+the type of the nebula: 0:@tie{}unknown, 1:@tie{}galaxy,
+2:@tie{}emission nebula, 3:@tie{}reflection nebula, 4:@tie{}open star
+cluster, and 5:@tie{}globular star cluster.
 
 @end enumerate
 
