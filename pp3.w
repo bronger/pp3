@@ -48,6 +48,7 @@
 \font\fivebf=pplb7t scaled 500
 
 \font\tentt=cmtt10 % typewriter
+\font\ninett=cmtt9 % typewriter
 
 \font\tensl=pplro7t % slanted roman
 
@@ -117,6 +118,8 @@
 \def\EPS/{{\mc EPS\spacefactor1000}}
 \def\PDF/{{\mc PDF\spacefactor1000}}
 
+\def\sloppy{\tolerance9999\emergencystretch3em\hfuzz .5pt\vfuzz\hfuzz}
+
 \font\sf=bfrr8t \font\sfbf=bfrb8t
 \font\sfa=bfrr8t scaled 700
 
@@ -167,8 +170,76 @@ dealings in the Software. }
 @s ios int
 
 @* Introduction.  This program \.{pp3} (``parvum planetarium'') takes the data
-of the Bright Star Catalogue Version~5 and turns it into a \LaTeX\ file that
-uses PSTricks to draw a nice sky chart containing a certain region of the sky.
+of various celestial data files and turns them into a \LaTeX\ file that uses
+PSTricks to draw a nice sky chart containing a certain region of the sky.
+Current versions are available on its
+\pdfURL{homepage}{http://pp3.sourceforge.net}.
+
+You call PP3 with e.\,g.\medskip
+
+\.{pp3 mychart.pp3}
+
+\medskip\noindent The data files (\.{stars.dat}, \.{nebulae.dat},
+\.{boundaries.dat}, \.{labeldimens.dat}, \.{lines.dat}, and
+\.{milkyway}\hskip0pt\.{.dat}) must be in the current directory.  The resulting
+chart is by default sent to standard output which you may redirect into a file.
+But you can define an output filename explicitly in the input script.
+
+If you want to use other data with this program, you may well provide your own
+catalogue files.  Their file formats are very simple, and they are explained in
+this document together with the respective |read_@t\dots@>()| function.
+
+Very important is to know how to write an input script.  Please consult the
+section ``Reading the input script'' near the end of this documentation for
+this.  Here is an example input script: \medskip
+
+{\parindent2em\baselineskip10.5pt\ninett\obeylines\obeyspaces
+\# Chart of the Scorpion, printable on a 
+\# black and white printing device
+\vskip\baselineskip
+set constellation SCO           \# This is highlighted
+set center\_rectascension  17
+set center\_declination   -28
+set grad\_per\_cm             2.5
+\vskip\baselineskip
+switch milky\_way on
+switch eps\_output on            \# Please call LaTeX and dvips for us
+switch colored\_stars off        \# All the same colour ...
+color stars 0 0 0               \# ...\ namely this one
+color nebulae 0 0 0
+color background 1 1 1
+color grid 0.5 0.5 0.5
+color ecliptic 0.3 0.3 0.3
+color constellation\_lines 0.7 0.7 0.7
+color labels 0 0 0
+color boundaries 0.8 0.8 0.8
+color highlighted\_boundaries 0 0 0
+color milky\_way 0.5 0.5 0.5
+\vskip\baselineskip
+filename output test.tex        \# Here should it go
+\vskip\baselineskip
+\vskip\baselineskip
+objects\_and\_labels              \# Now for the second part
+\vskip\baselineskip
+delete M 18  NGC 6590  NGC 6634 ;  \# Superfluous
+reposition HD 147165 S          \# Force sig Sco to be labelled.
+}
+
+@ In order to use the program, you must have a complete and modern \LaTeX\
+distribution installed, and a modern Ghostscript.  On a Linux system, both
+programs are possibly already available, and if not you may install them with a
+package management program.
+
+{\sloppy On Windows, you will probably have to install them by hand.  You can
+download the \pdfURL{Mik\TeX\ distribution}{http://www.miktex.org} or get the
+\pdfURL{\TeX{}Live~{\mc CD}}{http://www.tug.org/texlive/}\spacefactor1000.  If
+you install
+\pdfURL{Ghostscript}{http://www.cs.wisc.edu/\TILDE/ghost/doc/AFPL/get704.htm},
+notice that \pdfURL{{\mc
+GS}View}{http://www.cs.wisc.edu/\TILDE/ghost/gsview/get43.htm} is a very
+sensible program, too.\par}
+
+\bigskip Okay, let's start with the header files~\dots
 
 @c
 #include <iostream>
@@ -181,6 +252,7 @@ uses PSTricks to draw a nice sky chart containing a certain region of the sky.
 #include <cstdlib>
 #include <cmath>
 #include <cfloat>
+
 
 @* Global parameters.  I have to break a strict \CPLUSPLUS/ rule here: Never
 use |#@t\hskip-\fontdimen2\mainfont@>define|!  However I really found no
@@ -340,6 +412,15 @@ already.  Only then the label should be really printed, but the real use of
 1:~$45^\circ\!$, 2:~$90^\circ\!$, 3:~$135^\circ\!$, 4:~$180^\circ\!$,
 5:~$225^\circ\!$, 6:~$270^\circ\!$, and 7:~$315^\circ\!$.
 
+|scope()| returns the maximal scope of the object.  It is used to in |@<Find
+ objects in vicinity of |objects[i]|@>| to find all objects in the vicinity of
+ a given on-object.  It may look odd that even |label_height| is added, but
+ this is because penalties are given even for objects in a margin of
+ |label_height| around the object, so it's important to include it into the
+ sum.
+
+@q';@>
+ 
 @c
 struct view_data {
     bool in_view;
@@ -355,8 +436,9 @@ struct view_data {
                   label_width(0.24), label_height(0.36), label_angle(0) { }
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
-    virtual double penalties_with(double& left,double& right,double& top,
-                                  double& bottom) const;
+    double scope() const { return radius + skip + label_width + label_height; }
+    virtual double penalties_with(const double left, const double right,
+                                  const double top, const double bottom) const;
 };
 
 @ This is the only structure that is not put into a container directly, but via
@@ -404,8 +486,8 @@ this is just the overlap itself in square centimetres, like here.
 @c
 @<Missing math routines@>@;@#
 
-double view_data::penalties_with(double& left,double& right,double& top,
-                                 double& bottom) const {
+double view_data::penalties_with(const double left, const double right,
+                                 const double top, const double bottom) const {
     if (with_label && label_arranged) {
         double left2, right2, top2, bottom2;
         get_label_boundaries(left2,right2,top2,bottom2);
@@ -467,8 +549,8 @@ struct star : public view_data {
     star() : hd(0), bs(0), rectascension(0.0), declination(0.0),
              magnitude(0.0), b_v(0.0), flamsteed(0), name(""),
              spectral_class(""), view_data() { }
-    virtual double penalties_with(double& left,double& right,double& top,
-                                  double& bottom) const;
+    virtual double penalties_with(const double left, const double right,
+                                  const double top, const double bottom) const;
 };
 
 @ In order to find the penalties with a (labelled) star, I first calculate them
@@ -478,8 +560,8 @@ still |false|.  Then I determine the rectangular overlap, just like in
 and not rectangles.  FixMe: This should be done justice to.
 
 @c
-double star::penalties_with(double& left,double& right,double& top,
-                            double& bottom) const {
+double star::penalties_with(const double left, const double right,
+                            const double top, const double bottom) const {
     double penalties = view_data::penalties_with(left, right, top, bottom);
     const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
         bottom2 = y - radius;
@@ -496,10 +578,8 @@ double star::penalties_with(double& left,double& right,double& top,
 
 typedef vector<star> stars_list;
 
-@ I want to be able to read the star data records from a text format file.
-This file was probably created by \.{bsc5digest}.
-
-The format of the input is a text stream with the following format.  Each star
+@ I want to be able to read the star data records from a text format file.  The
+format of the input is a text stream with the following format.  Each star
 entry consists of four lines: \medskip
 
 \item{1.} A row with seven fields separated by whitespace:
@@ -601,8 +681,8 @@ struct nebula : public view_data {
     nebula() : NGC(0), IC(0), M(0), constellation(), rectascension(0.0),
                declination(0.0), magnitude(0.0), diameter_x(0.0),
                diameter_y(0.0), horizontal_angle(0.0), kind(unknown) { }
-    virtual double penalties_with(double& left,double& right,double& top,
-                                  double& bottom) const;
+    virtual double penalties_with(const double left,const double right,
+                                  const double top, const double bottom) const;
 };
 
 typedef vector<nebula> nebulae_list;
@@ -614,8 +694,8 @@ just like in |view_data::penalties_with()|.  This is unfortunate, because nebula
 are circles and not rectangles.  FixMe: This should be done justice to.
 
 @c
-double nebula::penalties_with(double& left,double& right,double& top,
-                            double& bottom) const {
+double nebula::penalties_with(const double left, const double right,
+                              const double top, const double bottom) const {
     double penalties = view_data::penalties_with(left, right, top, bottom);
     const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
         bottom2 = y - radius;
@@ -713,11 +793,11 @@ prefix, whichever is greater.
 
 
 @*1 Constellation boundaries.  They are stored in an external file called
-\.{constborders.dat} which is created by the program \.{condigest}.
+\.{constborders.dat}.
 
 Is is very convenient to have a special data type for a point in the program
-\.{condigest}.  In this program the advantage is not so big but it's sensible
-to use the same data structures here.
+that has created \.{constborders.dat}.  In this program the advantage is not so
+big but it's sensible to use the same data structures here.
 
 @q'@>
 
@@ -731,9 +811,8 @@ struct point {
 @ An object of type |boundary| contains one stright line of a constellation
 boundary.  This consists of the two endpoints which come from the original
 boundary catalog by Delporte of 1930, and zero or more interpolated points
-calculated by Davenhall (1990) in the catalog \.{condigest} uses as the
-starting point.  The interpolated points help to draw a curved line where this
-is necessary.
+calculated by Davenhall (1990).  The interpolated points help to draw a curved
+line where this is necessary.
 
 Every line usually belongs to exactly two constellations (of course).  They are
 stored in the field |constellations|.  FixMe: There are boundaries with only
@@ -830,8 +909,8 @@ However, it should be good enough.
 struct boundary_atom : public view_data {
     point start, end;
     boundary_atom(point start, point end);
-    virtual double penalties_with(double& left,double& right,double& top,
-                                  double& bottom) const;
+    virtual double penalties_with(const double left,const double right,
+                                  const double top, const double bottom) const;
 };
 
 @ The nice thing about |boundary_atom| is that after it has been constructed,
@@ -849,13 +928,13 @@ boundary_atom::boundary_atom(point start, point end) : start(start), end(end) {
 }
 
 @ The full algorithm that is used here is described in the |@<Definition of
-|line_overlap()| for intersection of two lines@>|.  But I modify it slightly
-here:  For every intersection of a boundary line atom with a label rectangle
-edge I give half of the usual penalties.  The reason is very simple: I may be
-that a boundary atom ends {\it within\/} the label.  Then there is only one
-intersection, and another boundary atom will be responsible for the other.
-Except for peculiar cases there should be exact two intersections altogether,
-which means that it's the same as with constellation lines.
+|line_intersection()| for intersection of two lines@>|.  But I modify it
+slightly here: For every intersection of a boundary line atom with a label
+rectangle edge I give half of the usual penalties.  The reason is very simple:
+I may be that a boundary atom ends {\it within\/} the label.  Then there is
+only one intersection, and another boundary atom will be responsible for the
+other.  Except for peculiar cases there should be exact two intersections
+altogether, which means that it's the same as with constellation lines.
 
 Objects of this type are created in |@<Create a |boundary_atom| for the
 |objects|@>|.
@@ -863,24 +942,41 @@ Objects of this type are created in |@<Create a |boundary_atom| for the
 @q'@>
 
 @c
-@<Definition of |line_overlap()| for intersection of two lines@>@;@#
+@<Definition of |line_intersection()| for intersection of two lines@>@;@#
 
-double boundary_atom::penalties_with(double& left,double& right,double& top,
-                                     double& bottom) const {
-    double penalties = 0.0;
-    const double half_quad = (top - bottom) * (top - bottom) / 2.0;
-    double lambda;
+double boundary_atom::penalties_with(const double left,const double right,
+                                     const double top, const double bottom)
+    const {
+    double intersection;
     point r(end.x - start.x, end.y - start.y);
-    if (line_overlap(left - start.x, r.x, start.y, r.y, bottom, top))
-        penalties += half_quad;
-    if (line_overlap(right - start.x, r.x, start.y, r.y, bottom, top))
-        penalties += half_quad;
-    if (line_overlap(top - start.y, r.y, start.x, r.x, left, right))
-        penalties += half_quad;
-    if (line_overlap(bottom - start.y, r.y, start.x, r.x, left, right))
-        penalties += half_quad;
-
-    return penalties;
+    vector<point> intersection_points;
+    if (line_intersection(left - start.x, r.x, start.y, r.y,
+                          bottom, top, intersection))
+        intersection_points.push_back(point(left, intersection));
+    if (line_intersection(right - start.x, r.x, start.y, r.y,
+                          bottom, top, intersection))
+        intersection_points.push_back(point(right, intersection));
+    if (line_intersection(top - start.y, r.y, start.x, r.x,
+                          left, right, intersection))
+        intersection_points.push_back(point(intersection, top));
+    if (line_intersection(bottom - start.y, r.y, start.x, r.x,
+                          left, right, intersection))
+        intersection_points.push_back(point(intersection, bottom));
+    if (start.x > left && start.x < right && start.y > bottom && start.y < top)
+        intersection_points.push_back(start);
+    if (end.x > left && end.x < right && end.y > bottom && end.y < top)
+        intersection_points.push_back(end);
+    if (intersection_points.empty()) return 0.0;
+    if (intersection_points.size() != 2) {
+        cerr << "pp3: Funny " << intersection_points.size()
+             << "-fold constellation boundary intersecrtion." << endl;
+        return 0.0;
+    }
+    const double length = hypot(intersection_points[1].x -
+                                intersection_points[0].x,
+                                intersection_points[1].y -
+                                intersection_points[0].y);
+    return 3.0 / 72.27*2.54 * length;
 }
 
 @* Coordinate transformations.  They are done by the class |transformation|.
@@ -1073,8 +1169,8 @@ struct connection : public view_data {
     int from, to;
     connection(const int from, const int to)
         : from(from), to(to), start(), end(), view_data() { }
-    virtual double penalties_with(double& left,double& right,double& top,
-                              double& bottom) const;
+    virtual double penalties_with(const double left,const double right,
+                                  const double top, const double bottom) const;
 };
 
 typedef vector<connection> connections_list;
@@ -1127,13 +1223,16 @@ label rectangle edge is intersected by the constellation line or not:
 
 @q')@>
 
-@<Definition of |line_overlap()| for intersection of two lines@>=
-bool line_overlap(double numerator, double denominator,
-                  double zero_point, double slope, double min, double max) {
+@<Definition of |line_intersection()| for intersection of two lines@>=
+bool line_intersection(double numerator, double denominator,
+                       double zero_point, double slope,
+                       double min, double max,
+                       double& intersection) {
     if (denominator == 0) return false;
     const double lambda = numerator / denominator;
-    const double intersection = zero_point + lambda * slope;
-    return intersection > min && intersection < max;
+    intersection = zero_point + lambda * slope;
+    return lambda > 0.0 && lambda < 1.0 &&
+        intersection > min && intersection < max;
 }
 
 @ Now for the second part of the intersection algorithm.  Here I apply the
@@ -1141,17 +1240,39 @@ preceding routing on all four label edges.  If there is an intersection
 (however it may look like), I return |quad| as the penalty value.
 
 @c
-double connection::penalties_with(double& left,double& right,double& top,
-                                  double& bottom) const {
-    const double quad = (top - bottom) * (top - bottom);
-    double lambda;
+double connection::penalties_with(const double left, const double right,
+                                  const double top, const double bottom) const
+{
+    double intersection;
     point r(end.x - start.x, end.y - start.y);
-    if (line_overlap(left - start.x, r.x, start.y, r.y, bottom, top) ||@/
-        line_overlap(right - start.x, r.x, start.y, r.y, bottom, top) ||@/
-        line_overlap(top - start.y, r.y, start.x, r.x, left, right) ||@/
-        line_overlap(bottom - start.y, r.y, start.x, r.x, left, right))
-        return quad;
-    return 0.0;
+    vector<point> intersection_points;
+    if (line_intersection(left - start.x, r.x, start.y, r.y,
+                          bottom, top, intersection))
+        intersection_points.push_back(point(left, intersection));
+    if (line_intersection(right - start.x, r.x, start.y, r.y,
+                          bottom, top, intersection))
+        intersection_points.push_back(point(right, intersection));
+    if (line_intersection(top - start.y, r.y, start.x, r.x,
+                          left, right, intersection))
+        intersection_points.push_back(point(intersection, top));
+    if (line_intersection(bottom - start.y, r.y, start.x, r.x,
+                          left, right, intersection))
+        intersection_points.push_back(point(intersection, bottom));
+    if (start.x > left && start.x < right && start.y > bottom && start.y < top)
+        intersection_points.push_back(start);
+    if (end.x > left && end.x < right && end.y > bottom && end.y < top)
+        intersection_points.push_back(end);
+    if (intersection_points.empty()) return 0.0;
+    if (intersection_points.size() != 2) {
+        cerr << "pp3: Funny " << intersection_points.size()
+             << "-fold constellation line intersecrtion." << endl;
+        return 0.0;
+    }
+    const double length = hypot(intersection_points[1].x -
+                                intersection_points[0].x,
+                                intersection_points[1].y -
+                                intersection_points[0].y);
+    return 3.0 / 72.27*2.54 * length;
 }
 
 @ I must be able to read a file which contains such data.  Here, too, the text
@@ -1173,27 +1294,25 @@ void read_constellation_lines(connections_list& connections,
     int from_catalogue_index = 0, to_catalogue_index = 0;
     file >> to_catalogue_name;
     while (file) {
-        if (to_catalogue_name == ";") {  // start a new path
-            from_catalogue_index = 0;
-            file >> to_catalogue_name;
-            continue;
-        }
         if (to_catalogue_name[0] == '#') { // skip comment
             string dummy;
             getline(file,dummy);
-            continue;
+        } else if (to_catalogue_name == ";")  // start a new path
+            from_catalogue_index = 0;
+        else {
+            file >> to_catalogue_index;
+            if (from_catalogue_index > 0 && to_catalogue_index > 0) {
+                @<Create one connection@>@;
+            }
+            from_catalogue_name = to_catalogue_name;
+            from_catalogue_index = to_catalogue_index;
         }
-        file >> to_catalogue_index;
-        if (from_catalogue_index > 0 && to_catalogue_index > 0) {
-            @<Create one connection@>@;
-        }
-        from_catalogue_name = to_catalogue_name;
-        from_catalogue_index = to_catalogue_index;
         file >> to_catalogue_name;
     }
 }
 
-@ In the loop I try to find the index within |stars| of the `from' star and the `to'~star.
+@ In the loop I try to find the index within |stars| of the `from' star and the
+`to'~star.
 
 @<Create one connection@>=
             int from_index = 0, to_index = 0;
@@ -1218,7 +1337,10 @@ void read_constellation_lines(connections_list& connections,
 course only if I haven't found it already (|from_index == 0|).  If apparently
 both stars have been found already, I leave the loop immediately.
 
+@q;@>
+
 @<Test whether |stars[i]| is the `from' star@>=
+@q'@>
                 if (from_index == 0)
                     if (from_catalogue_name == "HD") {
                         if (stars[i].hd == from_catalogue_index) from_index = i;
@@ -1230,7 +1352,10 @@ both stars have been found already, I leave the loop immediately.
 
 @ Perfectly analogous to |@<Test whether |stars[i]| is the `from' star@>|.
 
+@q'@>
+
 @<Test whether |stars[i]| is the `to' star@>=
+@q'@>
                 if (to_index == 0)
                     if (to_catalogue_name == "HD") {
                         if (stars[i].hd == to_catalogue_index) to_index = i;
@@ -1281,12 +1406,16 @@ For efficiency, I first find all neighbours of the on-object and do all the
 following work only with them.  In the inner |k|-look I test all possible
 |label_angle|s and calculate their |penalty|.
 
+If a label leaps out of the view frame, this adds to |penalty| the gigantic
+value of |10000.0|.
+    
 @c
 void arrange_labels(objects_list& objects) {
     objects_list vicinity;
     for (int i = 0; i < objects.size(); i++) {
         vicinity.resize(0);
-        if (objects[i]->in_view && objects[i]->with_label) {
+        if (objects[i]->in_view && objects[i]->with_label && 
+            !objects[i]->label_arranged) {
             @<Find objects in vicinity of |objects[i]|@>@;
             double best_penalty = DBL_MAX;
             int best_angle = 0;
@@ -1298,17 +1427,40 @@ void arrange_labels(objects_list& objects) {
                     get_label_boundaries(on_object_left, on_object_right,
                                          on_object_top, on_object_bottom);
                 double penalty = 0.0;
-                for (int j = 0; j < vicinity.size(); j++)
-                    penalty +=
-    vicinity[j]->penalties_with(on_object_left, on_object_right, on_object_top,
-                              on_object_bottom);
+                double half_quad = (on_object_top - on_object_bottom)/2.0;
+                for (int j = 0; j < vicinity.size(); j++) {
+                    penalty += vicinity[j]->
+                        penalties_with(on_object_left, on_object_right,
+                                       on_object_top, on_object_bottom)
+                        + vicinity[j]->
+                        penalties_with(on_object_left - half_quad,
+                                       on_object_right + half_quad,
+                                       on_object_top + half_quad,
+                                       on_object_bottom - half_quad);
+                }
+                if (on_object_left < 0.0 || on_object_bottom < 0.0 ||
+                    on_object_right > params.view_frame_width ||
+                    on_object_top > params.view_frame_height)
+                    penalty += 10000.0;
                 if (penalty < best_penalty) {
                     best_penalty = penalty;
                     best_angle = k;
                 }
             }
-            objects[i]->label_angle = best_angle;
-            objects[i]->label_arranged = true;
+            if (!objects[i]->label.empty())
+            if (best_penalty < 0.6 * objects[i]->label_height *
+                objects[i]->label_width) {
+                objects[i]->label_angle = best_angle;
+                objects[i]->label_arranged = true;
+#ifdef DEBUG
+                stringstream penalty;
+                penalty << " " << best_penalty;
+                objects[i]->label += penalty.str(); 
+#endif
+            } else {
+                objects[i]->with_label = false;
+                objects[i]->label_arranged = true;
+            }
         }
     }
 }
@@ -1322,23 +1474,21 @@ The variable |last_object_with_labels| holds the index in |vicinity| the
 divides it into two sets: The first set comes before |objects[i]| in |objects|,
 the second after it.  Only the first set must be checked for label collisions,
 because otherwise labels would be re-arranges twice.  The practical thing is
-that neighbouring objects are ordered in increasing brightness in the Bright
-Star Catalog, which means that lables of bright stars are arranged first, and
-labels of fainter stars must cope with these positions.
+that neighbouring objects are ordered in increasing brightness in star data
+file, which means that lables of bright stars are arranged first, and labels of
+fainter stars must cope with these positions.
 
 Of course, it's guaranteed that |objects[i]| is not part of its vicinity.
 
 @q'@>
 
 @<Find objects in vicinity of |objects[i]|@>=
-            const double on_object_size =
-                objects[i]->radius + objects[i]->skip + objects[i]->label_width;
+            const double on_object_scope = objects[i]->scope();
             for (int j = 0; j < objects.size(); j++) {
                 if (i != j && objects[i]->in_view)
                     if (hypot(objects[i]->x - objects[j]->x,
                               objects[i]->y - objects[j]->y) <
-                        on_object_size + objects[j]->radius +
-                        objects[j]->label_width)
+                        on_object_scope + objects[j]->scope())
                         vicinity.push_back(objects[j]);
             }
 
@@ -1370,7 +1520,7 @@ void print_labels(const objects_list& objects) {
             }
             OUT << "\\hbox to 0pt{";
             OUT << "\\hskip" << x << "cm";
-            OUT << "\\vbox to 0pt{\\vss\\hbox{";
+            OUT << "\\vbox to 0pt{\\vss\n  \\hbox{";
             OUT << objects[i]->label;
             OUT << "}\\vskip" << y << "cm";
             OUT << "\\hrule height 0pt}\\hss}%\n";
@@ -1380,7 +1530,6 @@ void print_labels(const objects_list& objects) {
 @ Last but not least: A structure with the real dimensions in centimetres of
 all possible labels, namely all possible different |star::name|'s.  They are
 read from the file \.{labeldims.dat} and stored in a |dimensions_list|.
-\.{labeldims.dat} is created by \.{bsc5digest}.
 
 This dimension list also contains the following elements: ``\.{NGC\\,}'',
 ``\.{IC\\,}'', ``\.{M\\,}'', and ``\.{0}''.  They are used to calculate the
@@ -2004,7 +2153,7 @@ void create_hs_colour(double b_v, string spectral_class) {
     OUT << hue << ' ' << saturation;
 }
 
-@ Since there are some stars in the Bright Star Catalogue without a B$-$V
+@ Since there are some stars in the stellar catalogue without a B$-$V
 brightness, I need a fallback on the spectral class.  For such stars is
 $\hbox{|b_v|} = 99$.  In this routine I use the very first character in the
 string with the spectral class for determining an estimated value for
@@ -2103,8 +2252,8 @@ $$\hbox{\.{color labels 1 0 0}}$$ which makes all labels red.  The following
 sub-keywords can be used: ``\.{background}'', ``\.{grid}'', ``\.{ecliptic}'',
 ``\.{boundaries}'', ``\.{highlighted\_boundaries}'', ``\.{stars}'',
 ``\.{nebulae}'', ``\.{labels}'', ``\.{constellation\_lines}'', and
-``\.{milky\_way}''.  In case of the milky way, the color denotes the brightest
-regions.  (The darkest have \.{back}\-\.{ground\_color}.)
+``\.{milky\_way}''.  In case of the milky way, the colour denotes the brightest
+regions.  (The darkest have \.{back}\-\.{ground} colour.)
 
 @.background@>
 @.grid@>
@@ -2401,7 +2550,11 @@ void read_objects_and_labels(istream& script,
 
 @ Sometimes labels have an unfortunate position.  But you may say e.\,g.\
 $$\hbox{\.{reposition M42 E}}$$ to position the label for the Orion Nebula to
-the right of it.  (Abbreviations are taken from the wind rose.)
+the right of it.  (Abbreviations are taken from the wind rose.)  You may use
+this command to force a certain label to be draw although PP3 has decided that
+there is no space for it and didn't print it in the first place.
+
+@q'@>
 
 @<Label repositioning@>=
         if (opcode == "reposition") {
@@ -2422,6 +2575,7 @@ the right of it.  (Abbreviations are taken from the wind rose.)
             else throw string("Undefined position angle: ") + new_position;
             current_object->label_angle = new_angle;
             current_object->with_label = true;
+            current_object->label_arranged = true;
         }
 
 @ With e.\,g.\ $$\hbox{\.{delete\_labels M 35 M42 ;}}$$ you delete the labels
@@ -2432,7 +2586,7 @@ the right of it.  (Abbreviations are taken from the wind rose.)
                 for (int i = 0; i < found_stars.size(); i++)
                     stars[found_stars[i]].with_label = false;
                 for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_stars[i]].with_label = false;
+                    nebulae[found_nebulae[i]].with_label = false;
             }
 
 @ The counterpart of \.{delete\_labels}.  It makes sense first and formost for
@@ -2444,7 +2598,7 @@ Draper Catalogue.)
                 for (int i = 0; i < found_stars.size(); i++)
                     stars[found_stars[i]].with_label = true;
                 for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_stars[i]].with_label = true;
+                    nebulae[found_nebulae[i]].with_label = true;
             }
 
 @ This adds objects (mostly nebulae) the the field.  Notice that this object is
@@ -2455,7 +2609,7 @@ then printed even if it lies outside the view frame (it may be clipped though).
                 for (int i = 0; i < found_stars.size(); i++)
                     stars[found_stars[i]].in_view = true;
                 for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_stars[i]].in_view = true;
+                    nebulae[found_nebulae[i]].in_view = true;
             }
 
 @ The opposite of |@<Celestial object activation@>|.
@@ -2465,7 +2619,7 @@ then printed even if it lies outside the view frame (it may be clipped though).
                 for (int i = 0; i < found_stars.size(); i++)
                     stars[found_stars[i]].in_view = false;
                 for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_stars[i]].in_view = false;
+                    nebulae[found_nebulae[i]].in_view = false;
             }
 
 
@@ -2530,6 +2684,8 @@ int main(int argc, char **argv) {
 script or a `\.{-}' which means that it takes standard input for reading the
 input script.
 
+@q'@>
+
 @<Dealing with command line arguments@>=
         if (argc == 2) {
             if (argv[1][0] != '-') {
@@ -2570,6 +2726,8 @@ such tests of its own (because it's divided into subsections), and in
 |draw_nebulae()| and |draw_stars()| every single object is tested for
 visibility anyway.
 
+@q')@>
+
 @<Draw all celestial objects and labels@>=
         if (params.milkyway_visible) draw_milky_way(mytransform);
         create_grid(mytransform);
@@ -2588,7 +2746,7 @@ visibility anyway.
 @ This is the preamble and the beginning of the resulting \LaTeX\ file.  Notice
 that all font specific commands here should be also used during the generation
 of the label dimensions file.  I use the \.{geometry} package and a dvips
-\.{\\special} command to set the papaersize to the actual view frame plus
+\.{\\special} command to set the papersize to the actual view frame plus
 2~millimetres.  So I create a buffer border of 1\,mm thickness.
 
 @<Create \LaTeX\ header@>=
