@@ -144,13 +144,13 @@ Todo:
 \font\sf=0t3r8r \font\sfbf=0t3b8r
 \font\sfa=0t3r8r scaled 700
 
-\def\title{PP3 (Version 0.99)}
-\def\topofcontents{\null\vfill\vskip-2cm
+\def\title{PP3 (Version 1.0)}
+\def\topofcontents{\null\vfill\vskip-1.5cm
   \centerline{\titlefont The Sky Map Creator {\sbtitlefont PP3}}
   \vskip 15pt
-  \centerline{(Version 0.99)}
+  \centerline{(Version 1.0)}
   \vfill}
-\def\botofcontents{\parindent2em\vfill
+\def\botofcontents{\parindent2em\vfill\vfill\vfill\vfill\vfill
 \noindent
 %
 %                                *LICENCE*
@@ -183,7 +183,7 @@ implied, including but not limited to the warranties of {\it merchantability},
 event shall the authors or copyright holders be liable for any claim, damages
 or other liability, whether in an action of contract, tort or otherwise,
 arising from, out of or in connection with the Software or the use or other
-dealings in the Software.}
+dealings in the Software.\vskip-1cm}
 
 \def\PPTHREE/{{\sf PP3}}
 
@@ -1083,21 +1083,26 @@ scripts must be changed significantly for this.
 
 
 @ Sometimes labels have an unfortunate position.  But you may say e.\,g.\
-$$\hbox{\.{reposition M 42 E}}$$ to position the label for the Orion Nebula to
-the right of it.  (Abbreviations are taken from the wind rose.)  You may use
+$$\hbox{\.{reposition M 42 E ;}}$$ to position the label for the Orion Nebula
+to the right of it.  (Abbreviations are taken from the wind rose.)  You may use
 this command to force a certain label to be drawn although \PPTHREE/ has
 decided that there is no space for it and didn't print it in the first place.
+
+At the moment, this command takes exactly one argument.  However the closing
+semicolon is necessary.
 
 @q'@>
 
 @<Label repositioning@>=
         if (opcode == "reposition") {
-            string position;
+            string position, semicolon;
             view_data* current_object =
                 identify_object(script, ngc, ic, messier, henry_draper,
                                 flamsteed, stars, nebulae);
             int angle;
-            script >> position;
+            script >> position >> semicolon;
+            if (semicolon != ";") 
+                throw string("Expected \";\" after \"reposition\" command");
             @<Map a wind rose |position| to an |angle| in degrees@>@;
             current_object->label_angle = angle;
             current_object->with_label = visible;
@@ -1196,6 +1201,8 @@ with a small label text.  If such things occur frequently, define it as a
 \LaTeX\ macro.
 
 @.text@>
+
+@q'@>
 
 @<Text labels@>=
 if (opcode == "text") {
@@ -1301,8 +1308,6 @@ typedef vector<view_data*> objects_list;
 are very convenient to use for the positioning of the label, they are pretty
 unfortunate if you want to know which coordinates are occupied by the label in
 order to find out possible overlaps.
-
-@q);@>
 
 Therefore I calculate here the rectangular boundaries of a label.  They are
 stored in |left|, |right|, |top|, and |bottom| in screen centimetres.
@@ -1459,7 +1464,7 @@ istream& operator>>(istream& in, star& s) {
        >> s.declination >> s.magnitude >> s.b_v 
        >> s.flamsteed;
     char ch;
-    do in.get(ch); while (in.good() && ch != '\n');
+    do in.get(ch); while (in && ch != '\n');
     getline(in,s.name);
     getline(in,s.constellation);
     getline(in,s.spectral_class);
@@ -1474,7 +1479,7 @@ void read_stars(stars_list& stars) {
     ifstream stars_file(params.filename_stars.c_str());
     star current_star;
     stars_file >> current_star;
-    while (stars_file.good()) {
+    while (stars_file) {
         stars.push_back(current_star);
         stars_file >> current_star;
     }
@@ -1574,7 +1579,7 @@ void read_nebulae(nebulae_list& nebulae) {
     ifstream nebulae_file(params.filename_nebulae.c_str());
     nebula current_nebula;
     nebulae_file >> current_nebula;
-    while (nebulae_file.good()) {
+    while (nebulae_file) {
         @<Create nebula label@>@;
         nebulae.push_back(current_nebula);
         nebulae_file >> current_nebula;
@@ -1700,7 +1705,7 @@ void read_constellation_boundaries(boundaries_list& boundaries) {
     ifstream boundaryfile(params.filename_boundaries.c_str());
     boundary current_boundary;
     boundaryfile >> current_boundary;
-    while (boundaryfile.good()) {
+    while (boundaryfile) {
         boundaries.push_back(current_boundary);
         boundaryfile >> current_boundary;
     }
@@ -1882,6 +1887,8 @@ bool line_intersection(double numerator, double denominator,
 preceding routing on all four label edges.  I return an overlap as the penalty
 value, however I pretend that the line has a width of 8\,pt.  For an overlap
 with the rim, it's only 0.5\,pt.
+
+@q'@>
 
 @c
 double connection::penalties_with(const double left, const double right,
@@ -2074,6 +2081,8 @@ struct color {
 @ This routine is used when the name of the colour is not necessary, because
 it's only needed locally.  This is the case for text labels and the Milky Way
 dots.
+
+@q'@>
 
 @c
 void color::set(ostream& out) {
@@ -2469,7 +2478,7 @@ Of course, it's guaranteed that |objects[i]| is not part of its vicinity.
             }
 
 @ @<Condition to exclude double stars and such@>=
-(distance > objects[i]->skip ||
+(distance > objects[j]->skip ||
  (objects[j]->with_label == visible && !objects[j]->label.empty()))
 
 @ Finally I print out all labels by generation \LaTeX\ code from any of them.
@@ -2491,9 +2500,9 @@ void print_labels(const objects_list& objects) {
             objects[i]->label_color.set(OUT);
             OUT << "\\hbox to 0pt{";
             OUT << "\\hskip" << left << "cm";
-            OUT << "\\vbox to 0pt{\\vss\n  \\hbox{";
+            OUT << "\\vbox to 0pt{\\vss\n  \\hbox{\\Label{";
             OUT << objects[i]->label;
-            OUT << "}\\vskip" << bottom << "cm";
+            OUT << "}}\\vskip" << bottom << "cm";
             OUT << "\\hrule height 0pt}\\hss}%\n";
 #ifdef DEBUG
             OUT << "\\psframe[linewidth=0.3pt](" << left << ',' << bottom
@@ -2616,7 +2625,7 @@ bool recalculate_dimensions(dimensions_list& dimensions,
                      "\\the\\wd0s \\the\\ht0s}\n";
     temp_file << "\\immediate\\closeout\\labelsfile\n\\end{document}\n";
     temp_file.close();
-    if (system("latex pp3temp") != 0) return false;
+    if (system("latex pp3temp > pp3dump.log") != 0) return false;
 
     ifstream raw_labels_file("pp3temp.dat");
     ofstream cooked_labels_file("labeldimens.dat");
@@ -2668,7 +2677,7 @@ already.  And it gets another colour (if wanted).
 @c
 text::text(string t, double r, double d, color c, int angle)
     : contents(t), rectascension(r), declination(d) {
-    label = t;
+    label = string("\\TextLabel{") + t + '}';
     with_label = visible;
     label_angle = angle;
     label_arranged = true;
@@ -2739,7 +2748,7 @@ void draw_stars(const transformation& mytransform, stars_list& stars,
                         (stars[i].magnitude <
                          params.faintest_star_with_label_magnitude &&
                          !stars[i].name.empty()) ? visible : hidden;
-                stars[i].label = stars[i].name;
+                stars[i].label = string("\\Starname{") + stars[i].name + '}';
                 if (params.colored_stars) {
                     OUT << "\\newhsbcolor{starcolor}{";
                     create_hs_colour(stars[i].b_v,stars[i].spectral_class);
@@ -2850,16 +2859,17 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
         << params.linewidth_nebula << "cm,linestyle="
         << params.linestyle_nebula << ",curvature=1 .5 -1}%\n";
     for (int i = 0; i < nebulae.size(); i++)
-        if (nebulae[i].in_view != hidden &&
-            (((nebulae[i].kind == open_cluster ||
-               nebulae[i].kind == globular_cluster)
-              && nebulae[i].magnitude < params.faintest_cluster_magnitude)
+        if (nebulae[i].in_view == visible ||
+	    (nebulae[i].in_view == undecided &&
+	     (((nebulae[i].kind == open_cluster ||
+		nebulae[i].kind == globular_cluster)
+	       && nebulae[i].magnitude < params.faintest_cluster_magnitude)
              || @/
-             ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
-              nebulae[i].kind == emission) &&
-              nebulae[i].magnitude < params.faintest_diffuse_nebula_magnitude)
+	      ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
+		nebulae[i].kind == emission) &&
+	       nebulae[i].magnitude < params.faintest_diffuse_nebula_magnitude)
              ||
-             nebulae[i].messier > 0 )) {
+	      nebulae[i].messier > 0 ))) {
             if (mytransform.polar_projection(nebulae[i].rectascension,
                                              nebulae[i].declination,
                                              nebulae[i].x,nebulae[i].y)) {
@@ -3459,6 +3469,13 @@ Helvetica Roman letters.  If you define a preamble of your own, you don't have
 to re-define that, because it's not defined then.  You can assume a naked plain
 \LaTeX\ font setup.
 
+I define a couple of \LaTeX\ commands as hooks here, all of them take exactly
+one argument.  ``\.{\BS Label}'' encloses every label.  In addition to that,
+``\.{\BS NGC}'', ``\.{\BS IC}'', and ``\.{\BS Messier}'' are built around the
+nebula label of the respective type, ``\.{\BS Starname}'' around all star
+labels, and ``\.{\BS TextLabel}'' around text labels.  By default, they do
+nothing.
+
 @^preamble (\LaTeX)@>
 
 @<|create_preamble()| for writing the \LaTeX\ preamble@>=
@@ -3467,6 +3484,9 @@ void create_preamble(ostream& out) {
         << "\\nofiles" @/
         << "\\usepackage[dvips]{color}\n" @/
         << "\\usepackage{pstricks}\n" @/
+        << "\\newcommand*{\\Label}[1]{#1}\n" @/
+        << "\\newcommand*{\\TextLabel}[1]{#1}\n" @/
+        << "\\newcommand*{\\Starname}[1]{#1}\n" @/
         << "\\newcommand*{\\Messier}[1]{M\\,#1}\n" @/
         << "\\newcommand*{\\NGC}[1]{NGC\\,#1}\n" @/
         << "\\newcommand*{\\IC}[1]{IC\\,#1}\n\n";
