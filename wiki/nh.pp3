@@ -1,0 +1,32 @@
+# Northern Hemisphere
+#
+
+filename output nh.tex
+filename include wiki.pp3
+filename latex_preamble wiki_h.tex
+
+set center_rectascension  0
+set center_declination   90
+set box_height 9
+set box_width 9
+
+set grad_per_cm 20
+
+set faintest_star_magnitude 4.5
+set faintest_star_disk_magnitude 4.0
+set faintest_star_with_label_magnitude 2.0
+set star_scaling 0.5
+
+set shortest_constellation_line 0
+
+set faintest_cluster_magnitude -99
+set faintest_diffuse_nebula_magnitude -99
+line_style nebulae none
+
+line_width constellation_lines 0.02
+
+switch labels on
+switch milky_way on
+switch boundaries off
+
+objects_and_labels
