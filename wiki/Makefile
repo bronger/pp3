@@ -5,7 +5,7 @@ delphinus draco eridanus fornax gemini grus hercules hydra indus leo libra	\
 lupus lynx microscopium monoceros norma octans ophiuchus orion pavo pegasus	\
 perseus phoenix pictor pisces piscis_austrinus puppis sagittarius scorpius	\
 sculptor serpens taurus tucana ursa_major ursa_minor vela virgo vulpecula	\
-scutum lyra
+scutum lyra leo_minor triangulum lacerta equuleus
 
 %.eps : %.pp3 wiki.pp3 wiki.tex
 	pp3 $<
@@ -19,5 +19,4 @@ all: $(addsuffix _constellation_map.png,$(CONSTELLATIONS))
 
 clean:
 	rm $(addsuffix _constellation_map.png,$(CONSTELLATIONS)) \
-	  $(addsuffix _constellation_map_small.png,$(CONSTELLATIONS)) \
-	  $(addsuffix .eps,$(CONSTELLATIONS))
+	  $(addsuffix _constellation_map_small.png,$(CONSTELLATIONS))
