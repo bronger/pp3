@@ -1,0 +1,24 @@
+# Leo Minor, the Small Lion
+#
+
+filename output leo_minor.tex
+filename include wiki.pp3
+
+set constellation LMI
+set center_rectascension  10.3
+set center_declination   32
+set box_height 7
+set box_width 6.3
+
+set faintest_star_disk_magnitude 5
+
+objects_and_labels
+
+reposition LEO 32 SE ;
+
+add_labels LMI 46  LMI 31 ;
+
+text "Leo Minor" at 9.6 33.5 along declination towards NW ;
+text Leo at 10.55 27 along declination towards SE ;
+text "Ursa Major" at 9.4 42 along declination towards NW ;
+text Lynx at 9.5 41 along declination towards SE ;

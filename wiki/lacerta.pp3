@@ -1,0 +1,30 @@
+# Lacerta, the Lizard
+#
+
+filename output lacerta.tex
+filename include wiki.pp3
+
+set constellation LAC
+set center_rectascension  22.5
+set center_declination    46
+set box_height 9
+set box_width 6.3
+
+set faintest_star_disk_magnitude 4.7
+
+penalties boundaries 0
+
+objects_and_labels
+
+add_labels CEP 27 ;   # delta Cep
+reposition CEP 27 NE ;
+
+add_labels LAC 2  LAC 5  LAC 4  LAC 7  LAC 3  LAC 1 ;
+add NGC 7243 ;
+
+text Lacerta at 22 41 along declination towards W ;
+text Cygnus at 22 55 along declination towards SE ;
+text Cep at 22.9 57.5 along declination ;
+text Pegasus at 22.5 35 along declination towards S ;
+text Cassiopeia at 23 54 along declination towards NW ;
+text \vbox{\hbox{Andro-}\hbox{meda}} at 23 36 along declination towards NW ;

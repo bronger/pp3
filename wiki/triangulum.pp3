@@ -1,0 +1,25 @@
+# Triangulum, the Triangle
+#
+
+filename output triangulum.tex
+filename include wiki.pp3
+
+set constellation TRI
+set center_rectascension  2.2
+set center_declination   33
+set box_height 5
+set box_width 6.3
+
+
+objects_and_labels
+
+add_labels TRI 9 ;
+
+text Triangulum at 2.5 28.5 along declination ;
+text Pisces at 1.7 28 along declination towards SE ;
+text Andromeda at 2.05 36.25 along declination ;
+text Aries at 2.6 31 along declination towards SW ;
+text Perseus at 2.75 35 along declination towards NW ;
+
+delete TRI 10 ;
+delete PER 24  PER 17  HD 17240 ;
