@@ -90,7 +90,7 @@
 \let\tt=\tentt
 \let\cmntfont\tenpplr
 
-\mainfont
+\mainfont\baselineskip12.7pt
 
 \hyphenation{white-space}
 
@@ -223,6 +223,8 @@ struct view_data {
                   label_height(0.36), label_angle(0) { }
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
+    virtual double penalties_with(double& left,double& right,double& top,
+                              double& bottom) const;
 };
 
 typedef vector<view_data> objects_list;
@@ -257,6 +259,21 @@ void view_data::get_label_boundaries(double& left,double& right,double& top,
     top = bottom + label_height;
 }
 
+@<Missing math routines@>@;@#
+
+double view_data::penalties_with(double& left1,double& right1,double& top1,
+                                 double& bottom1) const {
+    double left2, right2, top2, bottom2;
+    get_label_boundaries(left2,right2,top2,bottom2);
+    const double overlap_left = fmax(left1, left2);
+    const double overlap_right = fmin(right1, right2);
+    const double overlap_top = fmin(top1, top2);
+    const double overlap_bottom = fmax(bottom1, bottom2);
+    const double overlap_x = fdim(overlap_right, overlap_left);
+    const double overlap_y = fdim(overlap_top, overlap_bottom);
+    return overlap_x * overlap_y;
+}
+
 @*1 Stars.  The actual star data is -- like all other user defined data
 structure in this program -- organised as a |struct| because it's too simple
 for a |class|.  |hd| is the Henry Draper Catalog number, |bs| is the Bright
@@ -284,7 +301,14 @@ struct star : public view_data {
     star() : hd(0), bs(0), rectascension(0.0), declination(0.0),
              magnitude(0.0), b_v(0.0), flamsteed(0), name(""),
              spectral_class(""), view_data() { }
+    virtual double penalties_with(double& left,double& right,double& top,
+                                  double& bottom) const;
 };
+double star::penalties_with(double& left,double& right,double& top,
+                            double& bottom) const {
+    double penalties = view_data::penalties_with(left, right, top, bottom);
+}
+
 
 typedef vector<star> stars_list;
 
@@ -394,6 +418,8 @@ struct nebula : public view_data {
     nebula() : NGC(0), IC(0), M(0), constellation(), rectascension(0.0),
                declination(0.0), magnitude(0.0), diameter_x(0.0),
                diameter_y(0.0), horizontal_angle(0.0), kind(unknown) { }
+    virtual double penalties_with(double& left,double& right,double& top,
+                              double& bottom) const { return 0.0; }
 };
 
 typedef vector<nebula> nebulae_list;
@@ -406,6 +432,8 @@ canonical translation of the |nebula_kind| to |int|.
 If the |horizontal_angle| is unknown, is must be~|720.0|.  |diameter_y| must
 always have a valid value, even if it's actually unknown; in this case it must
 be equal to |diameter_y|.
+
+@q'@>
 
 @c
 istream& operator>>(istream& in, nebula& n) {
@@ -487,6 +515,8 @@ prefix, whichever is greater.
 Is is very convenient to have a special data type for a point in the program
 \.{condigest}.  In this program the advantage is not so big but it's sensible
 to use the same data structures here.
+
+@q'@>
 
 @c
 struct point {
@@ -666,7 +696,7 @@ Maybe I'm paranoid, but I don't like that.
 
 @s zt TeX
 
-@q'@>
+@q'}@>
      
 @c
 inline double transformation::stretch_factor(const double z) const {
@@ -755,30 +785,28 @@ connection lines between the main stars of a given constellation.  They are
 mere eye candy.  I call them ``connections'' in this program to keep the name
 unique and concise.
 
-A |connection| consists of .  The point coordinates
-are screen coordinates in centimetres.  |from| and |to| are the star star and
-the end star, given by their Henry Draper Catalogue number.
+A |connection| consists of |lines|.  The point coordinates are screen
+coordinates in centimetres.  |from| and |to| are the star star and the end
+star, given by their Henry Draper Catalogue number.
+
+%% The fields in |connection| are divided into two groups: The {\it raw\/} fields
+%% |from|, |to|, and |intervals|; with these fields the object is initialised.
+%% And the {\it cooked\/} field |lines|.  The cooked field is initialised with the
+%% raw fields by the element function |cook()|.  This distinction is a little bit
+%% artificial, but it makes |connection| a little bit more alike to the other data
+%% structures in this program: First a load of connections is read from a file.
+%% At this time, no labels have been arranged/\hskip0ptdrawn yet, so we cannot
+%% cook the connections at once (and eliminate the distiction).  Later, when
+%% everything but the connections is drawn, they can get cooked, because now all
+%% |objects| ($={}$label positions) are known.
 
 @s connection int
-@s line i
-
-@q}@>
 
 @c
-struct line {
-    point start, end;
-    line(double x1, double y1, double x2, double y2)
-	: start(x1,y1), end(x2,y2) { }
-};
-
-struct connection {
+struct connection  {
     int from, to;
-    vector<line> paths;
-    connection() : from(-1), to(-1) { }
     connection(const string from_name, const string to_name,
                const stars_list& stars);
-    void cook(const transformation& mytransform, const stars_list& stars,
-	      const objects_list& objects);
 };
 
 typedef vector<connection> connections_list;
@@ -820,36 +848,58 @@ connection::connection(const string from_name, const string to_name,
             to_constellation == stars[i].constellation) to = i;
     }
     if (from == -1 || to == -1)
-	throw string("Constellation lines: Star not found");
+        throw string("Constellation lines: Star not found");
 }
 
 @
 @c
-void connection::cook(const transformation& mytransform,
-		      const stars_list& stars,
-		      const objects_list& objects) {
-    double x_from,y_from, x_to, y_to;
-    mytransform.polar_projection(stars[from].rectascension,
-				 stars[from].declination, x_from, y_from);
-    mytransform.polar_projection(stars[to].rectascension,
-				 stars[to].declination, x_to, y_to);
-    paths.push_back(line(x_from, y_from, x_to, y_to));
+void draw_constellation_lines(const transformation& mytransform,
+                              const connections_list& connections,
+                              const stars_list& stars,
+                              ostream& out = cout) {
+    const double min_length = 0.02;
+    out << "\\psset{linecolor=green,linestyle=solid,linewidth=1pt}%\n";
+    for (int i = 0; i < connections.size(); i++)
+        if (stars[connections[i].from].in_view &&
+            stars[connections[i].to].in_view) {
+            double x1 = stars[connections[i].from].x;
+            double y1 = stars[connections[i].from].y;
+            double x2 = stars[connections[i].to].x;
+            double y2 = stars[connections[i].to].y;
+            const double phi = atan2(y2 - y1, x2 - x1);
+	    double r = hypot(x2 - x1, y2 - y1);
+            double skip;
+            skip = stars[connections[i].from].radius +
+                stars[connections[i].from].skip;
+	    r -= skip;
+            x1 += skip * cos(phi);
+            y1 += skip * sin(phi);
+            skip = stars[connections[i].to].radius +
+                stars[connections[i].to].skip;
+	    r -= skip;
+            x2 -= skip * cos(phi);
+            y2 -= skip * sin(phi);
+            if (r > min_length && r > 0.0)
+                out << "\\psline{cc-cc}(" << x1 << ',' << y1
+                    << ")(" << x2 << ',' << y2 << ")%\n";
+        }
+
 }
 
 @ I must be able to read a file which contains such data.
 
 @c
 void read_constellation_lines(const string filename,
-			      connections_list& connections,
-			      const stars_list& stars) {
+                              connections_list& connections,
+                              const stars_list& stars) {
     ifstream file(filename.c_str());
     string current_line, last_line;
     getline(file,current_line);
     while (file) {
-	if (!last_line.empty() && !current_line.empty())
-	    connections.push_back(connection(last_line, current_line, stars));
-	last_line = current_line;
-	getline(file,current_line);
+        if (!last_line.empty() && !current_line.empty())
+            connections.push_back(connection(last_line, current_line, stars));
+        last_line = current_line;
+        getline(file,current_line);
     }
 }
 
@@ -876,8 +926,6 @@ their boundaries, |left1|, |right1|, |top1|, |bottom1| enclose the first
 rectangle, |left2|, |right2|, |top2|, |bottom2| the second.
 
 @c
-@<Missing math routines@>@;@#
-
 double calculate_overlap(double left1, double right1, double top1,
                          double bottom1, double left2, double right2,
                          double top2, double bottom2) {
@@ -925,8 +973,8 @@ void arrange_labels(objects_list& objects) {
 }
 
 @ All objects in the vicinity of |objects[i]| eventually end up in the |vector|
-|vicinity|.  Here if fill this structure.  I use a very rough guess for finding
-the neighbours, so there will probably be too many of them, but is makes
+|vicinity|.  Here I fill this structure.  I use a very rough guess for finding
+the neighbours, so there will probably be too many of them, but it makes
 calculation much easier.
 
 The variable |last_object_with_labels| holds the index in |vicinity| the
@@ -995,7 +1043,7 @@ non-zero.
 
 
 @ Finally I print out all labels by generation \LaTeX\ code from any of them.
-I do that by calculation the coordinates in centimetres of the {\it bottom
+I do that by calculating the coordinates in centimetres of the {\it bottom
 left\/} corner of the label box, and placing the \TeX\ box there.  This \TeX\
 box lies within another one with zero dimensions in order to keep the point of
 origin (bottom left of the view frame) intact.
@@ -1446,10 +1494,10 @@ radius}_{\hbox{\sevenrm min}}^2}\,,\quad\hbox{if $m<m_{\hbox{\sevenrm
 min}}$\,,}\cr \noalign{\vskip0.5ex} \hbox{|radius|} &= m_{\hbox{\sevenrm
 min}}\,,\quad \hbox{otherwise}.}$$
 
-The star gets a label by default only it has a certain magnitude.  This is
+The star gets a label by default only if it has a certain magnitude.  This is
 even a little bit stricter than the related condition above.
 
-Then only the stellar colour has to be calculated, and it can be printed.
+Then only the stellar colour has yet to be calculated, and it can be printed.
 
 @c
 @<|create_hs_colour()| for star colour determination@>@;@#
@@ -1562,7 +1610,7 @@ int main() {
     const double width = 15;
     const double height = 15;
     const double resolution = 4;
-    transformation mytransform(14.8, 30, width, height, resolution);
+    transformation mytransform(5.8, 0, width, height, resolution);
 
     boundaries_list boundaries;
     dimensions_list dimensions;
@@ -1589,9 +1637,10 @@ int main() {
     cout << "\\psframe*[linestyle=none,linecolor=darkblue](0,0)(" << width
          << ',' << height << ")%\n";
     create_grid(mytransform);
-    draw_boundaries(mytransform, boundaries, "BOO");
+    draw_boundaries(mytransform, boundaries, "ORI");
     draw_nebulae(mytransform, nebulae, objects);
     draw_stars(mytransform, stars, objects);
+    draw_constellation_lines(mytransform, connections, stars);
     arrange_labels(objects);
     print_labels(objects);
     @<Create \LaTeX\ footer@>@;
