@@ -130,7 +130,7 @@ modify it under the terms of the @acronym{MIT} licence.  Please see the
 @end direntry
 
 @iftex
-@hyphenation{}
+@hyphenation{ca-ta-logue ca-ta-logues}
 @end iftex
 
 
@@ -173,7 +173,7 @@ flexibility of the LaTeX language.
 @menu
 * What it is::                  Features of PP3.
 * What it is not::              Limitations of PP3.
-* The success of PP3::          Things that have been done using PP3.
+* Successful use of PP3::       Things that have been done using PP3.
 * Basic astronomical terms::    Rectascension, declination, and such.
 @end menu
 
@@ -209,13 +209,13 @@ efficiency, too.)  So, the program itself is quite stinted, but its
 results are worth it!
 
 
-@node The success of PP3
-@section The success of PP3
+@node Successful use of PP3
+@section Successful use of PP3
 
 @unnumberedsubsec Wikipedia
 
 @PPTHREE{} has been used for the celestial maps of all 88 constellations
-on @uref{http://www.wikipedia.org,Wikipedia}, the free encyclopedia.
+on @uref{http://@/www.wikipedia.org,Wikipedia}, the free encyclopedia.
 Feel free to browse through a
 @uref{http://wikipedia.org/w/wiki.phtml?title=List_of_constellations,list
 of all constellations}.
@@ -247,7 +247,7 @@ of Wikipedia} wanted to translate the maps to French.  They wanted
 another background colour and French labels and constellation names.
 They provided me with a translation table.  It took me three hours to
 adjust the scripts, to run @file{make} again, and to upload the
-@acronym{ZIP} file will all the demanded bitmaps.
+@acronym{ZIP} file with all the demanded bitmaps.
 
 @unnumberedsubsec h2g2
 
@@ -256,7 +256,7 @@ Originally @PPTHREE{} was written for a project on
 encyclopedia.  Unfortunately the BBC editors wanted very small bitmaps
 that would not have been helpful, and they were too lazy to include all
 the 88@tie{}bitmaps.  So the project died, but on a smaller scale (for
-ten constellations or so), it indeed motivated authors to constribute
+ten constellations or so), it indeed motivated authors to contribute
 articles about constellations.  The maps were externally linked.
 
 @node Basic astronomical terms
@@ -286,7 +286,7 @@ With a very similar system astronomers give the coordinates of every
 point in the sky.  The sky longitude is called @emph{rectascension} and
 the sky latitude is called @emph{declination}.  There is a sky North
 Pole (near the Polar Star), a sky South Pole, and a sky equator.  You
-can make globes of the sky like of the Earth, with the only exception
+can make globes of the sky like of the Earth, with the only difference
 that you must imagine being @emph{inside} the globe.
 
 So the rectascension is the @math{x} coordinate in a way.  It is given
@@ -340,6 +340,39 @@ abbreviated @code{SER1} and @code{SER2} in @PPTHREE{}.  If you say
 @node Catalogues
 @subsection Catalogues: Flamsteed, Henry Draper, NGC/IC and Messier
 
+By and large there are two kinds of objects in the sky: stars and
+nebulae.  Astronomers have created many catalogues of them.  There are
+two star catalogues and three nebulae catalogues supported in
+@PPTHREE{}.
+
+The two star catalogues are the Flamsteed and the Henry Draper
+(@acronym{HD}) numbers.  Flamsteed gave numbers beginning with `1' to
+stars in each constellation.  The Flamsteed catalogue is small and
+doesn't contain the complete southern sky.  In contrast to that, the
+@acronym{HD} catalogue doesn't distinguish between constellations, it
+covers the whole sky, and also contains faint stars.  However the
+@acronym{HD} names are harder to read.
+
+For example Rigel, @math{\beta}@tie{}Ori, can be identified in
+@PPTHREE{} with either
+
+@example
+ORI 19
+@end example
+
+@noindent
+where `@code{ORI}' is Rigel's constellation (Orion) and `@code{19}' the
+Flamsteed number; or with
+
+@example
+HD 34085
+@end example
+
+@noindent
+where `@code{34085}' is Rigel's Henry Draper catalogue number.  Both are
+totally equivalent.  The program
+@uref{http://@/www.@/shatters.@/net/@/celestia/,Celestia} is very useful
+for finding Flamsteed or @acronym{HD} numbers.
 
 
 @node Installation
