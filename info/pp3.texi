@@ -782,7 +782,7 @@ Colours are given as red--green--blue values, for forther information
 see @ref{Colours}.  With these redefinitions, all elements on the map
 are printed either in black, or in white, or in shades of grey.
 
-A speacial problem are stars.  With
+A special problem are stars.  With
 
 @example
 color stars 0 0 0
@@ -955,7 +955,7 @@ The red point marks the spot that lies @emph{exactly} on the celestial
 coordinates given after the `@code{at}' keyword.
 @end ifnotinfo
 
-Using `@code{reposition}' is also necessary if @PPTHREE{} has supressed
+Using `@code{reposition}' is also necessary if @PPTHREE{} has suppressed
 a label because it hadn't found a good place for it, because
 `@code{reposition}' forces a label to be printed.
 
@@ -1044,8 +1044,13 @@ text "$#5$" at 11 0 along declination
 @end example
 
 @noindent
-you create automatic tic mark labels at the declination and
-rectascension circles.
+you create automatic tic mark labels at the @math{+20^\circ} declination
+circle and the 11@dmn{h} rectascension circle.  @xref{Tic mark labels},
+for more information about these placeholders like@tie{}@code{#3}.
+Typically you will embed the placeholders in @code{$...$}, because this
+tells the underlying @TeX{} typesetting engine to typeset the number as
+a formula.  This makes it look nicer.
+
 
 
 @node Keywords reference
@@ -1154,7 +1159,7 @@ Default: 4.0
 @deffn Parameter {filename output} filename
 @kwindex output
 The resulting map will be written to the file @var{filename} in @LaTeX{}
-format.  It must habe the file extension @file{.tex}.  If @var{filename}
+format.  It must have the file extension @file{.tex}.  If @var{filename}
 is empty the map will be written to standard out.
 
 Default: @code{""} (empty)
@@ -1309,7 +1314,7 @@ Default: 0.015
 @cindex colour
 @kwindex color
 
-In @PPTHREE{}, colours are given by their red--gren--blue values (also
+In @PPTHREE{}, colours are given by their red--green--blue values (also
 called the @acronym{RGB} colour scheme).  Every value is between 0
 and@tie{}1.  For example, `@code{1 0 0}' is red, `@code{0 0 1}' is blue,
 `@code{0 0 0}' is black and `@code{1 1 1}' is white.
@@ -1467,7 +1472,7 @@ constellation lines)
 @kwindex shortest_constellation_line
 Set the length of the shortest constellation line that is printed to
 @var{length} (in centimetres).  All constellation lines shorter than
-@var{length} are supressed.
+@var{length} are suppressed.
 
 Default: 0.1
 @end deffn
@@ -1590,7 +1595,7 @@ Defaults: 1000 (all)
 @deffn Parameter {penalties threshold} penalties
 @kwindex threshold
 If the penalties for a label exceed @var{penalties}, the label is
-supressed.
+suppressed.
 
 Default: 1000
 @end deffn
@@ -1640,7 +1645,7 @@ script.  If never, the whole script consists of parameters.
 
 @menu
 * Changing sky objects::        Adding and deleting stars and nebulae.
-* Changeing labels::            
+* Changing labels::            
 * Arbitrary text::              How to place arbitrary text on the map.
 @end menu
 
@@ -1661,7 +1666,7 @@ mostly.
 @end deffn
 
 
-@node Changeing labels
+@node Changing labels
 @subsection How to add, delete, and reposition labels
 
 @deffn Command add_labels objects @dots{} @code{;}
@@ -1759,7 +1764,7 @@ be flexes, see @ref{Flexes}.
 @chapter PP3 and LaTeX
 
 We're entering now the phase of sophistication.  Here you learn how to
-customise the graphical appearence of all text on your sky map almost
+customise the graphical appearance of all text on your sky map almost
 arbitrarily.  You also learn how to achieve special text effects using
 the @LaTeX{} language.
 
@@ -1777,13 +1782,19 @@ purposes.
 @node LaTeX in labels
 @section Using LaTeX in labels
 
+@strong{Do be done.}
+
 
 @node LaTeX preamble
 @section LaTeX preamble
 
+@strong{Do be done.}
+
 
 @node Known problems
 @appendix Known problems
+
+@strong{Do be done.}
 
 
 @node Data file formats
@@ -2187,7 +2198,8 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  leavevmode dircategory direntry iftex logue logues pstricks
 @c  LocalWords:  PDF Rectascension PDFs emph uref noindent rectascension dmn
 @c  LocalWords:  circ Ori UMa Hyi Cauda NGC Celestia itemize var Mik GSView SVG
-@c  LocalWords:  exe env rpm dat pdf Corel pxref asis BSC IIICa IVpMnHg eps
+@c  LocalWords:  exe env rpm dat pdf Corel pxref asis BSC IIICa IVpMnHg eps not
 @c  LocalWords:  ARI Cartes Ciel PSC CYG Steinicke Himmelsbeobachter AQL AQR
-@c  LocalWords:  Davenhall Leggett otnotesize Tuc FlexLabel Acrux Messier's
-@c  LocalWords:  cindex kwindex
+@c  LocalWords:  Davenhall Leggett otnotesize Tuc FlexLabel Acrux Messier's cnf
+@c  LocalWords:  cindex kwindex byfmt ini flexes xref ifinfo ifnotinfo tics
+@c  LocalWords:  deffn deffnx
