@@ -1,0 +1,34 @@
+# Phoenix
+#
+
+filename output phoenix.tex
+filename include wiki.pp3
+
+set constellation PHE
+set center_rectascension  0.7
+set center_declination  -49
+set box_height 6
+set box_width 9
+
+set faintest_star_disk_magnitude 5
+
+set grad_per_cm 5
+
+objects_and_labels
+
+reposition HD 12311 E ;
+
+add NGC 253  NGC 55 ;
+
+add_labels HD 9362  HD 496  HD 6882 ;  # delta--zeta Phe
+add_labels HD 2262 ;  # kappa Phe
+
+text Phoenix at 2.2 -40 along declination towards SE ;
+text Sculptor at 1.7 -35 along declination towards E ;
+text Eri at 2.2 -55 along declination towards E ;
+text Grus at 23.4 -37 along declination towards SE ;
+text Fornax at 1.8 -36 along declination towards W ;
+text Tucana at 1.3 -58 along declination towards SE ;
+text Horologium at 2.3 -54 along declination towards SW ;
+text PsA at 23.1 -36 along declination ;
+text Hydrus at 1.45 -59 along declination towards SW ;

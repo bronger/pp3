@@ -1,0 +1,26 @@
+# Lynx
+#
+
+filename output lynx.tex
+filename include wiki.pp3
+
+set constellation LYN
+set center_rectascension  8.2
+set center_declination   47
+set box_height 9
+set box_width 9
+
+set faintest_star_disk_magnitude 5.2
+
+objects_and_labels
+
+add_labels HD 76943  LYN 38  LYN 31 ;
+set_label_text HD 76943 "$10$~\\footnotesize UMa"
+
+text Lynx at 8 41 along declination towards N ;
+text "Ursa Major" at 8.65 55.5 along declination towards W ;
+text Gemini at 8.1 32 along declination towards SE ;
+text Cancer at 8.2 32 along declination towards SW ;
+text Auriga at 7.4 44 along declination towards SE ;
+text LMi at 9.4 32.5 along declination towards SW ;
+text Camelopardalis at 8.1 62.5 along declination ;
