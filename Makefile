@@ -16,6 +16,7 @@ DOCDIR= $(USRDIR)/share/doc/pp3
 DESTDIR= $(USRDIR)/bin
 
 CHANGEFILE=-
+CXXFLAGS=-s -O2
 
 all: pp3
 
@@ -29,7 +30,7 @@ doc: pp3.pdf
 	$(TEX) $*
 
 pp3: pp3.cc
-	$(CXX) -DPP3DATA=\"$(PP3DATA)\" pp3.cc -s -O2 -o pp3
+	$(CXX) -DPP3DATA=\"$(PP3DATA)\" pp3.cc $(CXXFLAGS) -o pp3
 
 pp3.pdf: pp3.w
 	$(CWEAVE) pp3.w
@@ -83,7 +84,7 @@ distri-cripple:
 
 rpm:
 	rm -f pp3.cc
-	make distri CHANGEFILE=fmax.ch 
+	make distri CHANGEFILE=fmax.ch CXXFLAGS="$(CXXFLAGS)"
 	cp $(DISTRINAME).tar.bz2 $(HOME)/packages/pp3/
 	rpm -ba $(RPMNAME)
 
