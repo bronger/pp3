@@ -11,8 +11,8 @@
 @q  distributed under the terms of a permission notice identical to     @>
 @q  this one.                                                           @>
 @q                                                                      @>
-@q  For the full licence see below or the printed version of this       @>
-@q  program.                                                            @>
+@q  For the full licence see below under "*LICENCE*" or the printed     @>
+@q  version of this program.                                            @>
 @q                                                                      @>
 @q  To get a compilable C++ source code, use                            @>
 @q       ctangle pp3.w - pp3.cc                                         @>
@@ -24,6 +24,13 @@
 @q  Further information can be obtained at                              @>
 @q       http://www-cs-faculty.stanford.edu/~knuth/cweb.html            @>
 @q======================================================================@>
+
+\iffalse
+Todo:
+ - More parameterisation
+ - Final documentation
+ - Final webpage
+\fi
 
 \catcode`@@=11
 
@@ -116,6 +123,7 @@
 \def\BSC/{{\mc BSC\spacefactor1000}}
 \def\HSB/{{\mc HSB\spacefactor1000}}
 \def\EPS/{{\mc EPS\spacefactor1000}}
+\def\PS/{{\mc PS\spacefactor1000}}
 \def\PDF/{{\mc PDF\spacefactor1000}}
 \def\RGB/{{\mc RGB\spacefactor1000}}
 \def\NGC/{{\mc NGC\spacefactor1000}}
@@ -128,21 +136,27 @@
 \font\sfa=bfrr8t scaled 700
 
 \font\stitlefont=phvr7t scaled\magstep3    % sans serif type in title
-\font\stitlefont=bfrr8t scaled\magstep3    % sans serif type in title
 \font\sbtitlefont=phvb7t scaled\magstep3   % sans bold type in title
-\font\sbtitlefont=0t3x8a scaled\magstep3   % sans bold type in title
 \font\ttitlefont=pcrb7t scaled\magstep3    % typewriter type in title
 
+\font\stitlefont=bfrr8t scaled\magstep3    % sans serif type in title
+\font\sbtitlefont=0t3x8a scaled\magstep3   % sans bold type in title
+\font\sf=0t3r8a \font\sfbf=0t3b8a
+\font\sfa=0t3r8a scaled 700
 
-\def\title{PP3 (Version 0.9)}
+\def\title{PP3 (Version 0.91)}
 \def\topofcontents{\null\vfill
   \centerline{\titlefont The Sky Map
   Creator {\sbtitlefont PP3}}
   \vskip 15pt
-  \centerline{(Version 0.9)}
+  \centerline{(Version 0.91)}
   \vfill}
 \def\botofcontents{\parindent2em\vfill
 \noindent
+%
+%                                *LICENCE*
+%
+%
 Copyright \copyright\ 2003 Torsten Bronger
                            ({\tt bronger@@users.sourceforge.net})
 \bigskip\noindent
@@ -152,7 +166,6 @@ the Software without restriction, including without limitation the rights to
 use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 of the Software, and to permit persons to whom the Software is furnished to do
 so, subject to the following conditions:
-
 
 \leftskip1cm\rightskip\leftskip
 \smallskip\noindent
@@ -172,16 +185,18 @@ or other liability, whether in an action of contract, tort or otherwise,
 arising from, out of or in connection with the Software or the use or other
 dealings in the Software. }
 
+\def\PPTHREE/{{\sf PP3}}
+
 @i c++lib.w
 @s ios int
 
-@* Introduction.  This program \.{pp3} (``parvum planetarium'') takes the data
-of various celestial data files and turns them into a \LaTeX\ file that uses
-PSTricks to draw a nice sky chart containing a certain region of the sky.
-Current versions are available on its
+@* Introduction.  This program \PPTHREE/ (``parvum planetarium'') takes the
+data of various celestial data files and turns them into a \LaTeX\ file that
+uses \PS/Tricks to draw a nice sky chart containing a certain region of the
+sky.  Current versions are available on its
 \pdfURL{homepage}{http://pp3.sourceforge.net}.
 
-You call PP3 with e.\,g.\medskip
+You call \PPTHREE/ with e.\,g.\medskip
 
 \.{pp3 mychart.pp3}
 
@@ -277,10 +292,15 @@ struct parameters {
     double center_rectascension, center_declination;
     double view_frame_width, view_frame_height;
     double grad_per_cm;
+    double label_skip, minimal_nebula_radius, faintest_cluster_magnitude,
+        faintest_diffuse_nebula_magnitude, faintest_star_magnitude,
+        star_scaling, minimal_star_radius, faintest_star_disk_magnitude,
+        faintest_star_with_label_magnitude, shortest_constellation_line;
     string constellation;
+    int font_size;
     string filename_stars, filename_nebulae, filename_dimensions,
         filename_lines, filename_boundaries, filename_milkyway,
-        filename_preamble;
+        filename_preamble, filename_include;
     string filename_output;
     ostream* out;
     color bgcolor, gridcolor, eclipticcolor, boundarycolor, hlboundarycolor,
@@ -290,14 +310,23 @@ struct parameters {
     bool create_eps, create_pdf;
     parameters() : center_rectascension(5.8), center_declination(0.0),
                    view_frame_width(15.0), view_frame_height(15.0),
-                   grad_per_cm(4.0), constellation("ORI"), @/
+                   grad_per_cm(4.0),
+                   constellation("ORI"), font_size(10), @/
+                   label_skip(0.06), minimal_nebula_radius(0.1),
+                   faintest_cluster_magnitude(4.0),
+                   faintest_diffuse_nebula_magnitude(8.0),
+                   faintest_star_magnitude(7.0), star_scaling(1.0),
+                   minimal_star_radius(0.015),
+                   faintest_star_disk_magnitude(4.5),
+                   faintest_star_with_label_magnitude(3.7),
+                   shortest_constellation_line(0.1), @/
                    filename_stars("stars.dat"),
                    filename_nebulae("nebulae.dat"),
                    filename_dimensions("labeldimens.dat"),
                    filename_lines("lines.dat"),
                    filename_boundaries("boundaries.dat"),
                    filename_milkyway("milkyway.dat"), @/
-                   filename_preamble(),
+                   filename_preamble(), filename_include(), 
                    filename_output(), out(&cout), @/
                    bgcolor("bgcolor", 0, 0, 0.4),
                    gridcolor("gridcolor", 0, 0.298, 0.447),
@@ -326,9 +355,9 @@ struct parameters {
 
 
 @ It's very convenient to have a unified data structure for all colours that
-appear in this program.  Its internat structure is trivial, and I only support
+appear in this program.  Its internal structure is trivial, and I only support
 the \RGB/ colour model.  The only complicated thing is |name| here.  I need it
-because of PSTricks' way to activate colours: They must get names first.  I
+because of \PS/Tricks' way to activate colours: They must get names first.  I
 could get rid of it if I called all colours e.\,g.\ ``\.{tempcolor}'' or
 ``\.{dummycolor}'' and activated them at once.  But this is not necessary.
 
@@ -366,7 +395,7 @@ istream& operator>>(istream& in, color& c) {
 }
 
 @ But when I {\it write\/} them, I assume that I do it into a \LaTeX\ file with
-PSTricks package activated.  Then I deploy a complete \.{\\newrgbcolor}
+\PS/Tricks package activated.  Then I deploy a complete \.{\\newrgbcolor}
 command.
 
 @c
@@ -451,15 +480,18 @@ struct view_data {
     double label_width, label_height;
     color label_color;
     int label_angle;
-    view_data() : in_view(undecided), x(0.0), y(0.0), radius(0.0), skip(0.06),
+    view_data() : in_view(undecided), x(DBL_MAX), y(DBL_MAX), radius(0.0), 
+                  skip(params.label_skip),
                   with_label(undecided), label_arranged(false), label(), 
                   label_width(0.24), label_height(0.36),
                   label_color(params.labelcolor), label_angle(0) { }
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
     double scope() const { return radius + skip + label_width + label_height; }
+    bool has_valid_coordinates() const { return x != DBL_MAX && y != DBL_MAX; }
     virtual double penalties_with(const double left, const double right,
-                                  const double top, const double bottom) const;
+                                  const double top, const double bottom,
+                                  bool core = true) const;
 };
 
 @ This is the only structure that is not put into a container directly, but via
@@ -508,7 +540,8 @@ this is just the overlap itself in square centimetres, like here.
 @<Missing math routines@>@;@#
 
 double view_data::penalties_with(const double left, const double right,
-                                 const double top, const double bottom) const {
+                                 const double top, const double bottom,
+                                 bool core = true) const {
     if (with_label == visible && label_arranged) {
         double left2, right2, top2, bottom2;
         get_label_boundaries(left2,right2,top2,bottom2);
@@ -571,7 +604,8 @@ struct star : public view_data {
              magnitude(0.0), b_v(0.0), flamsteed(0), name(""),
              spectral_class(""), view_data() { }
     virtual double penalties_with(const double left, const double right,
-                                  const double top, const double bottom) const;
+                                  const double top, const double bottom,
+                                  bool core = true) const;
 };
 
 @ In order to find the penalties with a (labelled) star, I first calculate them
@@ -582,8 +616,10 @@ and not rectangles.  FixMe: This should be done justice to.
 
 @c
 double star::penalties_with(const double left, const double right,
-                            const double top, const double bottom) const {
-    double penalties = view_data::penalties_with(left, right, top, bottom);
+                            const double top, const double bottom,
+                            bool core = true) const {
+    double penalties = view_data::penalties_with(left, right, top, bottom,
+                                                 core);
     const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
         bottom2 = y - radius;
     const double overlap_left = fmax(left, left2);
@@ -684,7 +720,8 @@ struct nebula : public view_data {
                declination(0.0), magnitude(0.0), diameter_x(0.0),
                diameter_y(0.0), horizontal_angle(0.0), kind(unknown) { }
     virtual double penalties_with(const double left,const double right,
-                                  const double top, const double bottom) const;
+                                  const double top, const double bottom,
+                                  bool core = true) const;
 };
 
 typedef vector<nebula> nebulae_list;
@@ -697,8 +734,9 @@ are circles and not rectangles.  FixMe: This should be done justice to.
 
 @c
 double nebula::penalties_with(const double left, const double right,
-                              const double top, const double bottom) const {
-    double penalties = view_data::penalties_with(left, right, top, bottom);
+                              const double top, const double bottom,
+                              bool core = true) const {
+    double penalties = view_data::penalties_with(left, right, top, bottom, core);
     const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
         bottom2 = y - radius;
     const double overlap_left = fmax(left, left2);
@@ -763,16 +801,16 @@ contains the number within that catalogue.  I just concatenate both to the
         string catalogue;
         stringstream number;
         if (current_nebula.messier > 0) {
-            catalogue = "M\\,";
+            catalogue = "\\Messier{";
             number << current_nebula.messier;
         } else if (current_nebula.ngc > 0) {
-            catalogue = "NGC\\,";
+            catalogue = "\\NGC{";
             number << current_nebula.ngc;
         } else if (current_nebula.ic > 0) {
-            catalogue = "IC\\,";
+            catalogue = "\\IC{";
             number << current_nebula.ic;
         } else throw string("Invalid catalogue");
-        current_nebula.label = catalogue + number.str();
+        current_nebula.label = catalogue + number.str() + '}';
 
 
 @*1 Constellation boundaries.  They are stored in an external file called
@@ -893,14 +931,16 @@ struct boundary_atom : public view_data {
     point start, end;
     boundary_atom(point start, point end);
     virtual double penalties_with(const double left,const double right,
-                                  const double top, const double bottom) const;
+                                  const double top, const double bottom,
+                                  bool core = true) const;
 };
 
 @ The nice thing about |boundary_atom| is that after it has been constructed,
 it's finished.  Nothing has to be changed any more because all is known in the
 moment of construction.
 
-@q'@>
+Since boundary atoms are only created when they are visible, I can set |in_view
+= visible| etc. @q'@>
 
 @c
 boundary_atom::boundary_atom(point start, point end) : start(start), end(end) {
@@ -908,6 +948,9 @@ boundary_atom::boundary_atom(point start, point end) : start(start), end(end) {
     y = (start.y + end.y) / 2.0;
     radius = hypot(end.x - start.x, end.y - start.y) / 2.0;
     radius *= M_PI_2;
+    in_view = visible;
+    with_label = hidden;
+    skip = 0.0;
 }
 
 @ The full algorithm that is used here is described in the |@<Definition of
@@ -928,7 +971,8 @@ Objects of this type are created in |@<Create a |boundary_atom| for the
 @<Definition of |line_intersection()| for intersection of two lines@>@;@#
 
 double boundary_atom::penalties_with(const double left,const double right,
-                                     const double top, const double bottom)
+                                     const double top, const double bottom,
+                                     bool core = true)
     const {
     double intersection;
     point r(end.x - start.x, end.y - start.y);
@@ -959,7 +1003,7 @@ double boundary_atom::penalties_with(const double left,const double right,
                                 intersection_points[0].x,
                                 intersection_points[1].y -
                                 intersection_points[0].y);
-    return 3.0 / 72.27*2.54 * length;
+    return (core? 8.0 : 0.5) / 72.27*2.54 * length;
 }
 
 @* Coordinate transformations.  They are done by the class |transformation|.
@@ -1123,10 +1167,10 @@ bool transformation::polar_projection(const double rectascension,
     if (z1 < -DBL_EPSILON) return false;
     const double stretch = stretch_factor(z1);
     const double x1 = a[0][0] * x0 + a[0][1] * y0;
-    x = x1 * stretch + width / 2.0;
-    if (x < 0.0 || x > width) return false;
     const double y1 = a[1][0] * x0 + a[1][1] * y0 + a[1][2] * z0;
+    x = x1 * stretch + width / 2.0;
     y = y1 * stretch + height / 2.0;
+    if (x < 0.0 || x > width) return false;
     if (y < 0.0 || y > height) return false;
     return true;
 }
@@ -1154,9 +1198,11 @@ struct connection : public view_data {
     point start, end;
     int from, to;
     connection(const int from, const int to)
-        : from(from), to(to), start(), end(), view_data() { }
+        : from(from), to(to), start(), end() { in_view = visible;
+        with_label = hidden; skip = 0.0; }
     virtual double penalties_with(const double left,const double right,
-                                  const double top, const double bottom) const;
+                                  const double top, const double bottom,
+                                  bool core = true) const;
 };
 
 typedef vector<connection> connections_list;
@@ -1227,7 +1273,8 @@ preceding routing on all four label edges.  If there is an intersection
 
 @c
 double connection::penalties_with(const double left, const double right,
-                                  const double top, const double bottom) const
+                                  const double top, const double bottom,
+                                  bool core = true) const
 {
     double intersection;
     point r(end.x - start.x, end.y - start.y);
@@ -1258,7 +1305,7 @@ double connection::penalties_with(const double left, const double right,
                                 intersection_points[0].x,
                                 intersection_points[1].y -
                                 intersection_points[0].y);
-    return 3.0 / 72.27*2.54 * length;
+    return (core? 8.0 : 0.5) / 72.27*2.54 * length;
 }
 
 @ I must be able to read a file which contains such data.  Here, too, the text
@@ -1270,7 +1317,7 @@ Constellation\/} must be given as an all uppercase three letter abbreviation.
 For example, \.{ORI\SP19} is $\alpha$~Ori (Rigel).
 
 The hash sign `\.{\#}' introduces comments that are ignored till end of line,
-however they mustn't occure within a star.
+however they mustn't occur within a star.
 
 @c
 void read_constellation_lines(connections_list& connections,
@@ -1388,17 +1435,11 @@ double calculate_overlap(double left1, double right1, double top1,
 }
 
 @ Nor for a structure with the real dimensions in centimetres of all possible
-labels, namely all possible different |star::name|'s.  They are read from the
-file \.{labeldims.dat} and stored in a |dimensions_list|.
-
-This dimension list also contains the following elements: ``\.{NGC\\,}'',
-``\.{IC\\,}'', ``\.{M\\,}'', and ``\.{0}''.  They are used to calculate the
-width and height of nebulae labels.
+labels.  They are read from the file \.{labeldims.dat} and stored in a
+|dimensions_list|.
 
 @s dimensions_list int
 @s dimension int
-
-@q'@>
 
 @c
 struct dimension {
@@ -1442,16 +1483,17 @@ void arrange_labels(objects_list& objects, dimensions_list& dimensions) {
                     get_label_boundaries(on_object_left, on_object_right,
                                          on_object_top, on_object_bottom);
                 double penalty = 0.0;
-                double half_quad = (on_object_top - on_object_bottom)/2.0;
+                double shell_width = 2.0 * objects[i]->skip;
                 for (int j = 0; j < vicinity.size(); j++) {
                     penalty += vicinity[j]->
                         penalties_with(on_object_left, on_object_right,
-                                       on_object_top, on_object_bottom)
-                        + vicinity[j]->
-                        penalties_with(on_object_left - half_quad,
-                                       on_object_right + half_quad,
-                                       on_object_top + half_quad,
-                                       on_object_bottom - half_quad);
+                                       on_object_top, on_object_bottom) +
+                        vicinity[j]->
+                        penalties_with(on_object_left - shell_width,
+                                       on_object_right + shell_width,
+                                       on_object_top + shell_width,
+                                       on_object_bottom - shell_width,
+                                       false);
                 }
                 if (on_object_left < 0.0 || on_object_bottom < 0.0 ||
                     on_object_right > params.view_frame_width ||
@@ -1463,16 +1505,22 @@ void arrange_labels(objects_list& objects, dimensions_list& dimensions) {
                 }
             }
             if (!objects[i]->label.empty())
-            if (best_penalty < 0.6 * objects[i]->label_height *
+            if (best_penalty < 0.4 * objects[i]->label_height *
                 objects[i]->label_width) {
                 objects[i]->label_angle = best_angle;
                 objects[i]->label_arranged = true;
 #ifdef DEBUG
                 stringstream penalty;
-                penalty << " " << best_penalty;
-                objects[i]->label += penalty.str();
-                cerr << "pp3DEBUG: Object " << objects[i]->label
-                     << " has penalty of " << penalty.str() << endl;
+                penalty.precision(2);
+                penalty << " " << best_penalty << " ("
+                        <<  best_penalty /
+                    (objects[i]->label_height * objects[i]->label_width) * 100
+                        << "%)";
+                //                objects[i]->label += penalty.str();
+                cerr << "pp3DEBUG: Object " << objects[i]->label << ' ';
+                const star* s = dynamic_cast<star*>(objects[i]);
+                if (s) cerr << s->constellation;
+                cerr << " has penalty of" << penalty.str() << endl;
 #endif
             } else {
                 objects[i]->with_label = hidden;
@@ -1502,13 +1550,19 @@ Of course, it's guaranteed that |objects[i]| is not part of its vicinity.
 @<Find objects in vicinity of |objects[i]|@>=
             const double on_object_scope = objects[i]->scope();
             for (int j = 0; j < objects.size(); j++) {
-                if (i != j && objects[i]->in_view == visible)
-                    if (hypot(objects[i]->x - objects[j]->x,
-                              objects[i]->y - objects[j]->y) <
-                        on_object_scope + objects[j]->scope())
+                if (i != j && objects[j]->in_view == visible) {
+                    const double distance =
+                        hypot(objects[i]->x - objects[j]->x,
+                              objects[i]->y - objects[j]->y);
+                    if (distance < on_object_scope + objects[j]->scope() &&
+                        @<Condition to exclude double stars and such@>)
                         vicinity.push_back(objects[j]);
+                }
             }
 
+@ @<Condition to exclude double stars and such@>=
+(distance > objects[i]->skip ||
+ (objects[j]->with_label == visible && !objects[j]->label.empty()))
 
 @ Finally I print out all labels by generation \LaTeX\ code from any of them.
 I do that by calculating the coordinates in centimetres of the {\it bottom
@@ -1569,15 +1623,15 @@ because no label dimensions file could be found).  In this case I call
 |recalculate_dimensions()| to get all labels recalculated via an extra \LaTeX\
 run.
 
-I have to distinguish whether the label is a nebula label or not.  Bot cases do
-similar things, but nevertheless different action is necessary.
+I have to distinguish whether the label is a nebula label or not.  Both cases
+do similar things, but nevertheless different action is necessary.
 
 |dimensions_recalculated| is |true| if |recalculate_dimensions()| has been
  called and thus one can assume that all needed labels are now available.  It
  is merely to remove unnecessary tests and make the procedure faster.  If the
  recalculation fails, I set it to |true| nevertheless because I want a failed
- recalculation to be non-fatal and PP3 mustn't try to recalculate over and over
- again.
+ recalculation to be non-fatal and \PPTHREE/ mustn't try to recalculate over
+ and over again.
 
 The |throw| command should never happen.  It means an internal error.
 
@@ -1588,112 +1642,37 @@ bool dimensions_recalculated = false;
 for (int i = 0; i < objects.size(); i++) {
     view_data* current_object = objects[i];
     if (current_object->with_label == visible) {
-        if (is_nebula_label(current_object->label)) {
-            if (!get_nebula_label_dimensions
-                (current_object->label,dimensions,dimensions_recalculated,
-                 current_object->label_width,
-                 current_object->label_height)) {
-                cerr << "pp3: Label not found: \"" << current_object->label 
-                     << '"' << endl;
-                if (!recalculate_dimensions(dimensions,objects)) {
-                    cerr << "pp3: LaTeX call for label creation failed";
-                    dimensions_recalculated = true;
-                }
-                if (!get_nebula_label_dimensions
-                    (current_object->label,dimensions,dimensions_recalculated,
-                     current_object->label_width,
-                     current_object->label_height))
-                    throw string("Update of label dimensions file failed: \"")
-                        + current_object->label + "\" not found";
+        if (!dimensions_recalculated &&
+            dimensions.find(current_object->label) == dimensions.end()) {
+            if (!recalculate_dimensions(dimensions,objects)) {
+                cerr << "pp3: LaTeX call for label creation failed";
                 dimensions_recalculated = true;
             }
-        } else {
-            if (!dimensions_recalculated &&
-                dimensions.find(current_object->label) == dimensions.end()) {
-                if (!recalculate_dimensions(dimensions,objects)) {
-                    cerr << "pp3: LaTeX call for label creation failed";
-                    dimensions_recalculated = true;
-                }
-                if (dimensions.find(current_object->label) == dimensions.end())
-                    throw string("Update of label dimensions file failed: \"") +
-                        current_object->label + "\" not found";
-                dimensions_recalculated = true;
-            } 
-            current_object->label_width = dimensions[current_object->label].width;
-            current_object->label_height =
-                dimensions[current_object->label].height;
-        }
+            if (dimensions.find(current_object->label) == dimensions.end())
+                throw string("Update of label dimensions file failed: \"") +
+                    current_object->label + "\" not found";
+            dimensions_recalculated = true;
+        } 
+        current_object->label_width = dimensions[current_object->label].width;
+        current_object->label_height =
+            dimensions[current_object->label].height;
     }
 }
 
-@ If this routine returns |true|, the given |label| matches the pattern of a
-nebula, this means it can be calculated rather than be a member of
-|dimensions|.  See |get_nebula_label_dimensions()| below for further details.
 
-As an alternative I could test the exact type of |*object[i]|.  However this
-way here is more robust and cleaner, although at first sight it doesn't seem
-so.  (For example I could have nebulae with trivial names.)
-
-@q'@>
-
-@<Helping routines for nebulae labels@>=
-bool is_nebula_label(string label) {
-    if (label.substr(0,3) != "M\\," && label.substr(0,5) != "NGC\\," &&
-        label.substr(0,4) != "IC\\,") return false;
-    for (int i = label.find("\\,") + 2; i < label.length(); i++)
-        if (!isdigit(label[i])) return false;
-    return true;
-}
-
-@ For determining the width of the label for a nebula, I use the width of the
-prefix (e.\,g.\ ``\.{M\\,}''), and the width of one digit (zero is used in
-\.{pp3}).\footnote{$^1$}{Of course this only works if all digits in the used
-font have the same width.}  They are sumed up, after the width of the digit has
-been multiplied by the number of digits (or the length) of the contents of
-|number|.
-
-For determining the height, I use the height of the zero or the height of the
-prefix, whichever is greater.
-
-If everything went fine, this routine return |true|.  If the |dimensions|
-doesn't contain enough entries for constructing the label, it does nothing and
-returns |false|.  Normally this means that the file with the label dimensions
-was non-existing and everything has to be recalculated.
-
-@q'@>
-
-@<Helping routines for nebulae labels@>=
-bool get_nebula_label_dimensions(string label,
-                                 dimensions_list& dimensions,
-                                 const bool dimensions_recalculated,
-                                 double& width, double& height) {
-    if (!is_nebula_label(label)) throw string("Internal error: Invalid nebula"
-                                              "label");
-    const string catalogue = label.substr(0,label.find("\\,") + 2);
-    if (!dimensions_recalculated)
-        if (dimensions.find(catalogue) == dimensions.end() ||
-            dimensions.find("0") == dimensions.end()) return false;
-    width = dimensions[catalogue].width +
-        (label.length() - catalogue.length()) * dimensions["0"].width;
-    height = fmax(dimensions[catalogue].height, dimensions["0"].height);
-    return true;
-}
-
-@ When PP3 is started it reads a file usually called \.{labeldimens.dat} in
-order to know width and height (in centimetres) of all labels.  This is vital
-for the penalty (i.\,e.\ overlap) calculations.  But it may be that a label
-that you want to include can't be found in this file, or you have deleted it
-because you've changed the \LaTeX\ preamble of the output (i.\,e.\ the fonts).
-In these cases PP3 automatically creates a new one.  It is then used in the
-following runs to save time.
+@ When \PPTHREE/ is started it reads a file usually called \.{labeldimens.dat}
+in order to know width and height (in centimetres) of all labels.  This is
+vital for the penalty (i.\,e.\ overlap) calculations.  But it may be that a
+label that you want to include can't be found in this file, or you have deleted
+it because you've changed the \LaTeX\ preamble of the output (i.\,e.\ the
+fonts).  In these cases \PPTHREE/ automatically creates a new one.  It is then
+used in the following runs to save time.
 
 Here I do this.  First I store all label names (not only the missing!)\ in
-|required_names|.  I add the nebula label fragments |"M\\,"| etc.\ and |"0"| to
-it.  The full label of each nebula can later be constructed by combining them
-properly.  I assure that every label occurs only once.
+|required_names|.  I assure that every label occurs only once.
 
 Then I create a |temp_file| which is a \LaTeX\ file that -- if sent through
-\LaTeX\ -- is able to create another temporary file called |raw_labels_file|.
+<\LaTeX\ -- is able to create another temporary file called |raw_labels_file|.
 This is read and stored directly in |dimensions| (where it belongs to
 naturally).  At the same time a new, updated |cooked_labels_file| (aka
 \.{labeldimens.dat}) is created.
@@ -1713,13 +1692,8 @@ bool recalculate_dimensions(dimensions_list& dimensions,
     list<string> required_names;
     for (int i = 0; i < objects.size(); i++) {
         string current_name = objects[i]->label;
-        if (!current_name.empty() && !is_nebula_label(current_name)) 
-            required_names.push_back(objects[i]->label);
+        if (!current_name.empty()) required_names.push_back(objects[i]->label);
     }
-    required_names.push_back("M\\,");
-    required_names.push_back("NGC\\,");
-    required_names.push_back("IC\\,");
-    required_names.push_back("0");
     required_names.unique();
 
     ofstream temp_file("pp3temp.tex");
@@ -1767,16 +1741,28 @@ bool recalculate_dimensions(dimensions_list& dimensions,
 }
 
 @*1 User labels.  The user should be able to insert arbitaray text into the
-chart.  The code for this is provided here.
+chart.  The code for this is provided here.  The data type of them, |text|, is
+of course a classical derivative of |view_data|.  It only holds the celetial
+coordinates and the text (\LaTeX) string of the label.
+
+@s text int
 
 @c
 struct text : public view_data {
     string contents;
     double rectascension, declination;
-    text() : contents(), rectascension(0.0), declination(0.0) { }
     text(string t, double r, double d, color c, int angle);
 };
 
+typedef list<text> texts_list;
+
+@ In the constructor I modify the values of some |view_data| elements, because
+a |text| is a special label.  For example it mustn't be arranged, because it is
+already.  And it gets another colour (if wanted).
+
+@q'@>
+
+@c
 text::text(string t, double r, double d, color c, int angle)
     : contents(t), rectascension(r), declination(d) {
     label = t;
@@ -1786,8 +1772,6 @@ text::text(string t, double r, double d, color c, int angle)
     label_color = c;
     radius = skip = 0.0;
 }
-
-typedef list<text> texts_list;
 
 @ This routine is called |draw_|\dots\ due to its analogy to the other drawing
 function.  But curiously enough, I don't draw anything here, because labels are
@@ -2083,18 +2067,22 @@ it must be positive), otherwise it doesn't make sense to draw the line.
 Finally the line is drawn from the new $(\hbox{|x1|}, \hbox{|y1|})$ to the new
 $(\hbox{|x2|}, \hbox{|y2|})$.
 
+I expect |has_valid_coordinates()| to be |false| if the star is on the
+non-visible hemisphere (i.\,e.\ $z<0$).
+
+
 @q'@>
 
 @c
-void draw_constellation_lines(const transformation& mytransform,
-                              connections_list& connections,
+void draw_constellation_lines(connections_list& connections,
                               const stars_list& stars,
                               objects_list& objects) {
-    const double min_length = 0.2;
     OUT << "\\psset{linecolor=clinecolor,linestyle=solid,linewidth=1pt}%\n";
     for (int i = 0; i < connections.size(); i++)
-        if (stars[connections[i].from].in_view == visible &&
-            stars[connections[i].to].in_view == visible) {
+        if ((stars[connections[i].from].in_view == visible ||
+            stars[connections[i].to].in_view == visible)
+            && stars[connections[i].from].has_valid_coordinates()
+            && stars[connections[i].to].has_valid_coordinates()) {
             double x1 = stars[connections[i].from].x;
             double y1 = stars[connections[i].from].y;
             double x2 = stars[connections[i].to].x;
@@ -2115,7 +2103,7 @@ void draw_constellation_lines(const transformation& mytransform,
             connections[i].radius = r/2.0;
             connections[i].x = (x1 + x2) / 2.0;
             connections[i].y = (y1 + y2) / 2.0;
-            if (r > min_length && r > 0.0) {
+            if (r > params.shortest_constellation_line && r > 0.0) {
                 OUT << "\\psline{cc-cc}(" << x1 << ',' << y1
                     << ")(" << x2 << ',' << y2 << ")%\n";
                 connections[i].start = point(x1,y1);
@@ -2144,7 +2132,7 @@ between the pixels.
 \item{2.} The pixels themselves with two |double|s and one |int| each:
 \itemitem{--} The rectascension in hours.
 \itemitem{--} The declination in degrees.
-\itemitem{--} The gray value of the pixel from $1$ to~$255$.  Zero is not used
+\itemitem{--} The grey value of the pixel from $1$ to~$255$.  Zero is not used
 because zero-value pixels are not included into the data file anyway.
 
 @q'@>
@@ -2219,27 +2207,27 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
         if (nebulae[i].in_view != hidden &&
             (((nebulae[i].kind == open_cluster ||
                nebulae[i].kind == globular_cluster)
-              && nebulae[i].magnitude < 4) || @/
+              && nebulae[i].magnitude < params.faintest_cluster_magnitude)
+             || @/
              ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
-              nebulae[i].kind == emission) && nebulae[i].magnitude < 8) ||
+              nebulae[i].kind == emission) &&
+              nebulae[i].magnitude < params.faintest_diffuse_nebula_magnitude)
+             ||
              nebulae[i].messier > 0 )) {
-            double x,y;
             if (mytransform.polar_projection(nebulae[i].rectascension,
                                              nebulae[i].declination,
-                                             x,y)) {
+                                             nebulae[i].x,nebulae[i].y)) {
                 nebulae[i].in_view = visible;
-                nebulae[i].x = x;
-                nebulae[i].y = y;
                 if (nebulae[i].horizontal_angle > 360.0)
                     nebulae[i].diameter_x = nebulae[i].diameter_y =
                         sqrt(nebulae[i].diameter_x * nebulae[i].diameter_y);
                 nebulae[i].radius = nebulae[i].diameter_x/2.0 /
                     mytransform.get_rad_per_cm() * M_PI / 180.0;
                 nebulae[i].with_label = visible;
-                if (nebulae[i].radius > 0.1) {
+                if (nebulae[i].radius > params.minimal_nebula_radius) {
                     @<Draw nebula shape@>@;
                 } else {
-                    nebulae[i].radius = 0.1;
+                    nebulae[i].radius = params.minimal_nebula_radius;
                     OUT << "\\pscircle("
                         << nebulae[i].x << ","
                         << nebulae[i].y << "){"
@@ -2324,24 +2312,26 @@ Then only the stellar colour has yet to be calculated, and it can be printed.
 
 void draw_stars(const transformation& mytransform, stars_list& stars,
                 objects_list& objects) {
-    const double star_magnification = 2.0;
     for (int i = 0; i < stars.size(); i++)
-        if (stars[i].in_view != hidden && stars[i].magnitude < 7) {
+        if (stars[i].in_view != hidden &&
+            stars[i].magnitude < params.faintest_star_magnitude) {
                 // Effectively all stars of the \BSC/
-            double x,y;
             if (mytransform.polar_projection(stars[i].rectascension,
                                              stars[i].declination,
-                                             x,y)) {
+                                             stars[i].x,stars[i].y)) {
                 stars[i].in_view = visible;
-                stars[i].x = x;
-                stars[i].y = y;
-                stars[i].radius = star_magnification * 
-                    (stars[i].magnitude < 5 ?
-                     sqrt(5.09 - stars[i].magnitude) : 0.3)
-                    / 72.27 * 2.54;
+                const double m_dot = params.faintest_star_disk_magnitude;
+                const double r_min = params.minimal_star_radius /
+                    params.star_scaling;
+                stars[i].radius = params.star_scaling *
+                    (stars[i].magnitude < m_dot ?
+                     sqrt((m_dot - stars[i].magnitude)/300.0 + r_min*r_min)
+                     : r_min);
                 if (stars[i].with_label == undecided) 
-                    stars[i].with_label = (stars[i].magnitude < 3.7 && 
-                        !stars[i].name.empty()) ? visible : hidden;
+                    stars[i].with_label =
+                        (stars[i].magnitude <
+                         params.faintest_star_with_label_magnitude &&
+                         !stars[i].name.empty()) ? visible : hidden;
                 stars[i].label = stars[i].name;
                 if (params.colored_stars) {
                     OUT << "\\newhsbcolor{starcolor}{";
@@ -2422,7 +2412,7 @@ the respective spectral class.
     }
 
 @* Reading the input script.  The input script is a text file that is given as
-the first and only parameter to PP3.  It format is very simple: First, a
+the first and only parameter to \PPTHREE/.  It format is very simple: First, a
 `\.{\#}' introduces a comment and the rest of the line is ignored.  Secondy,
 every commend has an opcode--parameter(s) form.  Third, opcodes and parameters
 are separated by whitespace (no matter which type and how much).  Forthly,
@@ -2461,7 +2451,7 @@ So you may write e.\,g.: \.{Leo}, \.{"Leo Minor"}, \.{\BS alpha}, and
 @c
 string read_string(istream& script) {
     const string UnexpectedEOS("Unexpected end of input script while reading a"
-			       " string parameter");
+                               " string parameter");
     char c;
     string contents;
     while (script.get(c)) if (!isspace(c)) break;
@@ -2516,7 +2506,7 @@ void read_parameters_from_script(istream& script) {
     }       
 }
 
-@ Colors are given as red--green--blue values from $0$ to~$1$.  For example,
+@ Colours are given as red--green--blue values from $0$ to~$1$.  For example,
 $$\hbox{\.{color labels 1 0 0}}$$ which makes all labels red.  The following
 sub-keywords can be used: ``\.{background}'', ``\.{grid}'', ``\.{ecliptic}'',
 ``\.{boundaries}'', ``\.{highlighted\_boundaries}'', ``\.{stars}'',
@@ -2598,17 +2588,29 @@ and ``\.{pdf\_output}''.  You can switch them ``\.{on}'' or ``\.{off}''.
                               " in input script");
         }
 
-@ The most important filename is ``\.{output}''.  By default it's unset so that
-the output is sent to standard output.  With $$\hbox{\.{filename output
-orion.tex}}$$ the output is written to \.{orion.tex}.  Most of the other filenames
-denote the data files.  Their file format is described at the functions that
-read them.  Their names are: ``\.{stars}'', ``\.{nebulae}'',
+@ @q(@> The most important filename is ``\.{output}''.  By default it's unset
+so that the output is sent to standard output.  With $$\hbox{\.{filename output
+orion.tex}}$$ the output is written to \.{orion.tex}.  Most of the other
+filenames denote the data files.  Their file format is described at the
+functions that read them.  Their names are: ``\.{stars}'', ``\.{nebulae}'',
 ``\.{label\_dimensions}'', ``\.{constellation\_lines}'', ``\.{boundaries}'',
 and ``\.{milky\_way}''.
 
 ``\.{latex\_preamble}'' is a file with a \LaTeX\ excerpt with a preamble
 fragment for the \LaTeX\ output.  See |@<|create_preamble()| for writing the
 \LaTeX\ preamble@>|.
+
+``\.{include}'' denotes a file that is included at the current position as an
+insert script file.  This command particularly makes sense at the very
+beginning of the input script because then you can overwrite the values
+locally.  Note that you can only include zero or one file, and included script
+files must not contain further \.{include}s.  Apart from that included scripts
+have the same structure as usual scripts.  (This is also true for a possible
+`\.{objects\_and\_labels}' part.)
+
+The meaning of this is of course to write a master script with global settings
+(e.\,g.\ colour, line style, data file names etc.), and to overwrite them for
+certain regions of the sky, typically stellar constellations.
 
 @.output@>
 @.stars@>
@@ -2618,8 +2620,7 @@ fragment for the \LaTeX\ output.  See |@<|create_preamble()| for writing the
 @.boundaries@>
 @.milky\_way@>
 @.latex\_preamble@>
-
-@q'@>
+@.include@>
 
 @<Set filename parameters@>=
         if (opcode == "filename") {
@@ -2641,6 +2642,14 @@ fragment for the \LaTeX\ output.  See |@<|create_preamble()| for writing the
                 params.filename_milkyway = read_string(script);
             else if (object_name == "latex_preamble")
                 params.filename_preamble = read_string(script);
+            else if (object_name == "include") {
+                if (!params.filename_include.empty())
+                    throw string("Nesting depth of include files greater"
+                                 " than one");
+                params.filename_include = read_string(script);
+                ifstream included_script(params.filename_include.c_str());
+                read_parameters_from_script(included_script);
+            }
             else throw string("Undefined \"filename\" construct"
                               " in input script");
         }
@@ -2650,20 +2659,53 @@ a three-letter all-uppercase astronomic abbreviation of the constellation to be
 highlighted.  It's default is ``\.{ORI}''  but you may set it to the empty
 string with $$\hbox{\.{set constellation ""}}$$ so no constellation gets
 highlighted.  At the moment highlighting means that the boundaries have a
-brighter color that normal.
+brighter colour than normal.
 
 ``\.{center\_rectascension}'' and ``\.{center\_declination}'' are the celestial
 coordinates of the view frame centre.  ``\.{box\_width}'' and
 ``\.{box\_height}'' are the dimensions of the view frame in centimetres.
 ``\.{grad\_per\_cm}'' is the magnification (scale).
+``\.{star\_scaling}'' denotes a radial scaling of the star
+disks. ``\.{fontsize}'' is the global \LaTeX\ font size (in points).  It must
+be 10, 11, or~12.  Default is~10.
 
+Many parameters deal with the graphical representation of stars and nebulae:
+``\.{shortest\_constellation\_line}'' is the shortest length for a
+constellation line that is supposed to be drawn.  ``\.{label\_skip}'' is the
+distance between label and celestial object.  ``\.{minimal\_nebula\_radius}''
+is the radius under which a nebula is drawn as a mere circle of {\it that\/}
+radius.  ``\.{minimal\_star\_radius}'' is the radius of the smallest stellar
+dots of the graphics.  All these parameters are measured in centimetres.
+
+But there are also some magnitudes: The faintest stellar clusters that are
+drawn by default are of the ``\.{faintest\_cluster\_magnitude}'', all other
+nebulae drawn by default of the ``\.{faintest\_diffuse\_nebula\_magnitude}''.
+Stars brighter than ``\.{faintest\_star\_magnitude}'' are drawn at all, if they
+are even brighter than ``\.{faintest\_star\_with\_label\_magnitude}'' they get
+a label.  Stars brighter than ``\.{faintest\_star\_disk\_magnitude}'' are not
+just mere dots in the background, but get a radius according to their
+brightness.
+
+Many of these parameters trigger the default behaviour that you can overrule by
+commends in the second part of the input script.
 
 @.center\_rectascension@>
 @.center\_declination@>
 @.box\_width@>
 @.box\_height@>
 @.grad\_per\_cm@>
+@.shortest\_constellation\_line@>
+@.label\_skip@>
+@.minimal\_nebula\_radius@>
+@.faintest\_cluster\_magnitude@>
+@.faintest\_diffuse\_nebula\_magnitude@>
+@.faintest\_star\_magnitude@>
+@.minimal\_star\_radius@>
+@.faintest\_star\_disk\_magnitude@>
+@.faintest\_star\_with\_label\_magnitude@>
+@.star\_scaling@>
 @.constellation@>
+@.fontsize@>
 
 @q'@>
 
@@ -2683,8 +2725,29 @@ coordinates of the view frame centre.  ``\.{box\_width}'' and
                 script >> params.grad_per_cm;
             else if (param_name == "constellation")
                 params.constellation = read_string(script);
-            else throw string("Undefined \"set\" construct"
-                              " in input script");
+            else if (param_name == "shortest_constellation_line")
+                script >> params.shortest_constellation_line;
+            else if (param_name == "label_skip")
+                script >> params.label_skip;
+            else if (param_name == "minimal_nebula_radius")
+                script >> params.minimal_nebula_radius;
+            else if (param_name == "faintest_cluster_magnitude")
+                script >> params.faintest_cluster_magnitude;
+            else if (param_name == "faintest_diffuse_nebula_magnitude")
+                script >> params.faintest_diffuse_nebula_magnitude;
+            else if (param_name == "faintest_star_magnitude")
+                script >> params.faintest_star_magnitude;
+            else if (param_name == "minimal_star_radius")
+                script >> params.minimal_star_radius;
+            else if (param_name == "faintest_star_disk_magnitude")
+                script >> params.faintest_star_disk_magnitude;
+            else if (param_name == "faintest_star_with_label_magnitude")
+                script >> params.faintest_star_with_label_magnitude;
+            else if (param_name == "star_scaling")
+                script >> params.star_scaling;
+            else if (param_name == "fontsize")
+                script >> params.font_size;
+            else throw string("Undefined \"set\" construct in input script");
         }
 
 @*1 Change printed objects and labels.  Here I read and interpret the second
@@ -2692,8 +2755,8 @@ part of the input script, {\it after\/} the |"objects_and_labels"|.  Not that
 none of both paths must be available in the script.
 
 First I define a type that is often used in the following routines for a
-mapping from a catalogue number on the intex in PP3's internal |vectors|.  This
-makes access a lot faster.  FixMe:  At least for stars this can be used for
+mapping from a catalogue number on the intex in \PPTHREE/'s internal |vectors|.
+This makes access a lot faster.  FixMe: At least for stars this can be used for
 stellar constellation lines, too.
 
 @q'@>
@@ -2702,8 +2765,9 @@ stellar constellation lines, too.
 typedef vector<int> index_list;
 
 @ Here I create the data structures that make the above mentioned mapping
-possible.  FixMe: They should be defined globally, so that they needn't be
-passed as arguments in almost every single routine here.
+possible.  FixMe: They should be defined globally, so that the constellation
+lines construction can profit by it, too.  And then they needn't be given in
+the parameter lists of the routines.
 
 This mapping is not vital for the program, but the alternative would be to look
 through the whole of |nebulae| or |stars| to find a star with a certain \NGC/
@@ -2712,7 +2776,7 @@ or \HD/ number.  This is probably way to inefficient.
 @q'@>
 
 @<Create mapping structures for direct catalogue access@>=
-    const int max_ngc = 7840, max_ic=5386, max_messier=110;
+    const int max_ngc = 7840, max_ic = 5386, max_messier = 110;
     index_list ngc(max_ngc+1), ic(max_ic+1), messier(max_messier+1);
     for (int i = 0; i < nebulae.size(); i++) {
         if (nebulae[i].ngc > 0 && nebulae[i].ngc <= max_ngc)
@@ -2723,19 +2787,26 @@ or \HD/ number.  This is probably way to inefficient.
             messier[nebulae[i].messier] = i;
     }
     map<int,int> henry_draper;
-    for (int i = 0; i < stars.size(); i++)
+    map<string, map<int,int> > flamsteed;
+    for (int i = 0; i < stars.size(); i++) {
         if (stars[i].hd > 0) henry_draper[stars[i].hd] = i;
+        if (stars[i].flamsteed > 0) 
+            flamsteed[stars[i].constellation][stars[i].flamsteed] = i;
+    }
 
-@ In this routine I can a list of stellar objects, given by a token pair of
+
+@ In this routine I scan a list of stellar objects, given by a token pair of
 catalogue name and catalogue index.  Such lists are used after some top-level
-commands below.  A mandatory `\.{;}' ends such a list.  Four catalogues are
-supported: \NGC/, \IC/, Messier, and Henry-Draper.  You may use the program
-`Celestia' to get the \HD/ numbers for the stars.
+commands below.  A mandatory `\.{;}' ends such a list.  Five catalogues are
+supported: \NGC/, \IC/, Messier, Henry-Draper~(\HD/), and Flamsteed numbers (in
+the form ``{\it Constellation}\SP{\it Flamsteed number}'').  You may use the
+program `Celestia' to get the \HD/ numbers for the stars.
 
 @c
-void search_objects(istream& script, const index_list& ngc,
-                    const index_list& ic, const index_list& messier,
-                    map<int,int>& henry_draper,
+void search_objects(istream& script,
+                    const index_list& ngc, const index_list& ic,
+                    const index_list& messier, map<int,int>& henry_draper,
+                    map<string, map<int,int> >& flamsteed,
                     index_list& found_stars, index_list& found_nebulae) {
     found_stars.clear();
     found_nebulae.clear();
@@ -2753,7 +2824,7 @@ void search_objects(istream& script, const index_list& ngc,
             found_nebulae.push_back(messier[catalogue_index]);
         else  if (catalogue_name == "HD")
             found_stars.push_back(henry_draper[catalogue_index]);
-        else throw string("Unknown catalogue: ") + catalogue_name;
+        else found_stars.push_back(flamsteed[catalogue_name][catalogue_index]);
         script >> catalogue_name;
     }
 }
@@ -2768,6 +2839,7 @@ object list but only one object.
 view_data* identify_object(istream& script, const index_list& ngc,
                            const index_list& ic, const index_list& messier,
                            map<int,int>& henry_draper,
+                           map<string, map<int,int> >& flamsteed,
                            stars_list& stars, nebulae_list& nebulae) {
     string catalogue_name;
     int catalogue_index;
@@ -2778,7 +2850,7 @@ view_data* identify_object(istream& script, const index_list& ngc,
     else if (catalogue_name == "M") return &nebulae[messier[catalogue_index]];
     else if (catalogue_name == "HD")
         return &stars[henry_draper[catalogue_index]];
-    else throw string("Unknown catalogue: ") + catalogue_name;
+    else return &stars[flamsteed[catalogue_name][catalogue_index]];
 }
 
 @ Here now the main routine for the second part of the input script.  The
@@ -2797,7 +2869,14 @@ void read_objects_and_labels(istream& script,
                              objects_list& objects, stars_list& stars,
                              nebulae_list& nebulae,
                              texts_list& texts,
-                             const transformation& mytransform) {
+                             const transformation& mytransform,
+                             bool included = false) {
+    if (!params.filename_include.empty() && !included) {
+        ifstream included_file(params.filename_include.c_str());
+        @<Skip everything till |"objects_and_labels"|@>@;
+        read_objects_and_labels(included_file, dimensions, objects, stars,
+                                nebulae, texts, mytransform, true);
+    }
     string opcode;
     script >> opcode;
     if (!script) return;
@@ -2812,8 +2891,6 @@ void read_objects_and_labels(istream& script,
             @<Text labels@>@;
         else {  // command with objects list
             index_list found_stars, found_nebulae;
-            search_objects(script, ngc, ic, messier, henry_draper, found_stars,
-                           found_nebulae);
             @<Label deletion@>@;
             else
                 @<Label activation@>@;
@@ -2827,11 +2904,32 @@ void read_objects_and_labels(istream& script,
     }
 }
 
+@ The following algorithm is so bad that it must be considered a bug.  It
+simply searches for the string |"objects_and_labels"| in the |included_file|,
+but that may occur within a string or wherever.  The file should be properly
+scanned, but I'm too lazy for that.  A case where this bug becomes visible
+should be very rare anyway.
+
+FixMe: Fix this bug, or at least for strings.  Maybe the format of input
+scripts must be changed significantly for this.
+
+@q'@>
+
+@<Skip everything till |"objects_and_labels"|@>=
+        string token;
+        included_file >> token;
+        while (included_file) {
+            if (token[0] == '#') getline(included_file,token);
+            else if (token == "objects_and_labels") break;
+            included_file >> token;
+        }
+
+
 @ Sometimes labels have an unfortunate position.  But you may say e.\,g.\
 $$\hbox{\.{reposition M 42 E}}$$ to position the label for the Orion Nebula to
 the right of it.  (Abbreviations are taken from the wind rose.)  You may use
-this command to force a certain label to be drawn although PP3 has decided that
-there is no space for it and didn't print it in the first place.
+this command to force a certain label to be drawn although \PPTHREE/ has
+decided that there is no space for it and didn't print it in the first place.
 
 @q'@>
 
@@ -2840,7 +2938,7 @@ there is no space for it and didn't print it in the first place.
             string position;
             view_data* current_object =
                 identify_object(script, ngc, ic, messier, henry_draper,
-                                stars, nebulae);
+                                flamsteed, stars, nebulae);
             int angle;
             script >> position;
             @<Map a wind rose |position| to an |angle| in degrees@>@;
@@ -2865,6 +2963,8 @@ there is no space for it and didn't print it in the first place.
 
 @<Label deletion@>=
             if (opcode == "delete_labels") {
+                search_objects(script, ngc, ic, messier, henry_draper,
+                               flamsteed, found_stars, found_nebulae);
                 for (int i = 0; i < found_stars.size(); i++) {
                     stars[found_stars[i]].with_label = hidden;
                     stars[found_stars[i]].label_arranged = true;
@@ -2881,6 +2981,8 @@ Draper Catalogue.)
 
 @<Label activation@>=
             if (opcode == "add_labels") {
+                search_objects(script, ngc, ic, messier, henry_draper,
+                               flamsteed, found_stars, found_nebulae);
                 for (int i = 0; i < found_stars.size(); i++)
                     stars[found_stars[i]].with_label = visible;
                 for (int i = 0; i < found_nebulae.size(); i++)
@@ -2892,6 +2994,8 @@ then printed even if it lies outside the view frame (it may be clipped though).
 
 @<Celestial object activation@>=
             if (opcode == "add") {
+                search_objects(script, ngc, ic, messier, henry_draper,
+                               flamsteed, found_stars, found_nebulae);
                 for (int i = 0; i < found_stars.size(); i++)
                     stars[found_stars[i]].in_view = visible;
                 for (int i = 0; i < found_nebulae.size(); i++)
@@ -2902,6 +3006,8 @@ then printed even if it lies outside the view frame (it may be clipped though).
 
 @<Celestial object deletion@>=
             if (opcode == "delete") {
+                search_objects(script, ngc, ic, messier, henry_draper,
+                               flamsteed, found_stars, found_nebulae);
                 for (int i = 0; i < found_stars.size(); i++)
                     stars[found_stars[i]].in_view = hidden;
                 for (int i = 0; i < found_nebulae.size(); i++)
@@ -2914,6 +3020,11 @@ itself, rectascension, declination, \RGB/ colour, and the relative position
 $$\hbox{\.{text Leo at 11 10 color 1 0 0 towards S ;}}$$ puts a red ``Leo''
 centered below the point $(11\,\hbox{h}, +10^\circ)$ in the Lion.  At the
 moment, all fields are mandatory.
+
+The contents of a text label is eventually in an \.{\BS hbox}, so you can
+use that fact.
+
+@.text@>
 
 @<Text labels@>=
             if (opcode == "text") {
@@ -2989,9 +3100,9 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-@ PP3 needs exactly one argument.  It must be either the file name of the input
-script or a `\.{-}' which means that it takes standard input for reading the
-input script.
+@ \PPTHREE/ needs exactly one argument.  It must be either the file name of the
+input script or a `\.{-}' which means that it takes standard input for reading
+the input script.
 
 @q'@>
 
@@ -3048,7 +3159,7 @@ visibility anyway.
         draw_nebulae(mytransform, nebulae, objects);
         draw_stars(mytransform, stars, objects);
         if (params.show_lines)
-            draw_constellation_lines(mytransform, connections, stars, objects);
+            draw_constellation_lines(connections, stars, objects);
         if (params.show_labels) {
             arrange_labels(objects,dimensions);
             print_labels(objects);
@@ -3089,13 +3200,36 @@ specifying commands.  A possible preamble may be: \medskip
 \BS usepackage[T1]\LB fontenc\RB 
 \BS renewcommand*\LB \BS rmdefault\RB \LB pmy\RB \par}
 
+\medskip\noindent You may also have use for a command like \.{\BS
+AtBeginDocument\LB\BS sffamily\RB} or \.{\BS boldmath} or \.{\BS large} or
+whatever.  Or let be inspired by this fragment: \medskip
+
+{\parindent2em\baselineskip10.5pt\ninett
+\BS usepackage\LB relsize\RB\par
+\BS renewcommand*\LB\BS NGC\RB[1]\LB\BS smaller \#1\RB\par
+\BS renewcommand*\LB\BS IC\RB[1]\LB\BS smaller\LB\BS smaller
+     IC\BS,\RB\#1\RB\par
+\BS renewcommand*\LB\BS Messier\RB[1]\LB\BS smaller\LB\BS smaller
+     M\BS,\RB\#1\RB\par}
+
+\medskip The default preamble activates Adobe Symbol Greek letters, and
+Helvetica Roman letters.  If you define a preamble of your own, you don't have
+to re-define that, because it's not defined then.  You can assume a naked plain
+\LaTeX\ font setup.
+
 @^preamble (\LaTeX)@>
 
 @<|create_preamble()| for writing the \LaTeX\ preamble@>=
 void create_preamble(ostream& out) {
-    out << "\\documentclass{article}\n\n";
-    if (!params.filename_preamble.empty()) @/
-        out << "\\input " << params.filename_preamble << '\n';
+    out << "\\documentclass[" << params.font_size << "pt]{article}\n\n";
+    out << "\\newcommand*{\\Messier}[1]{M\\,#1}\n" @/
+        << "\\newcommand*{\\NGC}[1]{NGC\\,#1}\n" @/
+        << "\\newcommand*{\\IC}[1]{IC\\,#1}\n\n";
+    if (params.filename_preamble.empty()) @/
+        out << "\\usepackage{mathptmx}\n" @/
+            << "\\usepackage{helvet}\n" @/
+            << "\\AtBeginDocument{\\sffamily}\n";
+    else out << "\\input " << params.filename_preamble << '\n';
 }
 
 @ This is almost trivial.  I just close the box structure I began at the end of
@@ -3104,7 +3238,7 @@ void create_preamble(ostream& out) {
 @<Create \LaTeX\ footer@>=
     OUT << "\\hfill}}\\end{document}\n";
 
-@ Here I call \LaTeX, dvips, and/or {\mc PS}2\PDF/ in order to create the
+@ Here I call \LaTeX, dvips, and/or \PS/2\PDF/ in order to create the
 output the user wanted to have eventually in the input script.
 
 @<Create \EPS/ or \PDF/ file if requested@>=
@@ -3123,10 +3257,10 @@ output the user wanted to have eventually in the input script.
                         commandline = string("ps2pdf ") +
                             base_filename + ".eps";
                         if (system(commandline.c_str()) != 0)
-                            throw string("ps2pdf call failed: ")+commandline;
+                            throw string("ps2pdf call failed: ") + commandline;
                     }
-                } else throw string("dvips call failed");
-            } else throw string("LaTeX call failed");
+                } else throw string("dvips call failed: ") + commandline;
+            } else throw string("LaTeX call failed: ") + commandline;
         }
 
 
