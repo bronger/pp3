@@ -1,0 +1,43 @@
+# Hydrus
+#
+
+filename output hydrus.tex
+filename include wiki.pp3
+
+set constellation HYI
+set center_rectascension   2.5
+set center_declination   -70
+set box_height 8
+set box_width 7
+
+set faintest_star_disk_magnitude 5
+
+objects_and_labels
+
+
+reposition HD 12311 E ;
+
+add NGC 104 ;
+set_label_text NGC 104 "\\footnotesize 47 Tuc"
+
+add_labels HD 15008  HD 16978 ;  # delta and epsilon Hyi
+reposition HD 15008 E ;  # delta Hyi
+
+text Hydrus at 1.45 -70 along declination towards W ;
+text Tucana at 1.3 -58 along declination towards SE ;
+text Phoenix at 1.4 -57 along declination ;
+text Eri at 1.5 -55 along declination towards W ;
+text Mensa at 3.7 -79 along declination towards W ;
+text Dor at 4.7 -69 along declination towards NW ;
+text Ind at 23.4 -73.7 along declination ;
+text Octans at 0 -74.5 along declination towards SE ;
+text Reticulum at 4.5 -66.5 along declination ;
+delete HD 22634  HD 22252 ;   # Making space for "Reticulum"
+text Horologium at 3.5 -56 along declination ;
+
+delete NGC 292 ;  # SMC
+text "\\footnotesize S\\kern0.1emM\\kern0.1emC" 
+  at 1 -72.5 color 0.0 0.0 0.9333 towards N ;
+
+text "\\footnotesize L\\kern0.1emM\\kern0.1emC" 
+  at 5.3 -70 color 0.0 0.0 0.9333 towards E ;
