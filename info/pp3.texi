@@ -299,8 +299,9 @@ Obviously you need only @emph{one} of these files.
 
 Although @PPTHREE{} runs independently from other programs, it is not
 useful when it's alone.  It needs two external tools in order to work
-properly: @TeX{} and Ghostscript.  @emph{You need not know how to use
-@TeX{} and Ghostscript!}
+properly: @TeX{} and Ghostscript.
+
+@center @emph{You need not know how to use @TeX{} and Ghostscript!}
 
 On most Unix/Linux systems @TeX{} and Ghostscript are already installed.
 But on Windows, you have to install them yourself.  Fortunately this is
@@ -611,7 +612,8 @@ to a bitmap, or you can embed it into a text of yours.
 To be honest, there are three possible output formats.  By default,
 @PPTHREE{} generates a @LaTeX{} file in the current directory.  But most
 people cannot do much with it, therefore certain commands in the input
-script trigger @acronym{EPS} or @acronym{PDF} output.
+script trigger @acronym{EPS} or @acronym{PDF} output, see @ref{Output
+control}.
 
 @PPTHREE{} can't generate bitmaps.  If you need bitmaps you must use a
 bitmap program (e.@s{}g.@: Corel Draw or the
@@ -833,6 +835,9 @@ Highlight the constellation that is given by @var{abbreviation}.  If you
 don't want to hightlight anything, set it to @code{""} or to an invalid
 abbreviation.
 
+At the moment, highlighting means that the boundaries of the respective
+constellation get another colour, see @ref{Colours}.
+
 Default: @code{ORI}
 @end deffn
 
@@ -941,46 +946,62 @@ Default: on
 @kwindex labels
 @kwindex text_labels
 
+In @PPTHREE{}, colours are given by their red--gren--blue values (also
+called the @acronym{RGB} colour scheme).  Every value is between 0
+and@tie{}1.  For example, `@code{1 0 0}' is red, `@code{0 0 1}' is blue,
+`@code{0 0 0}' is black and `@code{1 1 1}' is white.
+
+For shades of grey all three values must be the same.  So a medium grey
+is `@code{0.5 0.5 0.5}'.  For further examples have a look at the
+following default values.
+
 @deffn Parameter {color background} red green blue
+Set the background colour of the map to the given colour.
 
 Default: 0 @ 0 @ 0.4 @ (dark blue)
 @end deffn
 
 
 @deffn Parameter {color grid} red green blue
+Set the coordinate grid colour to the given colour.
 
 Default: 0 @ 0.298 @ 0.447 @ (dark blue-grey)
 @end deffn
 
 
 @deffn Parameter {color ecliptic} red green blue
+Set the ecliptic line colour to the given colour.
 
 Default: 1 @ 0 @ 0 @ (red)
 @end deffn
 
 
 @deffn Parameter {color boundaries} red green blue
+Set the ordinary constellation boundaries colour to the given colour.
 
 Default: 0.5 @ 0.5 @ 0 @ (dark yellow)
 @end deffn
 
 
 @deffn Parameter {color highlighted_boundaries} red green blue
+Set the highlighted constellation boundaries colour to the given colour.
+See @ref{Highlighted constellation}.
 
 Default: 1 @ 1 @ 0 @ (yellow)
 @end deffn
 
 
 @deffn Parameter {color constellation_lines} red green blue
+Set the constellation lines colour to the given colour.
 
 Default: 0 @ 1 @ 0 @ (green)
 @end deffn
 
 
 @deffn Parameter {color milky_way} red green blue
-The Milky Way is printed in shades of different colour, representing the
-of its brightness.  The darkest areas of the Milky Way get the
-background colour, and the brightest the colour that you give here.
+The Milky Way is printed in shades of different colour, representing its
+brightness.  The darkest areas of the Milky Way get the background
+colour, and the brightest the colour that you give here.
 
 The Milky way must be switched on of course in order to savour it, which
 is not the case by default, see @ref{Switching things on or off}.
@@ -990,33 +1011,38 @@ Default: 0 @ 0 @ 1 @ (blue)
 
 
 @deffn Parameter {color nebulae} red green blue
+Set the colour of the nebulae circles to the given colour.
 
 Default: 1 @ 1 @ 1 @ (white)
 @end deffn
 
 
 @deffn Parameter {color stars} red green blue
-Please note this this only has effect if the switch
-`@code{colored_stars}' is off, see @ref{Switching things on or off}.
+Set the colour of all stars to the given colour.  Please note that this
+only has effect if the switch `@code{colored_stars}' is off, see
+@ref{Switching things on or off}.
 
 Default: 1 @ 1 @ 1 @ (white)
 @end deffn
 
 
 @deffn Parameter {color labels} red green blue
+Set the colour of automatically generated labels to the given colour.
 
 Default: 0 @ 1 @ 1 @ (cyan)
 @end deffn
 
 
 @deffn Parameter {color text_labels} red green blue
+Set the colour of user defined labels to the given colour.
 
 Default: 1 @ 1 @ 0 @ (yellow)
 @end deffn
 
 
-@node Line widths
-@subsubsection Line widths
+@node Line styles and widths
+@subsubsection Line styles and widths
+@kwindex line_style
 @kwindex line_width
 @kwindex grid
 @kwindex ecliptic
@@ -1025,41 +1051,32 @@ Default: 1 @ 1 @ 0 @ (yellow)
 @kwindex nebulae
 @kwindex constellation_lines
 
+@deffn Parameter {line_style grid} style
+@deffnx Parameter {line_style ecliptic} style
+@deffnx Parameter {line_style boundaries} style
+@deffnx Parameter {line_style highlighted_boundaries} style
+@deffnx Parameter {line_style nebulae} style
+@deffnx Parameter {line_style constellation_lines} style
+Set the line style of the respective object to @var{style}.  Possible
+values are @code{none}, @code{solid}, @code{dashed}, and @code{dotted}.
 
-line_width grid
-
-line_width ecliptic
-
-line_width boundaries
-
-line_width highlighted_boundaries
-
-line_width nebulae
-
-line_width constellation_lines
+Defaults: solid (grid, nebulae, constellation lines), dashed (ecliptic,
+boundaries)
+@end deffn
 
 
-@node Line styles
-@subsubsection Line styles
-@kwindex line_style
-@kwindex grid
-@kwindex ecliptic
-@kwindex boundaries
-@kwindex highlighted_boundaries
-@kwindex nebulae
-@kwindex constellation_lines
+@deffn Parameter {line_width grid} width
+@deffnx Parameter {line_width ecliptic} width
+@deffnx Parameter {line_width nebulae} width
+@deffnx Parameter {line_width boundaries} width
+@deffnx Parameter {line_width highlighted_boundaries} width
+@deffnx Parameter {line_width constellation_lines} width
+Set the line width of the respective object to @var{width} (in
+centimetres).
 
-line_style grid
-
-line_style ecliptic
-
-line_style boundaries
-
-line_style highlighted_boundaries
-
-line_style nebulae
-
-line_style constellation_lines
+Defaults: 0.025 (grid), 0.018 (ecliptic, nebulae), 0.035 (boundaries,
+constellation lines)
+@end deffn
 
 
 @node Other layout parameters
@@ -1072,15 +1089,44 @@ line_style constellation_lines
 @kwindex fontsize
 
 
-set shortest_constellation_line
+@deffn Parameter {set shortest_constellation_line} length
+Set the length of the shortest constellation line that is printed to
+@var{length} (in centimetres).  All constellation lines shorter than
+@var{length} are supressed.
 
-set label_skip
+Default: 0.1
+@end deffn
 
-set minimal_nebula_radius
 
-set star_scaling
+@deffn Parameter {set label_skip} length
+Set the distance between the outer rim of the celestial object and its
+label to @var{length} (in centimetres).
 
-set fontsize
+Default: 0.06
+@end deffn
+
+
+@deffn Parameter {set minimal_nebula_radius} radius
+All nebulae that would be smaller than @var{radius} centimetres are
+printed with a radius of exactly @var{radius}@dmn{cm}.
+
+Default: 0.1
+@end deffn
+
+
+@deffn Parameter {set star_scaling} factor
+Make all star circles @var{factor} times bigger than normal.
+
+Default: 1
+@end deffn
+
+
+@deffn Parameter {set fontsize} size
+Set the default font size to @var{size}@dmn{pt}.  @var{size} may be 10,
+11, or@tie{}12.
+
+Default: 10
+@end deffn
 
 
 @node Implementing a global style
@@ -1095,6 +1141,9 @@ input script and read before the keywords in the current script are
 interpreted.  This enables you to enforce global style parameters and
 other commands for all maps in a set of maps.  The included script must
 not include yet another file.
+
+Please note that @PPTHREE{} looks for the included file in the current
+directory, and not in the directory where the main input script is.
 
 Default: @code{""} (empty)
 @end deffn
@@ -1124,23 +1173,16 @@ Default: @code{""} (empty)
 @kwindex rim
 
 
-penalties stars
-
-penalties labels
-
-penalties nebulae
-
-penalties boundaries
-
-penalties boundaries_rim
-
-penalties constellation_lines
-
-penalties constellation_lines_rim
-
-penalties threshold
-
-penalties rim
+@deffn Parameter {penalties stars} penalties
+@deffnx Parameter {penalties labels} penalties
+@deffnx Parameter {penalties nebulae} penalties
+@deffnx Parameter {penalties boundaries} penalties
+@deffnx Parameter {penalties boundaries_rim} penalties
+@deffnx Parameter {penalties constellation_lines} penalties
+@deffnx Parameter {penalties constellation_lines_rim} penalties
+@deffnx Parameter {penalties threshold} penalties
+@deffnx Parameter {penalties rim} penalties
+@end deffn
 
 
 @node Filenames
@@ -1154,17 +1196,14 @@ penalties rim
 @kwindex milky_way
 
 
-filename stars
+@deffn Parameter {filename stars} filename
+@deffnx Parameter {filename nebulae} filename
+@deffnx Parameter {filename label_dimensions} filename
+@deffnx Parameter {filename constellation_lines} filename
+@deffnx Parameter {filename boundaries} filename
+@deffnx Parameter {filename milky_way} filename
+@end deffn
 
-filename nebulae
-
-filename label_dimensions
-
-filename constellation_lines
-
-filename boundaries
-
-filename milky_way
 
 
 @node Objects and Labels
@@ -1182,9 +1221,13 @@ filename milky_way
 @kwindex add
 @kwindex delete
 
-add
+@deffn Command add objects @dots{} @code{;}
+@end deffn
 
-delete
+
+@deffn Command delete objects @dots{} @code{;}
+@end deffn
+
 
 @node Changeing labels
 @subsection How to add, delete, and reposition labels
@@ -1192,18 +1235,30 @@ delete
 @kwindex delete_labels
 @kwindex set_label_text
 
-add_labels
+@deffn Command add_labels objects @dots{} @code{;}
+@end deffn
 
-delete_labels
 
-set_label_text
+@deffn Command delete_labels objects @dots{} @code{;}
+@end deffn
+
+
+@deffn Command reposition object @code{towards} direction @code{;}
+@end deffn
+
+
+@deffn Command set_label_text object @code{"}{label-text}@code{"}
+@end deffn
 
 
 @node Arbitrary text
 @subsection How to place text on the map
 @kwindex text
 
-text
+
+@deffn Command text {label-text} @code{at} rectascension declination [@code{color} red green blue] [@code{towards} direction] @code{;}
+
+@end deffn
 
 
 @node PP3 and LaTeX
@@ -1239,7 +1294,7 @@ purposes.
 @node Data file formats
 @appendix Data file formats
 
-Maybe you want to use you own data bases with @PPTHREE{}.  If they are
+Maybe you want to use your own data bases with @PPTHREE{}.  If they are
 not too large@footnote{Unfortunately @PPTHREE{} still has the
 disadvantageous behaviour of reading the @emph{whole} data base file.}
 you may well do so.  Of course, then you need to know the internal
@@ -1247,7 +1302,7 @@ structure of the files.  Although they are so simple that reverse
 engineering should be almost trivial, you find here a complete
 description of all of them.
 
-Additionally I will give detailed information where the original data of
+Additionally I will give information where the original data of
 @PPTHREE{}'s standard distribution came from.
 
 The last point, the ``label dimensions file'', isn't a real data base
