@@ -117,23 +117,28 @@
 \def\HSB/{{\mc HSB\spacefactor1000}}
 \def\EPS/{{\mc EPS\spacefactor1000}}
 \def\PDF/{{\mc PDF\spacefactor1000}}
+\def\NGC/{{\mc NGC\spacefactor1000}}
+\def\IC/{{\mc IC\spacefactor1000}}
+\def\HD/{{\mc HD\spacefactor1000}}
 
 \def\sloppy{\tolerance9999\emergencystretch3em\hfuzz .5pt\vfuzz\hfuzz}
 
 \font\sf=bfrr8t \font\sfbf=bfrb8t
 \font\sfa=bfrr8t scaled 700
 
-\font\stitlefont=cmss8 scaled 1815         % sans serif type in title
-\font\sbtitlefont=bfrb8t scaled\magstep3   % sans bold type in title
+\font\stitlefont=phvr7t scaled\magstep3    % sans serif type in title
+\font\stitlefont=bfrr8t scaled\magstep3    % sans serif type in title
+\font\sbtitlefont=phvb7t scaled\magstep3   % sans bold type in title
+\font\sbtitlefont=0t3x8a scaled\magstep3   % sans bold type in title
 \font\ttitlefont=pcrb7t scaled\magstep3    % typewriter type in title
 
 
-\def\title{PP3 (Version 0.3)}
+\def\title{PP3 (Version 0.9)}
 \def\topofcontents{\null\vfill
-  \centerline{\titlefont The  Sky Map
-  Creator {\stitlefont PP3}}
+  \centerline{\titlefont The Sky Map
+  Creator {\sbtitlefont PP3}}
   \vskip 15pt
-  \centerline{(Version 0.3)}
+  \centerline{(Version 0.9)}
   \vfill}
 \def\botofcontents{\parindent2em\vfill
 \noindent
@@ -241,6 +246,8 @@ sensible program, too.\par}
 
 \bigskip Okay, let's start with the header files~\dots
 
+@q'}}}}@>
+
 @c
 #include <iostream>
 #include <string>
@@ -248,6 +255,7 @@ sensible program, too.\par}
 #include <sstream>
 #include <vector>
 #include <map>
+#include <list>
 #include <iomanip>
 #include <cstdlib>
 #include <cmath>
@@ -270,7 +278,8 @@ struct parameters {
     double grad_per_cm;
     string constellation;
     string filename_stars, filename_nebulae, filename_dimensions,
-        filename_lines, filename_boundaries, filename_milkyway;
+        filename_lines, filename_boundaries, filename_milkyway,
+        filename_preamble;
     string filename_output;
     ostream* out;
     color bgcolor, gridcolor, eclipticcolor, boundarycolor, hlboundarycolor,
@@ -287,6 +296,7 @@ struct parameters {
                    filename_lines("lines.dat"),
                    filename_boundaries("boundaries.dat"),
                    filename_milkyway("milkyway.dat"), @/
+                   filename_preamble(),
                    filename_output(), out(&cout), @/
                    bgcolor("bgcolor", 0, 0, 0.4),
                    gridcolor("gridcolor", 0, 0.298, 0.447),
@@ -399,40 +409,42 @@ objects data structurs (e.\,g.\ stars) for containing all view frame dependent
 information.  Most importantly it contains the label of a celestial object, its
 position relatively to the object, and its size.
 
-|in_view| is |true| if the object is actually displayed on screen.  |x| and |y|
-contain the screen coordinates in centimetres.  |radius| is the radial size of
-the object in centimetres.  |skip| is given in centimetres, too.  It denotes
-the space between the outer boundary of the object (enclosed by |radius|) and
-the label.  |with_label| is true if the object has a label, with |label_width|
-and |label_height| (estimated in centimetres) and |label_angle|.
-|label_arranged| is |true| if the best place for the label has been found
-already.  Only then the label should be really printed, but the real use of
-|label_arranged| is that it avoids the label to be arranged twice.
-|lable_angle| can only have eight possible values: 0:~$0^\circ\!$,
-1:~$45^\circ\!$, 2:~$90^\circ\!$, 3:~$135^\circ\!$, 4:~$180^\circ\!$,
-5:~$225^\circ\!$, 6:~$270^\circ\!$, and 7:~$315^\circ\!$.
+|in_view| is |visible| if the object is actually displayed on screen.  |x| and
+ |y| contain the screen coordinates in centimetres.  |radius| is the radial
+ size of the object in centimetres.  |skip| is given in centimetres, too.  It
+ denotes the space between the outer boundary of the object (enclosed by
+ |radius|) and the label.  |with_label| is true if the object has a label, with
+ |label_width| and |label_height| (estimated in centimetres) and
+ |label_angle|. |label_arranged| is |true| if the best place for the label has
+ been found already.  Only then the label should be really printed, but the
+ real use of |label_arranged| is that it avoids the label to be arranged
+ twice. |lable_angle| can only have eight possible values: 0:~$0^\circ\!$,
+ 1:~$45^\circ\!$, 2:~$90^\circ\!$, 3:~$135^\circ\!$, 4:~$180^\circ\!$,
+ 5:~$225^\circ\!$, 6:~$270^\circ\!$, and 7:~$315^\circ\!$.
 
 |scope()| returns the maximal scope of the object.  It is used to in |@<Find
- objects in vicinity of |objects[i]|@>| to find all objects in the vicinity of
- a given on-object.  It may look odd that even |label_height| is added, but
- this is because penalties are given even for objects in a margin of
- |label_height| around the object, so it's important to include it into the
- sum.
+objects in vicinity of |objects[i]|@>| to find all objects in the vicinity of a
+given on-object.  It may look odd that even |label_height| is added, but this
+is because penalties are given even for objects in a margin of |label_height|
+around the object, so it's important to include it into the sum.
 
 @q';@>
  
 @c
+typedef enum { hidden, visible, undecided } visibility;
+
 struct view_data {
-    bool in_view;
+    visibility in_view;
     double x,y;
     double radius;
     double skip;
-    bool with_label, label_arranged;
+    visibility with_label;
+    bool label_arranged;
     string label;
     double label_width, label_height;
     int label_angle;
-    view_data() : in_view(true), x(0.0), y(0.0), radius(0.0), skip(0.06),
-                  with_label(false), label_arranged(false), label(), 
+    view_data() : in_view(undecided), x(0.0), y(0.0), radius(0.0), skip(0.06),
+                  with_label(undecided), label_arranged(false), label(), 
                   label_width(0.24), label_height(0.36), label_angle(0) { }
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
@@ -488,7 +500,7 @@ this is just the overlap itself in square centimetres, like here.
 
 double view_data::penalties_with(const double left, const double right,
                                  const double top, const double bottom) const {
-    if (with_label && label_arranged) {
+    if (with_label == visible && label_arranged) {
         double left2, right2, top2, bottom2;
         get_label_boundaries(left2,right2,top2,bottom2);
         const double overlap_left = fmax(left, left2);
@@ -613,28 +625,15 @@ istream& operator>>(istream& in, star& s) {
     return in;
 }
 
-@ Here I read a set of stars from a file with the name |filename|.  I need
-|dimension| here, because I want to adjust |label_width| and |label_height| of
-each star to the correct values.  But it's better to describe |dimension|
-later.
-
-The file |stars_file| is a text file that consists solely of a list of |star|s.
-
-FixMe: I want |dimensions| to be |const|.
-
-@q'@>
+@ Here I read a set of stars from a file with the name |filename|.  The file
+|stars_file| is a text file that consists solely of a list of |star|s.
 
 @c
-@<The structure |dimension|@>@;@#
-
-void read_stars(stars_list& stars, dimensions_list& dimensions) {
+void read_stars(stars_list& stars) {
     ifstream stars_file(params.filename_stars.c_str());
     star current_star;
     stars_file >> current_star;
     while (stars_file.good()) {
-        const dimension current_dimension = dimensions[current_star.name];
-        current_star.label_width = current_dimension.width;
-        current_star.label_height = current_dimension.height;
         stars.push_back(current_star);
         stars_file >> current_star;
     }
@@ -645,12 +644,6 @@ void read_stars(stars_list& stars, dimensions_list& dimensions) {
 program ``nebula'' denotes nebulae, galaxies, clusters, and other non-stellar
 objects.
 
-\def\NGC{\hbox{\it NGC}}
-\def\IC{\hbox{\it IC}}
-
-@s NGC TeX
-@s IC TeX
-
 @c
 typedef enum { unknown, galaxy, emission, reflection, open_cluster,
                globular_cluster } nebula_kind;
@@ -658,27 +651,27 @@ typedef enum { unknown, galaxy, emission, reflection, open_cluster,
 @ Since nebulae appear on the screen next to stars, and because they can have
 labels, they are descendants of |view_data|, too.
 
-|NGC|, |IC|, and |M| are of course the respective catalogue number.  Since it's
-silly that |NGC| and |IC| are defined, a value of `|0|' means that the nebula
-is not part of the respective catalogue.  |constellation| is a three-character
-string with the name of the respective constellation in all uppercase.
-|rectascension| is given in hours, |declination| in degrees.  |diameter_x| and
-|diameter_y| are the extent of the nebula in the horizonal and the vertical
-direction and are given in degrees, |horizontal_angle| (in degrees) is the
-angle between the horizontal axis of |diameter_x| and the intersecting
-celestial declination circle.  |magnitude| (in magnitudes) is the {\it
-total\/} brightness (not the brightness density).
+|ngc|, |ic|, and |messier| are of course the respective catalogue number.
+Since it's silly that |ngc| and |ic| are defined, a value of `|0|' means that
+the nebula is not part of the respective catalogue.  |constellation| is a
+three-character string with the name of the respective constellation in all
+uppercase.  |rectascension| is given in hours, |declination| in degrees.
+|diameter_x| and |diameter_y| are the extent of the nebula in the horizonal and
+the vertical direction and are given in degrees, |horizontal_angle| (in
+degrees) is the angle between the horizontal axis of |diameter_x| and the
+intersecting celestial declination circle.  |magnitude| (in magnitudes) is the
+{\it total\/} brightness (not the brightness density).
 
 @c
 struct nebula : public view_data {
-    int NGC, IC, M;  // |0| if not defined.
+    int ngc, ic, messier;  // |0| if not defined.
     string constellation;
     double rectascension, declination;
     double magnitude;
     double diameter_x, diameter_y;
     double horizontal_angle;
     nebula_kind kind;
-    nebula() : NGC(0), IC(0), M(0), constellation(), rectascension(0.0),
+    nebula() : ngc(0), ic(0), messier(0), constellation(), rectascension(0.0),
                declination(0.0), magnitude(0.0), diameter_x(0.0),
                diameter_y(0.0), horizontal_angle(0.0), kind(unknown) { }
     virtual double penalties_with(const double left,const double right,
@@ -723,7 +716,7 @@ be equal to |diameter_y|.
 @c
 istream& operator>>(istream& in, nebula& n) {
     int kind;
-    in >> n.NGC >> n.IC >> n.M >> n.constellation >> n.rectascension
+    in >> n.ngc >> n.ic >> n.messier >> n.constellation >> n.rectascension
        >> n.declination >> n.magnitude >> n.diameter_x >> n.diameter_y
        >> n.horizontal_angle >> kind;
     n.kind = nebula_kind(kind);
@@ -739,21 +732,19 @@ The format is just a stream of |nebula|e.
 FixMe: I want |dimensions| to be |const|.
 
 @c
-void read_nebulae(nebulae_list& nebulae,
-                  dimensions_list& dimensions) {
+void read_nebulae(nebulae_list& nebulae) {
     ifstream nebulae_file(params.filename_nebulae.c_str());
     nebula current_nebula;
     nebulae_file >> current_nebula;
     while (nebulae_file.good()) {
         @<Create nebula label@>@;
-        @<Find dimensions of nebula label@>@;
         nebulae.push_back(current_nebula);
         nebulae_file >> current_nebula;
     }
 }
 
-@ In order to create a \LaTeX-ready label, I first choose which catalog to
-use.  It is from the Messier, the NGC, and the IC catalogue the first in which
+@ In order to create a \LaTeX-ready label, I first choose which catalog to use.
+It is from the Messier, the \NGC/, and the \IC/ catalogue the first in which
 the nebula appears, i.\,e.\ the first non-zero catalogue number.  The catalogue
 abbreviation itself is stored in |catalog|, whereas the |stringstream| |number|
 contains the number within that catalogue.  I need that distinction later in
@@ -763,33 +754,17 @@ contains the number within that catalogue.  I need that distinction later in
 @<Create nebula label@>=
         string catalogue;
         stringstream number;
-        if (current_nebula.M > 0) {
+        if (current_nebula.messier > 0) {
             catalogue = "M\\,";
-            number << current_nebula.M;
-        } else if (current_nebula.NGC > 0) {
+            number << current_nebula.messier;
+        } else if (current_nebula.ngc > 0) {
             catalogue = "NGC\\,";
-            number << current_nebula.NGC;
-        } else if (current_nebula.IC > 0) {
+            number << current_nebula.ngc;
+        } else if (current_nebula.ic > 0) {
             catalogue = "IC\\,";
-            number << current_nebula.IC;
+            number << current_nebula.ic;
         } else throw string("Invalid catalogue");
         current_nebula.label = catalogue + number.str();
-
-@ For determining the width of the label for a nebula, I use the width of the
-prefix (e.\,g.\ ``\.{M\\,}''), and the width of one digit (zero is used in
-\.{pp3}).\footnote{$^1$}{Of course this only works if all digits in the used
-font have the same width.}  They are sumed up, after the width of the digit has
-been multiplied by the number of digits (or the length) of the contents of
-|number|.
-
-For determining the height, I use the height of the zero or the height of the
-prefix, whichever is greater.
-
-@<Find dimensions of nebula label@>=
-        current_nebula.label_width = dimensions[catalogue].width +
-            number.str().length() * dimensions["0"].width;
-        current_nebula.label_height = fmax(dimensions[catalogue].height,
-            dimensions["0"].height);
 
 
 @*1 Constellation boundaries.  They are stored in an external file called
@@ -1083,6 +1058,9 @@ routine, in order to keep calculations easy in the function
 |rectascension| is given in hours, together with |declination| it's the center
 of the desired view frame.  |width| and |height| give its dimensions in
 centimetres, |grad_per_cm| is the resulting resolution in the center.
+$$\hbox{|a_unscaled|} = \pmatrix{\sin\varphi & \cos\varphi & 0\cr
+\cos\varphi\cos\alpha & -\sin\varphi\cos\alpha & \sin \alpha\cr
+-\cos\varphi\sin\alpha & \sin\varphi\sin\alpha & \cos\alpha}.$$
 
 @q'@>
   
@@ -1401,21 +1379,50 @@ double calculate_overlap(double left1, double right1, double top1,
     return overlap_x * overlap_y;
 }
 
+@ Nor for a structure with the real dimensions in centimetres of all possible
+labels, namely all possible different |star::name|'s.  They are read from the
+file \.{labeldims.dat} and stored in a |dimensions_list|.
+
+This dimension list also contains the following elements: ``\.{NGC\\,}'',
+``\.{IC\\,}'', ``\.{M\\,}'', and ``\.{0}''.  They are used to calculate the
+width and height of nebulae labels.
+
+@s dimensions_list int
+@s dimension int
+
+@q'@>
+
+@c
+struct dimension {
+    string name;
+    double width, height;
+    dimension() : name(), height(0.0), width(0.0) { }
+    dimension(string name) : name(name), height(0.0), width(0.0) { }
+    dimension(const dimension& d) : name(d.name), width(d.width),
+                                    height(d.height) { }
+};
+
+typedef map<string,dimension> dimensions_list;
+
 @ Now we re-arrange the labels, namely |objects[i].with_label| for all~|i|.
 For efficiency, I first find all neighbours of the on-object and do all the
-following work only with them.  In the inner |k|-look I test all possible
+following work only with them.  In the inner |k|-loop I test all possible
 |label_angle|s and calculate their |penalty|.
 
 If a label leaps out of the view frame, this adds to |penalty| the gigantic
 value of |10000.0|.
     
 @c
-void arrange_labels(objects_list& objects) {
+@<|create_preamble()| for writing the \LaTeX\ preamble@>@#@;
+@<Helping routines for nebulae labels@>@#@;
+
+void arrange_labels(objects_list& objects, dimensions_list& dimensions) {
     objects_list vicinity;
+    @<Set label dimensions@>@;
     for (int i = 0; i < objects.size(); i++) {
-        vicinity.resize(0);
-        if (objects[i]->in_view && objects[i]->with_label && 
-            !objects[i]->label_arranged) {
+        vicinity.clear();
+        if (objects[i]->in_view == visible && objects[i]->with_label == visible
+            && !objects[i]->label_arranged) {
             @<Find objects in vicinity of |objects[i]|@>@;
             double best_penalty = DBL_MAX;
             int best_angle = 0;
@@ -1458,10 +1465,111 @@ void arrange_labels(objects_list& objects) {
                 objects[i]->label += penalty.str(); 
 #endif
             } else {
-                objects[i]->with_label = false;
+                objects[i]->with_label = hidden;
                 objects[i]->label_arranged = true;
             }
         }
+    }
+}
+
+@
+@<Set label dimensions@>=
+for (int i = 0; i < objects.size(); i++) {
+    view_data* current_object = objects[i];
+    if (current_object->with_label == visible) {
+        
+        if (dimensions.find(current_object->label) == dimensions.end()) {
+            @<Create complete dimensions file@>@;
+            if (dimensions.find(current_object->label) == dimensions.end())
+                throw string("Update of label dimensions file failed: \"") +
+                    current_object->label + "\" not found";
+        } 
+        current_object->label_width = dimensions[current_object->label].width;
+        current_object->label_height =
+            dimensions[current_object->label].height;
+    }
+}
+
+@ For determining the width of the label for a nebula, I use the width of the
+prefix (e.\,g.\ ``\.{M\\,}''), and the width of one digit (zero is used in
+\.{pp3}).\footnote{$^1$}{Of course this only works if all digits in the used
+font have the same width.}  They are sumed up, after the width of the digit has
+been multiplied by the number of digits (or the length) of the contents of
+|number|.
+
+For determining the height, I use the height of the zero or the height of the
+prefix, whichever is greater.
+
+@<Helping routines for nebulae labels@>=/*
+        current_nebula.label_width = dimensions[catalogue].width +
+            number.str().length() * dimensions["0"].width;
+        current_nebula.label_height = fmax(dimensions[catalogue].height,
+	dimensions["0"].height);*/
+
+
+@
+
+FixMe: List-like and vector-like access are intertwined here.  This is ugly.
+Eventually all indexes in the label dimension files (and associated temporary
+files) should be deleted.
+
+@<Create complete dimensions file@>=
+{
+    list<string> required_names;
+    for (int i = 0; i < objects.size(); i++) {
+        string current_name = objects[i]->label;
+        if (!current_name.empty() &&
+            current_name.substr(0,3) != "M\\," &&
+            current_name.substr(0,5) != "NGC\\," &&
+            current_name.substr(0,4) != "IC\\,") 
+            required_names.push_back(objects[i]->label);
+    }
+    required_names.push_back("M\\,");
+    required_names.push_back("NGC\\,");
+    required_names.push_back("IC\\,");
+    required_names.push_back("0");
+    required_names.unique();
+
+    ofstream temp_file("pp3temp.tex");
+    create_preamble(temp_file);
+    temp_file << "\n\\begin{document}\n"
+              << "\\newwrite\\labelsfile\n"
+              << "\\catcode`\\_=11  % for underscores in the filename\n"
+              << "\\immediate\\openout\\labelsfile=pp3temp.dat\n"
+              << "\\catcode`\\_=8\n";
+    list<string>::const_iterator p = required_names.begin();
+    while (p != required_names.end())
+        temp_file << "\\setbox0 = \\vbox{\\hbox{"
+                  << *(p++)
+                  << "}\\hrule height 0pt}\n"
+                  << "  \\immediate\\write\\labelsfile{"
+                     "\\the\\wd0s \\the\\ht0s}\n";
+    temp_file << "\\immediate\\closeout\\labelsfile\n\\end{document}\n";
+    temp_file.close();
+    system("latex pp3temp");
+
+    ifstream raw_labels_file("pp3temp.dat");
+    ofstream cooked_labels_file("labeldimens.dat");
+    cooked_labels_file.setf(ios::fixed);
+    cooked_labels_file.precision(5);
+    p = required_names.begin();
+    while (p != required_names.end()) {
+        string current_width, current_height;
+        string current_name;
+        current_name = *(p++);
+        raw_labels_file >> current_width >> current_height;
+        current_width.substr(0,current_width.length() - 3);
+        current_height.substr(0,current_height.length() - 3);
+        dimensions[current_name].name = current_name;
+        dimensions[current_name].width = strtod(current_width.c_str(), 0)
+            / 72.27 * 2.54;
+        dimensions[current_name].height = strtod(current_height.c_str(), 0)
+            / 72.27 * 2.54;
+        cooked_labels_file << current_name << '\n'
+                           << dimensions[current_name].width
+                           << ' '
+                           << dimensions[current_name].height
+                           << '\n';
     }
 }
 
@@ -1485,7 +1593,7 @@ Of course, it's guaranteed that |objects[i]| is not part of its vicinity.
 @<Find objects in vicinity of |objects[i]|@>=
             const double on_object_scope = objects[i]->scope();
             for (int j = 0; j < objects.size(); j++) {
-                if (i != j && objects[i]->in_view)
+                if (i != j && objects[i]->in_view == visible)
                     if (hypot(objects[i]->x - objects[j]->x,
                               objects[i]->y - objects[j]->y) <
                         on_object_scope + objects[j]->scope())
@@ -1503,7 +1611,7 @@ origin (bottom left of the view frame) intact.
 void print_labels(const objects_list& objects) {
     OUT << "\\labelcolor\n";
     for (int i = 0; i < objects.size(); i++)
-        if (objects[i]->in_view && objects[i]->with_label
+        if (objects[i]->in_view == visible && objects[i]->with_label == visible
             && objects[i]->label_arranged) {
             const double angle = M_PI_4 * double(objects[i]->label_angle);
             const double label_distance = objects[i]->radius + objects[i]->skip;
@@ -1527,44 +1635,24 @@ void print_labels(const objects_list& objects) {
         }
 }
 
-@ Last but not least: A structure with the real dimensions in centimetres of
-all possible labels, namely all possible different |star::name|'s.  They are
-read from the file \.{labeldims.dat} and stored in a |dimensions_list|.
-
-This dimension list also contains the following elements: ``\.{NGC\\,}'',
-``\.{IC\\,}'', ``\.{M\\,}'', and ``\.{0}''.  They are used to calculate the
-width and height of nebulae labels.
-
-@s dimensions_list int
-@s dimension int
-
-@q'@>
-
-@<The structure |dimension|@>=
-struct dimension { double width, height; };
-
-typedef map<string,dimension> dimensions_list;
-
 @ Here I read label dimensions from a text file.  The format is very simple:
 \medskip
 
-\item{1.} The number of labels |number_of_label_dimensions| (|int|).
-\item{2.} The following |number_of_label_dimensions| times:
-\itemitem{--} The \LaTeX\ representation of the label on a line of its own.
-\itemitem{--} In the following line, width and height of the label in
+\item{1.} The \LaTeX\ representation of the label on a line of its own.
+\item{2.} In the following line, width and height of the label in
 centimetres (both |double|), separated by whitespace.
+
+\medskip This is repeated for every data record.
 
 @c
 void read_label_dimensions(dimensions_list& dimensions) {
     ifstream file(params.filename_dimensions.c_str());
-    int number_of_label_dimensions;
-    file >> number_of_label_dimensions;
-    for (int i = 0; i < number_of_label_dimensions; i++) {
-        string name, dummy;
+    string name,dummy;
+    getline(file,name);
+    while (file) {
+        dimensions[name].name = name;
+        file >> dimensions[name].width >> dimensions[name].height;
         getline(file,dummy);  // Read the |'\n'|
-        getline(file,name);
-        file >> dimensions[name].width;
-        file >> dimensions[name].height;
     }
 }
 
@@ -1751,7 +1839,7 @@ smoothly through all points.
 
 I need this |"[liftpen=2]"| because eventually the \.{\\pscurve} command may be
 part of a \.{\\pscustom} command and thus be part of a bigger path that forms
--- in terms of the Porstscript language -- one united path.\footnote{$^3$}{This
+-- in terms of the Porstscript language -- one united path.\footnote{$^2$}{This
 means e.\,g.\ that a dashed line pattern won't be broken at subpath junctions.}
 In order to get crisp coners, the \.{liftpen} option is necessary.
 
@@ -1830,8 +1918,7 @@ void draw_boundaries(const transformation& mytransform,
 
 @*1 Constellation lines.  In the loop I test all lines available in
 |connections|.  The first thing in the loop is to assure that both stars are
-actually visible.\footnote{$^2$}{This is one of the very rare times when
-|in_view| is actually used.}  At the beginning $(\hbox{|x1|}, \hbox{|y1|})$ and
+actually visible.  At the beginning $(\hbox{|x1|}, \hbox{|y1|})$ and
 $(\hbox{|x2|}, \hbox{|y2|})$ are the screen coordinates of the two stars that
 are supposed to be connected by a line.  Then I move from there to the
 respective other star by the amount of |skip|.  The current length of the
@@ -1850,8 +1937,8 @@ void draw_constellation_lines(const transformation& mytransform,
     const double min_length = 0.2;
     OUT << "\\psset{linecolor=clinecolor,linestyle=solid,linewidth=1pt}%\n";
     for (int i = 0; i < connections.size(); i++)
-        if (stars[connections[i].from].in_view &&
-            stars[connections[i].to].in_view) {
+        if (stars[connections[i].from].in_view == visible &&
+            stars[connections[i].to].in_view == visible) {
             double x1 = stars[connections[i].from].x;
             double y1 = stars[connections[i].from].y;
             double x2 = stars[connections[i].to].x;
@@ -1966,10 +2053,7 @@ The |radius| of the label is a rough estimate: It is simply the half of
 If it's large enough, it is printed in its (almost) full beauty, see |@<Draw
 nebula shape@>|.
 
-By the way, |in_view| is set here and at other places, but not often used since
-objects with |in_view|${}={}$|false| aren't in |objects| anyway.
-
-@q;@>
+@q'@>
 
 @c
 void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
@@ -1977,13 +2061,13 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
     OUT << "\\psset{linecolor=nebulacolor,linewidth=0.5pt,linestyle=solid,"
         << "curvature=1 .5 -1}%\n";
     for (int i = 0; i < nebulae.size(); i++)
-        if (nebulae[i].in_view &&
+        if (nebulae[i].in_view != hidden &&
             (((nebulae[i].kind == open_cluster ||
                nebulae[i].kind == globular_cluster)
               && nebulae[i].magnitude < 4) || @/
              ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
               nebulae[i].kind == emission) && nebulae[i].magnitude < 8) ||
-             nebulae[i].M > 0 )) {
+             nebulae[i].messier > 0 )) {
             double x,y;
             if (mytransform.polar_projection(nebulae[i].rectascension,
                                              nebulae[i].declination,
@@ -1995,7 +2079,7 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
                         sqrt(nebulae[i].diameter_x * nebulae[i].diameter_y);
                 nebulae[i].radius = nebulae[i].diameter_x/2.0 /
                     mytransform.get_rad_per_cm() * M_PI / 180.0;
-                nebulae[i].with_label = true;
+                nebulae[i].with_label = visible;
                 if (nebulae[i].radius > 0.1) {
                     @<Draw nebula shape@>@;
                 } else {
@@ -2006,8 +2090,8 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
                         << nebulae[i].radius / 2.54 * 72.27 << "pt}%\n";
                 }
                 objects.push_back(&nebulae[i]);
-            } else nebulae[i].in_view = false;
-        } else nebulae[i].in_view = nebulae[i].with_label = false;
+            } else nebulae[i].in_view = hidden;
+        } else nebulae[i].in_view = nebulae[i].with_label = hidden;
 }
 
 @ This is the core of |draw_nebula()|.  In order to draw the (almost) ellipsis,
@@ -2084,8 +2168,9 @@ Then only the stellar colour has yet to be calculated, and it can be printed.
 
 void draw_stars(const transformation& mytransform, stars_list& stars,
                 objects_list& objects) {
+    const double star_magnification = 2.0;
     for (int i = 0; i < stars.size(); i++)
-        if (stars[i].in_view && stars[i].magnitude < 7) {
+        if (stars[i].in_view != hidden && stars[i].magnitude < 7) {
                 // Effectively all stars of the \BSC/
             double x,y;
             if (mytransform.polar_projection(stars[i].rectascension,
@@ -2093,11 +2178,13 @@ void draw_stars(const transformation& mytransform, stars_list& stars,
                                              x,y)) {
                 stars[i].x = x;
                 stars[i].y = y;
-                stars[i].radius = (stars[i].magnitude < 5 ?
-                                   sqrt(5.09 - stars[i].magnitude) : 0.3)
+                stars[i].radius = star_magnification * 
+                    (stars[i].magnitude < 5 ?
+                     sqrt(5.09 - stars[i].magnitude) : 0.3)
                     / 72.27 * 2.54;
-                stars[i].with_label = stars[i].magnitude < 3.7 && 
-                    !stars[i].name.empty();
+                if (stars[i].with_label == undecided) 
+                    stars[i].with_label = (stars[i].magnitude < 3.7 && 
+                        !stars[i].name.empty()) ? visible : hidden;
                 stars[i].label = stars[i].name;
                 if (params.colored_stars) {
                     OUT << "\\newhsbcolor{starcolor}{";
@@ -2109,8 +2196,8 @@ void draw_stars(const transformation& mytransform, stars_list& stars,
                     << stars[i].y << "){"
                     << stars[i].radius / 2.54 * 72.27 << "pt}%\n";
                 objects.push_back(&stars[i]);
-            } else stars[i].in_view = false;
-        } else stars[i].in_view = stars[i].with_label = false;
+            } else stars[i].in_view = hidden;
+        } else stars[i].in_view = stars[i].with_label = hidden;
 }
 
 @ I want to use the B$-$V magnitude for the colour of the star disks on the
@@ -2204,7 +2291,8 @@ bool read_boolean(istream& script) {
 
 @ This one is sub-optimal, because it can only read strings that don't contain
 whitespace.  FixMe: It must be possible to use \.{"..."} and escaping
-sequences.
+sequences.  At least is handles the special case of an empty string that is
+represented by~\.{""}.
 
 @q'@>
 
@@ -2430,39 +2518,39 @@ possible.  FixMe: They should be defined globally, so that they needn't be
 passed as arguments in almost every single routine here.
 
 This mapping is not vital for the program, but the alternative would be to look
-through the whole of |nebulae| or |stars| to find a star with a certain NGC or
-HD number.  This is probably way to inefficient.
+through the whole of |nebulae| or |stars| to find a star with a certain \NGC/
+or \HD/ number.  This is probably way to inefficient.
 
 @q'@>
 
 @<Create mapping structures for direct catalogue access@>=
-    const int max_NGC = 7840, max_IC=5386, max_M=110;
-    index_list NGC(max_NGC+1), IC(max_IC+1), M(max_M+1);
+    const int max_ngc = 7840, max_ic=5386, max_messier=110;
+    index_list ngc(max_ngc+1), ic(max_ic+1), messier(max_messier+1);
     for (int i = 0; i < nebulae.size(); i++) {
-        if (nebulae[i].NGC > 0 && nebulae[i].NGC <= max_NGC)
-            NGC[nebulae[i].NGC] = i;
-        if (nebulae[i].IC > 0 && nebulae[i].IC <= max_IC)
-            IC[nebulae[i].IC] = i;
-        if (nebulae[i].M > 0 && nebulae[i].M <= max_M)
-            M[nebulae[i].M] = i;
+        if (nebulae[i].ngc > 0 && nebulae[i].ngc <= max_ngc)
+            ngc[nebulae[i].ngc] = i;
+        if (nebulae[i].ic > 0 && nebulae[i].ic <= max_ic)
+            ic[nebulae[i].ic] = i;
+        if (nebulae[i].messier > 0 && nebulae[i].messier <= max_messier)
+            messier[nebulae[i].messier] = i;
     }
     map<int,int> henry_draper;
     for (int i = 0; i < stars.size(); i++)
         if (stars[i].hd > 0) henry_draper[stars[i].hd] = i;
 
-@ In this routine I can a list of stellar objects, given by a tokan pair of
+@ In this routine I can a list of stellar objects, given by a token pair of
 catalogue name and catalogue index.  Such lists are used after some top-level
 commands below.  A mandatory `\.{;}' ends such a list.  Four catalogues are
-supported:  NGC, IC, Messier, and Henry-Draper.  You may use the program
-`Celestia' to get the HD numbers for the stars.
+supported: \NGC/, \IC/, Messier, and Henry-Draper.  You may use the program
+`Celestia' to get the \HD/ numbers for the stars.
 
 @c
-void search_objects(istream& script, const index_list& NGC,
-                    const index_list& IC, const index_list& M,
+void search_objects(istream& script, const index_list& ngc,
+                    const index_list& ic, const index_list& messier,
                     map<int,int>& henry_draper,
                     index_list& found_stars, index_list& found_nebulae) {
-    found_stars.resize(0);
-    found_nebulae.resize(0);
+    found_stars.clear();
+    found_nebulae.clear();
     string catalogue_name;
     int catalogue_index;
     script >> catalogue_name;
@@ -2470,11 +2558,11 @@ void search_objects(istream& script, const index_list& NGC,
         script >> catalogue_index;
         if (!script) throw string("Unexpected end of input script");
         if (catalogue_name == "NGC")
-            found_nebulae.push_back(NGC[catalogue_index]);
+            found_nebulae.push_back(ngc[catalogue_index]);
         else if (catalogue_name == "IC")
-            found_nebulae.push_back(IC[catalogue_index]);
+            found_nebulae.push_back(ic[catalogue_index]);
         else if (catalogue_name == "M")
-            found_nebulae.push_back(M[catalogue_index]);
+            found_nebulae.push_back(messier[catalogue_index]);
         else  if (catalogue_name == "HD")
             found_stars.push_back(henry_draper[catalogue_index]);
         else throw string("Unknown catalogue: ") + catalogue_name;
@@ -2489,17 +2577,17 @@ object list but only one object.
 @q'@>
 
 @c
-view_data* identify_object(istream& script, const index_list& NGC,
-                           const index_list& IC, const index_list& M,
+view_data* identify_object(istream& script, const index_list& ngc,
+                           const index_list& ic, const index_list& messier,
                            map<int,int>& henry_draper,
                            stars_list& stars, nebulae_list& nebulae) {
     string catalogue_name;
     int catalogue_index;
     script >> catalogue_name >> catalogue_index;
     if (!script) throw string("Unexpected end of input script");
-    if (catalogue_name == "NGC") return &nebulae[NGC[catalogue_index]];
-    else if (catalogue_name == "IC") return &nebulae[IC[catalogue_index]];
-    else if (catalogue_name == "M") return &nebulae[M[catalogue_index]];
+    if (catalogue_name == "NGC") return &nebulae[ngc[catalogue_index]];
+    else if (catalogue_name == "IC") return &nebulae[ic[catalogue_index]];
+    else if (catalogue_name == "M") return &nebulae[messier[catalogue_index]];
     else if (catalogue_name == "HD")
         return &stars[henry_draper[catalogue_index]];
     else throw string("Unknown catalogue: ") + catalogue_name;
@@ -2533,7 +2621,7 @@ void read_objects_and_labels(istream& script,
             @<Label repositioning@>@;
         else {  // multi-parameter command
             index_list found_stars, found_nebulae;
-            search_objects(script, NGC, IC, M, henry_draper, found_stars,
+            search_objects(script, ngc, ic, messier, henry_draper, found_stars,
                            found_nebulae);
             @<Label deletion@>@;
             else
@@ -2549,9 +2637,9 @@ void read_objects_and_labels(istream& script,
 }
 
 @ Sometimes labels have an unfortunate position.  But you may say e.\,g.\
-$$\hbox{\.{reposition M42 E}}$$ to position the label for the Orion Nebula to
+$$\hbox{\.{reposition M 42 E}}$$ to position the label for the Orion Nebula to
 the right of it.  (Abbreviations are taken from the wind rose.)  You may use
-this command to force a certain label to be draw although PP3 has decided that
+this command to force a certain label to be drawn although PP3 has decided that
 there is no space for it and didn't print it in the first place.
 
 @q'@>
@@ -2560,7 +2648,7 @@ there is no space for it and didn't print it in the first place.
         if (opcode == "reposition") {
             string new_position;
             view_data* current_object =
-                identify_object(script, NGC, IC, M, henry_draper,
+                identify_object(script, ngc, ic, messier, henry_draper,
                                 stars, nebulae);
             int new_angle;
             script >> new_position;
@@ -2574,19 +2662,23 @@ there is no space for it and didn't print it in the first place.
             else if (new_position =="SE") new_angle = 7;
             else throw string("Undefined position angle: ") + new_position;
             current_object->label_angle = new_angle;
-            current_object->with_label = true;
+            current_object->with_label = visible;
             current_object->label_arranged = true;
         }
 
-@ With e.\,g.\ $$\hbox{\.{delete\_labels M 35 M42 ;}}$$ you delete the labels
+@ With e.\,g.\ $$\hbox{\.{delete\_labels  M 35  M 42 ;}}$$ you delete the labels
 (not the nebulae themselves!)\ of M\,35 and M\,42.
 
 @<Label deletion@>=
             if (opcode == "delete_labels") {
-                for (int i = 0; i < found_stars.size(); i++)
-                    stars[found_stars[i]].with_label = false;
-                for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_nebulae[i]].with_label = false;
+                for (int i = 0; i < found_stars.size(); i++) {
+                    stars[found_stars[i]].with_label = hidden;
+                    stars[found_stars[i]].label_arranged = true;
+                }
+                for (int i = 0; i < found_nebulae.size(); i++) {
+                    nebulae[found_nebulae[i]].with_label = hidden;
+                    nebulae[found_nebulae[i]].label_arranged = false;
+                }
             }
 
 @ The counterpart of \.{delete\_labels}.  It makes sense first and formost for
@@ -2596,9 +2688,9 @@ Draper Catalogue.)
 @<Label activation@>=
             if (opcode == "add_labels") {
                 for (int i = 0; i < found_stars.size(); i++)
-                    stars[found_stars[i]].with_label = true;
+                    stars[found_stars[i]].with_label = visible;
                 for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_nebulae[i]].with_label = true;
+                    nebulae[found_nebulae[i]].with_label = visible;
             }
 
 @ This adds objects (mostly nebulae) the the field.  Notice that this object is
@@ -2607,9 +2699,9 @@ then printed even if it lies outside the view frame (it may be clipped though).
 @<Celestial object activation@>=
             if (opcode == "add") {
                 for (int i = 0; i < found_stars.size(); i++)
-                    stars[found_stars[i]].in_view = true;
+                    stars[found_stars[i]].in_view = visible;
                 for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_nebulae[i]].in_view = true;
+                    nebulae[found_nebulae[i]].in_view = visible;
             }
 
 @ The opposite of |@<Celestial object activation@>|.
@@ -2617,9 +2709,9 @@ then printed even if it lies outside the view frame (it may be clipped though).
 @<Celestial object deletion@>=
             if (opcode == "delete") {
                 for (int i = 0; i < found_stars.size(); i++)
-                    stars[found_stars[i]].in_view = false;
+                    stars[found_stars[i]].in_view = hidden;
                 for (int i = 0; i < found_nebulae.size(); i++)
-                    nebulae[found_nebulae[i]].in_view = false;
+                    nebulae[found_nebulae[i]].in_view = hidden;
             }
 
 
@@ -2717,8 +2809,8 @@ that are actually used.
 
         if (params.show_boundaries) read_constellation_boundaries(boundaries);
         read_label_dimensions(dimensions);
-        read_stars(stars, dimensions);
-        read_nebulae(nebulae, dimensions);
+        read_stars(stars);
+        read_nebulae(nebulae);
         if (params.show_lines) read_constellation_lines(connections, stars);
 
 @ Three calls here are not preceded by an |if| clause: |create_grid()| contains
@@ -2739,7 +2831,7 @@ visibility anyway.
         if (params.show_lines)
             draw_constellation_lines(mytransform, connections, stars, objects);
         if (params.show_labels) {
-            arrange_labels(objects);
+            arrange_labels(objects,dimensions);
             print_labels(objects);
         }
 
@@ -2750,11 +2842,8 @@ of the label dimensions file.  I use the \.{geometry} package and a dvips
 2~millimetres.  So I create a buffer border of 1\,mm thickness.
 
 @<Create \LaTeX\ header@>=
-    OUT << "\\documentclass{article}\n\n" @/
-        << "\\usepackage{eulervm}\n" @/
-        << "\\usepackage[T1]{fontenc}\n" @/
-        << "\\renewcommand*{\\rmdefault}{pmy}\n" @/
-        << "\\usepackage[dvips]{color}\n" @/
+    create_preamble(OUT);
+    OUT << "\\usepackage[dvips]{color}\n" @/
         << "\\usepackage{pstricks}\n" @/
         << "\\usepackage[nohead,nofoot,margin=0cm," @/
         << "paperwidth=" << params.view_frame_width_in_bp() << "bp," @/
@@ -2771,6 +2860,20 @@ of the label dimensions file.  I use the \.{geometry} package and a dvips
         << params.boundarycolor << params.hlboundarycolor << params.starcolor
         << params.nebulacolor << params.labelcolor << params.clinecolor @/
         << "\\boldmath\n";
+
+@ If no preamble filename was given in the input script, a default preamble is
+used.  If a preamble filename was given, the file should contain only font
+specifying commands.
+
+@<|create_preamble()| for writing the \LaTeX\ preamble@>=
+void create_preamble(ostream& out) {
+    out << "\\documentclass{article}\n\n" @/
+        << "\\usepackage{eulervm}\n" @/
+        << "\\usepackage[T1]{fontenc}\n" @/
+        << "\\renewcommand*{\\rmdefault}{pmy}\n";
+    if (!params.filename_preamble.empty()) @/
+        out << "\\input " << params.filename_preamble << '\n';
+}
 
 @ This is almost trivial.  I just close the box structure I began at the end of
 |@<Create \LaTeX\ header@>| and close the document.
