@@ -106,56 +106,6 @@ modify it under the terms of the @acronym{MIT} licence.  Please see the
 @subtitle version @value{VERSION}
 @sp 2
 @image{title,10cm,,Constellation map of Orion and its neighbours}
-@c Image can be created with the following PP3 input script:
-@c
-@c filename output title.tex
-@c switch pdf_output on
-@c
-@c set box_width 9
-@c set box_height 9
-@c
-@c filename latex_preamble wiki.tex
-@c
-@c set faintest_star_magnitude 4.5
-@c set faintest_star_disk_magnitude 4.5
-@c set star_scaling 0.8
-@c set grad_per_cm 7
-@c
-@c color background 1 1 1
-@c color stars 0 0 0
-@c switch colored_stars off
-@c color constellation_lines 0.5 0.5 0.5
-@c color nebulae 0 0 0
-@c color milky_way 0.3 0.3 0.3
-@c color ecliptic 0.3 0.3 0.3
-@c color grid 0.8 0.8 0.8
-@c color labels 0 0 0
-@c color text_labels 0.4 0.4 0.4
-@c switch nebulae off
-@c switch grid on
-@c switch boundaries off
-@c
-@c objects_and_labels
-@c
-@c set_label_text ORI 19 "\\footnotesize Rigel"
-@c set_label_text ORI 58 "\\footnotesize Betelgeuse"
-@c set_label_text CMA 9 "\\footnotesize Sirius"
-@c set_label_text CMI 10 "\\footnotesize Procyon"
-@c set_label_text TAU 87 "\\footnotesize Aldebaran"
-@c set_label_text GEM 66 "\\footnotesize Castor"
-@c set_label_text GEM 78 "\\footnotesize Pollux"
-@c
-@c reposition ORI 34 E ;  # Mintaka
-@c
-@c text Orion at 6.1 2 along declination towards N ;
-@c text Bull at 5.3 16.5 along declination towards N ;
-@c text Twins at 7.4 19 along declination towards SW ;
-@c text Unicorn at 6.4 -10 along declination towards NW ;
-@c text Hare at 5.5 -23 along declination towards S ;
-@c text "Big Dog" at 6.8 -20 along declination towards SE ;
-@c text Eridanus at 3.9 -20 along declination towards NW ;
-@c
-@c delete GEM 60 ;
 @author Torsten Bronger
 @page
 @vskip 0pt plus 1filll
@@ -802,11 +752,6 @@ The minimal @PPTHREE{} input script is -- well -- the empty file.  Then
 
 @image{orion,10cm,,Constellation map of Orion}
 
-@c Image can be created with the following PP3 input script:
-@c
-@c filename output orion.tex
-@c switch pdf_output on
-
 You can override these defaults step by step.  Let's do so: Write
 
 @example
@@ -969,27 +914,6 @@ this figure in order to keep the @acronym{PDF} manual small):
 
 @image{swan,10cm,,Constellation map of the Swan}
 
-@c Image can be created with the following PP3 input script:
-@c
-@c filename output swan.tex
-@c switch colored_stars off
-@c color stars 0 0 0
-@c color nebulae 0 0 0
-@c color background 1 1 1
-@c color grid 0.5 0.5 0.5
-@c color ecliptic 0.3 0.3 0.3
-@c color constellation_lines 0.7 0.7 0.7
-@c color labels 0 0 0
-@c color text_labels 0.5 0.5 0.5
-@c color boundaries 0.8 0.8 0.8
-@c color highlighted_boundaries 0 0 0
-@c color milky_way 0.5 0.5 0.5
-@c switch pdf_output on
-@c
-@c set center_rectascension  19.95
-@c set center_declination    40.8
-@c set constellation CYG
-
 
 @node Parameters and commands
 @section Parameters and Commands
@@ -1043,35 +967,6 @@ if it contains spaces.
 Now we get (only the changed part printed):
 
 @image{swan1,,,Map of North America Nebula and Deneb}
-
-@c Image can be created with the following PP3 input script:
-@c
-@c filename output swan1.tex
-@c switch milky_way off
-@c switch colored_stars off
-@c color stars 0 0 0
-@c color nebulae 0 0 0
-@c color background 1 1 1
-@c color grid 0.5 0.5 0.5
-@c color ecliptic 0.3 0.3 0.3
-@c color constellation_lines 0.7 0.7 0.7
-@c color labels 0 0 0
-@c color text_labels 0.5 0.5 0.5
-@c color boundaries 0.8 0.8 0.8
-@c color highlighted_boundaries 0 0 0
-@c color milky_way 0.5 0.5 0.5
-@c switch pdf_output on
-@c
-@c set center_rectascension  21.1
-@c set center_declination    44
-@c set box_width 7
-@c set box_height 3.5
-@c set constellation CYG
-@c
-@c objects_and_labels
-@c
-@c set_label_text CYG 50 Deneb
-@c set_label_text NGC 7000 "N. America Neb."
 
 @PPTHREE{} takes star names from a file.  So if you use another star
 data file with @PPTHREE{}, you get other labels.  @PPTHREE{}'s standard
@@ -1166,37 +1061,6 @@ This `@code{\\bfseries}' tells the typesetter to print it in @b{bold
 face}, see @ref{LaTeX in labels}.  The result is the following:
 
 @image{swan2,,,Map of Swan with a flex label}
-
-@c Image can be created with the following PP3 input script:
-@c
-@c filename output swan2.tex
-@c switch milky_way off
-@c switch colored_stars off
-@c color stars 0 0 0
-@c color nebulae 0 0 0
-@c color background 1 1 1
-@c color grid 0.5 0.5 0.5
-@c color ecliptic 0.3 0.3 0.3
-@c color constellation_lines 0.7 0.7 0.7
-@c color labels 0 0 0
-@c color text_labels 0.5 0.5 0.5
-@c color boundaries 0.8 0.8 0.8
-@c color highlighted_boundaries 0 0 0
-@c color milky_way 0.5 0.5 0.5
-@c switch pdf_output on
-@c
-@c set center_rectascension  21.1
-@c set center_declination    44
-@c set box_width 7
-@c set box_height 3.5
-@c set constellation CYG
-@c
-@c objects_and_labels
-@c
-@c set_label_text CYG 50 Deneb
-@c set_label_text NGC 7000 "N. America Neb."
-@c
-@c text "\\bfseries Swan" at 20.05 49.8 along declination towards SW ;
 
 
 @node Tic labels
@@ -1980,7 +1844,7 @@ find another one, please report it on
 Unknown stars in constellation line data files (the default is the file
 @file{lines.dat}) result in an error message, which is good, but the
 error message may print another -- probably valid -- star name, which is
-bad.  Furtunately the actually wrong star and the printed star are
+bad.  Fortunately the actually wrong star and the printed star are
 within the same constellation line, the printed star coming first.
 
 @kwindex set_label_text
