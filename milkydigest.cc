@@ -6,6 +6,9 @@
 
 /* You may call this program this way:
    pngtopnm milkyway.png | pnmtoplainpnm > milkyway.pgm && milkydigest
+
+   This program uses as the original Milky Way bitmap the sky panorama created
+   by Axel Mellinger <http://home.arcor-online.de/axel.mellinger/>.
 */
 
 inline double round(double x) {
