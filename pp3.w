@@ -114,6 +114,8 @@
 \def\AMS{\ifmmode\AMSinner\else$\AMSinner$\fi}
 \def\BSC/{{\mc BSC\spacefactor1000}}
 \def\HSB/{{\mc HSB\spacefactor1000}}
+\def\EPS/{{\mc EPS\spacefactor1000}}
+\def\PDF/{{\mc PDF\spacefactor1000}}
 
 \font\sf=bfrr8t \font\sfbf=bfrb8t
 \font\sfa=bfrr8t scaled 700
@@ -123,12 +125,12 @@
 \font\ttitlefont=pcrb7t scaled\magstep3    % typewriter type in title
 
 
-\def\title{PP3 (Version 0.2)}
+\def\title{PP3 (Version 0.3)}
 \def\topofcontents{\null\vfill
   \centerline{\titlefont The  Sky Map
   Creator {\stitlefont PP3}}
   \vskip 15pt
-  \centerline{(Version 0.2)}
+  \centerline{(Version 0.3)}
   \vfill}
 \def\botofcontents{\parindent2em\vfill
 \noindent
@@ -260,6 +262,8 @@ struct color {
 @ Both output and input of |color|s is asymmetric: When I {\it read\/} them I
 assume that I do it from an input script.  Then it's a mere sequence of the
 three colour values.
+
+@q'@>
 
 @c
 istream& operator>>(istream& in, color& c) {
@@ -447,6 +451,8 @@ whatever.
 
 @s star int
 @s stars_list int
+
+@q;@>
 
 @c
 struct star : public view_data {
@@ -779,7 +785,7 @@ Serpens Cauda.
 
 \medskip All fields are separated by whitespace.
 
-@q'@>
+@q')@>
 
 @c
 istream& operator>>(istream& in, boundary& p) {
@@ -818,6 +824,8 @@ However, it should be good enough.
 
 @s boundary_atom int
 
+@q'@>
+
 @c
 struct boundary_atom : public view_data {
     point start, end;
@@ -829,6 +837,8 @@ struct boundary_atom : public view_data {
 @ The nice thing about |boundary_atom| is that after it has been constructed,
 it's finished.  Nothing has to be changed any more because all is known in the
 moment of construction.
+
+@q'@>
 
 @c
 boundary_atom::boundary_atom(point start, point end) : start(start), end(end) {
@@ -849,6 +859,8 @@ which means that it's the same as with constellation lines.
 
 Objects of this type are created in |@<Create a |boundary_atom| for the
 |objects|@>|.
+
+@q'@>
 
 @c
 @<Definition of |line_overlap()| for intersection of two lines@>@;@#
@@ -954,8 +966,8 @@ Maybe I'm paranoid, but I don't like that.
 
 @s zt TeX
 
-@q'}@>
-     
+@q'@>
+
 @c
 inline double transformation::stretch_factor(const double z) const {
     const double zt = 1.0 - z;
@@ -977,7 +989,6 @@ of the desired view frame.  |width| and |height| give its dimensions in
 centimetres, |grad_per_cm| is the resulting resolution in the center.
 
 @q'@>
-
   
 @c
 transformation::transformation(const double rectascension,
@@ -1060,46 +1071,21 @@ start and the end point of the line.
 struct connection : public view_data {
     point start, end;
     int from, to;
-    connection(const string from_name, const string to_name,
-               const stars_list& stars);
+    connection(const int from, const int to)
+        : from(from), to(to), start(), end(), view_data() { }
     virtual double penalties_with(double& left,double& right,double& top,
                               double& bottom) const;
 };
 
 typedef vector<connection> connections_list;
 
-@ Maybe it was a bad idea to do so much work in the constructor of this class.
-It could be done in |read_constellation_lines()| as well.  Be that as it may,
-here I map the names |from_name| and |to_name| to the indexes of their
-respective stars in |stars|.  The names must be given in the format
-$$\hbox{{\it Flamsteed number}\SP{\it Constellation}},$$ where {\it
-Constellation\/} must be given as an all uppercase three letter abbreviation.
-For example: $$\hbox{\.{19\SP ORI}}$$ is $\alpha$~Ori (Rigel).  This is pretty
-contraining, and eventually this routine should understand other name types as
-well, or at least it should allow superfluous whitespace etc.
 
-@c
-connection::connection(const string from_name, const string to_name,
-                       const stars_list& stars)
-    : from(-1), to(-1), start(), end(), view_data() {
-    @<Find Flamsteed number of name called |from_name|@>@;
-    @<Find Flamsteed number of name called |to_name|@>@;
-    for (int i = 0; i < stars.size(); i++) {
-        if (from_flamsteed == stars[i].flamsteed &&
-            from_constellation == stars[i].constellation) from = i;
-        if (to_flamsteed == stars[i].flamsteed &&
-            to_constellation == stars[i].constellation) to = i;
-    }
-    if (from == -1 || to == -1)
-        throw string("Constellation lines: Star not found");
-}
-
-@*1 Penalty calculation.  The current way to calculate the penalties with
-constellation lines is simple, maybe too simple.  I only check whether the
-current line lies -- partly or not -- inside the given label rectangle.  If it
-does, the penalty value is simply the area of the label, otherwise it's zero.
-Certainly it would be better to calculate penalties according to the amount of
-overlap and to balance it better with the other penalty values.
+@ The current way to calculate the penalties with constellation lines is
+simple, maybe too simple.  I only check whether the current line lies -- partly
+or not -- inside the given label rectangle.  If it does, the penalty value is
+simply the area of the label, otherwise it's zero.  Certainly it would be
+better to calculate penalties according to the amount of overlap and to balance
+it better with the other penalty values.
 
 But I just want to make it simple, and I want to make those overlaps expensive.
 
@@ -1139,6 +1125,8 @@ $$\eqalign{\hbox{|numerator|} &= \hbox{|left|} - \hbox{|start.x|},\cr
 we get the following routine for finding out whether a certain
 label rectangle edge is intersected by the constellation line or not:
 
+@q')@>
+
 @<Definition of |line_overlap()| for intersection of two lines@>=
 bool line_overlap(double numerator, double denominator,
                   double zero_point, double slope, double min, double max) {
@@ -1166,119 +1154,91 @@ double connection::penalties_with(double& left,double& right,double& top,
     return 0.0;
 }
 
-@ Here I do simple and annoying string parsing.  I try to fill the variables
-|from_flamsteed| and |from_constellation| with the correct values, and complain
-if this is apparently not possible.  FixMe: Could be more thorough: Make
-|from_constellation| a three uppercase letters sequence, allow superfluous
-whitespace.
-
-@<Find Flamsteed number of name called |from_name|@>=
-    int from_flamsteed = -1;
-    string from_constellation;
-    int space_index = from_name.find(' ');
-    if (space_index == string::npos)
-        throw string("Constellation lines: invalid star name");
-    if (space_index == string::npos)
-        throw string("Constellation lines: invalid star name");
-    from_flamsteed = strtol(from_name.substr(0,space_index).c_str(), 0, 10);
-    if (from_flamsteed <= 0)
-        throw string("Constellation lines: invalid star name");
-    from_constellation = from_name.substr(space_index + 1);
-    if (from_constellation.length() != 3)
-        throw string("Constellation lines: invalid star name");
-
-@ Totally analogous to |@<Find Flamsteed number of name called |from_name|@>|.
-
-@<Find Flamsteed number of name called |to_name|@>=
-    int to_flamsteed = -1;
-    string to_constellation;
-    space_index = to_name.find(' ');
-    if (space_index == string::npos)
-        throw string("Constellation lines: invalid star name");
-    to_flamsteed = strtol(to_name.substr(0,space_index).c_str(), 0, 10);
-    if (to_flamsteed <= 0)
-        throw string("Constellation lines: invalid star name");
-    to_constellation = to_name.substr(space_index + 1);
-    if (to_constellation.length() != 3)
-        throw string("Constellation lines: invalid star name");
-
-
-@ Here I draw the constellation lines.  In the loop I test all lines available
-in |connections|.  The first thing in the loop is to assure that both stars are
-actually visible.\footnote{$^2$}{This is one of the very rare times when
-|in_view| is actually used.}  At the beginning $(\hbox{|x1|}, \hbox{|y1|})$ and
-$(\hbox{|x2|}, \hbox{|y2|})$ are the screen coordinates of the two stars that
-are supposed to be connected by a line.  Then I move from there to the
-respective other star by the amount of |skip|.  The current length of the
-connection line is stored in~|r| which must have a minimal value (in particular
-it must be positive), otherwise it doesn't make sense to draw the line.
-Finally the line is drawn from the new $(\hbox{|x1|}, \hbox{|y1|})$ to the new
-$(\hbox{|x2|}, \hbox{|y2|})$.
-
-@q'@>
-
-@c
-void draw_constellation_lines(const transformation& mytransform,
-                              connections_list& connections,
-                              const stars_list& stars,
-                              objects_list& objects) {
-    const double min_length = 0.2;
-    OUT << "\\psset{linecolor=clinecolor,linestyle=solid,linewidth=1pt}%\n";
-    for (int i = 0; i < connections.size(); i++)
-        if (stars[connections[i].from].in_view &&
-            stars[connections[i].to].in_view) {
-            double x1 = stars[connections[i].from].x;
-            double y1 = stars[connections[i].from].y;
-            double x2 = stars[connections[i].to].x;
-            double y2 = stars[connections[i].to].y;
-            const double phi = atan2(y2 - y1, x2 - x1);
-            double r = hypot(x2 - x1, y2 - y1);
-            double skip;
-            skip = stars[connections[i].from].radius +
-                stars[connections[i].from].skip;
-            r -= skip;
-            x1 += skip * cos(phi);
-            y1 += skip * sin(phi);
-            skip = stars[connections[i].to].radius +
-                stars[connections[i].to].skip;
-            r -= skip;
-            x2 -= skip * cos(phi);
-            y2 -= skip * sin(phi);
-            connections[i].radius = r/2.0;
-            connections[i].x = (x1 + x2) / 2.0;
-            connections[i].y = (y1 + y2) / 2.0;
-            if (r > min_length && r > 0.0) {
-                OUT << "\\psline{cc-cc}(" << x1 << ',' << y1
-                    << ")(" << x2 << ',' << y2 << ")%\n";
-                connections[i].start = point(x1,y1);
-                connections[i].end = point(x2,y2);
-                objects.push_back(&connections[i]);
-            }
-        }
-
-}
-
 @ I must be able to read a file which contains such data.  Here, too, the text
-file format is very simple: Each line is either empty or it contains exactly
-one star.  An empty line denotes the end of a constellation lines path.
-Consecutive lines with star names are one path.  A star name must be of the
-form $$\hbox{{\it Flamsteed number}\SP{\it Constellation}},$$ where {\it
+file format is very simple: It's a list of constellation line paths separated
+by `\.{;}'.  A star name must be of the form $$\eqalign{\noalign{\hbox{{\it
+Constellation}\SP{\it Flamsteed number}}} \noalign{\hbox{or}}
+\noalign{\hbox{\.{HD}\SP{\it Henry-Draper Catalogue number}}}}$$ where {\it
 Constellation\/} must be given as an all uppercase three letter abbreviation.
-For example, \.{19\SP ORI} is $\alpha$~Ori (Rigel).
+For example, \.{ORI\SP19} is $\alpha$~Ori (Rigel).
+
+The hash sign `\.{\#}' introduces comments that are ignored till end of line,
+however they mustn't occure within a star.
 
 @c
 void read_constellation_lines(connections_list& connections,
                               const stars_list& stars) {
     ifstream file(params.filename_lines.c_str());
-    string current_line, last_line;
-    getline(file,current_line);
+    string from_catalogue_name, to_catalogue_name;
+    int from_catalogue_index = 0, to_catalogue_index = 0;
+    file >> to_catalogue_name;
     while (file) {
-        if (!last_line.empty() && !current_line.empty())
-            connections.push_back(connection(last_line, current_line, stars));
-        last_line = current_line;
-        getline(file,current_line);
+        if (to_catalogue_name == ";") {  // start a new path
+            from_catalogue_index = 0;
+            file >> to_catalogue_name;
+            continue;
+        }
+        if (to_catalogue_name[0] == '#') { // skip comment
+            string dummy;
+            getline(file,dummy);
+            continue;
+        }
+        file >> to_catalogue_index;
+        if (from_catalogue_index > 0 && to_catalogue_index > 0) {
+            @<Create one connection@>@;
+        }
+        from_catalogue_name = to_catalogue_name;
+        from_catalogue_index = to_catalogue_index;
+        file >> to_catalogue_name;
     }
 }
+
+@ In the loop I try to find the index within |stars| of the `from' star and the `to'~star.
+
+@<Create one connection@>=
+            int from_index = 0, to_index = 0;
+            for (int i = 0; i < stars.size(); i++) {
+                @<Test whether |stars[i]| is the `from' star@>@;
+                @<Test whether |stars[i]| is the `to' star@>@;
+            }
+            if (from_index == 0 || to_index == 0) {
+                stringstream error_message;
+                error_message << "Unrecognised star in constellation lines: ";
+                if (from_index == 0)
+                    error_message << from_catalogue_name << ' '
+                                  << from_catalogue_index;
+                else
+                    error_message << to_catalogue_name << ' '
+                                  << to_catalogue_index;
+                throw error_message.str();
+            }
+            connections.push_back(connection(from_index, to_index));
+
+@ Here I test whether the current star in the loop is the `from' star.  Of
+course only if I haven't found it already (|from_index == 0|).  If apparently
+both stars have been found already, I leave the loop immediately.
+
+@<Test whether |stars[i]| is the `from' star@>=
+                if (from_index == 0)
+                    if (from_catalogue_name == "HD") {
+                        if (stars[i].hd == from_catalogue_index) from_index = i;
+                    } else {
+                        if (from_catalogue_name == stars[i].constellation)
+                            if (stars[i].flamsteed == from_catalogue_index)
+                                from_index = i;
+                    } else if (to_index != 0) break;
+
+@ Perfectly analogous to |@<Test whether |stars[i]| is the `from' star@>|.
+
+@<Test whether |stars[i]| is the `to' star@>=
+                if (to_index == 0)
+                    if (to_catalogue_name == "HD") {
+                        if (stars[i].hd == to_catalogue_index) to_index = i;
+                    } else {
+                        if (to_catalogue_name == stars[i].constellation)
+                            if (stars[i].flamsteed == to_catalogue_index)
+                                to_index = i;
+                    } else if (from_index != 0) break;
 
 @* Label organisation.  Without labels, star charts are not very useful.  But
 labels mustn't overlap, and they should not overlap with other chart elements
@@ -1321,7 +1281,7 @@ For efficiency, I first find all neighbours of the on-object and do all the
 following work only with them.  In the inner |k|-look I test all possible
 |label_angle|s and calculate their |penalty|.
 
-@c 
+@c
 void arrange_labels(objects_list& objects) {
     objects_list vicinity;
     for (int i = 0; i < objects.size(); i++) {
@@ -1534,8 +1494,6 @@ For a plot with closed lines (e.\,g.\ of one of the poles), you may set
 |point_distance| to |0| and |scans_per_cm| to a higher value, for avoiding a
 kink at the joint.
 
-@q'@>
-                                             
 @c
 void create_grid(const transformation transform,
                  const double scans_per_cm = 10,
@@ -1648,6 +1606,8 @@ part of a \.{\\pscustom} command and thus be part of a bigger path that forms
 means e.\,g.\ that a dashed line pattern won't be broken at subpath junctions.}
 In order to get crisp coners, the \.{liftpen} option is necessary.
 
+@q'}@>
+
 @c
 void draw_boundary_line(const boundary& b, const transformation& transform,
                         objects_list& objects, bool highlighted = false) {
@@ -1719,6 +1679,62 @@ void draw_boundaries(const transformation& mytransform,
             draw_boundary_line(boundaries[i], mytransform, objects);
 }
 
+@*1 Constellation lines.  In the loop I test all lines available in
+|connections|.  The first thing in the loop is to assure that both stars are
+actually visible.\footnote{$^2$}{This is one of the very rare times when
+|in_view| is actually used.}  At the beginning $(\hbox{|x1|}, \hbox{|y1|})$ and
+$(\hbox{|x2|}, \hbox{|y2|})$ are the screen coordinates of the two stars that
+are supposed to be connected by a line.  Then I move from there to the
+respective other star by the amount of |skip|.  The current length of the
+connection line is stored in~|r| which must have a minimal value (in particular
+it must be positive), otherwise it doesn't make sense to draw the line.
+Finally the line is drawn from the new $(\hbox{|x1|}, \hbox{|y1|})$ to the new
+$(\hbox{|x2|}, \hbox{|y2|})$.
+
+@q'@>
+
+@c
+void draw_constellation_lines(const transformation& mytransform,
+                              connections_list& connections,
+                              const stars_list& stars,
+                              objects_list& objects) {
+    const double min_length = 0.2;
+    OUT << "\\psset{linecolor=clinecolor,linestyle=solid,linewidth=1pt}%\n";
+    for (int i = 0; i < connections.size(); i++)
+        if (stars[connections[i].from].in_view &&
+            stars[connections[i].to].in_view) {
+            double x1 = stars[connections[i].from].x;
+            double y1 = stars[connections[i].from].y;
+            double x2 = stars[connections[i].to].x;
+            double y2 = stars[connections[i].to].y;
+            const double phi = atan2(y2 - y1, x2 - x1);
+            double r = hypot(x2 - x1, y2 - y1);
+            double skip;
+            skip = stars[connections[i].from].radius +
+                stars[connections[i].from].skip;
+            r -= skip;
+            x1 += skip * cos(phi);
+            y1 += skip * sin(phi);
+            skip = stars[connections[i].to].radius +
+                stars[connections[i].to].skip;
+            r -= skip;
+            x2 -= skip * cos(phi);
+            y2 -= skip * sin(phi);
+            connections[i].radius = r/2.0;
+            connections[i].x = (x1 + x2) / 2.0;
+            connections[i].y = (y1 + y2) / 2.0;
+            if (r > min_length && r > 0.0) {
+                OUT << "\\psline{cc-cc}(" << x1 << ',' << y1
+                    << ")(" << x2 << ',' << y2 << ")%\n";
+                connections[i].start = point(x1,y1);
+                connections[i].end = point(x2,y2);
+                objects.push_back(&connections[i]);
+            }
+        }
+
+}
+
+
 @* The Milky Way.  If a proper data file is available, the milky way is a
 simple concept, however difficult to digest for \LaTeX\ due to many many
 Postscipt objects.  But for this program it's so simple that I can do the
@@ -1738,6 +1754,8 @@ between the pixels.
 \itemitem{--} The declination in degrees.
 \itemitem{--} The gray value of the pixel from $1$ to~$255$.  Zero is not used
 because zero-value pixels are not included into the data file anyway.
+
+@q'@>
 
 @c
 void draw_milky_way(const transformation& mytransform) {
@@ -1802,6 +1820,8 @@ nebula shape@>|.
 By the way, |in_view| is set here and at other places, but not often used since
 objects with |in_view|${}={}$|false| aren't in |objects| anyway.
 
+@q;@>
+
 @c
 void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
                   objects_list& objects) {
@@ -1809,7 +1829,8 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
         << "curvature=1 .5 -1}%\n";
     for (int i = 0; i < nebulae.size(); i++)
         if (nebulae[i].in_view &&
-            (((nebulae[i].kind == open_cluster || nebulae[i].kind == globular_cluster)
+            (((nebulae[i].kind == open_cluster ||
+               nebulae[i].kind == globular_cluster)
               && nebulae[i].magnitude < 4) || @/
              ((nebulae[i].kind == galaxy || nebulae[i].kind == reflection ||
               nebulae[i].kind == emission) && nebulae[i].magnitude < 8) ||
@@ -1851,6 +1872,8 @@ much more difficult.  This is also the reason for this special case
 |nebulae[i]|\hskip0pt|@[.diameter_x@] == nebulae[i]|\hskip0pt|@[.diameter_y@]|.
 It shouldn't be necessary, and at the rim of the view frame it's even wrong due
 to the different circular scale.  FixMe: Improve this. (Via rotation matrices.)
+
+@q;@>
 
 @<Draw nebula shape@>=
     if (nebulae[i].diameter_x == nebulae[i].diameter_y)
@@ -1905,6 +1928,8 @@ even a little bit stricter than the related condition above.
 
 Then only the stellar colour has yet to be calculated, and it can be printed.
 
+@q;@>
+
 @c
 @<|create_hs_colour()| for star colour determination@>@;@#
 
@@ -1948,6 +1973,8 @@ There are three intervals for B$-$V with the boundaries |bv0|, |bv1|, |bv2|,
 and |bv3|.  |bv0|--|bv1| is blue, |bv1|--|bv2| is white, and |bv2|--|bv3| is
 red.  On each boundary, the hue values |hue0|--|hue3| respectively are valid.
 Inbetween I interpolate linearly (rule of three).
+
+@q;@>
 
 @<|create_hs_colour()| for star colour determination@>=
 void create_hs_colour(double b_v, string spectral_class) {
@@ -2014,6 +2041,8 @@ comes before an ``\.{objects\_and\_labels}'' in the input script.
 
 First two small helping routines that just read simple values from the file.
 
+@q'@>
+
 @c
 bool read_boolean(istream& script) {
     string boolean;
@@ -2027,6 +2056,8 @@ bool read_boolean(istream& script) {
 @ This one is sub-optimal, because it can only read strings that don't contain
 whitespace.  FixMe: It must be possible to use \.{"..."} and escaping
 sequences.
+
+@q'@>
 
 @c
 string read_string(istream& script) {
@@ -2165,6 +2196,8 @@ and ``\.{milky\_way}''.
 @.boundaries@>
 @.milky\_way@>
 
+@q'@>
+
 @<Set filename parameters@>=
         if (opcode == "filename") {
             string object_name;
@@ -2207,6 +2240,8 @@ coordinates of the view frame centre.  ``\.{box\_width}'' and
 @.grad\_per\_cm@>
 @.constellation@>
 
+@q'@>
+
 @<Set single value parameters@>=
         if (opcode == "set") {
             string param_name;
@@ -2236,6 +2271,8 @@ mapping from a catalogue number on the intex in PP3's internal |vectors|.  This
 makes access a lot faster.  FixMe:  At least for stars this can be used for
 stellar constellation lines, too.
 
+@q'@>
+
 @c
 typedef vector<int> index_list;
 
@@ -2246,6 +2283,8 @@ passed as arguments in almost every single routine here.
 This mapping is not vital for the program, but the alternative would be to look
 through the whole of |nebulae| or |stars| to find a star with a certain NGC or
 HD number.  This is probably way to inefficient.
+
+@q'@>
 
 @<Create mapping structures for direct catalogue access@>=
     const int max_NGC = 7840, max_IC=5386, max_M=110;
@@ -2298,6 +2337,8 @@ void search_objects(istream& script, const index_list& NGC,
 {\it one\/} celestial object.  This is used for commands that don't take an
 object list but only one object.
 
+@q'@>
+
 @c
 view_data* identify_object(istream& script, const index_list& NGC,
                            const index_list& IC, const index_list& M,
@@ -2325,8 +2366,6 @@ top-level commands in this section are: ``\.{reposition}'',
 @.delete@>
 @.add@>
 
-@q'@>
-
 @c
 void read_objects_and_labels(istream& script,
                              const dimensions_list& dimensions,
@@ -2342,14 +2381,11 @@ void read_objects_and_labels(istream& script,
             string rest_of_line;
             getline(script,rest_of_line);
         } else 
-            @<Label repositioning@>;
+            @<Label repositioning@>@;
         else {  // multi-parameter command
             index_list found_stars, found_nebulae;
             search_objects(script, NGC, IC, M, henry_draper, found_stars,
                            found_nebulae);
-            cerr << "Found objects: "
-                 << found_stars.size() << " stars, "
-                 << found_nebulae.size() << " nebulae" << endl;
             @<Label deletion@>@;
             else
                 @<Label activation@>@;
@@ -2364,14 +2400,15 @@ void read_objects_and_labels(istream& script,
 }
 
 @ Sometimes labels have an unfortunate position.  But you may say e.\,g.\
-$$\hbox{\.{reposition M42 E}}$$ to position the label for the Orian Nebula to
+$$\hbox{\.{reposition M42 E}}$$ to position the label for the Orion Nebula to
 the right of it.  (Abbreviations are taken from the wind rose.)
 
 @<Label repositioning@>=
         if (opcode == "reposition") {
             string new_position;
             view_data* current_object =
-                identify_object(script, NGC, IC, M, henry_draper, stars, nebulae);
+                identify_object(script, NGC, IC, M, henry_draper,
+                                stars, nebulae);
             int new_angle;
             script >> new_position;
             if (new_position == "E") new_angle = 0;
@@ -2385,7 +2422,7 @@ the right of it.  (Abbreviations are taken from the wind rose.)
             else throw string("Undefined position angle: ") + new_position;
             current_object->label_angle = new_angle;
             current_object->with_label = true;
-        } 
+        }
 
 @ With e.\,g.\ $$\hbox{\.{delete\_labels M 35 M42 ;}}$$ you delete the labels
 (not the nebulae themselves!)\ of M\,35 and M\,42.
@@ -2432,13 +2469,16 @@ then printed even if it lies outside the view frame (it may be clipped though).
             }
 
 
-@* The main function.  This consists of four parts: \medskip
+@* The main function.  This consists of six parts: \medskip
 
-\item{(1)} Definition of the desired transformation, here called |mytransform|.
-\item{(2)} Definition of the containers and
-\item{(3)} the filling of them by reading from text files.
-\item{(4)} Creating of the \LaTeX\ file, first and foremost by calling the
+\item{(1)} Command line interpretation.
+\item{(2)} Definition of the desired transformation, here called |mytransform|.
+\item{(3)} Definition of the containers and
+\item{(4)} the filling of them by reading from text files.
+\item{(5)} Creating of the \LaTeX\ file, first and foremost by calling the
 drawing routines.
+\item{(6)} Possibly create an \EPS/ or \PDF/ file by calling the necessary
+programs.
 
 \medskip\noindent That's it.
 
@@ -2449,6 +2489,48 @@ int main(int argc, char **argv) {
     istream* in = 0;
     bool input_file = false;
     try {
+        @<Dealing with command line arguments@>@;
+        read_parameters_from_script(*in);
+        if (!params.filename_output.empty())
+            params.out = new ofstream(params.filename_output.c_str());
+        transformation mytransform(params.center_rectascension,
+                                   params.center_declination,
+                                   params.view_frame_width,
+                                   params.view_frame_height,
+                                   params.grad_per_cm);
+
+        @<Definition and filling of the containers@>@;
+
+        read_objects_and_labels(*in, dimensions, objects, stars, nebulae,
+                                mytransform);
+
+        OUT.setf(ios::fixed);  // otherwise \LaTeX\ gets confused
+        OUT.precision(3);
+        @<Create \LaTeX\ header@>@;
+        OUT << "\\psclip{\\psframe(0bp,0bp)("
+            << params.view_frame_width_in_bp()
+            << ',' << params.view_frame_height_in_bp() << ")}%\n";
+        OUT << "\\psframe*[linestyle=none,linecolor=bgcolor](0bp,0bp)("
+            << params.view_frame_width_in_bp() << "bp,"
+            << params.view_frame_height_in_bp() << "bp)%\n";
+        @<Draw all celestial objects and labels@>@;
+        OUT << "\\endpsclip\n";
+        @<Create \LaTeX\ footer@>@;
+        if (input_file) delete in;
+        @<Create \EPS/ or \PDF/ file if requested@>@;
+    }
+    catch (string s) {
+        cerr << "pp3: " << s << '.' << endl;
+        exit(1);
+    }
+    return 0;
+}
+
+@ PP3 needs exactly one argument.  It must be either the file name of the input
+script or a `\.{-}' which means that it takes standard input for reading the
+input script.
+
+@<Dealing with command line arguments@>=
         if (argc == 2) {
             if (argv[1][0] != '-') {
                 in = new ifstream(argv[1]);
@@ -2465,15 +2547,11 @@ int main(int argc, char **argv) {
                  << "The plot is sent to standard output by default.\n";
             exit(0);
         }
-        read_parameters_from_script(*in);
-        if (!params.filename_output.empty())
-            params.out = new ofstream(params.filename_output.c_str());
-        transformation mytransform(params.center_rectascension,
-                                   params.center_declination,
-                                   params.view_frame_width,
-                                   params.view_frame_height,
-                                   params.grad_per_cm);
 
+@ I must define all containers, but of course I only read those data structures
+that are actually used.
+
+@<Definition and filling of the containers@>=
         boundaries_list boundaries;
         dimensions_list dimensions;
         objects_list objects;
@@ -2487,18 +2565,12 @@ int main(int argc, char **argv) {
         read_nebulae(nebulae, dimensions);
         if (params.show_lines) read_constellation_lines(connections, stars);
 
-        read_objects_and_labels(*in, dimensions, objects, stars, nebulae,
-                                mytransform);
+@ Three calls here are not preceded by an |if| clause: |create_grid()| contains
+such tests of its own (because it's divided into subsections), and in
+|draw_nebulae()| and |draw_stars()| every single object is tested for
+visibility anyway.
 
-        OUT.setf(ios::fixed);  // otherwise \LaTeX\ gets confused
-        OUT.precision(3);
-        @<Create \LaTeX\ header@>@;
-        OUT << "\\psclip{\\psframe(0bp,0bp)("
-            << params.view_frame_width_in_bp()
-            << ',' << params.view_frame_height_in_bp() << ")}%\n";
-        OUT << "\\psframe*[linestyle=none,linecolor=bgcolor](0bp,0bp)("
-            << params.view_frame_width_in_bp() << "bp,"
-            << params.view_frame_height_in_bp() << "bp)%\n";
+@<Draw all celestial objects and labels@>=
         if (params.milkyway_visible) draw_milky_way(mytransform);
         create_grid(mytransform);
         if (params.show_boundaries)
@@ -2512,36 +2584,6 @@ int main(int argc, char **argv) {
             arrange_labels(objects);
             print_labels(objects);
         }
-        OUT << "\\endpsclip\n";
-        @<Create \LaTeX\ footer@>@;
-        if (input_file) delete in;
-        if (!params.filename_output.empty() && (params.create_eps
-                                                || params.create_pdf)) {
-            OUT.flush();
-            string commandline = string("latex ") + params.filename_output;
-            if (system(commandline.c_str()) == 0) {
-                string base_filename(params.filename_output);
-                if (base_filename.find('.') != string::npos)
-                    base_filename.erase(base_filename.find('.'));
-                commandline = string("dvips -o ") + base_filename + ".eps "
-                    + base_filename;
-                if (system(commandline.c_str()) == 0) {
-                    if (params.create_pdf) {
-                        commandline = string("ps2pdf ") +
-                            base_filename + ".eps";
-                        if (system(commandline.c_str()) != 0)
-                            throw string("ps2pdf call failed: ")+commandline;
-                    }
-                } else throw string("dvips call failed");
-            } else throw string("LaTeX call failed");
-        }
-    }
-    catch (string s) {
-        cerr << "pp3: " << s << '.' << endl;
-        exit(1);
-    }
-    return 0;
-}
 
 @ This is the preamble and the beginning of the resulting \LaTeX\ file.  Notice
 that all font specific commands here should be also used during the generation
@@ -2577,5 +2619,31 @@ of the label dimensions file.  I use the \.{geometry} package and a dvips
 
 @<Create \LaTeX\ footer@>=
     OUT << "\\hfill}}\\end{document}\n";
+
+@ Here I call \LaTeX, dvips, and/or {\mc PS}2\PDF/ in order to create the
+output the user wanted to have eventually in the input script.
+
+@<Create \EPS/ or \PDF/ file if requested@>=
+        if (!params.filename_output.empty() && (params.create_eps
+                                                || params.create_pdf)) {
+            OUT.flush();
+            string commandline = string("latex ") + params.filename_output;
+            if (system(commandline.c_str()) == 0) {
+                string base_filename(params.filename_output);
+                if (base_filename.find('.') != string::npos)
+                    base_filename.erase(base_filename.find('.'));
+                commandline = string("dvips -o ") + base_filename + ".eps "
+                    + base_filename;
+                if (system(commandline.c_str()) == 0) {
+                    if (params.create_pdf) {
+                        commandline = string("ps2pdf ") +
+                            base_filename + ".eps";
+                        if (system(commandline.c_str()) != 0)
+                            throw string("ps2pdf call failed: ")+commandline;
+                    }
+                } else throw string("dvips call failed");
+            } else throw string("LaTeX call failed");
+        }
+
 
 @* Index.
