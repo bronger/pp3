@@ -179,6 +179,7 @@ This manual exists as a
 @menu
 * What it is::                  Features of PP3.
 * What it is not::              Limitations of PP3.
+* Online resources::            Where to find PP3 on the Internet.
 * Successful use of PP3::       Things that have been done using PP3.
 @end menu
 
@@ -215,15 +216,48 @@ efficiency, too.)  So, the program itself is quite stinted, but its
 results are worth it!
 
 
+@node Online resources
+@section Online resources
+
+Further information about @PPTHREE{} and downloads on the Internet:
+
+@table @asis
+@item @uref{http://pp3.sourceforge.net}
+@PPTHREE{}'s homepage.
+
+@item @uref{http://sourceforge.net/projects/pp3}
+@PPTHREE{}'s project page with quick links to downloads.
+
+@item @uref{http://sourceforge.net/project/showfiles.php?group_id=71469,Download area}
+List of all downloadable files, also for older versions.
+
+@item @uref{http://sourceforge.net/tracker/?atid=531401&group_id=71469,Bug data base}
+Here you can see open bugs, make comments, and report new bugs that
+you've found.
+
+@item @uref{http://sourceforge.net/forum/?group_id=71469,Discussion forums}
+Ask questions about @PPTHREE{} here.
+
+@item @uref{http://sourceforge.net/tracker/?atid=531404&group_id=71469,Feature requests}
+Suggest new features and improvements here.
+@end table
+
+Please login when you use one of the services on Sourceforge.  It makes
+responding easier.
+
+
 @node Successful use of PP3
 @section Successful use of PP3
+
+@PPTHREE{} has been used in real life already and has proven its
+helpfulness.
 
 @unnumberedsubsec Wikipedia
 @cindex Wikipedia
 
-@PPTHREE{} has been used for the celestial maps of all 88 constellations
-on @uref{http://www.wikipedia.org,Wikipedia}, the free encyclopedia.
-Feel free to browse through a
+@PPTHREE{} has created the celestial maps of all 88 constellations on
+@uref{http://www.wikipedia.org,Wikipedia}, the free encyclopedia.  Feel
+free to browse through a
 @uref{http://wikipedia.org/w/wiki.phtml?title=List_of_constellations,list
 of all constellations}.
 
@@ -336,6 +370,7 @@ not difficult, and both programs may be useful for other purposes, too.
 @node Getting TeX
 @subsection Getting @TeX{}
 @cindex @TeX{}
+@cindex PSTricks
 
 @TeX{} is a mighty typesetter.  @PPTHREE{} calls @TeX{} in order to
 actually create the stellar map.  The result is a Postscript file.
@@ -344,7 +379,7 @@ There are two major @TeX{} variants for Windows, namely
 @uref{http://www.miktex.org,Mik@TeX{}} and
 @uref{http://www.tug.org/texlive/,@TeX{}@tie{}Live}.  Both are rather
 similar in their functionality, and both come with a nice installation
-tool.  Please assure that the @t{pstricks} package as part of @TeX{} is
+tool.  Please assure that the PSTricks package as part of @TeX{} is
 installed, however this is highly probable anyway.
 
 
@@ -754,7 +789,7 @@ want to be created.
 @cindex example input script
 
 The minimal @PPTHREE{} input script is -- well -- the empty file.  Then
-@PPTHREE{}'s default values create a dark blue star map of Orion.
+@PPTHREE{}'s default values create a dark blue star map of Orion:
 
 @image{orion,10cm,,Constellation map of Orion}
 
@@ -1930,14 +1965,23 @@ been taught the basics elsewhere.  On the other hand, the @LaTeX{}
 snippets that I will give in this chapter may be enough for most
 purposes.
 
+It is @emph{not} necessary to use the features described here, so it's
+still true that you needn't know about @LaTeX{} in order to use
+@PPTHREE{}.  However if you want to have full control, @LaTeX{}
+competence is unavoidable.
+
 @menu
 * LaTeX in labels::             Using LaTeX in labels.
 * LaTeX preamble::              Total style freedom with LaTeX.
+* LaTeX hooks::                 Changing label style globally.
 @end menu
 
 
 @node LaTeX in labels
 @section Using LaTeX in labels
+@cindex PSTricks
+@kwindex text
+@cindex labels with La@TeX{}
 
 You can use all @LaTeX{} macros in @PPTHREE{} labels that are allowed in
 horizontal boxes (like @samp{\mbox@{...@}}).  Additionally, you can use
@@ -1946,6 +1990,13 @@ package}.
 
 The most important pitfall is the backslash@tie{}@samp{\}, because when
 using quotes as string delimiters, you have to write is as `@code{\\}'.
+
+@cindex \small (La@TeX{})
+@cindex \hskip (La@TeX{})
+@cindex \psdots (PSTricks)
+@cindex dotstyle (PSTricks)
+@cindex dotangle (PSTricks)
+@kwindex towards
 
 Let's have a look at a more complex example:
 
@@ -1996,7 +2047,109 @@ on the celestial coordinates given after the `@code{at}' option.
 @cindex La@TeX{} preamble
 @cindex preamble, La@TeX{}
 
-@strong{To be done.}
+Providing a @LaTeX{} preamble is the most elegant, mighty, but also --
+if you know @LaTeX{} -- the easiest way to adjust the map layout
+according to your taste and needs.  There is a default preamble that
+defines the standard map layout.  This you can override in a user
+preamble as much as you want.
+
+@menu
+* Default preamble::            Hooks and fonts if you don't change
+                                  anything.
+* User preamble::               Applying your own hooks, fonts, and
+                                  other style.
+@end menu
+
+
+@node Default preamble
+@subsection Default preamble
+@cindex La@TeX{} preamble, default
+@cindex preamble, La@TeX{}, default
+
+By default, the @LaTeX{} document that @PPTHREE{} creates begins with
+
+@smallexample
+@r{01 @ @ }\documentclass[10pt]@{article@}
+@r{02 @ @ }
+@r{03 @ @ }\nofiles\usepackage[dvips]@{color@}
+@r{04 @ @ }\usepackage@{pstricks,pst-text@}
+@r{05 @ @ }\newcommand*@{\DP@}@{.@}
+@r{06 @ @ }\newcommand*@{\TicMark@}[1]@{#1@}
+@r{07 @ @ }\newcommand*@{\Label@}[1]@{#1@}
+@r{08 @ @ }\newcommand*@{\TextLabel@}[1]@{#1@}
+@r{09 @ @ }\newcommand*@{\FlexLabel@}[1]@{#1@}
+@r{10 @ @ }\newcommand*@{\Starname@}[1]@{#1@}
+@r{11 @ @ }\newcommand*@{\Messier@}[1]@{M\,#1@}
+@r{12 @ @ }\newcommand*@{\NGC@}[1]@{NGC\,#1@}
+@r{13 @ @ }\newcommand*@{\IC@}[1]@{IC\,#1@}
+@r{14 @ @ }
+@r{15 @ @ }\usepackage@{mathptmx@}
+@r{16 @ @ }\usepackage@{helvet@}
+@r{17 @ @ }\AtBeginDocument@{\sffamily@}
+@r{18 @ @ }
+@r{19 @ @ }@emph{[optional input of user provided file]}
+@end smallexample
+
+Let's skim through it line by line:
+
+@table @asis
+@item Line 1
+The @samp{10pt} in the first line defines the standard font size in
+points.  You can change that with the input script parameter
+
+@example
+set fontsize 12
+@end example
+
+@noindent
+which changes it to 12@dmn{pt}.  Possible values are @samp{10},
+@samp{11}, and @samp{12}.
+
+@item Lines 5--13
+All the so-called hooks of @PPTHREE{}, see @ref{LaTeX hooks}.
+
+@item Lines 15--17
+They set the standard font for @PPTHREE{}'s maps: The Helvetica for all
+the Latin letters, and the Symbol for all the Greek ones.
+
+@item Line 19
+Here your own preamble is included, if you have provided one.  You tell
+@PPTHREE{} where your own preamble is with the filename parameter
+`@code{latex_preamble}' in the input script, for example:
+
+@example
+filename latex_preamble mypreamble.tex
+@end example
+@end table
+
+
+@node User preamble
+@subsection User preamble
+
+The following is the original user @LaTeX{} preamble that was used for
+the Wikipedia Project, see @ref{Successful use of PP3}.
+
+@smallexample
+@r{01 @ @ }\usepackage@{amsmath@}
+@r{02 @ @ }\usepackage[T1]@{fontenc@}
+@r{03 @ @ }\IfFileExists@{eulervm.sty@}@{\usepackage@{eulervm@}@}@{@}
+@r{04 @ @ }\IfFileExists@{relsize.sty@}@{\usepackage@{relsize@}@}@{@}
+@r{05 @ @ }\IfFileExists@{t1pmy.fd@}@{
+@r{06 @ @ }  \renewcommand*@{\sfdefault@}@{pmy@}
+@r{07 @ @ }@}@{
+@r{08 @ @ }  \renewcommand*@{\sfdefault@}@{phv@}
+@r{09 @ @ }@}  
+@r{10 @ @ }\renewcommand@{\Messier@}[1]@{\footnotesize@{\scriptsize M@}\,#1@}
+@r{11 @ @ }\renewcommand@{\NGC@}[1]@{\footnotesize@{\scriptsize NGC@}\,#1@}
+@r{12 @ @ }\renewcommand@{\IC@}[1]@{\footnotesize@{\scriptsize IC@}\,#1@}
+@r{13 @ @ }\renewcommand@{\FlexLabel@}[1]@{@{\bfseries #1@}@}
+@r{14 @ @ }\renewcommand@{\TicMark@}[1]@{@{\mdseries\scriptsize\mathversion@{normal@} #1@}@}
+@r{15 @ @ }\AtBeginDocument@{\sffamily\boldmath@}
+@end smallexample
+
+
+@node LaTeX hooks
+@section LaTeX hooks
 
 
 @node Known problems
@@ -2524,4 +2677,6 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  ARI Cartes Ciel PSC CYG Steinicke Himmelsbeobachter AQL AQR
 @c  LocalWords:  Davenhall Leggett otnotesize Tuc FlexLabel Acrux Messier's cnf
 @c  LocalWords:  cindex kwindex byfmt ini flexes xref ifinfo ifnotinfo tics Cyg
-@c  LocalWords:  deffn deffnx ifhtml todo
+@c  LocalWords:  deffn deffnx ifhtml todo xmarksthespot miktex Cnc hskip psdots
+@c  LocalWords:  leo nofiles pst TicMark TextLabel AtBeginDocument mypreamble
+@c  LocalWords:  IfFileExists eulervm pmy phv riptsize mdseries
