@@ -6,10 +6,11 @@
 
 \newcommand{\PPthree}{\textsf{PP3}}
 \newcommand{\pstricks}{\texttt{\mbox{pstricks}}}
+\newcommand{\Flamsteed}[2]{#1{\tiny~}#2}
 
 \newif\ifppthreecolour\ppthreecolourtrue
 
-\hyphenation{Home-page}
+\hyphenation{Home-page Ka-ta-log-num-mer Ka-ta-log-num-mern}
 
 \lstdefinestyle{pp3}{morecomment=[l]\#,numbers=left,numberstyle=\sffamily\scriptsize,
   keywords={filename,set,color,switch,on,off,penalty,objects\_and\_labels,delete,
@@ -131,7 +132,7 @@ Die nächsten beiden Zeilen~\ref{lst:Hoehe} und \ref{lst:Breite} bestimmen die
 Größe der Abbildung.  Alle Längenangaben in \PPthree\ werden in Zentimetern
 gemessen.
 
-Die letzte Zeile schließlich ist der Maßstab.  Der Vorgabewert dafür ist
+Die letzte Zeile ist der Maßstab.  Der Vorgabewert dafür ist
 $3$~$\mathrm{grad}/\mathrm{cm}$.  Man darf das nicht mit einer globalen
 Skalierung verwechseln, die man später vielleicht im
 \verb|\includegraphics|-Befehl vornimmt, denn alle Schriftgrößen, Linienstärken
@@ -153,7 +154,7 @@ latex sco
 dvips sco
 \end{verbatim}
 aufrufen.  \ifppthreecolour Die sich ergebene Karte ist in
-Abbildung~\ref{fig:scorpion} zu sehen. \fi Allerdings sind insbesondere die
+Abbildung~\ref{fig:scorpion} zu sehen.\par \fi Allerdings sind insbesondere die
 Farben für einen tonersparenden Ausdruck auf einem gewöhnlichen
 Schwarz/""Weißdrucker ungünstig.  Also setzen wir sie auf Werte, die dafür
 besser geeignet sind:
@@ -162,10 +163,10 @@ switch colored_stars off
 color stars 0 0 0`\label{lst:Sternfarbe}'
 color nebulae 0 0 0     color background 1 1 1
 color grid 0.5 0.5 0.5  color ecliptic 0.3 0.3 0.3
-color constellation_lines 0.7 0.7 0.7  # Linien zwischen Sternen
+color constellation_lines 0.7 0.7 0.7  # `\slshape Linien zwischen Sternen'
 color labels 0 0 0
-color boundaries 0.8 0.8 0.8           # Sternbildgrenzen
-color highlighted_boundaries 0 0 0     # Selektiertes Sternbild, hier Skorpion
+color boundaries 0.8 0.8 0.8           # `\slshape Sternbildgrenzen'
+color highlighted_boundaries 0 0 0     # `\slshape Selektiertes Sternbild, hier Skorpion'
 color milky_way 0.5 0.5 0.5
 \end{lstlisting}
 
@@ -204,7 +205,7 @@ zum Einsatz.  Dafür liegen die Labels in \PPthree{}s Datendateien bereits in
 \LaTeX-Form vor (z.\,B. \verb|$\phi^{1}$|).
 
 Zusätzlich kann man Labels aber auch ausdrücklich im Eingabeskript setzen.  Als
-erstes muss man dazu das Eingabeskript durch den Befehl
+erstes muss man dazu das Eingabeskript durch das Schlüsselwort
 \lstinline|objects_and_labels| in zwei Teile teilen, in denen jeweils nur
 bestimmte Befehle erlaubt sind.  Der erste Teil ist der schon bekannte, während
 der zweite Teil Himmelsobjekte und ihre Labels löscht, ergänzt, verändert oder
@@ -212,11 +213,12 @@ repositioniert.  In diesen zweiten Teil kann man z.\,B. schreiben
 \begin{lstlisting}[numbers=none]
 set_label_text SCO 21 "\\footnotesize Antares"
 \end{lstlisting}
-Das gibt dem Stern 21\,Sco das Label "`Antares"', außerdem stellt es dafür auf
-eine kleinere Schrift um.  "`21\,Sco"' ist die astronomische Bezeichnung für
-Antares, "`21"' ist dabei die sogenannte Flamsteed-Nummer.  Für sehr südliche
-Sternbilder, die Herr Flamsteed von London aus nicht sehen konnte, und sehr
-kleine Sterne muss man die Henry-Draper-Katalognummern benutzen:
+Das gibt dem Stern \Flamsteed{21}{Sco} das Label "`Antares"', außerdem stellt
+es dafür auf eine kleinere Schrift um.  "`\Flamsteed{21}{Sco}"' ist die
+astronomische Bezeichnung für Antares, "`21"' ist dabei die sogenannte
+Flamsteed-Nummer.  Für sehr südliche Sternbilder, die Herr Flamsteed von London
+aus nicht sehen konnte, und sehr kleine Sterne muss man die
+Henry-Draper-Katalognummern benutzen:
 \begin{lstlisting}[numbers=none,{columns=[l]flexible}]
 set_label_text HD 128620 "\\footnotesize Toliman"        # Alpha Centauri
 \end{lstlisting}
@@ -308,7 +310,7 @@ die Labels etwas übersichtlicher.
 
 \medskip Gerade in der Nähe der Himmelspole kann es graphisch ansprechend sein,
 eine Bezeichnung nicht als ordinäre Box zu setzen, sondern als Schriftzug, der
-auf einem Deklinationskreis ($\hat=$~Breitenkreis) entlangläuft.  Das
+auf einem Deklinationskreis ($\mathrel{\hat=}$~Breitenkreis) entlangläuft.  Das
 \verb|pst-text|-Paket von \pstricks\ stellt einen solchen Spezialeffekt zur
 Verfügung.  Das Problem besteht also nur darin, das entsprechende Fragment des
 Deklinationskreises zu finden, insbesondere seine Länge zu bestimmen.
@@ -371,13 +373,13 @@ Objekte und Labels eingestellt werden: Zeile~\ref{lst:Regulus} zieht den Namen
 sonst gesetzt hätte.  Die Ekliptik nimmt bislang leider noch nicht an dem oben
 erwähnten Strafpunkte-Schema teil.
 
-Zeile~\ref{lst:AddLabels} fügt das Label von 24\,Leo
-($\equiv\mathrm{\mu\,Leo}$) ein, das \PPthree\ standardmäßig unterdrückt
-hätte, weil der Stern zu schwach ist.  Zeile~\ref{lst:Delete} schließlich macht
-das umgekehrte: Da 63\,Leo und HD\,97605 dem Schriftzug "`Wolf~359"' gefährlich
-nahe kämen, werden beide einfach aus der Karte gelöscht.  Alternativ könnte man
-mit dem \verb|\colorbox|-Befehl den Schriftzug auf einen weißen Hintergrund
-setzen.
+Zeile~\ref{lst:AddLabels} fügt das Label von \Flamsteed{24}{Leo}
+($\equiv\mathrm{\mu\,Leo}$) ein, das \PPthree\ standardmäßig unterdrückt hätte,
+weil der Stern zu schwach ist.  Zeile~\ref{lst:Delete} schließlich macht etwas
+dazu gegensätzliches: Da \Flamsteed{63}{Leo} und HD\,97605 dem Schriftzug
+"`Wolf~359"' gefährlich nahe kämen, werden beide einfach aus der Karte
+gelöscht.  Alternativ könnte man mit dem \verb|\colorbox|-Befehl den Schriftzug
+auf einen weißen Hintergrund setzen.
 
 \subsection{Koordinaten-Labels}
 
@@ -407,8 +409,8 @@ Zahl gerundete Deklination mit Vorzeichen, z.\,B.~"`$+20$"'.
 Es ist möglich, \PPthree\ eine \LaTeX-Präambel zu übergeben, die dann für die
 Erstellung der Karte benutzt wird.  So kann man eigene Stile realisieren und
 insbesondere für typographische Konsistenz zwischen den Karten und dem
-Dokument, in das die Karten eingefügt werden sollen, sorgen.  Die Datei
-\verb|wiki.pp3| des Löwe-Beispiels enthält z.\,B.
+Dokument, in das die Karten eingefügt werden sollen, sorgen.  Die bereits
+erwähnte Datei \verb|wiki.pp3| des Löwe-Beispiels enthält z.\,B.
 \begin{lstlisting}[numbers=none,escapeinside=`']
 filename latex_preamble `\texttt{wiki.tex}'
 \end{lstlisting}
@@ -430,7 +432,7 @@ aus:
 \end{lstlisting}
 Dabei sind \lstinline|\Messier|, \lstinline|\NGC|, \lstinline|\IC| und
 \lstinline|\FlexLabel| in den Zeilen~\ref{lst:Messier}--\ref{lst:FlexLabel}
-einige dieser Hooks.  Ihnen wird im
+einige jener Hooks.  Ihnen wird im
 Parameter~\lstinline[language={[LaTeX]TeX}]|#1| die Katalognummer bzw.\ der
 Label-Text übergeben.  In diesem Beispiel sorgen sie dafür, daß Nebel-Label
 klein und Katalogkürzel sogar noch etwas kleiner gedruckt werden.  Außerdem
@@ -444,7 +446,7 @@ definieren.
 
 \PPthree\ ist als Programm ein bunter Haufen aus vielen Einzelmodulen, allein
 schon, weil eine Sternkarte aus vielen Arten von Objekten besteht.  Ich möchte
-deshalb nur ein paar Dinge herausgreifen und etwas näher erläutern.
+ein paar Dinge herausgreifen und etwas näher erläutern.
 
 \subsection{Datenbanken}
 
@@ -453,8 +455,7 @@ als Textdateien vor.  Es werden vier externe Datenkompilationen benutzt: der
 BSC (Sterne), der NGC/IC (Nebel), der ``Catalogue of Constellation Boundary
 Data'' (Sternbildgrenzen) und das Himmels-Panorama~\cite{mellinger}
 (Milchstraße).  Bei den Sternbild-Linien habe ich die traditionellen Figuren,
-die mir am besten gefielen, benutzt; allerdings nur für die Sternbilder, die
-schon beim Wikipedia-Projekt (s.\,u.)\ abgearbeitet sind.
+die mir am besten gefielen, benutzt.
 
 Die Originaldaten sind nicht Teil der Distribution.  Für alle vier Fälle habe
 ich jeweils ein kleines Programm geschrieben, das die u.\,U. binären Daten in
@@ -475,9 +476,10 @@ selbst zu erzeugen.
 
 \PPthree\ ist so aufgebaut, dass verschiedene Projektionen unterstützt werden
 können, aber es ist de~facto nur eine einzige realisiert, nämlich die azimutale
-äquidistante Projektion.  Sie ist in der Astronomie sehr beliebt.  \PPthree\ 
-dreht das Zentrum jeder Karte in den Zenit dieser Projektion und kann daher
-immer die bestmögliche Abbildung bieten.
+äquidistante Projektion.  Sie stellt einen Kompromiss zwischen Winkel- und
+Flächentreue dar und ist in der Astronomie sehr beliebt.  \PPthree\ dreht das
+Zentrum jeder Karte in den Zenit der Projektion (Punkt geringster Verzerrung)
+und kann daher immer die bestmögliche Abbildung bieten.
 
 \subsection{Milchstraße}
 
@@ -532,7 +534,7 @@ geschrieben und daher sehr gut dokumentiert.  Eine umfassende Beschreibung des
 Formates der Eingabeskripte findet sich auf den ersten Seiten des ge\TeX{}ten
 Quellcodes, der als PDF auch von \PPthree{}s Homepage heruntergeladen werden
 kann.  Leider existiert keine eigenständige Bedienungsanleitung oder ein
-Tutorial, nur eine (fast vollständige) Referenzkarte.
+Tutorial, wenigstens aber eine (fast vollständige) Referenzkarte.
 
 \subsection{Wikipedia-Beispielskripte}
 
@@ -542,13 +544,13 @@ bei der Erstellung der Sternbild-Karten des
 Wikipedia-Projektes~\cite{wikipedia} zum Einsatz kamen.  \PPthree\ zeichnet für
 nahezu alle Sternkarten der englischen Ausgabe dieser Internet-Enzyklopädie
 verantwortlich, und hat sich dabei bewährt, auch, was den erforderlichen
-Arbeitseinsatz angeht: Fast alle Skripte sind eher noch einfacher als das
+Arbeitseinsatz angeht: Fast alle Skripte sind eher einfacher als das
 Löwe-Beispiel von vorhin.
 
 
 \section{Ausblick}
 
-Folgende Erweiterung von \PPthree\ könnten sich als nützlich erweisen:
+Folgende Erweiterungen von \PPthree\ könnten sich als nützlich erweisen:
 \begin{itemize}
 \item Ein Ephemeridenmodul, das die Darstellung von Sonne, Mond, Planeten etc.\ 
   in Abhängigkeit vom Datum zulässt.  (Es würde interessant, die Mondphasen mit
