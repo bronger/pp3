@@ -74,9 +74,9 @@ Benutzer seine gewünschten Parameter vorgibt, und erzeugt daraus eine
 \LaTeX-Datei, deren Bearbeitung die Sternkarte ergibt.
 
 Dabei macht \PPthree\ massiv vom \pstricks-Paket~\cite{vanzandt:pstricks}
-Gebrauch, das den besten Zugang zu \PS\ bietet und daher die beste Möglichkeit
-ist, anspruchsvolle Bilder innerhalb eines \LaTeX-Dokumentes zu zeichnen.  Es
-ist außerdem sehr leicht zu handhaben.
+Gebrauch, das den besten Zugang zu \PS\ bietet und daher erste Wahl ist, um
+anspruchsvolle Bilder innerhalb eines \LaTeX-Dokumentes zu zeichnen.  Es ist
+außerdem sehr leicht zu handhaben.
 
 Es handelt sich hier also um \emph{generiertes} \LaTeX.  Theoretisch könnte man
 hingehen und aus der \LaTeX-Datei die Sternkarte extrahieren -- sie ist eine
@@ -457,7 +457,8 @@ Die Originaldaten sind nicht Teil der Distribution.  Für alle vier Fälle habe
 ich jeweils ein kleines Programm geschrieben, das die u.\,U. binären Daten in
 Textdaten umwandelt, auf die relevanten Felder reduziert und eventuell noch in
 anderer Weise aufbereitet.  Diese ``Digesters'' sind im CVS-Baum verfügbar,
-aber nicht Teil der Distribution.
+aber nicht Teil der Distribution.  Es ist ziemlich einfach, \PPthree{}s Formate
+selbst zu erzeugen.
 
 %% Es war mir übrigens nicht immer möglich, die Lizenzbestimmungen für die
 %% Original-Datenbanken, die für \PPthree\ aufbereitet wurden, in Erfahrung zu
@@ -482,11 +483,11 @@ Himmelskoordinaten\penalty10000--""Grauwert-Paare umgewandelt wurde, und dann
 \PS-Kreise gezeichnet werden, die gerade so klein sind, dass garantiert keine
 Lücken entstehen.
 
-Das führt bei zu großer Vergrößerung oder sehr hochauf"|lösender Ausgabe
-natürlich zu Pixel-Effekten, aber für typische Ansichten ist das Ergebnis bei
-richtiger Farbwahl ausgesprochen hübsch, zumal wenn man bedenkt, dass es sich
-immer noch um Vektordaten handelt.  Als Seiteneffekt entstehen kleine Höfe um
-die sehr hellen Sterne, aber das ist eher ein nettes Feature als ein Bug.
+Das führt bei zu großer Vergrößerung oder hochauf"|lösender Ausgabe natürlich
+zu Pixel-Effekten, aber für typische Ansichten ist das Ergebnis bei richtiger
+Farbwahl ausgesprochen hübsch, zumal wenn man bedenkt, dass es sich immer noch
+um Vektordaten handelt.  Als Seiteneffekt entstehen kleine Höfe um die sehr
+hellen Sterne, aber das ist eher ein nettes Feature als ein Bug.
 
 Für starke Vergrößerungen kann man natürlich noch hochauf"|lösendere
 Milchstraßenbitmaps für \PPthree\ aufbereiten.  Allerdings lassen sich die für
@@ -536,8 +537,9 @@ Quasi als Entschädigung dafür sind viele Beispiele für Eingabeskripte Teil der
 Distribution von \PPthree.  Es handelt sich dabei um die Originalskripte, die
 bei der Erstellung der Sternbild-Karten des
 Wikipedia-Projektes~\cite{wikipedia} zum Einsatz kamen.  \PPthree\ zeichnet für
-fast alle Sternkarten dieser Internet-Enzyklopädie verantwortlich, und hat sich
-dabei bewährt, auch, was den erforderlichen Arbeitseinsatz angeht.
+nahezu alle Sternkarten der englischen Ausgabe dieser Internet-Enzyklopädie
+verantwortlich, und hat sich dabei bewährt, auch, was den erforderlichen
+Arbeitseinsatz angeht.
 
 
 \section{Ausblick}
@@ -554,9 +556,9 @@ Folgende Erweiterung von \PPthree\ könnten sich als nützlich erweisen:
 \item Intern \PPthree\ auch für sehr große Datenbanken fit machen; die
   Auf"|lösung der Milchstraße dynamisch so wählen, dass trotz extrem genauen
   Milchstraßendaten \TeX{}s Speicher nicht überläuft.
-\item Klären, ob
-  \texttt{pdftricks}\,\cite{radhakrishnan:pdftricks}${}+{}$pdf\TeX\ besser
-  geeignet ist, um PDFs zu erzeugen.
+%% \item Klären, ob
+%%   \texttt{pdftricks}\,\cite{radhakrishnan:pdftricks}${}+{}$pdf\TeX\ besser
+%%   geeignet ist, um PDFs zu erzeugen.
 \item Mit \verb|preview.sty|~\cite{kastrup:preview} kleine PBMs der Labels
   machen, um die Unterschneidungs"=Parameter auszumessen.  Das "`$\eta$"' in
   Abbildung~\ref{fig:leo} beispielsweise sollte ein wenig näher an den Stern
