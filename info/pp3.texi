@@ -153,6 +153,7 @@ flexibility of the LaTeX language.
 * Usage::                       How to invoke PP3.
 * Input scripts::               Telling PP3 what to do.
 * Keywords reference::          List of all PP3 keywords.
+* PP3 and LaTeX::               LaTeX in labels, and LaTeX preambles.
 * Known problems::              List of known shortcomings and bugs.
 * Data file formats::           Internal structure of the database files.
 * Index::                       General index.
@@ -715,11 +716,11 @@ download a neat reference card.  If you fold it twice it is a handy
 zigzag.
 
 @menu
-* General structure::           
-* Parameters::                  
-* Objects and Labels::          
-* LaTeX preamble::              
+* General structure::           The outline of a PP3 input script.
+* Parameters::                  First part:  parameters.
+* Objects and Labels::          Second part:  stars, nebulae and labels.
 @end menu
+
 
 @node General structure
 @section General structure
@@ -728,26 +729,26 @@ zigzag.
 @node Parameters
 @section Setting Parameters
 
-
-
 @menu
-* Essential parameters::        
-* Switching things on or off::  
-* Filtering stars and nebulae by their brightness::  
-* Colour::                      
-* Penalties::                   
-* Filenames::                   
+* Essential parameters::        What probably all your input scripts
+                                  will need.
+* Switching things on or off::  How to remove e.g. all nebulae easily.
+* Filtering by brightness::     Removing too faint objects.
+* Colour and line style and other layout::  Miscellaneous layout.
+* Penalties::                   Finetune the overlap avoiding
+                                  algorithm.
+* Filenames::                   Setting filenames for database files.
 @end menu
+
 
 @node Essential parameters
 @subsection Essential parameters
 
-
 @menu
-* View control::                
-* Output control::              
-* Implementing a global style::  
-* Highlighted constellation::   
+* View control::                Map view, scale, and size.
+* Output control::              Output filename and file format.
+* Implementing a global style::  Global PP3 file and LaTeX preamble.
+* Highlighted constellation::   Highlight one constellation.
 @end menu
 
 @node View control
@@ -773,6 +774,10 @@ set grad_per_cm
 
 @node Output control
 @subsubsection Setting what file should be created
+@kwindex switch
+@kwindex filename
+@kwindex output
+@kwindex pdf_output
 
 filename output
 
@@ -783,6 +788,9 @@ switch pdf_output
 
 @node Implementing a global style
 @subsubsection Implementing a global style
+@kwindex filename
+@kwindex include
+@kwindex latex_preamble
 
 filename include
 
@@ -791,12 +799,23 @@ filename latex_preamble
 
 @node Highlighted constellation
 @subsubsection The highlighted constellation
+@kwindex set
+@kwindex constellation
 
 set constellation
 
 
 @node Switching things on or off
 @subsection Switching things on or off
+@kwindex switch
+@kwindex milky_way
+@kwindex nebulae
+@kwindex grid
+@kwindex ecliptic
+@kwindex boundaries
+@kwindex constellation_lines
+@kwindex labels
+@kwindex colored_stars
 
 
 switch milky_way
@@ -816,8 +835,16 @@ switch labels
 switch colored_stars
 
 
-@node Filtering stars and nebulae by their brightness
+@node Filtering by brightness
 @subsection Filtering stars and nebulae by their brightness
+@kwindex set
+@kwindex faintest_cluster_magnitude
+@kwindex faintest_diffuse_nebula_magnitude
+@kwindex faintest_star_magnitude
+@kwindex faintest_star_with_label_magnitude
+@kwindex faintest_star_disk_magnitude
+@kwindex minimal_star_radius
+
 
 set faintest_cluster_magnitude
 
@@ -832,18 +859,33 @@ set faintest_star_disk_magnitude
 set minimal_star_radius
 
 
-@node Colour, line style, and other layout
+@node Colour and line style and other layout
 @subsection Colour, line style, and other layout
 
 @menu
-* Colours::                     
-* Line widths::                 
-* Line styles::                 
-* Other layout parameters::     
+* Colours::                     How to change colour.
+* Line widths::                 How to change line widths.
+* Line styles::                 How to make solid, dashed etc. lines.
+* Other layout parameters::     Miscellaneous stuff.
 @end menu
+
 
 @node Colours
 @subsubsection Colours
+@cindex colour
+@kwindex color
+@kwindex background
+@kwindex grid
+@kwindex ecliptic
+@kwindex boundaries
+@kwindex highlighted_boundaries
+@kwindex constellation_lines
+@kwindex milky_way
+@kwindex nebulae
+@kwindex stars
+@kwindex labels
+@kwindex text_labels
+
 
 color background
 
@@ -870,6 +912,14 @@ color text_labels
 
 @node Line widths
 @subsubsection Line widths
+@kwindex line_width
+@kwindex grid
+@kwindex ecliptic
+@kwindex boundaries
+@kwindex highlighted_boundaries
+@kwindex nebulae
+@kwindex constellation_lines
+
 
 line_width grid
 
@@ -886,6 +936,13 @@ line_width constellation_lines
 
 @node Line styles
 @subsubsection Line styles
+@kwindex line_style
+@kwindex grid
+@kwindex ecliptic
+@kwindex boundaries
+@kwindex highlighted_boundaries
+@kwindex nebulae
+@kwindex constellation_lines
 
 line_style grid
 
@@ -902,6 +959,13 @@ line_style constellation_lines
 
 @node Other layout parameters
 @subsubsection Other layout parameters
+@kwindex set
+@kwindex shortest_constellation_line
+@kwindex label_skip
+@kwindex minimal_nebula_radius
+@kwindex star_scaling
+@kwindex fontsize
+
 
 set shortest_constellation_line
 
@@ -916,6 +980,17 @@ set fontsize
 
 @node Penalties
 @subsection Penalties
+@kwindex penalties
+@kwindex stars
+@kwindex labels
+@kwindex nebulae
+@kwindex boundaries
+@kwindex boundaries_rim
+@kwindex constellation_lines
+@kwindex constellation_lines_rim
+@kwindex threshold
+@kwindex rim
+
 
 penalties stars
 
@@ -938,6 +1013,14 @@ penalties rim
 
 @node Filenames
 @subsection Filenames
+@kwindex filename
+@kwindex stars
+@kwindex nebulae
+@kwindex label_dimensions
+@kwindex constellation_lines
+@kwindex boundaries
+@kwindex milky_way
+
 
 filename stars
 
@@ -956,12 +1039,34 @@ filename milky_way
 @section Setting or deleting celestial objects and their labels
 
 
+@node PP3 and LaTeX
+@chapter PP3 and LaTeX
+
+We're entering now the phase of sophistication.  You learn here how to
+customise the graphical appearence of all text on your sky map almost
+arbitrarily.  You also learn how to achieve special text effects using
+the @LaTeX{} language.
+
+I can't explain @LaTeX{} itself though.  So I must assume that you've
+been taught the basics elsewhere.  On the other hand, the @LaTeX{}
+excerpts that I will give in this chapter may be enough for most
+purposes.
+
+@menu
+* LaTeX in labels::             Using LaTeX in labels.
+* LaTeX preamble::              Total style freedom with LaTeX.
+@end menu
+
+@node LaTeX in labels
+@section Using LaTeX in labels
+
+
 @node LaTeX preamble
 @section LaTeX preamble
 
 
 @node Known problems
-@chapter Known problems
+@appendix Known problems
 
 
 @node Data file formats
@@ -1367,4 +1472,5 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  circ Ori UMa Hyi Cauda NGC Celestia itemize var Mik GSView SVG
 @c  LocalWords:  exe env rpm dat pdf Corel pxref asis BSC IIICa IVpMnHg eps
 @c  LocalWords:  ARI Cartes Ciel PSC CYG Steinicke Himmelsbeobachter AQL AQR
-@c  LocalWords:  Davenhall Leggett otnotesize Tuc FlexLabel Acrux
+@c  LocalWords:  Davenhall Leggett otnotesize Tuc FlexLabel Acrux Messier's
+@c  LocalWords:  cindex kwindex
