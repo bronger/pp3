@@ -15,7 +15,6 @@ s/\"\\\\footnotesize\\\\itshape Coalsack\"/\"\\\\footnotesize\\\\itshape Kohlens
 s/\\parbox[t]{1.8cm}{Serpens\\\\Caput}/\\parbox[t]{1.8cm}{Kopf der\\\\Schlange}/
 s/\\parbox[t]{2cm}{Ser\\\\Cauda}/\\parbox[t]{2cm}{Schw.\\\\Schlange}/
 s/\"\\\\small Crux\"/\"\\\\small Kreuz\"/
-s/\"\\\\small Wolf 359\\\\hskip0.3em\\\\psdots[dotstyle=+,dotangle=45](0,0)\"/\"\\\\small Wolf 359\\\\hskip0.3em\\\\psdots[dotstyle=+,dotangle=45](0,0)\"/
 s/\"\\\\smaller Corvus\"/\"\\\\smaller Rabe\"/
 s/\\vtop{\\hbox{Piscis}\\hbox{Austrinus}}/\\vtop{\\hbox{Südlicher}\\hbox{Fisch}}/
 s/\\vtop{\\hbox{Triangulum}\\hbox{Australe}}/\\vtop{\\hbox{Südliches}\\hbox{Dreieck}}/
@@ -27,7 +26,6 @@ s/Ara/Altar/
 s/Ari/Wid./
 s/Aries/Widder/
 s/Auriga/Fuhrmann/
-s/Bo\\\"{o}tes/Bärenhüter/
 s/Boo/Boo/
 s/Bootes/Bärenhüter/
 s/Boötes/Bärenhüter/
