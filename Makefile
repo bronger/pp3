@@ -38,7 +38,7 @@ distri:
 	mkdir $(DISTRINAME)
 	make pp3.cc
 	make pp3.ps
-	cp pp3.w pp3.cc pp3.ps $(DISTRINAME)
+	cp pp3.w pp3.cc fmax.ch pp3.ps $(DISTRINAME)
 	cp COPYING Makefile $(DISTRINAME)
 	cp stars.dat milkyway.dat nebulae.dat lines.dat boundaries.dat \
 	  $(DISTRINAME)
