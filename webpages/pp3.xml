@@ -8,7 +8,9 @@
 <!ENTITY PDF "<visual markup='vs'>PDF</visual>">
 <!ENTITY EPS "<visual markup='vs'>EPS</visual>">
 <!ENTITY DVI "<visual markup='vs'>DVI</visual>">
+<!ENTITY ZIP "<visual markup='vs'>ZIP</visual>">
 <!ENTITY XML "<visual markup='vs'>XML</visual>">
+<!ENTITY HTML "<visual markup='vs'>HTML</visual>">
 <!ENTITY tbook "<visual markup='sf'><visual
 markup='bf'>t</visual>book</visual>">
 <!ENTITY i.e. "<latex code='i.\,e.\@'>i.e.</latex>">
@@ -179,19 +181,15 @@ refid="vector-downloads">table</ref>.</p>
 
   <section>
     <heading>Documentation</heading>
-
+    
     <subsection>
-      <heading>Source code</heading>
-
-      <p skip="med">The only full documentation is the <url
-name="pp3.pdf">source code</url> itself.  Please don't be afraid – the program
-is written in <url
-name="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">&CWEB;</url>, so
-it's full of “human language&rdquo; explanations, and rather easy to read.  The
-source is structured so that all relevant information can be found on the first
-pages.  There one finds a short introduction with an example and references
-within the source code where to get further info.  If someone wants to
-contribute, contact me.</p>
+      <heading>Manual</heading>
+      
+      <p>&PP3;'s manual comes in three flavours: As a <url
+name="manual/">multiple-file &HTML;</url> (also as a <url
+name="pp3man.zip">&ZIP; file</url>), a <url name="manual/pp3.html">single file
+&HTML;</url>, and a <url name="manual/pp3.pdf">&PDF;</url>.  But it isn't
+finished completely yet.</p>
     </subsection>
 
     <subsection>
@@ -214,6 +212,20 @@ too.  <verb>:-)</verb></p>
 	of their source scripts are included in &PP3;'s distribution, together
 	with all associated files.</p>
     </subsection>
+
+    <subsection>
+      <heading>Source code</heading>
+
+      <p skip="med">The <url name="pp3.pdf">source code</url> itself is
+documented in detail.  Please don't be afraid – the program is written in <url
+name="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">&CWEB;</url>, so
+it's full of “human language&rdquo; explanations, and rather easy to read.  The
+source is structured so that all relevant information can be found on the first
+pages.  There one finds a short introduction with an example and references
+within the source code where to get further info.  If someone wants to
+contribute, contact me.</p>
+    </subsection>
+
   </section>
 
 
