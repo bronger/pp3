@@ -976,7 +976,7 @@ text "Virgo galaxy cluster" at 12.7 10
 @noindent
 This places the text `Virgo galaxy cluster' at the celestial coordinates
 12.7@dmn{h} rectascension and @math{+10^\circ} declination in blue
-colour.  @xref{Colours} for how to denote colours in @PPTHREE{}.
+colour.  @xref{Colours}, for how to denote colours in @PPTHREE{}.
 
 The keyword `@code{towards}'
 
