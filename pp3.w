@@ -44,15 +44,15 @@
 \font\sevenrm=pplr7t scaled 700
 \font\fiverm=pplr7t scaled 500
 
-\font\teni=zplmr7m % math italic    (zpplcm7m for Times, zplmr7m for Palatino)
+\font\teni=zplmr7m % math italic    (zptmcm7m for Times, zplmr7m for Palatino)
 \font\seveni=zplmr7m scaled 700
 \font\fivei=zplmr7m scaled 500
 
-\font\tensy=zplmr7y % math symbols  (zpplcm7y for Times, zplmr7y for Palatino)
+\font\tensy=zplmr7y % math symbols  (zptmcm7y for Times, zplmr7y for Palatino)
 \font\sevensy=zplmr7y scaled 700
 \font\fivesy=zplmr7y scaled 500
 
-\font\tenex=zplmr7v % math extension (zpplcm7v for Times, zplmr7v f. Palatino)
+\font\tenex=zplmr7v % math extension (zptmcm7v for Times, zplmr7v f. Palatino)
 
 \font\tenbf=pplb7t % boldface extended
 \font\sevenbf=pplb7t scaled 700
@@ -264,7 +264,7 @@ filename output test.tex        \# Here should it go
 objects\UL{}and\UL{}labels              \# Now for the second part
 \vskip\baselineskip
 delete M 18  NGC 6590  NGC 6634 ;  \# Delete superfluous
-reposition SCO 20 S             \# Force sig Sco to be labelled.
+reposition SCO 20 S ;           \# Force sig Sco to be labelled.
 text "\BS\BS{}Huge Sco" at 16.2 -41.5 color 0 0 0 towards NW ;
 }
 
@@ -350,6 +350,10 @@ directory.  You may say e.\,g.\ $$\hbox{\.{g++
 -DPP3DATA=\BS"/usr/share/pp3/\BS" -O2 -s pp3.cc -o pp3}}$$ then they are
 searched in \.{/usr/share/pp3/}.  If set, an environment variable called
 \.{PP3DATA} has highest priority though.
+
+\def\NULL{0}
+
+@s NULL TeX
 
 @c
 const char* pp3data_env_raw = getenv("PP3DATA");
@@ -1230,7 +1234,7 @@ semicolon is necessary.
             script >> position >> semicolon;
             if (semicolon != ";") 
                 throw string("Expected \";\" after \"reposition\" command");
-            @<Map a wind rose |position| to an |angle| in degrees@>@;
+            @<Map a wind rose |position| to an |angle|@>@;
             if (current_object) {
                 current_object->label_angle = angle;
                 current_object->with_label = visible;
@@ -1238,7 +1242,7 @@ semicolon is necessary.
             }
         }
 
-@ @<Map a wind rose |position| to an |angle| in degrees@>=
+@ @<Map a wind rose |position| to an |angle|@>=
             if (position == "E") angle = 0;
             else if (position =="NE") angle = 1;
             else if (position =="N") angle = 2;
@@ -1368,7 +1372,7 @@ if (opcode == "text") {
         if (token == "color") script >> params.textlabelcolor;
         else if (token == "towards") {
             script >> position;
-            @<Map a wind rose |position| to an |angle| in degrees@>@;
+            @<Map a wind rose |position| to an |angle|@>@;
         }
         else if (token == "along") {
             script >> token;
@@ -3837,7 +3841,8 @@ output the user wanted to have eventually in the input script.
                 if (system(commandline.c_str()) == 0) {
                     if (params.create_pdf) {
                         commandline = string("ps2pdf ") +
-                            base_filename + ".eps";
+                            "-dCompatibility=1.3 " +
+                            base_filename + ".eps " + base_filename + ".pdf";
                         if (system(commandline.c_str()) != 0)
                             throw string("ps2pdf call failed: ") + commandline;
                     }
