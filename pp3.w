@@ -1,3 +1,5 @@
+%       $Id$    
+
 @q======================================================================@>
 @q    pp3.w - Star Catalog Chart Creator                                @>
 @q    Copyright 2003 Torsten Bronger <bronger@@users.sourceforge.net>   @>
@@ -177,6 +179,20 @@ uses PSTricks to draw a nice sky chart containing a certain region of the sky.
 #include <cstdlib>
 #include <cmath>
 #include <cfloat>
+
+@* Global parameters.
+
+@c
+struct parameters {
+    double center_rectascension, center_declination;
+    double view_frame_width, view_frame_height;
+    double grad_per_cm;
+    string constellation;
+    parameters() : center_rectascension(6.0), center_declination(0.0),
+		   view_frame_width(15.0), view_frame_height(15.0),
+		   grad_per_cm(4.0), constellation("ORI") { }
+} global_parameters;
+
 
 @* Celestial data structures.  First I describe the data structures that
 directly contain celestial objects such as stars and nebulae.  This is a little
@@ -715,7 +731,7 @@ boundary_atom::boundary_atom(point start, point end) : start(start), end(end) {
     radius *= M_PI_2;
 }
 
-@ The full algoritm that is used here is described in the |@<Definition of
+@ The full algorithm that is used here is described in the |@<Definition of
 |line_overlap()| for intersection of two lines@>|.  But I modify it slightly
 here:  For every intersection of a boundary line atom with a label rectangle
 edge I give half of the usual penalties.  The reason is very simple: I may be
@@ -733,17 +749,17 @@ Objects of this type are created in |@<Create a |boundary_atom| for the
 double boundary_atom::penalties_with(double& left,double& right,double& top,
                                      double& bottom) const {
     double penalties = 0.0;
-    const double half_area = (right - left) * (top - bottom) / 2.0;
+    const double half_quad = (top - bottom) * (top - bottom) / 2.0;
     double lambda;
     point r(end.x - start.x, end.y - start.y);
     if (line_overlap(left - start.x, r.x, start.y, r.y, bottom, top))
-        penalties += half_area;
+        penalties += half_quad;
     if (line_overlap(right - start.x, r.x, start.y, r.y, bottom, top))
-        penalties += half_area;
+        penalties += half_quad;
     if (line_overlap(top - start.y, r.y, start.x, r.x, left, right))
-        penalties += half_area;
+        penalties += half_quad;
     if (line_overlap(bottom - start.y, r.y, start.x, r.x, left, right))
-        penalties += half_area;
+        penalties += half_quad;
 
     return penalties;
 }
@@ -1027,19 +1043,19 @@ bool line_overlap(double numerator, double denominator,
 
 @ Now for the second part of the intersection algorithm.  Here I apply the
 preceding routing on all four label edges.  If there is an intersection
-(however it may look like), I return |whole_area| as the penalty value.
+(however it may look like), I return |quad| as the penalty value.
 
 @c
 double connection::penalties_with(double& left,double& right,double& top,
                                   double& bottom) const {
-    const double whole_area = (right - left) * (top - bottom);
+    const double quad = (top - bottom) * (top - bottom);
     double lambda;
     point r(end.x - start.x, end.y - start.y);
     if (line_overlap(left - start.x, r.x, start.y, r.y, bottom, top) ||@/
         line_overlap(right - start.x, r.x, start.y, r.y, bottom, top) ||@/
         line_overlap(top - start.y, r.y, start.x, r.x, left, right) ||@/
         line_overlap(bottom - start.y, r.y, start.x, r.x, left, right))
-        return whole_area;
+        return quad;
     return 0.0;
 }
 
@@ -1524,7 +1540,7 @@ In order to get crisp coners, the \.{liftpen} option is necessary.
 
 @c
 void draw_boundary_line(const boundary& b, const transformation& transform,
-                        objects_list& objects) {
+                        objects_list& objects, bool highlighted = false) {
     vector<point> current_line;
     for (int j = 0; j < b.points.size(); j++) {
         const double rectascension = b.points[j].x;
@@ -1542,7 +1558,8 @@ void draw_boundary_line(const boundary& b, const transformation& transform,
             cout << '(' << current_line[j].x << ','
                  << current_line[j].y << ')';
             if (j % 4 == 3) cout << "%\n";
-            @<Create a |boundary_atom| for the |objects|@>@;
+            if (highlighted)
+                @<Create a |boundary_atom| for the |objects|@>@;
         }
         cout << "\\relax\n";
     }
@@ -1586,11 +1603,62 @@ void draw_boundaries(const transformation& mytransform,
         out << "\\pscustom{";
         for (int i = 0; i < boundaries.size(); i++)
             if (boundaries[i].belongs_to_constellation(constellation))
-                draw_boundary_line(boundaries[i], mytransform, objects);
+                draw_boundary_line(boundaries[i], mytransform, objects, true);
         out << "}%\n";
     } else
         for (int i = 0; i < boundaries.size(); i++)
             draw_boundary_line(boundaries[i], mytransform, objects);
+}
+
+@* The Milky Way. If a proper data file is available, the milky way is a simple
+concept, however difficult to digest for \LaTeX\ due to many many Postscipt
+objects.  But for this program it's to simple that I can do the reading and
+drawng in one small routine and I even don't need any large data structures.
+
+The file is a text file as usual with the following structure, everything
+separated by whitespace: \medskip
+
+\item{1.} The maximal ($={}$equatorial) diagonal distance of two pixels in
+degrees (|double|).  This value is used as the |redius| for the milky way
+`pixels'.  Of course it must me the minimal radius for which there are no holes
+between the pixels.
+
+\item{2.} The pixels themselves with two |double|s and one |int| each:
+\itemitem{--} The rectascension in hours.
+\itemitem{--} The declination in degrees.
+\itemitem{--} The gray value of the pixel from $1$ to~$255$.  Zero is not used
+because zero-value pixels are not included into the data file anyway.
+
+@q'@>
+
+@c
+void draw_milky_way(const string filename, const transformation& mytransform,
+                    ostream& out = cout) {
+    ifstream file(filename.c_str());
+    double radius;
+    file >> radius;
+    double rectascension, declination, x, y;
+    int pixel;
+    vector<vector<point> > pixels(256);
+    const double cm_per_grad = 1.0 /
+        (mytransform.get_rad_per_cm() * 180.0 / M_PI);
+    radius *= cm_per_grad / 2.54 * 72.27;
+    file >> rectascension >> declination >> pixel;
+    while (file) {
+        if (mytransform.polar_projection(rectascension, declination, x,y))
+	    pixels[pixel].push_back(point(x,y));
+        file >> rectascension >> declination >> pixel;
+    }
+    for (int i = 1; i < pixels.size(); i++) {
+	if (pixels[i].size() == 0) continue;
+	out << "\\newhsbcolor{pixelcolor}{0.666667 "
+	    << "1 "
+	    << 0.4 + (double(i) / 255.0) * 0.6
+	    << "}\\psset{linecolor=pixelcolor}%\n";
+	for (int j = 0; j < pixels[i].size(); j++)
+            out << "\\qdisk(" << pixels[i][j].x << "," << pixels[i][j].y
+		<< "){" << radius << "pt}%\n";
+    }
 }
 
 @* Drawing of stars and nebulae.  Now for the two most important objects of the
@@ -1665,36 +1733,50 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
 I define four reference points at the vertexes of the ellipsis.  In the loop
 they are then transformed to screen coordinates and printed.
 
+Mathematically, the algoritm used here works only for infitesimally small
+nebulae on the equator.  The problem of ``finding a point that is $x$ degrees
+left from the current point with an angle of $\alpha$ degrees'' is actually
+much more difficult.  This is also the reason for this special case
+|nebulae[i]|\hskip0pt|@[.diameter_x@] == nebulae[i]|\hskip0pt|@[.diameter_y@]|.
+It shouldn't be necessary, and at the rim of the view frame it's even wrong due
+to the different circular scale.  FixMe: Improve this. (Via rotation matrices.)
+
 @<Draw nebula shape@>=
-    double rectascension[4], declination[4];
-    const double cos_angle
-        = cos(nebulae[i].horizontal_angle * M_PI/180.0);
-    const double sin_angle
-        = sin(nebulae[i].horizontal_angle * M_PI/180.0);
-    const double half_x = nebulae[i].diameter_x/2.0;
-    const double half_y = nebulae[i].diameter_y/2.0;
-    rectascension[0] = nebulae[i].rectascension -
-        half_x * cos_angle / 15.0;
-    declination[0] = nebulae[i].declination -
-        half_x * sin_angle;
-    rectascension[1] = nebulae[i].rectascension +
-        half_y * sin_angle / 15.0;
-    declination[1] = nebulae[i].declination -
-        half_y * cos_angle;
-    rectascension[2] = nebulae[i].rectascension +
-        half_x * cos_angle / 15.0;
-    declination[2] = nebulae[i].declination +
-        half_x * sin_angle;
-    rectascension[3] = nebulae[i].rectascension -
-        half_y * sin_angle / 15.0;
-    declination[3] = nebulae[i].declination +
-        half_y * cos_angle;
-    out << "\\psccurve";
-    for (int j = 0; j < 4; j++) {
-        double x,y;
-        mytransform.polar_projection(rectascension[j],
-                                     declination[j], x, y);
-        out << '(' << x << ',' << y << ')';
+    if (nebulae[i].diameter_x == nebulae[i].diameter_y)
+        out << "\\pscircle(" << nebulae[i].x << ',' << nebulae[i].y
+            << "){" << nebulae[i].radius << "}%\n";
+    else {
+        double rectascension[4], declination[4];
+        const double r_scale = 1.0 / cos(nebulae[i].declination * M_PI/180.0);
+        const double cos_angle
+            = cos(nebulae[i].horizontal_angle * M_PI/180.0);
+        const double sin_angle
+            = sin(nebulae[i].horizontal_angle * M_PI/180.0);
+        const double half_x = nebulae[i].diameter_x/2.0;
+        const double half_y = nebulae[i].diameter_y/2.0;
+        rectascension[0] = nebulae[i].rectascension -
+            half_x * cos_angle / 15.0 * r_scale;
+        declination[0] = nebulae[i].declination -
+            half_x * sin_angle;
+        rectascension[1] = nebulae[i].rectascension +
+            half_y * sin_angle / 15.0 * r_scale;
+        declination[1] = nebulae[i].declination -
+            half_y * cos_angle;
+        rectascension[2] = nebulae[i].rectascension +
+            half_x * cos_angle / 15.0 * r_scale;
+        declination[2] = nebulae[i].declination +
+            half_x * sin_angle;
+        rectascension[3] = nebulae[i].rectascension -
+            half_y * sin_angle / 15.0 * r_scale;
+        declination[3] = nebulae[i].declination +
+            half_y * cos_angle;
+        out << "\\psccurve";
+        for (int j = 0; j < 4; j++) {
+            double x,y;
+            mytransform.polar_projection(rectascension[j],
+                                         declination[j], x, y);
+            out << '(' << x << ',' << y << ')';
+        }
     }
     out << "\\relax\n";
 
@@ -1820,10 +1902,11 @@ drawing routines.
 
 @c
 int main() {
-    const double width = 15;
-    const double height = 15;
-    const double resolution = 3;
-    transformation mytransform(5.8, 0, width, height, resolution);
+    transformation mytransform(global_parameters.center_rectascension,
+			       global_parameters.center_declination,
+			       global_parameters.view_frame_width,
+			       global_parameters.view_frame_height,
+			       global_parameters.grad_per_cm);
 
     boundaries_list boundaries;
     dimensions_list dimensions;
@@ -1847,15 +1930,21 @@ int main() {
     cout.setf(ios::fixed);  // otherwise \LaTeX\ gets confused
     cout.precision(3);
     @<Create \LaTeX\ header@>@;
-    cout << "\\psframe*[linestyle=none,linecolor=darkblue](0,0)(" << width
-         << ',' << height << ")%\n";
+    cout << "\\psclip{\\psframe(0,0)(" << global_parameters.view_frame_width
+         << ',' << global_parameters.view_frame_height << ")}%\n";
+    cout << "\\psframe*[linestyle=none,linecolor=darkblue](0,0)("
+	 << global_parameters.view_frame_width
+         << ',' << global_parameters.view_frame_height << ")%\n";
+    draw_milky_way("milkyway.dat", mytransform);
     create_grid(mytransform);
-    draw_boundaries(mytransform, boundaries, objects, "ORI");
+    draw_boundaries(mytransform, boundaries, objects,
+		    global_parameters.constellation);
     draw_nebulae(mytransform, nebulae, objects);
     draw_stars(mytransform, stars, objects);
     draw_constellation_lines(mytransform, connections, stars, objects);
     arrange_labels(objects);
     print_labels(objects);
+    cout << "\\endpsclip\n";
     @<Create \LaTeX\ footer@>@;
     return 0;
 }
@@ -1874,11 +1963,12 @@ of the label dimensions file.  I use the \.{geometry} package and a dvips
          << "\\usepackage{pstricks}\n" @/
          << "\\newrgbcolor{darkblue}{0 0 0.4}\n" @/
          << "\\usepackage[nohead,nofoot,margin=0cm," @/
-         << "paperwidth=" << width + 0.2 << "cm," @/
-         << "paperheight=" << height + 0.2 << "cm" @/
+         << "paperwidth=" << global_parameters.view_frame_width + 0.2 << "cm," @/
+         << "paperheight=" << global_parameters.view_frame_height + 0.2 << "cm" @/
          << "]{geometry}\n" @/
          << "\n\\begin{document}\\boldmath\\parindent0pt\n" @/
-         << "\\special{papersize=" << width << "cm," << height << "cm}%\n" @/
+         << "\\special{papersize=" << global_parameters.view_frame_width
+         << "cm," << global_parameters.view_frame_height << "cm}%\n" @/
          << "\\vbox to \\vsize{\\vfill\\hbox{\\hspace{1mm}%\n";
 
 @ This is almost trivial.  I just close the box structure I began at the end of
