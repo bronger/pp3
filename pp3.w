@@ -342,6 +342,8 @@ actually drawn.  So memory usage could be reduced drastically.
 
 using namespace std;
 
+@<Missing math routines@>@;@#
+
 @* Global parameters and default values.  I have to break a strict \CPLUSPLUS/
 rule here: Never use \hbox{|#@t\hskip-\fontdimen2\mainfont@>define|}!  However
 I really found no alternative to~|OUT|.  No |const| construct worked, and if it
@@ -1589,7 +1591,7 @@ struct view_data {
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
     double scope() const { return radius + skip + 
-                               fmax(label_width,label_height) + 2.0*skip; }
+                               my_fmax(label_width,label_height) + 2.0*skip; }
     bool has_valid_coordinates() const { return x != DBL_MAX && y != DBL_MAX; }
     virtual double penalties_with(const double left, const double right,
                                   const double top, const double bottom,
@@ -1647,14 +1649,33 @@ double view_data::penalties_with(const double left, const double right,
     if (with_label == visible && label_arranged) {
         double left2, right2, top2, bottom2;
         get_label_boundaries(left2,right2,top2,bottom2);
-        const double overlap_left = fmax(left, left2);
-        const double overlap_right = fmin(right, right2);
-        const double overlap_top = fmin(top, top2);
-        const double overlap_bottom = fmax(bottom, bottom2);
-        const double overlap_x = fdim(overlap_right, overlap_left);
-        const double overlap_y = fdim(overlap_top, overlap_bottom);
+        const double overlap_left = my_fmax(left, left2);
+        const double overlap_right = my_fmin(right, right2);
+        const double overlap_top = my_fmin(top, top2);
+        const double overlap_bottom = my_fmax(bottom, bottom2);
+        const double overlap_x = my_fdim(overlap_right, overlap_left);
+        const double overlap_y = my_fdim(overlap_top, overlap_bottom);
         return overlap_x * overlap_y * params.penalties_label;
     } else return 0.0;
+}
+
+@ The book claims that the following routines (well, without the |my_|) are
+part of the {\mc GNU} \CEE/~Library version~2.2 beta.  However, I didn't find
+them.
+
+@q'@>
+
+@<Missing math routines@>=
+inline double my_fmin(const double& x, const double& y) {
+    return x < y ? x : y;
+}
+
+inline double my_fmax(const double& x, const double& y) {
+    return x > y ? x : y;
+}
+
+inline double my_fdim(const double& x, const double& y) {
+    return x > y ? x - y : 0.0;
 }
 
 
@@ -1706,12 +1727,12 @@ double star::penalties_with(const double left, const double right,
                                                  core);
     const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
         bottom2 = y - radius;
-    const double overlap_left = fmax(left, left2);
-    const double overlap_right = fmin(right, right2);
-    const double overlap_top = fmin(top, top2);
-    const double overlap_bottom = fmax(bottom, bottom2);
-    const double overlap_x = fdim(overlap_right, overlap_left);
-    const double overlap_y = fdim(overlap_top, overlap_bottom);
+    const double overlap_left = my_fmax(left, left2);
+    const double overlap_right = my_fmin(right, right2);
+    const double overlap_top = my_fmin(top, top2);
+    const double overlap_bottom = my_fmax(bottom, bottom2);
+    const double overlap_x = my_fdim(overlap_right, overlap_left);
+    const double overlap_y = my_fdim(overlap_top, overlap_bottom);
     penalties += overlap_x * overlap_y * params.penalties_star;
     return penalties;
 }
@@ -1826,12 +1847,12 @@ double nebula::penalties_with(const double left, const double right,
     double penalties = view_data::penalties_with(left, right, top, bottom, core);
     const double left2 = x - radius, right2 = x + radius, top2 = y + radius,
         bottom2 = y - radius;
-    const double overlap_left = fmax(left, left2);
-    const double overlap_right = fmin(right, right2);
-    const double overlap_top = fmin(top, top2);
-    const double overlap_bottom = fmax(bottom, bottom2);
-    const double overlap_x = fdim(overlap_right, overlap_left);
-    const double overlap_y = fdim(overlap_top, overlap_bottom);
+    const double overlap_left = my_fmax(left, left2);
+    const double overlap_right = my_fmin(right, right2);
+    const double overlap_top = my_fmin(top, top2);
+    const double overlap_bottom = my_fmax(bottom, bottom2);
+    const double overlap_x = my_fdim(overlap_right, overlap_left);
+    const double overlap_y = my_fdim(overlap_top, overlap_bottom);
     penalties += overlap_x * overlap_y * params.penalties_nebula;
     return penalties;
 }
@@ -2643,12 +2664,12 @@ rectangle, |left2|, |right2|, |top2|, |bottom2| the second.
 double calculate_overlap(double left1, double right1, double top1,
                          double bottom1, double left2, double right2,
                          double top2, double bottom2) {
-    const double overlap_left = fmax(left1, left2);
-    const double overlap_right = fmin(right1, right2);
-    const double overlap_top = fmin(top1, top2);
-    const double overlap_bottom = fmax(bottom1, bottom2);
-    const double overlap_x = fdim(overlap_right, overlap_left);
-    const double overlap_y = fdim(overlap_top, overlap_bottom);
+    const double overlap_left = my_fmax(left1, left2);
+    const double overlap_right = my_fmin(right1, right2);
+    const double overlap_top = my_fmin(top1, top2);
+    const double overlap_bottom = my_fmax(bottom1, bottom2);
+    const double overlap_x = my_fdim(overlap_right, overlap_left);
+    const double overlap_y = my_fdim(overlap_top, overlap_bottom);
     return overlap_x * overlap_y;
 }
 
