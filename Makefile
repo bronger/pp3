@@ -1,21 +1,35 @@
-.PHONY: distri distri-cripple distri-linux distri-win all doc
+.PHONY: distri distri-cripple rpm distri-win all doc
 
-DATADIR=\"/usr/local/share/pp3/\"
+# you may set this to empty in order to install the files
+# non-locally.
+LOCAL=local
 
+USRDIR=/usr/$(LOCAL)
+
+# directory for pp3 databases
+PP3DATA= $(USRDIR)/share/pp3
+
+# directory for pp3 documentation and examples
+DOCDIR= $(USRDIR)/share/doc/pp3
+
+# destination directory for executables
+DESTDIR= $(USRDIR)/bin
+
+CHANGEFILE=-
 
 all: pp3
 
 doc: pp3.pdf
 
 %.cc : %.w
-	$(CTANGLE) $* - $@
+	$(CTANGLE) $* $(CHANGEFILE) $@
 
 %.dvi : %.w
 	$(CWEAVE) $*
 	$(TEX) $*
 
 pp3: pp3.cc
-	$(CXX) -DDATADIR=$(DATADIR) pp3.cc -s -O2 -o pp3
+	$(CXX) -DPP3DATA=\"$(PP3DATA)\" pp3.cc -s -O2 -o pp3
 
 pp3.pdf: pp3.w
 	$(CWEAVE) pp3.w
@@ -30,16 +44,28 @@ pp3.ps.gz: pp3.dvi
 	make pp3.ps
 	gzip -f pp3.ps
 
-DISTRINAME= pp3-1.1
+install: all
+	install -d $(ROOT)$(DESTDIR)
+	install -s pp3 $(ROOT)$(DESTDIR)
+	install -d $(ROOT)$(PP3DATA)
+	cp -p *.dat $(ROOT)$(PP3DATA)
+	install -d $(ROOT)$(DOCDIR)
+	cp -p pp3.ps $(ROOT)$(DOCDIR)
+	install -d $(ROOT)$(DOCDIR)/examples
+	cp -p examples/* $(ROOT)$(DOCDIR)/examples
+
+DISTRINAME= pp3-1.2
+RPMNAME= $(DISTRINAME)-1tb.spec
 
 distri:
 	rm -f $(DISTRINAME).tar.bz2
 	rm -Rf $(DISTRINAME)
+	- rm pp3.cc
 	mkdir $(DISTRINAME)
 	make pp3.cc
 	make pp3.ps
 	cp pp3.w pp3.cc fmax.ch pp3.ps $(DISTRINAME)
-	cp COPYING Makefile $(DISTRINAME)
+	cp COPYING README Makefile $(DISTRINAME)
 	cp stars.dat milkyway.dat nebulae.dat lines.dat boundaries.dat \
 	  $(DISTRINAME)
 	mkdir $(DISTRINAME)/examples
@@ -55,15 +81,11 @@ distri-cripple:
 	  $(DISTRINAME)/nebulae.dat $(DISTRINAME)/Makefile
 	tar -czf $(DISTRINAME)-cripple.tar.gz $(DISTRINAME)
 
-distri-linux:
-	rm -f $(DISTRINAME)-linux.tar.bz2
-	rm -Rf $(DISTRINAME)-linux
-	make distri
-	mv $(DISTRINAME) $(DISTRINAME)-linux
-	make --directory=$(DISTRINAME)-linux DATADIR=\"\" all
-	rm $(DISTRINAME)-linux/pp3.cc $(DISTRINAME)-linux/pp3.w
-	tar -cf $(DISTRINAME)-linux.tar $(DISTRINAME)-linux
-	bzip2 $(DISTRINAME)-linux.tar
+rpm:
+	rm -f pp3.cc
+	make distri CHANGEFILE=fmax.ch 
+	cp $(DISTRINAME).tar.bz2 $(HOME)/packages/pp3/
+	rpm -ba $(RPMNAME)
 
 distri-win:
 	rm -f $(DISTRINAME)-win.zip
@@ -73,3 +95,4 @@ distri-win:
 	rm $(DISTRINAME)-win/pp3.cc $(DISTRINAME)-win/pp3.w
 	cp win-bin/* $(DISTRINAME)-win
 	zip -9 -r $(DISTRINAME)-win.zip $(DISTRINAME)-win/
+
