@@ -1,0 +1,31 @@
+# Hydra, unfinished!
+#
+
+filename output hydra.tex
+filename include wiki.pp3
+
+set constellation HYA
+set center_rectascension  11.15
+set center_declination   -15
+set box_height 5
+set box_width 9
+
+set grad_per_cm 10
+
+objects_and_labels
+
+reposition VIR 67 S ;
+reposition M 104 NE ;
+
+text Hydra at 10 -20 along declination towards S ;
+text Sextans at 10.3 -3 along declination towards S ;
+text Crater at 10.9 -7 along declination towards SW ;
+text "\\smaller Corvus" at 12.9 -12 along declination towards SE ;
+text Leo at 11 0 along declination towards W ;
+text Virgo at 13 -20 along declination towards W ;
+text Cnc at 9.3 7 along declination ;
+text Boo at 13.6 8 along declination towards NW ;
+text Centaurus at 11.2 -36 along declination towards SW ;
+text Antlia at 10.2 -36 along declination towards S ;
+text Pyxis at 9.1 -20 along declination towards SE ;
+text Pup at 8.4 -30 along declination towards E ;

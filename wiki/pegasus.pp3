@@ -1,0 +1,28 @@
+# Pegasus
+#
+
+filename output pegasus.tex
+filename include wiki.pp3
+
+set constellation PEG
+set center_rectascension 22.7
+set center_declination   20
+set box_height 8
+set box_width 9
+
+set grad_per_cm 6
+
+objects_and_labels
+
+text Pisces at 0 5 along declination towards S ;
+text Andromeda at 23.7 40 along declination towards S ;
+text Pegasus at 23.55 34.5 along declination towards SE ;
+text Cygnus at 21.9 40 along declination towards E ;
+text Vulpecula at 21.4 25.5 along declination towards E ;
+text Equ at 21.4 3 along declination ;
+text Aquarius at 21.7 -2 along declination towards SE ;
+text Del at 21.1 19.5 along declination towards SE ;
+text Lacerta at 22.9 36 along declination ;
+
+add_labels AND 37 ;
+delete_labels NGC 6995 ;

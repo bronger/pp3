@@ -1,0 +1,35 @@
+# Camelopardalis, the Giraffe
+#
+
+filename output camelopardalis.tex
+filename include wiki.pp3
+
+set constellation CAM
+set center_rectascension   5.5
+set center_declination    75
+set box_height 9.5
+set box_width 8.5
+
+set grad_per_cm 5
+
+set faintest_star_disk_magnitude 5
+
+objects_and_labels
+
+add NGC 1502  NGC 2403 ;
+
+add_labels HD 23401 ;  # gamma Cam
+add_labels CAM 9 ;     # alpha Cam
+add_labels CAM 10 ;    # beta Cam
+add_labels CAM 7 ;
+
+text Camelopardalis at 8 62.5 along declination ;
+text \FlexLabel{UMi} at 14.4 83 ;
+text UMa at 8.3 72 along declination towards SW ;
+text \FlexLabel{Draco} at 18.3 85 ;
+text Draco at 9.5 74 along declination towards NW ;
+text Auriga at 6.6 53.5 along declination towards SE ;
+text Perseus at 4.7 51 along declination ;
+text Lynx at 6.8 50.5 along declination towards NW ;
+text Cassiopeia at 3.5 77 along declination towards SE ;
+text Cepheus at 5 82 along declination ;
