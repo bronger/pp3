@@ -336,7 +336,9 @@ HD 78045  # alpha Vol
 HD 71878  # beta Vol
 HD 57623  # delta Vol
 HD 55865  # gamma2 Vol
-HD 63295 ; # zeta Vol
+HD 63295  # zeta Vol
+HD 68520  # epsilon Vol
+HD 71878 ; # beta Vol
 
 
 # Reticulum
@@ -466,3 +468,11 @@ HD 16555  # eta Hor
 HD 16920  # zeta Hor
 HD 19319  # mu Hor
 HD 18866 ; # beta Hor
+
+
+# Mensa
+
+HD 43834  # alpha Men
+HD 37763  # gamma Men
+HD 32440  # eta Men
+HD 33285 ; # beta Men
