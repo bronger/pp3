@@ -1,6 +1,6 @@
 .PHONY: webmanual
 
-COREIMAGES=orion swan swan1 swan2 pp3rose leo1
+COREIMAGES=orion swan swan1 swan2 pp3rose leo1 betelg
 
 %.pdf : %.pp3
 	rm -f labeldimens.dat
@@ -33,6 +33,7 @@ pp3.pdf: pp3.texi $(addsuffix .pdf,$(COREIMAGES)) title.pdf
 webmanual: pp3.pdf pp3.html pp3/index.html
 	rm -Rf manual
 	cp -rp pp3 manual
+	rm -f pp3man.zip
 	zip -9r pp3man.zip manual
 	scp -C pp3.html pp3.sf.net:/home/groups/p/pp/pp3/htdocs/manual/
 	scp pp3.pdf pp3.sf.net:/home/groups/p/pp/pp3/htdocs/manual/
