@@ -426,16 +426,19 @@ aus:
 \renewcommand{\NGC}[1]{\footnotesize{\smaller NGC}\,#1}`\label{lst:NGC}'
 \renewcommand{\IC}[1]{\footnotesize{\smaller IC}\,#1}`\label{lst:IC}'
 \renewcommand{\FlexLabel}[1]{{\bfseries #1}}`\label{lst:FlexLabel}'
-\renewcommand{\TicMark}[1]{{\mdseries\scriptsize\mathversion{normal} #1}}`\label{lst:TicMark}'
 \AtBeginDocument{\sffamily\boldmath}
 \end{lstlisting}
-Dabei sind \lstinline|\Messier|, \lstinline|\NGC|, \lstinline|\IC|,
-\lstinline|\FlexLabel| und \lstinline|\TicMark| in den
-Zeilen~\ref{lst:Messier}--\ref{lst:TicMark} die besagten Hooks.  Ihnen wird
-im Parameter~\lstinline[language={[LaTeX]TeX}]|#1| die Katalognummer übergeben.
-In diesem Beispiel sorgen sie dafür, daß Nebel-Label klein und Katalogkürzel
-sogar noch etwas kleiner gedruckt werden.  Außerdem werden alle Flexes
-halbfett.
+Dabei sind \lstinline|\Messier|, \lstinline|\NGC|, \lstinline|\IC| und
+\lstinline|\FlexLabel| in den Zeilen~\ref{lst:Messier}--\ref{lst:FlexLabel}
+einige dieser Hooks.  Ihnen wird im
+Parameter~\lstinline[language={[LaTeX]TeX}]|#1| die Katalognummer bzw.\ der
+Label-Text übergeben.  In diesem Beispiel sorgen sie dafür, daß Nebel-Label
+klein und Katalogkürzel sogar noch etwas kleiner gedruckt werden.  Außerdem
+werden alle Flexes halbfett.
+
+Im aktuellen \PPthree{} existieren fünf weitere fest eingebaute Hooks.  Da
+letztlich alles zu \LaTeX\ wird, kann man sich natürlich auch eigene Hooks
+definieren.
 
 \section{Interna}
 
@@ -553,9 +556,10 @@ Folgende Erweiterung von \PPthree\ könnten sich als nützlich erweisen:
 \item Die Ekliptik und die Gitterlinien in das Strafpunkte-Schema aufnehmen;
   sehr kleine Sterne, die sich mit benutzerdefinierten Labels überlappen,
   automatisch entfernen.
-\item Intern \PPthree\ auch für sehr große Datenbanken fit machen; die
-  Auf"|lösung der Milchstraße dynamisch so wählen, dass trotz extrem genauen
-  Milchstraßendaten \TeX{}s Speicher nicht überläuft.
+\item Intern \PPthree\ auch für sehr große Datenbanken fit machen.
+\item Die Auf"|lösung der Milchstraße dynamisch so wählen, dass trotz extrem
+  genauen Milchstraßendaten \TeX{}s Speicher nicht überläuft; eventuell auf
+  Konturdaten umstellen.
 %% \item Klären, ob
 %%   \texttt{pdftricks}\,\cite{radhakrishnan:pdftricks}${}+{}$pdf\TeX\ besser
 %%   geeignet ist, um PDFs zu erzeugen.
