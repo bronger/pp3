@@ -117,6 +117,7 @@
 \def\HSB/{{\mc HSB\spacefactor1000}}
 \def\EPS/{{\mc EPS\spacefactor1000}}
 \def\PDF/{{\mc PDF\spacefactor1000}}
+\def\RGB/{{\mc RGB\spacefactor1000}}
 \def\NGC/{{\mc NGC\spacefactor1000}}
 \def\IC/{{\mc IC\spacefactor1000}}
 \def\HD/{{\mc HD\spacefactor1000}}
@@ -326,7 +327,7 @@ struct parameters {
 
 @ It's very convenient to have a unified data structure for all colours that
 appear in this program.  Its internat structure is trivial, and I only support
-the RGB colour model.  The only complicated thing is |name| here.  I need it
+the \RGB/ colour model.  The only complicated thing is |name| here.  I need it
 because of PSTricks' way to activate colours: They must get names first.  I
 could get rid of it if I called all colours e.\,g.\ ``\.{tempcolor}'' or
 ``\.{dummycolor}'' and activated them at once.  But this is not necessary.
@@ -339,7 +340,13 @@ struct color {
         : red(red), green(green), blue(blue), name(name) { }
     color(double red, double green, double blue)
         : red(red), green(green), blue(blue), name() { }
+    void set(ostream& out);
 };
+
+void color::set(ostream& out) {
+    out << "\\newrgbcolor{dummycolor}{" << red << ' ' << green << ' ' << blue
+        << "}\\dummycolor\n  \\psset{linecolor=dummycolor}%\n";
+}
 
 @ Both output and input of |color|s is asymmetric: When I {\it read\/} them I
 assume that I do it from an input script.  Then it's a mere sequence of the
@@ -373,13 +380,13 @@ ostream& operator<<(ostream& out, const color& c) {
 @ This routine is hitherto only used when drawing the milky way.  It helps to
 find a colour between the two extremes |c1| and~|c2|.  The value of |x| is
 always between $0$ and~$1$ and denotes the point on the way between |c1| and
-|c1| in the RGB colour space where the new colour should be.  I interpolate
+|c1| in the \RGB/ colour space where the new colour should be.  I interpolate
 linearly.  In order to create a new colour object, I need a |new_name| for it,
 too.
 
 @c
 color interpolate_colors(const double x, const color c1, const color c2,
-                         const string new_name) {
+                         const string new_name = "") {
     if (x < 0.0 || x > 1.0) throw string("Invalid x for color interpolation");
     const double y = 1.0 - x;
     return color(new_name,
@@ -431,7 +438,7 @@ around the object, so it's important to include it into the sum.
 @q';@>
  
 @c
-typedef enum { hidden, visible, undecided } visibility;
+typedef enum { @!hidden, @!visible, @!undecided } visibility;
 
 struct view_data {
     visibility in_view;
@@ -442,10 +449,12 @@ struct view_data {
     bool label_arranged;
     string label;
     double label_width, label_height;
+    color label_color;
     int label_angle;
     view_data() : in_view(undecided), x(0.0), y(0.0), radius(0.0), skip(0.06),
                   with_label(undecided), label_arranged(false), label(), 
-                  label_width(0.24), label_height(0.36), label_angle(0) { }
+                  label_width(0.24), label_height(0.36),
+                  label_color(params.labelcolor), label_angle(0) { }
     void get_label_boundaries(double& left,double& right,double& top,
                               double& bottom) const;
     double scope() const { return radius + skip + label_width + label_height; }
@@ -645,8 +654,8 @@ program ``nebula'' denotes nebulae, galaxies, clusters, and other non-stellar
 objects.
 
 @c
-typedef enum { unknown, galaxy, emission, reflection, open_cluster,
-               globular_cluster } nebula_kind;
+typedef enum { @!unknown, @!galaxy, @!emission, @!reflection, @!open_cluster,
+               @!globular_cluster } nebula_kind;
 
 @ Since nebulae appear on the screen next to stars, and because they can have
 labels, they are descendants of |view_data|, too.
@@ -747,8 +756,7 @@ void read_nebulae(nebulae_list& nebulae) {
 It is from the Messier, the \NGC/, and the \IC/ catalogue the first in which
 the nebula appears, i.\,e.\ the first non-zero catalogue number.  The catalogue
 abbreviation itself is stored in |catalog|, whereas the |stringstream| |number|
-contains the number within that catalogue.  I need that distinction later in
-|@<Find dimensions of nebula label@>|, but here I just concatenate both to the
+contains the number within that catalogue.  I just concatenate both to the
 |label|.
 
 @<Create nebula label@>=
@@ -1462,114 +1470,15 @@ void arrange_labels(objects_list& objects, dimensions_list& dimensions) {
 #ifdef DEBUG
                 stringstream penalty;
                 penalty << " " << best_penalty;
-                objects[i]->label += penalty.str(); 
+                objects[i]->label += penalty.str();
+                cerr << "pp3DEBUG: Object " << objects[i]->label
+                     << " has penalty of " << penalty.str() << endl;
 #endif
             } else {
                 objects[i]->with_label = hidden;
                 objects[i]->label_arranged = true;
             }
         }
-    }
-}
-
-@
-@<Set label dimensions@>=
-for (int i = 0; i < objects.size(); i++) {
-    view_data* current_object = objects[i];
-    if (current_object->with_label == visible) {
-        
-        if (dimensions.find(current_object->label) == dimensions.end()) {
-            @<Create complete dimensions file@>@;
-            if (dimensions.find(current_object->label) == dimensions.end())
-                throw string("Update of label dimensions file failed: \"") +
-                    current_object->label + "\" not found";
-        } 
-        current_object->label_width = dimensions[current_object->label].width;
-        current_object->label_height =
-            dimensions[current_object->label].height;
-    }
-}
-
-@ For determining the width of the label for a nebula, I use the width of the
-prefix (e.\,g.\ ``\.{M\\,}''), and the width of one digit (zero is used in
-\.{pp3}).\footnote{$^1$}{Of course this only works if all digits in the used
-font have the same width.}  They are sumed up, after the width of the digit has
-been multiplied by the number of digits (or the length) of the contents of
-|number|.
-
-For determining the height, I use the height of the zero or the height of the
-prefix, whichever is greater.
-
-@<Helping routines for nebulae labels@>=/*
-        current_nebula.label_width = dimensions[catalogue].width +
-            number.str().length() * dimensions["0"].width;
-        current_nebula.label_height = fmax(dimensions[catalogue].height,
-	dimensions["0"].height);*/
-
-
-@
-
-FixMe: List-like and vector-like access are intertwined here.  This is ugly.
-Eventually all indexes in the label dimension files (and associated temporary
-files) should be deleted.
-
-@<Create complete dimensions file@>=
-{
-    list<string> required_names;
-    for (int i = 0; i < objects.size(); i++) {
-        string current_name = objects[i]->label;
-        if (!current_name.empty() &&
-            current_name.substr(0,3) != "M\\," &&
-            current_name.substr(0,5) != "NGC\\," &&
-            current_name.substr(0,4) != "IC\\,") 
-            required_names.push_back(objects[i]->label);
-    }
-    required_names.push_back("M\\,");
-    required_names.push_back("NGC\\,");
-    required_names.push_back("IC\\,");
-    required_names.push_back("0");
-    required_names.unique();
-
-    ofstream temp_file("pp3temp.tex");
-    create_preamble(temp_file);
-    temp_file << "\n\\begin{document}\n"
-              << "\\newwrite\\labelsfile\n"
-              << "\\catcode`\\_=11  % for underscores in the filename\n"
-              << "\\immediate\\openout\\labelsfile=pp3temp.dat\n"
-              << "\\catcode`\\_=8\n";
-    list<string>::const_iterator p = required_names.begin();
-    while (p != required_names.end())
-        temp_file << "\\setbox0 = \\vbox{\\hbox{"
-                  << *(p++)
-                  << "}\\hrule height 0pt}\n"
-                  << "  \\immediate\\write\\labelsfile{"
-                     "\\the\\wd0s \\the\\ht0s}\n";
-    temp_file << "\\immediate\\closeout\\labelsfile\n\\end{document}\n";
-    temp_file.close();
-    system("latex pp3temp");
-
-    ifstream raw_labels_file("pp3temp.dat");
-    ofstream cooked_labels_file("labeldimens.dat");
-    cooked_labels_file.setf(ios::fixed);
-    cooked_labels_file.precision(5);
-    p = required_names.begin();
-    while (p != required_names.end()) {
-        string current_width, current_height;
-        string current_name;
-        current_name = *(p++);
-        raw_labels_file >> current_width >> current_height;
-        current_width.substr(0,current_width.length() - 3);
-        current_height.substr(0,current_height.length() - 3);
-        dimensions[current_name].name = current_name;
-        dimensions[current_name].width = strtod(current_width.c_str(), 0)
-            / 72.27 * 2.54;
-        dimensions[current_name].height = strtod(current_height.c_str(), 0)
-            / 72.27 * 2.54;
-        cooked_labels_file << current_name << '\n'
-                           << dimensions[current_name].width
-                           << ' '
-                           << dimensions[current_name].height
-                           << '\n';
     }
 }
 
@@ -1609,29 +1518,25 @@ origin (bottom left of the view frame) intact.
 
 @c
 void print_labels(const objects_list& objects) {
-    OUT << "\\labelcolor\n";
     for (int i = 0; i < objects.size(); i++)
         if (objects[i]->in_view == visible && objects[i]->with_label == visible
             && objects[i]->label_arranged) {
-            const double angle = M_PI_4 * double(objects[i]->label_angle);
-            const double label_distance = objects[i]->radius + objects[i]->skip;
-            double x = objects[i]->x + label_distance * cos(angle);
-            double y = objects[i]->y + label_distance * sin(angle);
+            double left, right, top, bottom;
+            objects[i]->get_label_boundaries(left,right,top,bottom);
+            if (left < 0.0 || bottom < 0.0 || right > params.view_frame_width
+                || top > params.view_frame_height) continue;
 
-            switch (objects[i]->label_angle) {
-            case 2: case 6: x -= objects[i]->label_width / 2.0; break;
-            case 3: case 4: case 5: x -= objects[i]->label_width; break;
-            }
-            switch (objects[i]->label_angle) {
-            case 0: case 4: y -= objects[i]->label_height / 2.0; break;
-            case 5: case 6: case 7: y -= objects[i]->label_height; break;
-            }
+            objects[i]->label_color.set(OUT);
             OUT << "\\hbox to 0pt{";
-            OUT << "\\hskip" << x << "cm";
+            OUT << "\\hskip" << left << "cm";
             OUT << "\\vbox to 0pt{\\vss\n  \\hbox{";
             OUT << objects[i]->label;
-            OUT << "}\\vskip" << y << "cm";
+            OUT << "}\\vskip" << bottom << "cm";
             OUT << "\\hrule height 0pt}\\hss}%\n";
+#ifdef DEBUG
+            OUT << "\\psframe[linewidth=0.3pt](" << left << ',' << bottom
+                << ")(" << right << ',' << top << ")%\n";
+#endif
         }
 }
 
@@ -1653,6 +1558,257 @@ void read_label_dimensions(dimensions_list& dimensions) {
         dimensions[name].name = name;
         file >> dimensions[name].width >> dimensions[name].height;
         getline(file,dummy);  // Read the |'\n'|
+        getline(file,name);
+    }
+}
+
+@*1 Determining label dimensions.  Here I go through all |objects| and set the
+|label_width| and |label_height| which have been zero so far.  It may happen
+that a label is not found (possibly because |dimensions| is totally empty
+because no label dimensions file could be found).  In this case I call
+|recalculate_dimensions()| to get all labels recalculated via an extra \LaTeX\
+run.
+
+I have to distinguish whether the label is a nebula label or not.  Bot cases do
+similar things, but nevertheless different action is necessary.
+
+|dimensions_recalculated| is |true| if |recalculate_dimensions()| has been
+ called and thus one can assume that all needed labels are now available.  It
+ is merely to remove unnecessary tests and make the procedure faster.  If the
+ recalculation fails, I set it to |true| nevertheless because I want a failed
+ recalculation to be non-fatal and PP3 mustn't try to recalculate over and over
+ again.
+
+The |throw| command should never happen.  It means an internal error.
+
+@q'@>
+
+@<Set label dimensions@>=
+bool dimensions_recalculated = false;
+for (int i = 0; i < objects.size(); i++) {
+    view_data* current_object = objects[i];
+    if (current_object->with_label == visible) {
+        if (is_nebula_label(current_object->label)) {
+            if (!get_nebula_label_dimensions
+                (current_object->label,dimensions,dimensions_recalculated,
+                 current_object->label_width,
+                 current_object->label_height)) {
+                cerr << "pp3: Label not found: \"" << current_object->label 
+                     << '"' << endl;
+                if (!recalculate_dimensions(dimensions,objects)) {
+                    cerr << "pp3: LaTeX call for label creation failed";
+                    dimensions_recalculated = true;
+                }
+                if (!get_nebula_label_dimensions
+                    (current_object->label,dimensions,dimensions_recalculated,
+                     current_object->label_width,
+                     current_object->label_height))
+                    throw string("Update of label dimensions file failed: \"")
+                        + current_object->label + "\" not found";
+                dimensions_recalculated = true;
+            }
+        } else {
+            if (!dimensions_recalculated &&
+                dimensions.find(current_object->label) == dimensions.end()) {
+                if (!recalculate_dimensions(dimensions,objects)) {
+                    cerr << "pp3: LaTeX call for label creation failed";
+                    dimensions_recalculated = true;
+                }
+                if (dimensions.find(current_object->label) == dimensions.end())
+                    throw string("Update of label dimensions file failed: \"") +
+                        current_object->label + "\" not found";
+                dimensions_recalculated = true;
+            } 
+            current_object->label_width = dimensions[current_object->label].width;
+            current_object->label_height =
+                dimensions[current_object->label].height;
+        }
+    }
+}
+
+@ If this routine returns |true|, the given |label| matches the pattern of a
+nebula, this means it can be calculated rather than be a member of
+|dimensions|.  See |get_nebula_label_dimensions()| below for further details.
+
+As an alternative I could test the exact type of |*object[i]|.  However this
+way here is more robust and cleaner, although at first sight it doesn't seem
+so.  (For example I could have nebulae with trivial names.)
+
+@q'@>
+
+@<Helping routines for nebulae labels@>=
+bool is_nebula_label(string label) {
+    if (label.substr(0,3) != "M\\," && label.substr(0,5) != "NGC\\," &&
+        label.substr(0,4) != "IC\\,") return false;
+    for (int i = label.find("\\,") + 2; i < label.length(); i++)
+        if (!isdigit(label[i])) return false;
+    return true;
+}
+
+@ For determining the width of the label for a nebula, I use the width of the
+prefix (e.\,g.\ ``\.{M\\,}''), and the width of one digit (zero is used in
+\.{pp3}).\footnote{$^1$}{Of course this only works if all digits in the used
+font have the same width.}  They are sumed up, after the width of the digit has
+been multiplied by the number of digits (or the length) of the contents of
+|number|.
+
+For determining the height, I use the height of the zero or the height of the
+prefix, whichever is greater.
+
+If everything went fine, this routine return |true|.  If the |dimensions|
+doesn't contain enough entries for constructing the label, it does nothing and
+returns |false|.  Normally this means that the file with the label dimensions
+was non-existing and everything has to be recalculated.
+
+@q'@>
+
+@<Helping routines for nebulae labels@>=
+bool get_nebula_label_dimensions(string label,
+                                 dimensions_list& dimensions,
+                                 const bool dimensions_recalculated,
+                                 double& width, double& height) {
+    if (!is_nebula_label(label)) throw string("Internal error: Invalid nebula"
+                                              "label");
+    const string catalogue = label.substr(0,label.find("\\,") + 2);
+    if (!dimensions_recalculated)
+        if (dimensions.find(catalogue) == dimensions.end() ||
+            dimensions.find("0") == dimensions.end()) return false;
+    width = dimensions[catalogue].width +
+        (label.length() - catalogue.length()) * dimensions["0"].width;
+    height = fmax(dimensions[catalogue].height, dimensions["0"].height);
+    return true;
+}
+
+@ When PP3 is started it reads a file usually called \.{labeldimens.dat} in
+order to know width and height (in centimetres) of all labels.  This is vital
+for the penalty (i.\,e.\ overlap) calculations.  But it may be that a label
+that you want to include can't be found in this file, or you have deleted it
+because you've changed the \LaTeX\ preamble of the output (i.\,e.\ the fonts).
+In these cases PP3 automatically creates a new one.  It is then used in the
+following runs to save time.
+
+Here I do this.  First I store all label names (not only the missing!)\ in
+|required_names|.  I add the nebula label fragments |"M\\,"| etc.\ and |"0"| to
+it.  The full label of each nebula can later be constructed by combining them
+properly.  I assure that every label occurs only once.
+
+Then I create a |temp_file| which is a \LaTeX\ file that -- if sent through
+\LaTeX\ -- is able to create another temporary file called |raw_labels_file|.
+This is read and stored directly in |dimensions| (where it belongs to
+naturally).  At the same time a new, updated |cooked_labels_file| (aka
+\.{labeldimens.dat}) is created.
+
+\medskip
+By the way, I am forced to use {\it two\/} temporary files.  It is impossible
+to let the \LaTeX\ file create directly the file \.{labeldimens.dat}.  The
+reason are the label string:  They may contain characters that have a special
+meaning in \LaTeX, and I'm unable to avoid any tampering.
+
+@q'@>
+
+@<Helping routines for nebulae labels@>=
+bool recalculate_dimensions(dimensions_list& dimensions,
+                            const objects_list& objects)
+{
+    list<string> required_names;
+    for (int i = 0; i < objects.size(); i++) {
+        string current_name = objects[i]->label;
+        if (!current_name.empty() && !is_nebula_label(current_name)) 
+            required_names.push_back(objects[i]->label);
+    }
+    required_names.push_back("M\\,");
+    required_names.push_back("NGC\\,");
+    required_names.push_back("IC\\,");
+    required_names.push_back("0");
+    required_names.unique();
+
+    ofstream temp_file("pp3temp.tex");
+    create_preamble(temp_file);
+    temp_file << "\n\\begin{document}\n"
+              << "\\newwrite\\labelsfile\n"
+              << "\\catcode`\\_=11  % for underscores in the filename\n"
+              << "\\immediate\\openout\\labelsfile=pp3temp.dat\n"
+              << "\\catcode`\\_=8\n";
+    list<string>::const_iterator p = required_names.begin();
+    while (p != required_names.end())
+        temp_file << "\\setbox0 = \\vbox{\\hbox{"
+                  << *(p++)
+                  << "}\\hrule height 0pt}\n"
+                  << "  \\immediate\\write\\labelsfile{"
+                     "\\the\\wd0s \\the\\ht0s}\n";
+    temp_file << "\\immediate\\closeout\\labelsfile\n\\end{document}\n";
+    temp_file.close();
+    if (system("latex pp3temp") != 0) return false;
+
+    ifstream raw_labels_file("pp3temp.dat");
+    ofstream cooked_labels_file("labeldimens.dat");
+    cooked_labels_file.setf(ios::fixed);
+    cooked_labels_file.precision(5);
+    p = required_names.begin();
+    while (p != required_names.end()) {
+        string current_width, current_height;
+        string current_name;
+        current_name = *(p++);
+        raw_labels_file >> current_width >> current_height;
+        current_width.substr(0,current_width.length() - 3);
+        current_height.substr(0,current_height.length() - 3);
+        dimensions[current_name].name = current_name;
+        dimensions[current_name].width = strtod(current_width.c_str(), 0)
+            / 72.27 * 2.54;
+        dimensions[current_name].height = strtod(current_height.c_str(), 0)
+            / 72.27 * 2.54;
+        cooked_labels_file << current_name << '\n'
+                           << dimensions[current_name].width
+                           << ' '
+                           << dimensions[current_name].height
+                           << '\n';
+    }
+    return true;
+}
+
+@*1 User labels.  The user should be able to insert arbitaray text into the
+chart.  The code for this is provided here.
+
+@c
+struct text : public view_data {
+    string contents;
+    double rectascension, declination;
+    text() : contents(), rectascension(0.0), declination(0.0) { }
+    text(string t, double r, double d, color c, int angle);
+};
+
+text::text(string t, double r, double d, color c, int angle)
+    : contents(t), rectascension(r), declination(d) {
+    label = t;
+    with_label = visible;
+    label_angle = angle;
+    label_arranged = true;
+    label_color = c;
+    radius = skip = 0.0;
+}
+
+typedef list<text> texts_list;
+
+@ This routine is called |draw_|\dots\ due to its analogy to the other drawing
+function.  But curiously enough, I don't draw anything here, because labels are
+drawn in |print_labels()| and |text|s consists only of labels.  I only have to
+assure that I don't include invisible labels.
+
+@c
+void draw_text_labels(transformation& mytransform, texts_list& texts,
+                      objects_list& objects) {
+    texts_list::iterator p = texts.begin();
+    while (p != texts.end()) {
+        double x,y;
+        if (mytransform.polar_projection(p->rectascension,
+                                         p->declination,
+                                         x,y)) {
+            p->in_view = visible;
+            p->x = x;
+            p->y = y;
+            objects.push_back(&(*p));
+        }
+        p++;
     }
 }
 
@@ -2012,9 +2168,8 @@ void draw_milky_way(const transformation& mytransform) {
     }
     for (int i = 1; i < pixels.size(); i++) {
         if (pixels[i].size() == 0) continue;
-        OUT << interpolate_colors(double(i) / 255.0, params.bgcolor,
-                                  params.milkywaycolor, "pixelcolor")
-            << "\\psset{linecolor=pixelcolor}%\n";
+        interpolate_colors(double(i) / 255.0, params.bgcolor,
+                           params.milkywaycolor).set(OUT);
         for (int j = 0; j < pixels[i].size(); j++)
             OUT << "\\qdisk(" << pixels[i][j].x << "," << pixels[i][j].y
                 << "){" << radius << "pt}%\n";
@@ -2072,6 +2227,7 @@ void draw_nebulae(const transformation& mytransform, nebulae_list& nebulae,
             if (mytransform.polar_projection(nebulae[i].rectascension,
                                              nebulae[i].declination,
                                              x,y)) {
+                nebulae[i].in_view = visible;
                 nebulae[i].x = x;
                 nebulae[i].y = y;
                 if (nebulae[i].horizontal_angle > 360.0)
@@ -2176,6 +2332,7 @@ void draw_stars(const transformation& mytransform, stars_list& stars,
             if (mytransform.polar_projection(stars[i].rectascension,
                                              stars[i].declination,
                                              x,y)) {
+                stars[i].in_view = visible;
                 stars[i].x = x;
                 stars[i].y = y;
                 stars[i].radius = star_magnification * 
@@ -2289,20 +2446,44 @@ bool read_boolean(istream& script) {
                       "in input script");
 }
 
-@ This one is sub-optimal, because it can only read strings that don't contain
-whitespace.  FixMe: It must be possible to use \.{"..."} and escaping
-sequences.  At least is handles the special case of an empty string that is
-represented by~\.{""}.
+@ You can give strings in a similar way as on a shell command line:  If it
+doesn't contain spaces, just input it.  In the other case you have to enclose
+it within \.{"..."}.  The same is necessary if it starts with a~\.{"}.  Within
+the double braces, backslashes and double braces have to be escaped with a
+backslash.  This is not necessary if you had a simple string.
+
+So you may write e.\,g.: \.{Leo}, \.{"Leo Minor"}, \.{\BS alpha}, and
+\.{"\LB\BS\BS sfseries Leo\RB"}.  An empty string can only be written as
+\.{""}.
 
 @q'@>
 
 @c
 string read_string(istream& script) {
+    const string UnexpectedEOS("Unexpected end of input script while reading a"
+			       " string parameter");
+    char c;
     string contents;
-    script >> contents;
-    if (!script) throw string("Unexpected end of input script while reading a"
-                              " string parameter");
-    if (contents == "\"\"") contents = "";
+    while (script.get(c)) if (!isspace(c)) break;
+    if (!script) throw UnexpectedEOS;
+    if (c != '"') {
+        script >> contents;
+        if (script) contents.insert(contents.begin(),c); else contents = c;
+    } else {
+        while (script.get(c)) {
+            if (c == '"') break;
+            if (c == '\\') {
+                if (!script.get(c))
+                    throw UnexpectedEOS;
+                switch (c) {
+                case '\\': case '"': contents += c; break;
+                default: throw string("Unknown escape sequence in string");
+                }
+            } else contents += c;
+        }
+        if (!script)
+            throw UnexpectedEOS;
+    }
     return contents;
 }
 
@@ -2419,11 +2600,15 @@ and ``\.{pdf\_output}''.  You can switch them ``\.{on}'' or ``\.{off}''.
 
 @ The most important filename is ``\.{output}''.  By default it's unset so that
 the output is sent to standard output.  With $$\hbox{\.{filename output
-orion.tex}}$$ the output is written to \.{orion.tex}.  The other filenames
+orion.tex}}$$ the output is written to \.{orion.tex}.  Most of the other filenames
 denote the data files.  Their file format is described at the functions that
 read them.  Their names are: ``\.{stars}'', ``\.{nebulae}'',
 ``\.{label\_dimensions}'', ``\.{constellation\_lines}'', ``\.{boundaries}'',
 and ``\.{milky\_way}''.
+
+``\.{latex\_preamble}'' is a file with a \LaTeX\ excerpt with a preamble
+fragment for the \LaTeX\ output.  See |@<|create_preamble()| for writing the
+\LaTeX\ preamble@>|.
 
 @.output@>
 @.stars@>
@@ -2432,6 +2617,7 @@ and ``\.{milky\_way}''.
 @.constellation\_lines@>
 @.boundaries@>
 @.milky\_way@>
+@.latex\_preamble@>
 
 @q'@>
 
@@ -2453,6 +2639,8 @@ and ``\.{milky\_way}''.
                 params.filename_boundaries = read_string(script);
             else if (object_name == "milky_way")
                 params.filename_milkyway = read_string(script);
+            else if (object_name == "latex_preamble")
+                params.filename_preamble = read_string(script);
             else throw string("Undefined \"filename\" construct"
                               " in input script");
         }
@@ -2608,6 +2796,7 @@ void read_objects_and_labels(istream& script,
                              const dimensions_list& dimensions,
                              objects_list& objects, stars_list& stars,
                              nebulae_list& nebulae,
+                             texts_list& texts,
                              const transformation& mytransform) {
     string opcode;
     script >> opcode;
@@ -2619,7 +2808,9 @@ void read_objects_and_labels(istream& script,
             getline(script,rest_of_line);
         } else 
             @<Label repositioning@>@;
-        else {  // multi-parameter command
+        else
+            @<Text labels@>@;
+        else {  // command with objects list
             index_list found_stars, found_nebulae;
             search_objects(script, ngc, ic, messier, henry_draper, found_stars,
                            found_nebulae);
@@ -2646,25 +2837,28 @@ there is no space for it and didn't print it in the first place.
 
 @<Label repositioning@>=
         if (opcode == "reposition") {
-            string new_position;
+            string position;
             view_data* current_object =
                 identify_object(script, ngc, ic, messier, henry_draper,
                                 stars, nebulae);
-            int new_angle;
-            script >> new_position;
-            if (new_position == "E") new_angle = 0;
-            else if (new_position =="NE") new_angle = 1;
-            else if (new_position =="N") new_angle = 2;
-            else if (new_position =="NW") new_angle = 3;
-            else if (new_position =="W") new_angle = 4;
-            else if (new_position =="SW") new_angle = 5;
-            else if (new_position =="S") new_angle = 6;
-            else if (new_position =="SE") new_angle = 7;
-            else throw string("Undefined position angle: ") + new_position;
-            current_object->label_angle = new_angle;
+            int angle;
+            script >> position;
+            @<Map a wind rose |position| to an |angle| in degrees@>@;
+            current_object->label_angle = angle;
             current_object->with_label = visible;
             current_object->label_arranged = true;
         }
+
+@ @<Map a wind rose |position| to an |angle| in degrees@>=
+            if (position == "E") angle = 0;
+            else if (position =="NE") angle = 1;
+            else if (position =="N") angle = 2;
+            else if (position =="NW") angle = 3;
+            else if (position =="W") angle = 4;
+            else if (position =="SW") angle = 5;
+            else if (position =="S") angle = 6;
+            else if (position =="SE") angle = 7;
+            else throw string("Undefined position angle: ") + position;
 
 @ With e.\,g.\ $$\hbox{\.{delete\_labels  M 35  M 42 ;}}$$ you delete the labels
 (not the nebulae themselves!)\ of M\,35 and M\,42.
@@ -2714,6 +2908,29 @@ then printed even if it lies outside the view frame (it may be clipped though).
                     nebulae[found_nebulae[i]].in_view = hidden;
             }
 
+@ This is the only way to add a text label.  The parameters are the text
+itself, rectascension, declination, \RGB/ colour, and the relative position
+(uppercase wind rose), followed by a semicolon.  For example,
+$$\hbox{\.{text Leo at 11 10 color 1 0 0 towards S ;}}$$ puts a red ``Leo''
+centered below the point $(11\,\hbox{h}, +10^\circ)$ in the Lion.  At the
+moment, all fields are mandatory.
+
+@<Text labels@>=
+            if (opcode == "text") {
+                string contents, op1, op2, op3, position, semicolon;
+                double rectascension, declination;
+                color textcolor(params.labelcolor);
+                contents = read_string(script);
+                script >> op1 >> rectascension >> declination >> op2
+                       >> textcolor >> op3 >> position >> semicolon;
+                if (!script || op1 != "at" || op2 != "color" ||
+                    op3 != "towards" || semicolon != ";")
+                    throw string("Invalid text label command");
+                int angle;
+                @<Map a wind rose |position| to an |angle| in degrees@>@;
+                texts.push_back(text(contents, rectascension, declination,
+                                     textcolor, angle));
+            }
 
 @* The main function.  This consists of six parts: \medskip
 
@@ -2747,8 +2964,8 @@ int main(int argc, char **argv) {
 
         @<Definition and filling of the containers@>@;
 
-        read_objects_and_labels(*in, dimensions, objects, stars, nebulae,
-                                mytransform);
+        read_objects_and_labels(*in, dimensions, objects, stars, nebulae, 
+                                texts, mytransform);
 
         OUT.setf(ios::fixed);  // otherwise \LaTeX\ gets confused
         OUT.precision(3);
@@ -2806,6 +3023,7 @@ that are actually used.
         stars_list stars;
         nebulae_list nebulae;
         connections_list connections;
+        texts_list texts;
 
         if (params.show_boundaries) read_constellation_boundaries(boundaries);
         read_label_dimensions(dimensions);
@@ -2826,6 +3044,7 @@ visibility anyway.
         if (params.show_boundaries)
             draw_boundaries(mytransform, boundaries, objects,
                             params.constellation);
+        draw_text_labels(mytransform, texts, objects);
         draw_nebulae(mytransform, nebulae, objects);
         draw_stars(mytransform, stars, objects);
         if (params.show_lines)
@@ -2843,7 +3062,8 @@ of the label dimensions file.  I use the \.{geometry} package and a dvips
 
 @<Create \LaTeX\ header@>=
     create_preamble(OUT);
-    OUT << "\\usepackage[dvips]{color}\n" @/
+    OUT << "\\nofiles\n" @/
+        << "\\usepackage[dvips]{color}\n" @/
         << "\\usepackage{pstricks}\n" @/
         << "\\usepackage[nohead,nofoot,margin=0cm," @/
         << "paperwidth=" << params.view_frame_width_in_bp() << "bp," @/
@@ -2858,19 +3078,22 @@ of the label dimensions file.  I use the \.{geometry} package and a dvips
         << "\\vbox to \\vsize{\\vfill\\hbox to \\hsize{%\n" @/
         << params.bgcolor << params.gridcolor << params.eclipticcolor
         << params.boundarycolor << params.hlboundarycolor << params.starcolor
-        << params.nebulacolor << params.labelcolor << params.clinecolor @/
-        << "\\boldmath\n";
+        << params.nebulacolor << params.clinecolor;
 
 @ If no preamble filename was given in the input script, a default preamble is
 used.  If a preamble filename was given, the file should contain only font
-specifying commands.
+specifying commands.  A possible preamble may be: \medskip
+
+{\parindent2em\baselineskip10.5pt\ninett\obeylines
+\BS usepackage\LB eulervm\RB 
+\BS usepackage[T1]\LB fontenc\RB 
+\BS renewcommand*\LB \BS rmdefault\RB \LB pmy\RB \par}
+
+@^preamble (\LaTeX)@>
 
 @<|create_preamble()| for writing the \LaTeX\ preamble@>=
 void create_preamble(ostream& out) {
-    out << "\\documentclass{article}\n\n" @/
-        << "\\usepackage{eulervm}\n" @/
-        << "\\usepackage[T1]{fontenc}\n" @/
-        << "\\renewcommand*{\\rmdefault}{pmy}\n";
+    out << "\\documentclass{article}\n\n";
     if (!params.filename_preamble.empty()) @/
         out << "\\input " << params.filename_preamble << '\n';
 }
