@@ -16,6 +16,8 @@ vulpecula
 
 all: $(addsuffix _constellation_map.png,$(CONSTELLATIONS))
 
+all-epses: $(addsuffix .eps,$(CONSTELLATIONS))
+
 %_constellation_map.png : %.eps
 	gimp --console-messages -i -d -b \
 	  '(wiki-convert-sky-chart "$<" "$(basename $@)" 64)' '(gimp-quit 0)'
