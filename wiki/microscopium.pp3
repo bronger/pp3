@@ -1,0 +1,30 @@
+# Microscopium
+#
+
+filename output microscopium.tex
+filename include wiki.pp3
+
+filename constellation_lines lines.dat
+
+set constellation MIC
+set center_rectascension  21.15
+set center_declination   -37
+set box_height 8
+set box_width 6.3
+
+set faintest_star_disk_magnitude 5.5
+
+set grad_per_cm 3
+
+objects_and_labels
+
+add_labels HD 198232  HD 197937  HD 203006  HD 202627
+           HD 199951 ;  # alpha, iota, theta1, epsilon, and gamma Mic
+
+text Microscopium at 20.5 -28 along declination towards SW ;
+text Indus at 20.5 -45.5 along declination towards SW ;
+text Grus at 21.5 -37 along declination towards SW ;
+text Capricornus at 21.4 -27 along declination ;
+text Sgr at 20.45 -44 along declination ;
+text Tel at 20.45 -45.5 along declination towards SE ;
+text "\\vtop{\\hbox{Piscis}\\hbox{Austrinus}}" at 21.5 -27 along declination towards SW ;

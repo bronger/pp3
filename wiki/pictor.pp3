@@ -1,0 +1,27 @@
+# Pictor
+#
+
+filename output pictor.tex
+filename include wiki.pp3
+
+set constellation PIC
+set center_rectascension  5.6
+set center_declination  -54
+set box_height 6.5
+set box_width 6.3
+
+set faintest_star_disk_magnitude 5
+
+
+objects_and_labels
+
+add_labels HD 39060  HD 39523 ;  # beta and gamma Pic
+
+text Pictor at 4.6 -47 along declination towards SW ;
+text Columba at 5.1 -42.5 along declination towards NW ;
+text Puppis at 6.1 -47 along declination towards W ;
+text Carina at 6.6 -57.5 along declination towards NW ;
+text Vol at 6.7 -64.5 along declination towards SW ;
+text Dorado at 4.7 -62 along declination towards W ;
+text Ret at 4.3 -57 along declination towards SE ;
+text Caelum at 4.9 -46 along declination ;

@@ -1,0 +1,28 @@
+# Pavo, the Peacock
+#
+
+filename output pavo.tex
+filename include wiki.pp3
+
+set constellation PAV
+set center_rectascension  19.5
+set center_declination   -67
+set box_height 6
+set box_width 9
+
+objects_and_labels
+
+add NGC 6752 ;
+
+add_labels HD 203608 ;  # gamma Pav
+add_labels HD 188228  HD 171759 ;  # epsilon & zeta Pav
+add_labels HD 173948 ;  # lambda Pav
+
+text Pavo at 21.4 -60 along declination towards SE ;
+text Telescopium at 18.3 -56 along declination towards NW ;
+text Ara at 18.1 -56 along declination ;
+text Apus at 18.1 -68 along declination towards SE ;
+text Octans at 18.4 -75.5 along declination towards SW ;
+text Indus at 21.5 -58.5 along declination towards N ;
+text TrA at 16.9 -64 along declination towards SE ;
+text Tuc at 22.2 -66.5 along declination towards NW ;
