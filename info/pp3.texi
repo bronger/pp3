@@ -48,12 +48,14 @@
 @c %**start of header
 @setchapternewpage odd
 @setfilename pp3.info
-@settitle PP3 @value{VERSION}
-@documentencoding ISO-8859-1
-@c %**end of header
 
 @set VERSION 1.3.2
 @set SHORTVERSION 132
+
+@settitle PP3 @value{VERSION}
+@documentencoding ISO-8859-1
+@documentlanguage en
+@c %**end of header
 
 @defindex kw
 @syncodeindex kw cp
@@ -74,22 +76,6 @@ L@kern-.36em%
 @ifnottex
 La@TeX{}@c
 @end ifnottex
-@end macro
-
-@macro keyword {name}
-@code{\name\}
-@end macro
-
-@macro beforerefheading {}
-@tex
-@penalty-6000@vskip5ex
-@end tex
-@end macro
-
-@macro afterrefheading {}
-@tex
-@vskip-8ex@leavevmode
-@end tex
 @end macro
 
 @macro s {}
@@ -292,6 +278,7 @@ Obviously you need only @emph{one} of these files.
 @menu
 * Windows::                     Installation on Windows.
 * Linux::                       Installation on Linux.
+* Increase TeX's memory::       If you want to see the Milky Way.
 @end menu
 
 @node Windows
@@ -419,6 +406,26 @@ paths in the @file{Makefile}.
 extension) in a special directory that is pre-compiled in the
 executable.  The Makefile assures that this is the correct one, but you
 can override that with the environment variable @env{PP3DATA}.
+
+
+@node Increase TeX's memory
+@section Increase @TeX{}'s memory
+
+There is exactly one object that need a lot of memory: the Milky Way.
+If you want to see the Milky Way on your maps, you probably have to set
+the main memory size (pool size) of your @TeX{} distribution to its
+maximal value.  This is very implementation specific.  With te@TeX{}
+(Linux) you have to find the file @file{texmf.cnf} and set
+`@code{main_memory.latex}' to 7500000.  Then call
+
+@example
+fmtutil --byfmt latex
+@end example
+
+With fp@TeX{}/@TeX{}@s{}Live (Windows) it's probably similar, however
+Mik@TeX{} (Windows too) is different.  Probably you have to use its
+Setup Wizard.  Have a look in the manual of your @TeX{} distribution for
+definitive information.
 
 
 @node Basic astronomical terms
@@ -638,6 +645,9 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 @menu
 * Minimal example::             The first four PP3 lines.
 * More bells and wistles::      How to make it look more sophisticated.
+* Parameters and commands::     
+* Text labels::                 
+* Using flexes::                Labels that are curved.
 @end menu
 
 
@@ -645,8 +655,16 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 @section Minimal example input script
 
 The minimal @PPTHREE{} input script is -- well -- the empty file.  Then
-@PPTHREE{}'s default values create a dark blue star map of Orion.  You
-can override these defaults step by step.  Let's do so: Write
+@PPTHREE{}'s default values create a dark blue star map of Orion:
+
+@image{orion,10cm}
+
+@c Image can be created with the following PP3 input script:
+@c
+@c filename output orion.tex
+@c switch pdf_output on
+
+You can override these defaults step by step.  Let's do so: Write
 
 @example
 # Cygnus, the Swan
@@ -708,6 +726,172 @@ declination which is the centre of the constellation Swan.
 @node More bells and wistles
 @section More bells and wistles
 
+Let's continue with our Swan example of the previous section.
+
+Normally the Milky Way is switched off, because it consumes a lot of
+memory, see @ref{Increase TeX's memory}.  However it looks rather nice,
+so let's switch it on:
+
+@example
+switch milky_way on
+@end example
+
+Maybe you want to use the map in a book that is supposed to be printed
+in black and white.  Then the current colour scheme is disadvantageous.
+The following lines redefine it:
+
+@smallexample
+color nebulae                 0    0    0
+color background              1    1    1
+color grid                    0.5  0.5  0.5
+color ecliptic                0.3  0.3  0.3
+color constellation_lines     0.7  0.7  0.7
+color labels                  0    0    0
+color boundaries              0.8  0.8  0.8
+color highlighted_boundaries  0    0    0
+color milky_way               0.5  0.5  0.5
+@end smallexample
+
+@noindent
+Colours are given as red--green--blue values, for forther information
+see @ref{Colours}.  With these redefinitions, all elements on the map
+are printed either in black, or in white, or in shades of grey.
+
+A speacial problem are stars.  With
+
+@example
+color stars 0 0 0
+@end example
+
+@noindent
+stars are printed in black colour, one could think.  But this is not
+always true.  By default, stars get their `real' colour according to
+their B@minus{}V brightness.  For example, Saiph in Orion is a little
+bit blue, while Antares in Scorpius is known to be red.  Therefore
+@PPTHREE{} ignores any `@code{color}' directive for stars, unless you
+also say
+
+@example
+switch colored_stars off
+@end example
+
+Last but not least you should change the @emph{highlighted
+constellation}.  By default, it's Orion.  But we want to highlight the
+Swan, so we say
+
+@example
+set constellation CYG
+@end example
+
+@noindent
+because ``Cyg'' is the astronomical abbreviation of the Swan (``Cygnus''
+in Latin).  Highlighting means that its borderline gets another colour.
+
+This is the map that results from all this (I removed the Milky Way from
+this figure in order to keep the @acronym{PDF} manual small):
+
+@image{swan,10cm}
+
+@c Image can be created with the following PP3 input script:
+@c
+@c filename output swan.tex
+@c switch colored_stars off
+@c color stars 0 0 0
+@c color nebulae 0 0 0
+@c color background 1 1 1
+@c color grid 0.5 0.5 0.5
+@c color ecliptic 0.3 0.3 0.3
+@c color constellation_lines 0.7 0.7 0.7
+@c color labels 0 0 0
+@c color boundaries 0.8 0.8 0.8
+@c color highlighted_boundaries 0 0 0
+@c color milky_way 0.5 0.5 0.5
+@c switch pdf_output on
+@c
+@c set center_rectascension  19.95
+@c set center_declination    40.8
+@c set constellation CYG
+
+
+@node Parameters and commands
+@section Parameters and Commands
+
+Every @PPTHREE{} file can contain @emph{parameters} and
+@emph{commands}.  So far, we've had parameters only.  Both types of
+keywords must be neatly separated in the input script.  First come the
+parameters, then the special keyword
+
+@example
+objects_and_labels
+@end example
+
+@noindent
+and then the commands.  The purpose of the commands is adding and
+deleting objects and their labels, to reposition the labels, and to add
+arbitrary text on the map.  Let's begin with that.
+
+
+@node Text labels
+@section Text labels
+
+I change the label for Deneb, the alpha star in the Swan.  At the
+moment, its label is a mere `@math{\alpha}'.  But Deneb has a real name,
+and with
+
+@example
+set_label_text CYG 50 Deneb
+@end example
+
+@noindent
+I change the label text to ``Deneb''.  This `@code{CYG 50}' is the
+astronomical name for Deneb, see @ref{Denoting stars}.
+
+You can use that also for changing the label for a nebula:
+
+@example
+set_label_text NGC 7000 "N. America Neb."
+@end example
+
+@noindent
+Please note that you have to enclose the label text in quotation marks
+if it contains spaces.
+
+Now we get (only the changed part printed):
+
+@image{swan1}
+
+@c Image can be created with the following PP3 input script:
+@c
+@c filename output swan1.tex
+@c switch milky_way off
+@c switch colored_stars off
+@c color stars 0 0 0
+@c color nebulae 0 0 0
+@c color background 1 1 1
+@c color grid 0.5 0.5 0.5
+@c color ecliptic 0.3 0.3 0.3
+@c color constellation_lines 0.7 0.7 0.7
+@c color labels 0 0 0
+@c color boundaries 0.8 0.8 0.8
+@c color highlighted_boundaries 0 0 0
+@c color milky_way 0.5 0.5 0.5
+@c switch pdf_output on
+@c
+@c set center_rectascension  21.1
+@c set center_declination    44
+@c set box_width 7
+@c set box_height 3.5
+@c set constellation CYG
+@c
+@c objects_and_labels
+@c
+@c set_label_text CYG 50 Deneb
+@c set_label_text NGC 7000 "N. America Neb."
+
+
+@node Using flexes
+@section Using flexes
+
 
 @node Keywords reference
 @chapter Keywords reference
@@ -720,20 +904,33 @@ handy zigzag.
 @menu
 * General structure::           The outline of a PP3 input script.
 * Parameters::                  First part:  parameters.
-* Objects and labels::          Second part:  stars, nebulae and labels.
+* Commands::                    Second part:  stars, nebulae and labels.
 @end menu
 
 
 @node General structure
 @section General structure
 
+The outline of a @PPTHREE{} input script is:
+
+@example
+# Some introductory comments,
+# i.e. what the file is about to do.
+
+@var{Section I: Parameters: Output format and style.}
+
+objects_and_labels
+
+@var{Section II: Commands: Delete/add/modify objects and/or labels}
+@end example
+
 
 @node Parameters
 @section Setting Parameters
 
-The keywords explained in this section are allowed only in the
-@emph{first} part of an input script, i.@s{}e.@: before the
-@code{objects_and_labels} command (if there is one).
+All keyword here are @emph{parameters}.  This means that they are
+allowed only in the @emph{first} part of an input script, i.@s{}e.@:
+before the @code{objects_and_labels} command (if there is one).
 
 @menu
 * Essential parameters::        What probably all your input scripts
@@ -891,31 +1088,54 @@ Default: on
 
 @deffn Parameter {set faintest_cluster_magnitude} magnitude
 @kwindex faintest_cluster_magnitude
+Don't print open star clusters that are fainter than @var{magnitude}.
+
+Default: 4.0
 @end deffn
 
 
 @deffn Parameter {set faintest_diffuse_nebula_magnitude} magnitude
 @kwindex faintest_diffuse_nebula_magnitude
+Don't print nebulae that are fainter than @var{magnitude}.  In this
+case, `nebulae' is meant in the narrower sense, i.@s{}e.@: no stellar
+clusters.
+
+Default: 8.0
 @end deffn
 
 
 @deffn Parameter {set faintest_star_magnitude} magnitude
 @kwindex faintest_star_magnitude
+Don't print stars that are fainter than @var{magnitude}.
+
+Default: 7.0
 @end deffn
 
 
 @deffn Parameter {set faintest_star_with_label_magnitude} magnitude
 @kwindex faintest_star_with_label_magnitude
+Only stars that have a brightness of at least @var{magnitude} get an
+automatically generated label.
+
+Default: 3.7
 @end deffn
 
 
 @deffn Parameter {set faintest_star_disk_magnitude} magnitude
 @kwindex faintest_star_disk_magnitude
+Only stars that have a brightness of at least @var{magnitude} will be
+printed as more than just dots.
+
+Default: 4.5
 @end deffn
 
 
 @deffn Parameter {set minimal_star_radius} radius
 @kwindex minimal_star_radius
+Set the @var{radius} (in centimetres) of the dots that are used for the
+faintest stars.
+
+Default: 0.015
 @end deffn
 
 
@@ -1176,16 +1396,48 @@ Default: @code{""} (empty)
 @kwindex nebulae
 @deffnx Parameter {penalties boundaries} penalties
 @kwindex boundaries
-@deffnx Parameter {penalties boundaries_rim} penalties
-@kwindex boundaries_rim
 @deffnx Parameter {penalties constellation_lines} penalties
 @kwindex constellation_lines
+Set the penalties for an overlap of a label with the respective object
+to @var{penalties}.
+
+Defaults: 1000 (all)
+@end deffn
+
+
+@deffn Parameter {penalties rim} penalties
+@kwindex rim
+Set the significance of an overlap with the label's rim relatively to
+the label's core to @var{penalties}.
+
+Note that the rim can never become more significant than the core,
+because the rim penalties add to the core penalties while calculating
+the core.
+
+Default: 1000
+@end deffn
+
+
+@deffn Parameter {penalties boundaries_rim} penalties
+@kwindex boundaries_rim
 @deffnx Parameter {penalties constellation_lines_rim} penalties
 @kwindex constellation_lines_rim
-@deffnx Parameter {penalties threshold} penalties
+Set the penalties for an overlap of the label's rim with the respective
+object to @var{penalties}.
+
+These two objects get their own rim penalties because approximation of a
+label with a line object is not so bad usually.
+
+Defaults: 1000 (all)
+@end deffn
+
+
+@deffn Parameter {penalties threshold} penalties
 @kwindex threshold
-@deffnx Parameter {penalties rim} penalties
-@kwindex rim
+If the penalties for a label exceed @var{penalties}, the label is
+supressed.
+
+Default: 1000
 @end deffn
 
 
@@ -1206,15 +1458,30 @@ Default: @code{""} (empty)
 @kwindex boundaries
 @deffnx Parameter {filename milky_way} filename
 @kwindex milky_way
+This lets @PPTHREE{} look for the respective data in the given file.
+The filenames must be full paths from the current directory.
+
+Defaults: @file{stars.dat} (stars), @file{nebulae.dat} (nebulae),
+@file{labeldims.dat} (label dimensions), @file{lines.dat} (constellation
+lines), @file{boundaries.dat} (boundaries), @file{milkway.dat} (Milky
+Way)
 @end deffn
 
 
 
-@node Objects and labels
+@node Commands
 @section Setting or deleting celestial objects and their labels
+
+All keyword here are @emph{commands}.
 
 @deffn Command objects_and_labels
 @kwindex objects_and_labels
+This keyword splits the input script in two parts.  The first part must
+contain @emph{parameters} only, whereas the second contains
+@emph{commands} only.
+
+This keyword must occur either once or never in a @PPTHREE{} input
+script.  If never, the whole script consists of parameters.
 @end deffn
 
 @menu
@@ -1228,6 +1495,9 @@ Default: @code{""} (empty)
 
 @deffn Command add objects @dots{} @code{;}
 @kwindex add
+Add the @var{objects} to the map, even if @PPTHREE{}'s implicit
+behaviour would have excluded them.  This is sensible for nebulae
+mostly.
 @end deffn
 
 
@@ -1433,7 +1703,7 @@ B2IV
 @end smallexample
 
 
-@subheading @PPTHREE{}'s star data origin
+@subheading PP3's star data origin
 
 It's the Bright Stars Catalogue (@acronym{BSC}) as distributed with the
 program @uref{http://www.stargazing.net/astropc/,Cartes du Ciel}.  It
@@ -1509,7 +1779,7 @@ cluster, and 5:@tie{}globular star cluster.
 7000 0 0 CYG 20.9806 44.5167 4 2 1.66667 720 2
 @end smallexample
 
-@subheading @PPTHREE{}'s nebulae data origin
+@subheading PP3's nebulae data origin
 
 It's the @acronym{NGC}/@acronym{IC} catalogues as compiled by
 @uref{http://www.ngcic.com/@/steinicke/,Wolfgang Steinicke}.
@@ -1558,7 +1828,7 @@ HD 108248  # alpha Cur
 HD 108903 ;  # gamma Cru
 @end smallexample
 
-@subheading @PPTHREE{}'s constellation lines origin
+@subheading PP3's constellation lines origin
 
 I created the lines after my fancy.  The @emph{Atlas f@"ur
 Himmelsbeobachter}@footnote{in German; @acronym{ISBN}@tie{}3440074889}
@@ -1614,7 +1884,7 @@ the adjacent constellation. It may distinguish between @code{SER1} and
   17.24970 -67.65515 17.21616 -67.66108 2 ARA APS
 @end smallexample
 
-@subheading @PPTHREE{}'s boundary data origin
+@subheading PP3's boundary data origin
 
 It's the @uref{ftp://cdsarc.u-strasbg.fr/cats/@/VI/49/,Catalogue of
 Constellation Boundary Data} by Davenhall and Leggett.  I had to fix
@@ -1667,7 +1937,7 @@ because zero-value pixels are not included into the data file anyway.
 @end smallexample
 
 
-@subheading @PPTHREE{}'s boundary data origin
+@subheading PP3's boundary data origin
 
 I used the
 @uref{http://home.arcor-online.de/axel.@/mellinger/,@emph{All-Sky Milky
