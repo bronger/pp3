@@ -411,21 +411,40 @@ can override that with the environment variable @env{PP3DATA}.
 @node Increase TeX's memory
 @section Increase @TeX{}'s memory
 
-There is exactly one object that need a lot of memory: the Milky Way.
-If you want to see the Milky Way on your maps, you probably have to set
-the main memory size (pool size) of your @TeX{} distribution to its
-maximal value.  This is very implementation specific.  With te@TeX{}
-(Linux) you have to find the file @file{texmf.cnf} and set
-`@code{main_memory.latex}' to 7500000.  Then call
+There is exactly one object that can need a lot of memory: the Milky
+Way.  Therefor it's switched off by default.  But if you want to see the
+Milky Way on your maps, you probably should set the main memory size of
+your @TeX{} distribution to its maximal value.  This is very
+implementation specific.  With te@TeX{} (Linux) you have to find the
+file @file{texmf.cnf} and set `@code{main_memory.latex}' to 7500000.
+Then call (as root)
 
 @example
 fmtutil --byfmt latex
 @end example
 
-With fp@TeX{}/@TeX{}@s{}Live (Windows) it's probably similar, however
-Mik@TeX{} (Windows too) is different.  Probably you have to use its
-Setup Wizard.  Have a look in the manual of your @TeX{} distribution for
-definitive information.
+@noindent
+With fp@TeX{}/@TeX{}@s{}Live (Windows) it's the same.
+
+Mik@TeX{} however (Windows too) is different.  Look for a directory
+called @file{localtexmf}.  Then create the file@footnote{It may be
+necessary to create the sub directories, too.}
+@file{localtexmf\miktex\config\miktex.ini} and write
+
+@example
+mem_max=7500000
+@end example
+
+@noindent
+in it.
+
+Alternatively (albeit not cleanly), look for an existing file called
+@file{miktex.ini} and change the line with @code{mem_max} to the above.
+
+@sp 1
+These are the most common @TeX{} variants.  For others please have a
+look in the manual of your @TeX{} distribution for definitive
+information.
 
 
 @node Basic astronomical terms

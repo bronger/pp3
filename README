@@ -46,12 +46,18 @@ pp3 leo.pp3
 The result should be a file leo.eps with the constellation of Lion.
 
     If you want to see the Milky Way on your maps, you probably have to set the
-    main memory size (pool size) of your TeX distribution to its maximal value.
-    This is very implementation specific.  With teTeX (Linux) you have to find
-    the file texmf.cnf and set main_memory.latex to 7500000.  Then call
-    "fmtutil --byfmt latex".  With fpTeX/TeXLive (Windows) it's probably
-    similar, however MikTeX (Windows too) is different.  Have a look in the
-    manual of your TeX distribution for definitive information.
+    main memory size of your TeX distribution to its maximal value.  This is
+    very implementation specific.  With teTeX (Linux) you have to find the file
+    texmf.cnf and set main_memory.latex to 7500000.  Then call "fmtutil --byfmt
+    latex".
+
+    With fpTeX/TeXLive (Windows) it's the same, however MikTeX (Windows too) is
+    different: Look for a directory called "localtexmf".  Then create the file
+    "localtexmf\miktex\config\miktex.ini" and write "mem_max=7500000" in it.
+
+    Alternatively (albeit not cleanly), look for an existing file called
+    miktex.ini and change the line with "mem_max" to the above.
+
 
 
 DOCUMENTATION
