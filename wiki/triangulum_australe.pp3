@@ -18,7 +18,7 @@ objects_and_labels
 
 add_labels HD 145544  HD 138538 ;  # delta and epsilon TrA
 
-text "\\vtop{\\hbox{Triangulum}\\hbox{Australe}}" at 16.95 -64 along declination towards SE ;
+text \vtop{\hbox{Triangulum}\hbox{Australe}} at 16.95 -64 along declination towards SE ;
 text Circinus at 14.85 -70 along declination ;
 text Apus at 16 -71 along declination towards S ;
 text Norma at 16.5 -59.5 along declination ;

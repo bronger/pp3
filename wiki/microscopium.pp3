@@ -25,4 +25,4 @@ text Grus at 21.5 -37 along declination towards SW ;
 text Capricornus at 21.4 -27 along declination ;
 text Sgr at 20.45 -44 along declination ;
 text Tel at 20.45 -45.5 along declination towards SE ;
-text "\\vtop{\\hbox{Piscis}\\hbox{Austrinus}}" at 21.5 -27 along declination towards SW ;
+text \vtop{\hbox{Piscis}\hbox{Austrinus}} at 21.5 -27 along declination towards SW ;

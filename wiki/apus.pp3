@@ -27,4 +27,4 @@ text Pavo at 19 -74 along declination towards N ;
 text Ara at 17.7 -67 along declination ;
 text \FlexLabel{Octans} at 20 -82 ;
 text Chamaeleon at 13.8 -80 along declination towards SE ;
-text "\\vtop{\\hbox{Triangulum}\\hbox{Australe}}" at 16.95 -64 along declination towards SE ;
+text \vtop{\hbox{Triangulum}\hbox{Australe}} at 16.95 -64 along declination towards SE ;

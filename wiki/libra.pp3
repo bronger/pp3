@@ -15,7 +15,7 @@ objects_and_labels
 
 add_labels LIB 38 ;
 
-text Scorpion at 15.85 -29 along declination towards NW ;
+text Scorpius at 15.85 -29 along declination towards NW ;
 text Libra at 14.5 -10 along declination towards SW ;
 text Virgo at 14.7 -7.5 along declination ;
 text Oph at 16.05 -7.5 along declination towards NW ;

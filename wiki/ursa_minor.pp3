@@ -18,6 +18,6 @@ reposition UMI 1 SE ;
 add_labels UMI 22  UMI 16  UMI 23  UMI 21 ;
 
 text "Ursa Minor" at 13.2 71 along declination towards SW ;
-text "Draco" at 15.8 65 along declination towards W ;
-text "Camelopardalis" at 14 83 along declination towards SE ;
-text "\\FlexLabel{Cepheus}" at 21 78.9 ;
+text Draco at 15.8 65 along declination towards W ;
+text Camelopardalis at 14 83 along declination towards SE ;
+text \FlexLabel{Cepheus} at 21 78.9 ;

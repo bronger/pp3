@@ -26,4 +26,4 @@ text Triangulum at 2.8 32 along declination ;
 
 add NGC 884  NGC 869 ;
 delete_labels NGC 884  NGC 869 ;
-text "h${}+\\chi$" at 2.33 56.5 color 0 0 1 towards S ;
+text h${}+\\chi$ at 2.33 56.5 color 0 0 1 towards S ;
