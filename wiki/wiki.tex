@@ -1,3 +1,4 @@
+\usepackage{amsmath}
 \usepackage[T1]{fontenc}
 \usepackage{eulervm}
 \IfFileExists{t1pmy.fd}{
@@ -9,5 +10,6 @@
 \renewcommand{\Messier}[1]{\footnotesize{\smaller M}\,#1}
 \renewcommand{\NGC}[1]{\footnotesize{\smaller NGC}\,#1}
 \renewcommand{\IC}[1]{\footnotesize{\smaller IC}\,#1}
-\renewcommand{\FlexLabel}[1]{\textbf{#1}}
+\renewcommand{\FlexLabel}[1]{{\bfseries #1}}
+\renewcommand{\TicMark}[1]{{\mdseries\scriptsize\mathversion{normal} #1}}
 \AtBeginDocument{\sffamily\boldmath}
