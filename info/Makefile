@@ -1,5 +1,9 @@
 .PHONY: webmanual
 
+INFODIR=/usr/share/info
+DOCDIR= /usr/share/doc/tbook
+PERMS= a+r,u+w
+
 COREIMAGES=orion swan swan1 swan2 pp3rose leo1 betelg
 
 %.pdf : %.pp3
@@ -29,6 +33,16 @@ pp3.info.gz: pp3.info
 
 pp3.pdf: pp3.texi $(addsuffix .pdf,$(COREIMAGES)) title.pdf
 	texi2pdf $<
+
+install: pp3.pdf pp3.html pp3.info.gz
+	install -d $(ROOT)$(INFODIR)
+	install --mode=$(PERMS) pp3.info.gz \
+	  $(addsuffix .png,$(COREIMAGES)) $(ROOT)$(INFODIR)
+	- install-info --info-file=$(ROOT)$(INFODIR)/pp3.info.gz \
+	  --dir-file=$(ROOT)$(INFODIR)/dir
+	install -d $(ROOT)$(DOCDIR)
+	install --mode=$(PERMS) pp3.pdf pp3.html \
+	  $(addsuffix .png,$(COREIMAGES)) $(ROOT)$(DOCDIR)
 
 webmanual: pp3.pdf pp3.html pp3/index.html
 	rm -Rf manual
