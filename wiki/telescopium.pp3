@@ -1,0 +1,26 @@
+# Telescopium
+#
+
+filename output telescopium.tex
+filename include wiki.pp3
+
+set constellation TEL
+set center_rectascension  19.3
+set center_declination   -52
+set box_height 5.5
+set box_width 6.3
+
+set faintest_star_disk_magnitude 5.5
+
+objects_and_labels
+
+add NGC 6752 ;
+
+add_labels HD 169767 ;  # zeta Tel
+
+text Telescopium at 18.3 -56 along declination towards NW ;
+text Pavo at 17.8 -57.5 along declination towards SW ;
+text Ara at 18.1 -56 along declination ;
+text Ind at 20.55 -56 along declination towards W ;
+text CrA at 19.2 -44.5 along declination ;
+text Sagittarius at 20 -44.5 along declination towards N ;

@@ -1,0 +1,28 @@
+# Corona Australis, the Southern Crown
+#
+
+filename output corona_australis.tex
+filename include wiki.pp3
+
+set constellation CRA
+set center_rectascension  18.6
+set center_declination   -42
+set box_height 5.5
+set box_width 6.3
+
+set grad_per_cm 3
+
+set faintest_star_disk_magnitude 5
+
+objects_and_labels
+
+add NGC 6541 ;
+
+add_labels HD 178253  HD 178345  HD 177474  HD 177873  HD 175813
+           HD 176638 ;  # alpha--zeta CrA
+
+text "Corona Australis" at 19.2 -44.5 along declination ;
+text Sagittarius at 19 -36 along declination towards N ;
+text Sco at 17.9 -44 along declination ;
+text Telescopium at 19.2 -46 along declination towards S ;
+text Ara at 18.1 -46 along declination towards SE ;
