@@ -303,9 +303,9 @@ package management program.
 download the \pdfURL{Mik\TeX\ distribution}{http://www.miktex.org} or get the
 \pdfURL{\TeX{}Live~{\mc CD}}{http://www.tug.org/texlive/}\spacefactor1000.  If
 you install
-\pdfURL{Ghostscript}{http://www.cs.wisc.edu/\TILDE/ghost/doc/AFPL/get704.htm},
+\pdfURL{Ghostscript}{http://www.cs.wisc.edu/\TILDE/ghost/doc/AFPL/get811.htm},
 notice that \pdfURL{{\mc
-GS}View}{http://www.cs.wisc.edu/\TILDE/ghost/gsview/get43.htm} is a very
+GS}View}{http://www.cs.wisc.edu/\TILDE/ghost/gsview/get45.htm} is a very
 sensible program, too.\par}
 
 @ Some flaws and bugs in this program are already known to its author.
@@ -876,7 +876,7 @@ certain regions of the sky, typically stellar constellations.
                 params.filename_include = read_string(script);
                 ifstream included_script(params.filename_include.c_str());
                 if (!included_script.good())
-	            cerr << "pp3: Warning: included file " 
+		    cerr << "pp3: Warning: included file " 
                          << params.filename_include
                          << " not found; ignored" << endl;
                 else read_parameters_from_script(included_script);
