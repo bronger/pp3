@@ -55,8 +55,8 @@
 @set VERSION 1.3.2
 @set SHORTVERSION 132
 
-@defindex el
-@syncodeindex el cp
+@defindex kw
+@syncodeindex kw cp
 
 @macro PPTHREE {}
 @acronym{PP3}
@@ -118,7 +118,7 @@ modify it under the terms of the @acronym{MIT} licence.  Please see the
 @title PP3
 @subtitle drawing beautiful celestial maps
 @subtitle version @value{VERSION}
-@author Torsten Bronger, RWTH Aachen
+@author Torsten Bronger
 @page
 @vskip 0pt plus 1filll
 @insertcopying
@@ -264,7 +264,7 @@ articles about constellations.  The maps were externally linked.
 @chapter Installation
 
 You can get the latest @PPTHREE{} file releases from
-@uref{http://sf.net/projects/pp3,@PPTHREE{}'s project page on
+@uref{http://@/sourceforge.net/projects/pp3,@PPTHREE{}'s project page on
 Sourceforge}.  The main @PPTHREE{} distribution comes as several files,
 namely
 
@@ -333,7 +333,7 @@ The best tool for dealing with Postscript files is
 @uref{http://www.cs.wisc.edu/@/~ghost/doc/AFPL/get811.htm,Ghostscript}.
 In particular, if you've installed Ghostscript, PP3 is able to generate
 PDF files for you.  It is wise (although not necessary) to install
-@uref{http://www.cs.wisc.edu/~ghost/gsview/get45.htm,GhostGum}, too.  It
+@uref{http://www.cs.wisc.edu/~ghost/gsview/get45.htm,GSView}, too.  It
 lets you view arbitrary Postscript files on screen.
 
 
@@ -561,12 +561,13 @@ for finding Flamsteed or @acronym{HD} numbers.
 
 The two nebula catalogues @acronym{NGC} and @acronym{IC} are
 complementary, i.@s{}e.@: they don't have@footnote{well, shouldn't have}
-any nebulae in common.  For example. the North America Nebula is called
-@code{NGC 7000} and the Orion Nebula is @code{NGC 1976}.
+any nebulae in common.  For example, the North America Nebula is called
+`@code{NGC 7000}' and the Orion Nebula is '@code{NGC 1976}'.  The
+@acronym{IC} catalogue usually contains fainter objects.
 
 Parallel to that there is the much older and much smaller Messier
 catalogue, abbreviated@tie{}`M'.  For example, the Orion Nebula can also
-be called @code{M 42}, whereas the North America Nebula isn't included
+be called '@code{M 42}', whereas the North America Nebula isn't included
 in Messier's catalogue.
 
 Pay attention to
@@ -630,10 +631,6 @@ script (@pxref{Input scripts}), @PPTHREE{} writes to standard output.
 
 @node Input scripts
 @chapter Writing input scripts
-
-On @uref{http://sf.net/projects/pp3,@PPTHREE{}'s project page} you can
-download a neat reference card.  If you fold it twice it is a handy
-zigzag.
 
 @menu
 * Minimal example::             The first four PP3 lines.
@@ -711,11 +708,17 @@ declination which is the centre of the constellation Swan.
 
 @node Keywords reference
 @chapter Keywords reference
+@cindex keywords
+
+On @uref{http://sf.net/projects/pp3,@PPTHREE{}'s project page} you can
+download a neat reference card.  If you fold it twice it is a handy
+zigzag.
 
 @menu
 * General structure::           
 * Parameters::                  
 * Objects and Labels::          
+* LaTeX preamble::              
 @end menu
 
 @node General structure
@@ -726,33 +729,235 @@ declination which is the centre of the constellation Swan.
 @section Setting Parameters
 
 
-@node Filenames and output control
-@section Filenames
+
+@menu
+* Essential parameters::        
+* Switching things on or off::  
+* Filtering stars and nebulae by their brightness::  
+* Colour::                      
+* Penalties::                   
+* Filenames::                   
+@end menu
+
+@node Essential parameters
+@subsection Essential parameters
 
 
-@node Colour, line style, and such
-@section 
+@menu
+* View control::                
+* Output control::              
+* Implementing a global style::  
+* Highlighted constellation::   
+@end menu
+
+@node View control
+@subsubsection Map view, scale, and size
+@kwindex set
+@kwindex center_rectascension
+@kwindex center_declination
+@kwindex box_width
+@kwindex box_height
+@kwindex grad_per_cm
+
+
+set center_rectascension
+
+set center_declination
+
+set box_width
+
+set box_height
+
+set grad_per_cm
+
+
+@node Output control
+@subsubsection Setting what file should be created
+
+filename output
+
+switch eps_output
+
+switch pdf_output
+
+
+@node Implementing a global style
+@subsubsection Implementing a global style
+
+filename include
+
+filename latex_preamble
+
+
+@node Highlighted constellation
+@subsubsection The highlighted constellation
+
+set constellation
+
+
+@node Switching things on or off
+@subsection Switching things on or off
+
+
+switch milky_way
+
+switch nebulae
+
+switch grid
+
+switch ecliptic
+
+switch boundaries
+
+switch constellation_lines
+
+switch labels
+
+switch colored_stars
 
 
 @node Filtering stars and nebulae by their brightness
-@section 
+@subsection Filtering stars and nebulae by their brightness
+
+set faintest_cluster_magnitude
+
+set faintest_diffuse_nebula_magnitude
+
+set faintest_star_magnitude
+
+set faintest_star_with_label_magnitude
+
+set faintest_star_disk_magnitude
+
+set minimal_star_radius
 
 
-@node 
-@section 
+@node Colour, line style, and other layout
+@subsection Colour, line style, and other layout
+
+@menu
+* Colours::                     
+* Line widths::                 
+* Line styles::                 
+* Other layout parameters::     
+@end menu
+
+@node Colours
+@subsubsection Colours
+
+color background
+
+color grid
+
+color ecliptic
+
+color boundaries
+
+color highlighted_boundaries
+
+color constellation_lines
+
+color milky_way
+
+color nebulae
+
+color stars
+
+color labels
+
+color text_labels
 
 
-@node 
-@section 
+@node Line widths
+@subsubsection Line widths
+
+line_width grid
+
+line_width ecliptic
+
+line_width boundaries
+
+line_width highlighted_boundaries
+
+line_width nebulae
+
+line_width constellation_lines
 
 
-@node 
-@section 
+@node Line styles
+@subsubsection Line styles
 
+line_style grid
+
+line_style ecliptic
+
+line_style boundaries
+
+line_style highlighted_boundaries
+
+line_style nebulae
+
+line_style constellation_lines
+
+
+@node Other layout parameters
+@subsubsection Other layout parameters
+
+set shortest_constellation_line
+
+set label_skip
+
+set minimal_nebula_radius
+
+set star_scaling
+
+set fontsize
+
+
+@node Penalties
+@subsection Penalties
+
+penalties stars
+
+penalties labels
+
+penalties nebulae
+
+penalties boundaries
+
+penalties boundaries_rim
+
+penalties constellation_lines
+
+penalties constellation_lines_rim
+
+penalties threshold
+
+penalties rim
+
+
+@node Filenames
+@subsection Filenames
+
+filename stars
+
+filename nebulae
+
+filename label_dimensions
+
+filename constellation_lines
+
+filename boundaries
+
+filename milky_way
 
 
 @node Objects and Labels
 @section Setting or deleting celestial objects and their labels
+
+
+@node LaTeX preamble
+@section LaTeX preamble
 
 
 @node Known problems
@@ -985,9 +1190,9 @@ HD 108903 ;  # gamma Cru
 
 @subheading @PPTHREE{}'s constellation lines origin
 
-I created the lines according after my fancy.  The @emph{Atlas f@"ur
-Himmelsbeobachter}@footnote{@acronym{ISBN}@tie{}3440074889} was an
-important source of inspiration though.
+I created the lines after my fancy.  The @emph{Atlas f@"ur
+Himmelsbeobachter}@footnote{in German; @acronym{ISBN}@tie{}3440074889}
+was an important source of inspiration though.
 
 
 @node Boundaries data file
@@ -1159,7 +1364,7 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  Exp PPTHREE tex hbox vbox sevenrm vss ifnottex vskip filll EPS
 @c  LocalWords:  leavevmode dircategory direntry iftex logue logues pstricks
 @c  LocalWords:  PDF Rectascension PDFs emph uref noindent rectascension dmn
-@c  LocalWords:  circ Ori UMa Hyi Cauda NGC Celestia itemize var Mik GhostGum
-@c  LocalWords:  exe env rpm dat pdf Corel pxref asis BSC IIICa IVpMnHg
+@c  LocalWords:  circ Ori UMa Hyi Cauda NGC Celestia itemize var Mik GSView SVG
+@c  LocalWords:  exe env rpm dat pdf Corel pxref asis BSC IIICa IVpMnHg eps
 @c  LocalWords:  ARI Cartes Ciel PSC CYG Steinicke Himmelsbeobachter AQL AQR
-@c  LocalWords:  Davenhall Leggett otnotesize Tuc FlexLabel
+@c  LocalWords:  Davenhall Leggett otnotesize Tuc FlexLabel Acrux
