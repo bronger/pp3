@@ -443,3 +443,13 @@ HD 5737    # alpha Scl
 HD 223352  # delta Scl
 HD 219784  # gamma Scl
 HD 221507 ; # beta Scl
+
+
+# Microscopium
+
+HD 198232  # alpha Mic
+HD 197937  # iota Mic
+HD 203006  # theta1 Mic
+HD 202627  # epsilon Mic
+HD 199951  # gamma Mic
+HD 198232 ; # alpha Mic
