@@ -1,0 +1,11 @@
+
+     ,--------------------.   ===  core
+     | 	       	       	  |   ---  rim
+     | 	 ,,==========..	  |
+     | 	 ||Betelgeuse||	  |
+     | 	 ``==========''	  |    ---
+     |	   		  |  	|  skip
+     `--------------------'    ---
+
+(Better graphics in PDF and HTML version of this manual)
+
