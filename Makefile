@@ -73,7 +73,7 @@ distri:
 	make pp3.cc
 	make pp3.ps
 	cp pp3.w pp3.cc fmax.ch pp3.ps $(DISTRINAME)
-	cp COPYING README Makefile $(DISTRINAME)
+	cp COPYING README WHATSNEW Makefile $(DISTRINAME)
 	cp stars.dat milkyway.dat nebulae.dat lines.dat boundaries.dat \
 	  $(DISTRINAME)
 	mkdir $(DISTRINAME)/examples
