@@ -4,7 +4,8 @@ carina cassiopeia centaurus cepheus cetus coma_berenices corvus crux cygnus	\
 delphinus draco eridanus fornax gemini grus hercules hydra indus leo libra	\
 lupus lynx microscopium monoceros norma octans ophiuchus orion pavo pegasus	\
 perseus phoenix pictor pisces piscis_austrinus puppis sagittarius scorpius	\
-sculptor serpens taurus tucana ursa_major ursa_minor vela virgo vulpecula
+sculptor serpens taurus tucana ursa_major ursa_minor vela virgo vulpecula	\
+scutum lyra
 
 %.eps : %.pp3 wiki.pp3 wiki.tex
 	pp3 $<
