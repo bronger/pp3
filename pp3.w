@@ -335,8 +335,6 @@ actually drawn.  So memory usage could be reduced drastically.
 
 using namespace std;
 
-@<Missing math routines@>@;@#
-
 @* Global parameters and default values.  I have to break a strict \CPLUSPLUS/
 rule here: Never use \hbox{|#@t\hskip-\fontdimen2\mainfont@>define|}!  However
 I really found no alternative to~|OUT|.  No |const| construct worked, and if it
@@ -1510,25 +1508,6 @@ double view_data::penalties_with(const double left, const double right,
         const double overlap_y = fdim(overlap_top, overlap_bottom);
         return overlap_x * overlap_y * params.penalties_label;
     } else return 0.0;
-}
-
-
-@ The book claims that the following routines are part of the {\mc GNU}
-\CEE/~Library version~2.2 beta.  However, I didn't find them.
-
-@q'@>
-
-@<Missing math routines@>=
-inline double fmin(const double& x, const double& y) {
-    return x < y ? x : y;
-}
-
-inline double fmax(const double& x, const double& y) {
-    return x > y ? x : y;
-}
-
-inline double fdim(const double& x, const double& y) {
-    return x > y ? x - y : 0.0;
 }
 
 
@@ -3709,9 +3688,10 @@ that are actually used.
         texts_list texts;
         flexes_list flexes;
 
+        read_stars(stars);  /* Must come first, because it tests whether 
+                               data files can be found */
         if (params.show_boundaries) read_constellation_boundaries(boundaries);
         read_label_dimensions(dimensions);
-        read_stars(stars);
         read_nebulae(nebulae);
         if (params.show_lines) read_constellation_lines(connections, stars);
 
