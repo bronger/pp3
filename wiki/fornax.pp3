@@ -1,0 +1,25 @@
+# Fornax
+#
+
+filename output fornax.tex
+filename include wiki.pp3
+
+set constellation FOR
+set center_rectascension  2.7
+set center_declination  -32
+set box_height 6
+set box_width 9
+
+set faintest_star_disk_magnitude 5
+
+
+objects_and_labels
+
+add_labels HD 20010  HD 17652 ;  # alpha and beta For
+add_labels HD 12767 ;  # nu For
+
+text Fornax at 1.8 -36 along declination towards W ;
+text Sculptor at 1.7 -35 along declination towards E ;
+text Cetus at 1.7 -24 along declination ;
+text Phoenix at 2.2 -40 along declination towards SE ;
+text Eridanus at 3.8 -20 along declination towards SE ;
