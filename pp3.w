@@ -2412,6 +2412,9 @@ color interpolate_colors(const double x, const color c1, const color c2,
 }
 
 
+@q@** Ephemerides.@>
+
+
 @** Drawing the chart.  This is done in two steps.  First the lines and the
 celestial objects are printed.  During this phase a lot of labels may
 accumulate.  They cannot be drawn at that phase, because the arrangement with
