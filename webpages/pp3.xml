@@ -63,18 +63,11 @@ illustrations.</p>
 name="http://sourceforge.net/projects/pp3">&PP3;'s project page</url>.  There
 you also find a reference card, a bug report system and a help forum.  Its
 licence is a slightly modified &MIT; licence.  But it's free software through
-and through.  The `crippled' version has no Milky Way and nebulae data, and no
-&CWEB; source code.</p>
+and through.</p>
 
-    <p>The program itself consists only of one executable file and a data
-directory.  In the data directory must be the data files (their file extension
-is <verb>.dat</verb>).  The program takes a small text file as input and
-produces a &LaTeX; file as output.</p>
-
-    <p>This &LaTeX; file must be processed by a modern &LaTeX; typesetting
-system.  Eventually Postscript output is produced which has the big advantage
-that it is resolution independent.  It can be successfully converted to &PDF;
-as well.</p>
+    <p>The program itself consists only of one executable file and a data files
+directory.  The program takes a small text file as input and produces a
+&LaTeX;, Postscript, or &PDF; file.</p>
 
   </section>
 
@@ -110,6 +103,38 @@ position two labels because the constellation lines supresses them.</p>
       <caption>The Scorpion.  (You may click on the picture to get a larger
 view.)</caption>
     </figure>
+
+    <table id="vector-downloads">
+      <tabular preamble="llr">
+	<tabhead>
+	  <srow>constellation | format | size</srow>
+	</tabhead>
+	<tabbody>
+	  <row>
+	    <cell>Orion</cell>
+	    <cell><url name="ori.pdf">&PDF;</url></cell>
+	    <cell>1115 kB</cell>
+	  </row>
+	  <row>
+	    <cell/>
+	    <cell><url name="ori.eps.gz">&EPS;</url> (gzip'ed)</cell>
+	    <cell>255 kB</cell>
+	  </row>
+	  <row>
+	    <cell>Scorpion</cell>
+	    <cell><url name="sco.pdf">&PDF;</url></cell>
+	    <cell>830 kB</cell>
+	  </row>
+	  <row>
+	    <cell/>
+	    <cell><url name="sco.eps.gz">&EPS;</url> (gzip'ed)</cell>
+	    <cell>187 kB</cell>
+	  </row>
+	</tabbody>
+      </tabular>
+      <caption>Vector variants of the above example maps for
+download.</caption>
+    </table>
 
   <p>The following script is more complex.  It produces <ref
 refid="Scorpion">figure</ref>:
@@ -147,9 +172,9 @@ delete M 18  M 4  NGC 6590  NGC 6634  IC 4700 ;
 reposition SCO 20 S ;    # sigma SCO
 reposition M 23 NE ;
 </verbatim>
-Most of the commands change colour to get this black-and-white effect.  There
-are also gzipped &EPS; versions of both the <url name="ori.eps.gz">Orion</url>
-and the <url name="sco.eps.gz">Scorpion</url> graphics available.</p>
+Most of the commands change colour to get this black-and-white effect.  In
+order to savour the maps fully you must see them as vector files, see <ref
+refid="vector-downloads">table</ref>.</p>
   </section>
 
   <section>
