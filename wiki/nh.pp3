@@ -19,14 +19,9 @@ set star_scaling 0.5
 
 set shortest_constellation_line 0
 
-set faintest_cluster_magnitude -99
-set faintest_diffuse_nebula_magnitude -99
-line_style nebulae none
+switch nebulae off
 
 line_width constellation_lines 0.02
 
 switch labels on
-switch milky_way on
 switch boundaries off
-
-objects_and_labels
