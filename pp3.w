@@ -152,6 +152,8 @@
 \def\IC/{{\mc IC\spacefactor1000}}
 \def\HD/{{\mc HD\spacefactor1000}}
 
+\def\9#1{}
+
 \def\sloppy{\tolerance9999\emergencystretch3em\hfuzz .5pt\vfuzz\hfuzz}
 
 \def\title{PP3 (Version 1.3)}
@@ -214,9 +216,14 @@ You call \PPTHREE/ with e.\,g.\medskip
 
 \medskip\noindent The data files (\.{stars.dat}, \.{nebulae.dat},
 \.{boundaries.dat}, \.{labeldimens.dat}, \.{lines.dat}, and
-\.{milkyway}\hskip0pt\.{.dat}) must be in the current directory.  The resulting
-chart is by default sent to standard output which you may redirect into a file.
-But you can define an output filename explicitly in the input script.
+\.{milkyway}\hskip0pt\.{.dat}) must be in the proper directory.  The proper
+directory was compiled into \PPTHREE/.  With Linux, normally it's
+\.{/usr/local/share/pp3/}, with Windows the current directory simply.  But the
+environment variable \.{PP3DATA} can override that.
+
+The resulting chart is by default sent to standard output which you may
+redirect into a file.  But you can define an output filename explicitly in the
+input script.
 
 If you want to use other data with this program, you may well provide your own
 catalogue files.  Their file formats are very simple, and they are explained in
@@ -1080,30 +1087,30 @@ void search_objects(istream& script,
             error_message << "Invalid index: " << catalogue_index;
             throw error_message.str();
         }
-	if (!script) throw string("Unexpected end of input script");
+        if (!script) throw string("Unexpected end of input script");
 
         if (params.nebulae_visible ||
-	    (catalogue_name != "NGC" && catalogue_name != "IC" &&
-	     catalogue_name != "M")) {
-	    if (catalogue_name == "NGC") {
-		if (assure_valid_catalogue_index(catalogue_index,ngc,"NGC"))
-		    found_nebulae.push_back(ngc[catalogue_index]);
-	    } else if (catalogue_name == "IC") {
-		if (assure_valid_catalogue_index(catalogue_index,ic,"IC"))
-		    found_nebulae.push_back(ic[catalogue_index]);
-	    } else if (catalogue_name == "M") {
-		if (assure_valid_catalogue_index(catalogue_index,messier,"M"))
-		    found_nebulae.push_back(messier[catalogue_index]);
-	    } else if (catalogue_name == "HD") {
-		if (assure_valid_catalogue_index(catalogue_index,henry_draper))
-		    found_stars.push_back(henry_draper[catalogue_index]);
-	    } else {
-		if (assure_valid_catalogue_index(catalogue_index,
-						 catalogue_name,flamsteed))
-		    found_stars.
-			push_back(flamsteed[catalogue_name][catalogue_index]);
-	    }
-	}
+            (catalogue_name != "NGC" && catalogue_name != "IC" &&
+             catalogue_name != "M")) {
+            if (catalogue_name == "NGC") {
+                if (assure_valid_catalogue_index(catalogue_index,ngc,"NGC"))
+                    found_nebulae.push_back(ngc[catalogue_index]);
+            } else if (catalogue_name == "IC") {
+                if (assure_valid_catalogue_index(catalogue_index,ic,"IC"))
+                    found_nebulae.push_back(ic[catalogue_index]);
+            } else if (catalogue_name == "M") {
+                if (assure_valid_catalogue_index(catalogue_index,messier,"M"))
+                    found_nebulae.push_back(messier[catalogue_index]);
+            } else if (catalogue_name == "HD") {
+                if (assure_valid_catalogue_index(catalogue_index,henry_draper))
+                    found_stars.push_back(henry_draper[catalogue_index]);
+            } else {
+                if (assure_valid_catalogue_index(catalogue_index,
+                                                 catalogue_name,flamsteed))
+                    found_stars.
+                        push_back(flamsteed[catalogue_name][catalogue_index]);
+            }
+        }
         script >> catalogue_name;
     }
 }
@@ -3858,10 +3865,10 @@ that are actually used.
         if (params.nebulae_visible) read_nebulae(nebulae);
         if (params.show_lines) read_constellation_lines(connections, stars);
 
-@ Three calls here are not preceded by an |if| clause: |create_grid()| contains
+@ Four calls here are not preceded by an |if| clause: |create_grid()| contains
 such tests of its own (because it's divided into subsections), and in
-|draw_nebulae()| and |draw_stars()| every single object is tested for
-visibility anyway.
+|draw_flex_labels()|, |draw_text_labels()|, and |draw_stars()| every single
+object is tested for visibility anyway.
 
 @q')@>
 
@@ -3929,6 +3936,18 @@ whatever.  Or let be inspired by this fragment: \medskip
 Helvetica Roman letters.  If you define a preamble of your own, you don't have
 to re-define that, because it's not defined then.  You can assume a naked plain
 \LaTeX\ font setup.
+
+@^hooks in preamble@>
+@:Label}{\.{\BS Label}@>
+@:NGC}{\.{\BS NGC}@>
+@:IC}{\.{\BS IC}@>
+@:Messier}{\.{\BS Messier}@>
+@:TextLabel}{\.{\BS TextLabel}@>
+@:Starname}{\.{\BS Starname}@>
+@:FlexLabel}{\.{\BS FlexLabel}@>
+@:TicMark}{\.{\BS TicMark}@>
+@:DP}{\.{\BS DP}@>
+@^decimal point@>
 
 I define a couple of \LaTeX\ commands as hooks here, all of them take exactly
 one argument.  ``\.{\BS Label}'' encloses every label.  In addition to that,
