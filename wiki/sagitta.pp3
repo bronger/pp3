@@ -1,0 +1,29 @@
+# Sagitta, the Arrow
+#
+
+filename output sagitta.tex
+filename include wiki.pp3
+
+set constellation SGE
+set center_rectascension 19.6
+set center_declination   15
+set box_height 5
+set box_width 6.3
+
+set faintest_star_disk_magnitude 5.0
+set shortest_constellation_line 0
+
+switch milky_way off
+
+penalties boundaries 0
+
+objects_and_labels
+
+add_labels SGE 5  SGE 6  SGE 7 ;
+
+text Sagitta at 19.1 18 along declination towards W ;
+text Vulpecula at 19.6 21 along declination towards N ;
+text Her at 18.95 15 along declination towards E ;
+text Del at 20.3 9.5 along declination towards NW ;
+text Ser at 18.95 6.5 along declination towards SE ;
+text Aquila at 20.2 15 along declination towards SE ;
