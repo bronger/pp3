@@ -1,0 +1,48 @@
+filename output title.tex
+switch pdf_output on
+
+set box_width 9
+set box_height 9
+
+filename latex_preamble wiki.tex
+
+set faintest_star_magnitude 4.5
+set faintest_star_disk_magnitude 4.5
+set star_scaling 0.8
+set grad_per_cm 7
+
+color background 1 1 1
+color stars 0 0 0
+switch colored_stars off
+color constellation_lines 0.5 0.5 0.5
+color nebulae 0 0 0
+color milky_way 0.3 0.3 0.3
+color ecliptic 0.3 0.3 0.3
+color grid 0.8 0.8 0.8
+color labels 0 0 0
+color text_labels 0.4 0.4 0.4
+switch nebulae off
+switch grid on
+switch boundaries off
+
+objects_and_labels
+
+set_label_text ORI 19 "\\footnotesize Rigel"
+set_label_text ORI 58 "\\footnotesize Betelgeuse"
+set_label_text CMA 9 "\\footnotesize Sirius"
+set_label_text CMI 10 "\\footnotesize Procyon"
+set_label_text TAU 87 "\\footnotesize Aldebaran"
+set_label_text GEM 66 "\\footnotesize Castor"
+set_label_text GEM 78 "\\footnotesize Pollux"
+
+reposition ORI 34 E ;  # Mintaka
+
+text Orion at 6.1 2 along declination towards N ;
+text Bull at 5.3 16.5 along declination towards N ;
+text Twins at 7.4 19 along declination towards SW ;
+text Unicorn at 6.4 -10 along declination towards NW ;
+text Hare at 5.5 -23 along declination towards S ;
+text "Big Dog" at 6.8 -20 along declination towards SE ;
+text Eridanus at 3.9 -20 along declination towards NW ;
+
+delete GEM 60 ;

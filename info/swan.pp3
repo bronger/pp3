@@ -1,0 +1,18 @@
+filename output swan.tex
+switch colored_stars off
+color stars 0 0 0
+color nebulae 0 0 0
+color background 1 1 1
+color grid 0.5 0.5 0.5
+color ecliptic 0.3 0.3 0.3
+color constellation_lines 0.7 0.7 0.7
+color labels 0 0 0
+color text_labels 0.5 0.5 0.5
+color boundaries 0.8 0.8 0.8
+color highlighted_boundaries 0 0 0
+color milky_way 0.5 0.5 0.5
+switch pdf_output on
+
+set center_rectascension  19.95
+set center_declination    40.8
+set constellation CYG

@@ -1,0 +1,26 @@
+filename output swan1.tex
+switch milky_way off
+switch colored_stars off
+color stars 0 0 0
+color nebulae 0 0 0
+color background 1 1 1
+color grid 0.5 0.5 0.5
+color ecliptic 0.3 0.3 0.3
+color constellation_lines 0.7 0.7 0.7
+color labels 0 0 0
+color text_labels 0.5 0.5 0.5
+color boundaries 0.8 0.8 0.8
+color highlighted_boundaries 0 0 0
+color milky_way 0.5 0.5 0.5
+switch pdf_output on
+
+set center_rectascension  21.1
+set center_declination    44
+set box_width 7
+set box_height 3.5
+set constellation CYG
+
+objects_and_labels
+
+set_label_text CYG 50 Deneb
+set_label_text NGC 7000 "N. America Neb."
