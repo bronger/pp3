@@ -13,10 +13,14 @@ set box_width 9
 
 objects_and_labels
 
+reposition LEO 32 SE ;
+
 add_labels M 66  LEO 24 ;
 text Leo at 10.55 27 along declination towards SE ;
 text "Leo Minor" at 10.05 28.5 along declination towards NW ;
 text "Ursa Major" at 12 30 along declination towards SE ;
 text Virgo at 11.65 10 along declination towards SW ;
-text "\\psdots[dotstyle=+,dotangle=45](0,0)\\small\\ Wolf 359" 
-  at 10.87 6.8 color 0.3 0.3 0.9333;
+text "\\small Wolf 359\\hskip0.3em\\psdots[dotstyle=+,dotangle=45](0,0)" 
+  at 10.902 7.32 color 0.3 0.3 0.9333 towards NW ;
+
+delete LEO 63  HD 97605 ;
