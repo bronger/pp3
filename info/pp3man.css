@@ -33,4 +33,4 @@ a:hover { text-decoration:underline; color:#0066FF; }
 li { margin-top: 1ex; margin-bottom: 1ex }
 ul.menu li, ul.index-cp li, div.contents li { margin-top: 0ex;
   margin-bottom: 0ex}
-img { margin: 2ex }
+img { display: block; margin: 2ex }
