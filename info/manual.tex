@@ -1,0 +1,15 @@
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\IfFileExists{eulervm.sty}{\usepackage{eulervm}}{}
+\IfFileExists{relsize.sty}{\usepackage{relsize}}{}
+\IfFileExists{t1pmy.fd}{
+  \renewcommand*{\sfdefault}{pmy}
+}{
+  \renewcommand*{\sfdefault}{phv}
+}  
+\renewcommand{\Messier}[1]{\footnotesize{\scriptsize M}\,#1}
+\renewcommand{\NGC}[1]{\footnotesize{\scriptsize NGC}\,#1}
+\renewcommand{\IC}[1]{\footnotesize{\scriptsize IC}\,#1}
+\renewcommand{\FlexLabel}[1]{{\bfseries #1}}
+\renewcommand{\TicMark}[1]{{\mdseries\scriptsize\mathversion{normal} #1}}
+\AtBeginDocument{\sffamily\boldmath}
