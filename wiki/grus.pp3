@@ -1,0 +1,22 @@
+# Grus, the Crane
+#
+
+filename output grus.tex
+filename include wiki.pp3
+
+set constellation GRU
+set center_rectascension  22.5
+set center_declination   -44
+set box_height 7.5
+set box_width  6.3
+
+objects_and_labels
+
+add_labels HD 213009 ;  # delta1 Gru
+
+text Grus at 23.4 -37 along declination towards SE ;
+text "Piscis Austrinus" at 22.3 -35.5 along declination towards N ;
+text Scl at 23.2 -35.5 along declination towards NW ;
+text Phe at 23.5 -55 along declination towards W ;
+text Tucana at 23.4 -56.5 along declination towards SE ;
+text Indus at 22 -50 along declination towards SE ;
