@@ -279,6 +279,7 @@ struct star : public view_data {
     double b_v;
     int flamsteed;
     string name;
+    string constellation;
     string spectral_class;
     star() : hd(0), bs(0), rectascension(0.0), declination(0.0),
              magnitude(0.0), b_v(0.0), flamsteed(0), name(""),
@@ -291,7 +292,7 @@ typedef vector<star> stars_list;
 This file was probably created by \.{bsc5digest}.
 
 The format of the input is a text stream with the following format.  Each star
-entry consists of tree lines: \medskip
+entry consists of four lines: \medskip
 
 \item{1.} A row with seven fields separated by whitespace:
 \itemitem{--} Henry Draper Catalogue number (|int|, `|0|' if unknown),
@@ -304,7 +305,9 @@ entry consists of tree lines: \medskip
 \item{2.} The label (astronomical name) for the star, as a \LaTeX-ready string,
 e.\,g.\ ``\.{\$\\alpha\$}'', ``\.{\$\\phi\^\{2\}\$}'', or simply
 ``\.{\$23\$}''.  May be the empty string.
-\item{3.} The spectral class.  It must start with the spectral class letter,
+\item{3.} The astronomical abbreviation of the constellation.  It must be all
+uppercase.
+\item{4.} The spectral class.  It must start with the spectral class letter,
 followed by the fraction digit, followed by the luminosity class as a Roman
 number, e.\,g.~``\.{F5III}''.  Anything may follow as in ``\.{K2-IIICa-1}'',
 however the mandatory parts must not contain any whitespace.
@@ -317,6 +320,7 @@ istream& operator>>(istream& in, star& s) {
     char ch;
     do in.get(ch); while (in.good() && ch != '\n');
     getline(in,s.name);
+    getline(in,s.constellation);
     getline(in,s.spectral_class);
     return in;
 }
@@ -756,25 +760,97 @@ are screen coordinates in centimetres.  |from| and |to| are the star star and
 the end star, given by their Henry Draper Catalogue number.
 
 @s connection int
+@s line i
 
 @q}@>
 
 @c
-struct connection {
-    int from, to;
-    vector<point> path;
-    connection() : from(0), to(0), start(), end() { }
-    cook(const stars_list& stars, const objects_list& objects);
+struct line {
+    point start, end;
+    line(double x1, double y1, double x2, double y2)
+	: start(x1,y1), end(x2,y2) { }
 };
 
-connection::cook(const stars_list& stars, const objects_list& objects) {
-    
+struct connection {
+    int from, to;
+    vector<line> paths;
+    connection() : from(-1), to(-1) { }
+    connection(const string from_name, const string to_name,
+               const stars_list& stars);
+    void cook(const transformation& mytransform, const stars_list& stars,
+	      const objects_list& objects);
+};
+
+typedef vector<connection> connections_list;
+
+@
+@c
+connection::connection(const string from_name, const string to_name,
+                       const stars_list& stars) : from(-1), to(-1) {
+    int space_index = from_name.find(' ');
+    if (space_index == string::npos)
+        throw string("Constellation lines: invalid star name");
+    int from_flamsteed = -1;
+    string from_constellation;
+    if (space_index == string::npos)
+        throw string("Constellation lines: invalid star name");
+    from_flamsteed = strtol(from_name.substr(0,space_index).c_str(), 0, 10);
+    if (from_flamsteed <= 0)
+        throw string("Constellation lines: invalid star name");
+    from_constellation = from_name.substr(space_index + 1);
+    if (from_constellation.length() != 3)
+        throw string("Constellation lines: invalid star name");
+
+    int to_flamsteed = -1;
+    string to_constellation;
+    space_index = to_name.find(' ');
+    if (space_index == string::npos)
+        throw string("Constellation lines: invalid star name");
+    to_flamsteed = strtol(to_name.substr(0,space_index).c_str(), 0, 10);
+    if (to_flamsteed <= 0)
+        throw string("Constellation lines: invalid star name");
+    to_constellation = to_name.substr(space_index + 1);
+    if (to_constellation.length() != 3)
+        throw string("Constellation lines: invalid star name");
+
+    for (int i = 0; i < stars.size(); i++) {
+        if (from_flamsteed == stars[i].flamsteed &&
+            from_constellation == stars[i].constellation) from = i;
+        if (to_flamsteed == stars[i].flamsteed &&
+            to_constellation == stars[i].constellation) to = i;
+    }
+    if (from == -1 || to == -1)
+	throw string("Constellation lines: Star not found");
+}
+
+@
+@c
+void connection::cook(const transformation& mytransform,
+		      const stars_list& stars,
+		      const objects_list& objects) {
+    double x_from,y_from, x_to, y_to;
+    mytransform.polar_projection(stars[from].rectascension,
+				 stars[from].declination, x_from, y_from);
+    mytransform.polar_projection(stars[to].rectascension,
+				 stars[to].declination, x_to, y_to);
+    paths.push_back(line(x_from, y_from, x_to, y_to));
 }
 
 @ I must be able to read a file which contains such data.
 
 @c
-void read_constellation_lines() {
+void read_constellation_lines(const string filename,
+			      connections_list& connections,
+			      const stars_list& stars) {
+    ifstream file(filename.c_str());
+    string current_line, last_line;
+    getline(file,current_line);
+    while (file) {
+	if (!last_line.empty() && !current_line.empty())
+	    connections.push_back(connection(last_line, current_line, stars));
+	last_line = current_line;
+	getline(file,current_line);
+    }
 }
 
 @* Label organisation.  Without labels, star charts are not very useful.  But
@@ -997,6 +1073,8 @@ void read_label_dimensions(const string filename,
 @ The book claims that the following routines are part of the {\mc GNU}
 \CEE/~Library version~2.2 beta.  However, I didn't find them.
 
+@q'@>
+
 @<Missing math routines@>=
 inline double fmin(const double& x, const double& y) {
     return x < y ? x : y;
@@ -1009,7 +1087,6 @@ inline double fmax(const double& x, const double& y) {
 inline double fdim(const double& x, const double& y) {
     return x > y ? x - y : 0.0;
 }
-
 
 @* Grid and other curves.  It's boring to have only stars on the map.  I want
 to have the usual coordinate grid with rectascension and declination lines,
@@ -1193,6 +1270,8 @@ part of a \.{\\pscustom} command and thus be part of a bigger path that forms
 -- in terms of the Porstscript language -- one united path.\footnote{$^2$}{This
 means e.\,g.\ that a dashed line pattern won't be broken at subpath junctions.}
 In order to get crisp coners, the \.{liftpen} option is necessary.
+
+@q'@>
 
 @c
 void draw_boundary_line(const boundary& b, const transformation& transform) {
@@ -1476,6 +1555,8 @@ drawing routines.
 
 \medskip\noindent That's it.
 
+@q'@>
+
 @c
 int main() {
     const double width = 15;
@@ -1488,11 +1569,19 @@ int main() {
     objects_list objects;
     stars_list stars;
     nebulae_list nebulae;
+    connections_list connections;
 
     read_constellation_boundaries("constborders.dat", boundaries);
     read_label_dimensions("labeldims.dat",dimensions);
     read_stars("bsc.dat", stars, dimensions);
     read_nebulae("nebulae.dat", nebulae, dimensions);
+    try {
+        read_constellation_lines("lines.dat", connections, stars);
+    }
+    catch (string s) {
+        cerr << s << endl;
+        exit(1);
+    }
 
     cout.setf(ios::fixed);  // otherwise \LaTeX\ gets confused
     cout.precision(3);
