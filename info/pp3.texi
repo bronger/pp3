@@ -1953,7 +1953,7 @@ More map projections, in particular a real isogonal one.
 @item
 The resolution of the Milky Way should be determined in a way that
 @TeX{}'s memory doesn't overflow.  Maybe one should switch to contour
-plots insetad of dot patterns for the Milky way.
+plots instead of dot patterns for the Milky way.
 
 @item
 Create little bitmaps of all labels in order to determine kerning
@@ -1961,6 +1961,12 @@ parameters for them.
 
 @item
 @PPTHREE{} should become able to deal with large data bases.
+
+@item
+The
+@uref{http://cvs.sourceforge.net/viewcvs.py/@/celestia/@/celestia/data/starnames.dat,
+star names list of Celestia} or something like that should be used for
+identifying stars in input scripts.
 @end itemize
 
 Besides that, I'd like to re-structure the internals of @PPTHREE{}
@@ -2386,5 +2392,5 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  exe env rpm dat pdf Corel pxref asis BSC IIICa IVpMnHg eps not
 @c  LocalWords:  ARI Cartes Ciel PSC CYG Steinicke Himmelsbeobachter AQL AQR
 @c  LocalWords:  Davenhall Leggett otnotesize Tuc FlexLabel Acrux Messier's cnf
-@c  LocalWords:  cindex kwindex byfmt ini flexes xref ifinfo ifnotinfo tics
-@c  LocalWords:  deffn deffnx
+@c  LocalWords:  cindex kwindex byfmt ini flexes xref ifinfo ifnotinfo tics Cyg
+@c  LocalWords:  deffn deffnx ifhtml todo
