@@ -875,7 +875,11 @@ certain regions of the sky, typically stellar constellations.
                                  " than one");
                 params.filename_include = read_string(script);
                 ifstream included_script(params.filename_include.c_str());
-                read_parameters_from_script(included_script);
+                if (!included_script.good())
+	            cerr << "pp3: Warning: included file " 
+                         << params.filename_include
+                         << " not found; ignored" << endl;
+                else read_parameters_from_script(included_script);
             }
             else throw string("Undefined \"filename\" construct"
                               " in input script: \"") + object_name + '"';
