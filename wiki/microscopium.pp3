@@ -4,8 +4,6 @@
 filename output microscopium.tex
 filename include wiki.pp3
 
-filename constellation_lines lines.dat
-
 set constellation MIC
 set center_rectascension  21.15
 set center_declination   -37
