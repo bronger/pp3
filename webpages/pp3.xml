@@ -12,6 +12,7 @@
 <!ENTITY tbook "<visual markup='sf'><visual
 markup='bf'>t</visual>book</visual>">
 <!ENTITY i.e. "<latex code='i.\,e.\@'>i.e.</latex>">
+<!ENTITY News "<em>News</em>">
 ]>
 <!-- 	$Id$	 -->
 <article>
@@ -34,6 +35,12 @@ url('http://sourceforge.net/sflogo.php?group_id=71469&amp;type=5')"></p>
 the constellation maps of <url name="http://www.wikipedia.org">Wikipedia</url>!
 (For example, have a look at the <url
 name="http://www.wikipedia.org/wiki/Cygnus">Cygnus</url> entry.)</p>
+    
+  <p class="first" style="margin-top: 4ex; font-size: larger"
+skip="big">&News;: &PP3; 1.3.1 makes compilation simpler in comparison with
+version&nbsp;1.3.  But it doesn't introduce any new features, so you can
+download the Windows or RPM distribution&nbsp;1.3 without missing
+something.</p>
 
   <section>
     <heading style="clear: none">Motivation</heading>
