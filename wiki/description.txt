@@ -2,7 +2,7 @@ This is a celestial map of the constellation
 
 Copyright &copy; 2003 [[User:Bronger|Torsten Bronger]].
 
-It was created by [[User:Bronger|Torsten Bronger]] using the program PP3 on 2003/08/09.  At [http://pp3.sourceforge.net PP3's homepage], you also get the input scripts necessary for re-compiling the map.
+It was created by [[User:Bronger|Torsten Bronger]] using the program PP3 on 2003/08/20.  At [http://pp3.sourceforge.net PP3's homepage], you also get the input scripts necessary for re-compiling the map.
 
 The yellow dashed lines are constellation boundaries, the red dashed line is the ecliptic, and the shades of blue show Milky Way areas of different brightness.  The map contains all Messier objects, except for colliding ones. The underlying database contains all stars brighter than 6.5.  All coordinates refer to equinox 2000.0.
 
@@ -14,6 +14,7 @@ The map is calculated with the equidistant azimuthal projection (the zenith bein
 4 grad/cm:  11.8 pixel per degree
 5 grad/cm:  9.4 pixel per degree
 6 grad/cm:  7.9 pixel per degree
+10 grad/cm: 4.7 pixel per degree
 
 
 
