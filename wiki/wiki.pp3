@@ -23,6 +23,7 @@ color highlighted_boundaries 1 0.8667 0
 color nebulae 0 0 0
 color text_labels 0.7 0.7 0.7
 color ecliptic 0.8 0.1333 0
+switch milky_way on
 color milky_way 0.5 0.5 1
 
 objects_and_labels
@@ -59,3 +60,5 @@ set_label_text SCO 21 "\\footnotesize Antares"
 set_label_text HD 128620 "\\footnotesize Toliman"
 set_label_text HD 158427 "\\footnotesize Choo"  # alpha Ara
 set_label_text HD 108248 "\\footnotesize Acrux"
+set_label_text HD 45348 "\\footnotesize Canopus"
+
