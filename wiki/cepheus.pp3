@@ -1,0 +1,25 @@
+# Cepheus
+#
+
+filename output cepheus.tex
+filename include wiki.pp3
+
+set constellation CEP
+set center_rectascension  23
+set center_declination   75
+set box_height 11
+set box_width 9
+
+penalties boundaries 0
+
+objects_and_labels
+
+add_labels CEP 27 ;   # delta Cep
+
+text Cassiopeia at 0 55 along declination towards S ;
+text Cygnus at 22 55 along declination towards SE ;
+text Cepheus at 0.2 69 along declination towards E ;
+text Lacerta at 22.9 56 along declination towards SE ;
+text \FlexLabel{Camelopardalis} at 6 85 towards NW ;
+text Draco at 20.5 75 along declination towards SE ;
+text \FlexLabel{Ursa~Minor} at 14 88 ;
