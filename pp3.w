@@ -38,75 +38,75 @@
 \font\sfa=cmss7
 
 %% From here with Palatino
-%% \font\tenrm=pplr7t % roman text
-%% \font\ninerm=pplr7t scaled 900
-%% \font\eightrm=pplr7t scaled 800
-%% \font\sevenrm=pplr7t scaled 700
-%% \font\fiverm=pplr7t scaled 500
+\font\tenrm=pplr7t % roman text
+\font\ninerm=pplr7t scaled 900
+\font\eightrm=pplr7t scaled 800
+\font\sevenrm=pplr7t scaled 700
+\font\fiverm=pplr7t scaled 500
 
-%% \font\teni=zplmr7m % math italic    (zpplcm7m for Times, zplmr7m for Palatino)
-%% \font\seveni=zplmr7m scaled 700
-%% \font\fivei=zplmr7m scaled 500
+\font\teni=zplmr7m % math italic    (zpplcm7m for Times, zplmr7m for Palatino)
+\font\seveni=zplmr7m scaled 700
+\font\fivei=zplmr7m scaled 500
 
-%% \font\tensy=zplmr7y % math symbols  (zpplcm7y for Times, zplmr7y for Palatino)
-%% \font\sevensy=zplmr7y scaled 700
-%% \font\fivesy=zplmr7y scaled 500
+\font\tensy=zplmr7y % math symbols  (zpplcm7y for Times, zplmr7y for Palatino)
+\font\sevensy=zplmr7y scaled 700
+\font\fivesy=zplmr7y scaled 500
 
-%% \font\tenex=zplmr7v % math extension (zpplcm7v for Times, zplmr7v f. Palatino)
+\font\tenex=zplmr7v % math extension (zpplcm7v for Times, zplmr7v f. Palatino)
 
-%% \font\tenbf=pplb7t % boldface extended
-%% \font\sevenbf=pplb7t scaled 700
-%% \font\fivebf=pplb7t scaled 500
+\font\tenbf=pplb7t % boldface extended
+\font\sevenbf=pplb7t scaled 700
+\font\fivebf=pplb7t scaled 500
 
-%% \font\tentt=cmtt10 % typewriter
-%% \font\ninett=cmtt9 % typewriter
+\font\tentt=cmtt10 % typewriter
+\font\ninett=cmtt9 % typewriter
 
-%% \font\tensl=pplro7t % slanted roman
+\font\tensl=pplro7t % slanted roman
 
-%% \font\tenit=pplri7t % text italic
+\font\tenit=pplri7t % text italic
 
-%% \skewchar\teni='177 \skewchar\seveni='177 \skewchar\fivei='177
-%% \skewchar\tensy='60 \skewchar\sevensy='60 \skewchar\fivesy='60
+\skewchar\teni='177 \skewchar\seveni='177 \skewchar\fivei='177
+\skewchar\tensy='60 \skewchar\sevensy='60 \skewchar\fivesy='60
 
-%% \textfont0=\tenrm \scriptfont0=\sevenrm \scriptscriptfont0=\fiverm
-%% \def\rm{\fam\z@@\tenrm}
-%% \textfont1=\teni \scriptfont1=\seveni \scriptscriptfont1=\fivei
-%% \def\mit{\fam\@@ne} \def\oldstyle{\fam\@@ne\teni}
-%% \textfont2=\tensy \scriptfont2=\sevensy \scriptscriptfont2=\fivesy
-%% \def\cal{\fam\tw@@}
-%% \textfont3=\tenex \scriptfont3=\tenex \scriptscriptfont3=\tenex
-%% \newfam\itfam \def\it{\fam\itfam\tenit} % \it is family 4
-%% \textfont\itfam=\tenit
-%% \newfam\slfam \def\sl{\fam\slfam\tensl} % \sl is family 5
-%% \textfont\slfam=\tensl
-%% \newfam\bffam \def\bf{\fam\bffam\tenbf} % \bf is family 6
-%% \textfont\bffam=\tenbf \scriptfont\bffam=\sevenbf
-%% \scriptscriptfont\bffam=\fivebf
-%% \newfam\ttfam \def\tt{\fam\ttfam\tentt} % \tt is family 7
-%% \textfont\ttfam=\tentt
+\textfont0=\tenrm \scriptfont0=\sevenrm \scriptscriptfont0=\fiverm
+\def\rm{\fam\z@@\tenrm}
+\textfont1=\teni \scriptfont1=\seveni \scriptscriptfont1=\fivei
+\def\mit{\fam\@@ne} \def\oldstyle{\fam\@@ne\teni}
+\textfont2=\tensy \scriptfont2=\sevensy \scriptscriptfont2=\fivesy
+\def\cal{\fam\tw@@}
+\textfont3=\tenex \scriptfont3=\tenex \scriptscriptfont3=\tenex
+\newfam\itfam \def\it{\fam\itfam\tenit} % \it is family 4
+\textfont\itfam=\tenit
+\newfam\slfam \def\sl{\fam\slfam\tensl} % \sl is family 5
+\textfont\slfam=\tensl
+\newfam\bffam \def\bf{\fam\bffam\tenbf} % \bf is family 6
+\textfont\bffam=\tenbf \scriptfont\bffam=\sevenbf
+\scriptscriptfont\bffam=\fivebf
+\newfam\ttfam \def\tt{\fam\ttfam\tentt} % \tt is family 7
+\textfont\ttfam=\tentt
 
-%% \catcode`@@=12
+\catcode`@@=12
 
-%% \font\eightpplr=pplr7t scaled 800
-%% \font\ninepplr=pplr7t scaled 900
-%% \font\ninepplri=pplri7t scaled 900
-%% \font\tenpplr=pplr7t
-%% \font\tenpplb=pplb7t
-%% \font\tenpplri=pplri7t
-%% \font\titlefont=pplr7t scaled 1728 % title on the contents page
-%% \font\ttitlefont=cmtt10 scaled\magstep2 % typewriter type in title
-%% \font\tentex=cmtex10 % TeX extended character set (used in strings)
-%% \fontdimen7\tentex=0pt % no double space after sentences
+\font\eightpplr=pplr7t scaled 800
+\font\ninepplr=pplr7t scaled 900
+\font\ninepplri=pplri7t scaled 900
+\font\tenpplr=pplr7t
+\font\tenpplb=pplb7t
+\font\tenpplri=pplri7t
+\font\titlefont=pplr7t scaled 1728 % title on the contents page
+\font\ttitlefont=cmtt10 scaled\magstep2 % typewriter type in title
+\font\tentex=cmtex10 % TeX extended character set (used in strings)
+\fontdimen7\tentex=0pt % no double space after sentences
 
-%% \let\mainfont=\tenpplr
-%% \let\sc=\ninepplr
-%% \let\mc=\ninepplr
-%% \let\it=\tenpplri
-%% \let\nineit=\ninepplri
-%% \let\tt=\tentt
-%% \let\cmntfont\tenpplr
+\let\mainfont=\tenpplr
+\let\sc=\ninepplr
+\let\mc=\ninepplr
+\let\it=\tenpplri
+\let\nineit=\ninepplri
+\let\tt=\tentt
+\let\cmntfont\tenpplr
 
-%% \mainfont\baselineskip12.7pt
+\mainfont\baselineskip12.7pt
 
 %% Now for the title page
 
@@ -154,12 +154,12 @@
 
 \def\sloppy{\tolerance9999\emergencystretch3em\hfuzz .5pt\vfuzz\hfuzz}
 
-\def\title{PP3 (Version 1.0)}
+\def\title{PP3 (Version 1.1)}
 \def\topofcontents{\null\vfill\vskip-1.5cm
   \centerline{\titlefont The Sky Map Creator 
                {\sbtitlefont PP\lower.35ex\hbox{3}}}
   \vskip 15pt
-  \centerline{(Version 1.0)}
+  \centerline{(Version 1.1)}
   \vfill}
 \def\botofcontents{\parindent2em\vfill\vfill\vfill\vfill\vfill
 \noindent
@@ -1634,6 +1634,7 @@ istream& operator>>(istream& in, star& s) {
 @c
 void read_stars(stars_list& stars) {
     ifstream stars_file(params.filename_stars.c_str());
+    if (!stars_file) throw string("No stars file found");
     star current_star;
     stars_file >> current_star;
     while (stars_file) {
@@ -3003,7 +3004,7 @@ algorithm.  This is realised here:  This routine always returns zero.
 @c
 double declination_flex::penalties_with(const double left, const double right,
                    const double top, const double bottom,
-                   bool core = true) const {
+                   bool core) const {
         return 0.0;
 }
 
