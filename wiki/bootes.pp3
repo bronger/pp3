@@ -1,0 +1,26 @@
+# Bootes
+#
+
+filename output boo.tex
+filename include wiki.pp3
+
+set constellation BOO
+set center_rectascension  14.7
+set center_declination   34
+set box_width 7
+set box_height 9
+
+
+objects_and_labels
+
+add_labels BOO 51 ;    # mu
+reposition BOO 16 SW ;
+
+text Bo\"{o}tes at 13.95 24 along declination towards W ;
+text CVn at 14.07 40 along declination towards E ;
+text Serpent at 15.25 25 along declination towards SW ;
+text CrB at 15.55 34 along declination towards W ;
+text UMa at 14.1 49.5 along declination towards SE ;
+text Her at 15.85 49 along declination towards NW ;
+
+reposition CRB 5 SE ;

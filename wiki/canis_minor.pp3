@@ -1,0 +1,22 @@
+# Canis Minor, the Small Dog
+#
+
+filename output cmi.tex
+filename include wiki.pp3
+
+set constellation CMI
+set center_rectascension   7.5
+set center_declination    12
+set box_height 7
+set box_width 7
+
+objects_and_labels
+
+add_labels CMI 4 ;
+reposition NGC 2238 NW ;
+
+text "Canis Minor" at 8.1 0.5 along declination ;
+text Monoceros at 7.1 3 along declination towards E ;
+text Gemini at 7.9 14 along declination ;
+text Cancer at 8 15 along declination towards W ;
+text Hya at 8.25 6 along declination towards SW ;

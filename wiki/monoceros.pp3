@@ -1,0 +1,25 @@
+# Monoceros, the unicorn
+#
+
+filename output mon.tex
+filename include wiki.pp3
+
+set constellation MON
+set center_rectascension  6.7
+set center_declination   -3.5
+set box_height 7
+set box_width 9
+
+set faintest_star_disk_magnitude 5.0
+
+objects_and_labels
+
+add NGC 2261  NGC 2264 ;
+add_labels MON 26  MON 22  MON 11  MON 5 ;
+
+text Monoceros at 6 -10 along declination  towards NW ;
+text "Canis Minor" at 7.4 0.5 along declination towards NW ;
+text Lepus at 6.15 -12 along declination towards SE ;
+text "Canis Major" at 6.3 -12 along declination  towards SW ;
+text Orion at 6.3 -3.5 along declination towards NE ;
+text Puppis at 7.5 -11.5 along declination towards SW ;

@@ -1,0 +1,28 @@
+# Canes venatici
+#
+
+filename output cvn.tex
+filename include wiki.pp3
+
+set constellation CVN
+set center_rectascension  13
+set center_declination   40
+set box_height 7
+set box_width 9
+
+set faintest_star_disk_magnitude 5.0
+
+objects_and_labels
+
+add_labels CVN 8  HD 110914 ;
+
+set_label_text HD 110914 "Y"
+
+text "Ursa Major" at 12 42 along declination towards E ;
+text "Canes Venatici" at 12.3 35 along declination towards W ;
+text Boötes at 14.2 42 along declination towards W ;
+text Leo at 11.95 28 along declination towards SE ;
+text "Coma Berenices" at 13.3 30.5 along declination towards SE ;
+
+reposition UMA 85 W ;
+reposition CVN 12 NW ;

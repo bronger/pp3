@@ -1,0 +1,30 @@
+# Virgo
+#
+
+filename output vir.tex
+filename include wiki.pp3
+
+set constellation VIR
+set center_rectascension  13
+set center_declination   3
+set box_height 7
+set box_width 9
+
+set grad_per_cm 5
+
+objects_and_labels
+
+add_labels VIR 51  VIR 15  VIR 3 ;
+delete VIR 9 ;
+
+text Virgo at 13.5 5 along declination towards S ;
+text Boötes at 13.7 9 along declination towards NW ;
+text "Coma Berenices" at 13.6 15 along declination ;
+text Corvus at 12.9 -12 along declination towards SE ;
+text Crater at 11.9 -7 along declination towards SE ;
+text Leo at 11.9 17 along declination towards E ;
+
+reposition M 91 N ;
+
+text "\\footnotesize Virgo galaxy cluster" at 12.7 10 
+  color 0.0 0.0 0.9333 towards SE ;

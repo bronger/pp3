@@ -1,0 +1,22 @@
+# Canis Maior, the Big Dog
+#
+
+filename output cma.tex
+filename include wiki.pp3
+
+set constellation CMA
+set center_rectascension   6.5
+set center_declination   -20
+set box_height 7
+set box_width 7
+
+objects_and_labels
+
+reposition NGC 2362 N ;
+reposition CMA 25 E ;
+
+text "Canis Major" at 6.3 -12 along declination towards SW ;
+text Ori at 5.65 -9 along declination towards N ;
+text Monoceros at 6 -10 along declination towards NW ;
+text Lepus at 6.1 -26 along declination ;
+text Columba at 6.1 -29 along declination towards SE ;

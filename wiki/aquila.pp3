@@ -1,0 +1,28 @@
+# Aquila, the Eagle
+#
+
+filename output aql.tex
+filename include wiki.pp3
+
+set constellation AQL
+set center_rectascension  19.7
+set center_declination   3
+set box_height 9
+set box_width 9
+
+objects_and_labels
+
+add NGC 6803  NGC 6781 ;
+add_labels AQL 60  AQL 55 ;
+
+text Aquila at 20 14 along declination towards S ;
+text Sagitta at 19.4 19 along declination towards S ;
+text Delphinus at 20.4 19.5 along declination towards SW ;
+text Sagittarius at 19.5 -12.5 along declination towards S ;
+text Hercules at 18.9 13.5 along declination ;
+text Sagittarius at 19.5 -12.5 along declination towards S ;
+text Serpens at 18.9 6 along declination towards SE ;
+text Oph at 18.7 10 along declination towards E ;
+text Scutum at 18.95 -11 along declination towards E ;
+text Aqr at 20.7 0 along declination towards W ;
+text Capricornus at 20.4 -9 along declination towards S ;

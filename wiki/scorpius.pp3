@@ -1,0 +1,23 @@
+# Scorpius
+#
+
+filename output sco.tex
+filename include wiki.pp3
+
+set constellation SCO
+set center_rectascension  16.8
+set center_declination   -30
+set box_height 9
+set box_width 9
+
+objects_and_labels
+
+text Lupus at 16.1 -35 along declination towards E ;
+text Scorpius at 16.2 -32 along declination towards W ;
+text Ara at 17 -46 along declination towards S ;
+text Sgr at 17.75 -27 along declination towards W ;
+text CrA at 18.1 -40 along declination towards W ;
+text Norma at 16.5 -43 along declination towards SE ;
+text Libra at 16 -19 along declination ;
+text Ophiuchus at 16.6 -20 along declination towards NW ;
+text Serpens at 17.3 -14 along declination towards W ;

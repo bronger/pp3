@@ -1,0 +1,24 @@
+# Gemini, the Twins
+#
+
+filename output gem.tex
+filename include wiki.pp3
+
+set constellation GEM
+set center_rectascension  7
+set center_declination   20
+set box_height 8
+set box_width 9
+
+
+objects_and_labels
+
+text Gemini at 7 30 along declination towards N ;
+text Auriga at 6.5 30 along declination towards E ;
+text Lynx at 7.9 34 along declination towards NW ;
+text Cancer at 7.95 17 along declination towards W ;
+text Orion at 6.35 13 along declination towards E ;
+text "Canis Minor" at 7.2 11 along declination towards SW ;
+text Tau at 5.9 27 along declination towards SE ;
+text Monoceros at 7 11 along declination towards SE ;
+reposition GEM 7 E ;

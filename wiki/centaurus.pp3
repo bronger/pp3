@@ -1,0 +1,33 @@
+# Centaur
+#
+
+filename output cen.tex
+filename include wiki.pp3
+
+set constellation CEN
+set center_rectascension 13.6
+set center_declination   -45
+set box_width 9
+set box_height 9
+
+set grad_per_cm 5
+
+
+objects_and_labels
+
+add NGC 5139 ;
+set_label_text NGC 5139 $\omega$
+reposition HD 108903 N ;
+reposition HD 106490 E ;
+reposition M 68 E ;
+
+text Crux at 12 -56 along declination towards SW ;
+text Centaurus at 12.7 -46 along declination towards N ;
+text Circinus at 14.7 -56 along declination towards SW ;
+text Lupus at 15.1 -54.5 along declination ;
+text Norma at 15.6 -56 along declination towards W ;
+text Hydra at 13 -29 along declination towards NW ;
+text Libra at 14.4 -24.5 along declination towards NW ;
+
+text "\\footnotesize\\itshape Coalsack" 
+  at 13.3 -63.49 color 0.3 0.3 0.9333;

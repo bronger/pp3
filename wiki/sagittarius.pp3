@@ -1,0 +1,24 @@
+# Sagittarius
+#
+
+filename output sgr.tex
+filename include wiki.pp3
+
+set constellation SGR
+set center_rectascension  18.5
+set center_declination   -27
+set box_height 7
+set box_width 8
+
+objects_and_labels
+
+text Sagittarius at 19 -34 along declination towards S ;
+text Scorpius at 17.45 -34 along declination towards S ;
+text "Corona Australis" at 18.1 -38 along declination towards SW ;
+text Scutum at 18.95 -15 along declination ;
+text Serpens at 18 -15 along declination towards N ;
+text Oph at 17.7 -25.5 along declination towards E ;
+
+reposition M 22 SW ;
+reposition M 16 S ;
+reposition M 18 E ;

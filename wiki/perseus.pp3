@@ -1,0 +1,29 @@
+# Perseus
+#
+
+filename output per.tex
+filename include wiki.pp3
+
+set constellation PER
+set center_rectascension  3.6
+set center_declination   47
+set box_height 9
+set box_width 9
+
+objects_and_labels
+
+add_labels PER 46  PER 38 ;
+delete NGC 1499 ;
+
+text Perseus at 3.4 37 along declination towards S ;
+text Auriga at 5 50 along declination towards NW ;
+text Camelopardalis at 3.3 61 along declination towards W ;
+text Cassiopeia at 3.1 60 along declination ;
+text Andromeda at 2.6 45.5 along declination towards E ;
+text Taurus at 4.2 30.5 along declination towards S ;
+text Aries at 3 30.5 along declination towards S ;
+text Triangulum at 2.8 32 along declination ;
+
+add NGC 884  NGC 869 ;
+delete_labels NGC 884  NGC 869 ;
+text "h${}+\\chi$" at 2.33 56.5 color 0 0 1 towards S ;

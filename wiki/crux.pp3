@@ -1,0 +1,24 @@
+# Crus, the Southern Cross
+#
+
+filename output cru.tex
+filename include wiki.pp3
+
+set constellation CRU
+set center_rectascension 13.2
+set center_declination   -60.8
+set box_width 6
+set box_height 6
+
+
+objects_and_labels
+
+
+text Crux at 12 -56 along declination towards SW ;
+text Centaurus at 12.7 -54 along declination towards N ;
+text Circinus at 14.4 -68 along declination towards N ;
+text Musca at 11.4 -70 along declination towards NW ;
+text Car at 11.3 -69 along declination towards E ;
+
+text "\\footnotesize\\itshape Coalsack" 
+  at 13.2 -63.5 color 0.3 0.3 0.9333;

@@ -1,0 +1,22 @@
+# Aries, the Ram
+#
+
+filename output ari.tex
+filename include wiki.pp3
+
+set constellation ARI
+set center_rectascension  2.8
+set center_declination   18.8
+set box_height 8.1
+set box_width 8
+
+objects_and_labels
+
+text Aries at 2.5 20 along declination towards N ;
+text Triangulum at 2.5 28.5 along declination ;
+text Taurus at 3.6 30 along declination towards SW ;
+text Cetus at 2.2 9 along declination towards SW ;
+text Perseus at 3 32 along declination towards NW ;
+text Pisces at 2.05 10 along declination towards SE ;
+delete_labels TAU 27 ;
+set_label_text TAU 25 Pleiades

@@ -1,0 +1,28 @@
+# Pisces, the Fishes
+#
+
+filename output psc.tex
+filename include wiki.pp3
+
+set constellation PSC
+set center_rectascension  0.5
+set center_declination   14
+set box_height 9
+set box_width 9
+
+set faintest_star_disk_magnitude 5
+set grad_per_cm 6
+
+
+objects_and_labels
+
+text Pisces at 1 10 along declination towards N ;
+text Cetus at 1 -2 along declination towards S ;
+text Aries at 1.85 16 along declination towards W ;
+text Andromeda at 23.1 36 along declination towards NW ;
+text Lac at 22.9 36.5 along declination ;
+text Pegasus at 23.8 10 along declination ;
+text Aquarius at 23.9 -4.5 along declination towards SE ;
+text Tri at 1.6 34.5 along declination towards SW ;
+
+add_labels PSC 113 ;

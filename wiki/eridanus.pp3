@@ -1,0 +1,30 @@
+# Eridanus
+#
+
+filename output eri.tex
+filename include wiki.pp3
+
+set constellation ERI
+set center_rectascension   3.8
+set center_declination   -30
+set box_height 11
+set box_width 9
+
+set grad_per_cm 6
+
+objects_and_labels
+
+text Eridanus at 4 -20 along declination ;
+text Fornax at 2.8 -30 along declination ;
+text Orion at 4.8 -3 along declination towards NW ;
+text Lepus at 5.4 -26.5 along declination towards NW ;
+text Cetus at 2.7 -6.5 along declination towards E ;
+text Taurus at 4.4 0.8 along declination ;
+text Columba at 5.1 -28 along declination towards SW ;
+text Horologium at 3.8 -52.5 along declination ;
+text Caelum at 5 -39 along declination ;
+text Pictor at 6 -49 along declination ;
+text Ret at 3.4 -58 along declination towards SW ;
+text Phoenix at 2.35 -40 along declination towards SE ;
+text Car at 6.1 -46 along declination towards W ;
+text Dor at 4.5 -49 along declination towards SE ;

@@ -1,0 +1,24 @@
+# Capricornus
+#
+
+filename output cap.tex
+filename include wiki.pp3
+
+set constellation CAP
+set center_rectascension  21
+set center_declination   -16
+set box_height 7
+set box_width 8
+
+set faintest_star_disk_magnitude 5
+
+objects_and_labels
+
+text Capricornus at 21 -20 along declination towards S ;
+text Microscopium at 21.4 -28 along declination towards SE ;
+text Sgr at 20.1 -18 along declination towards E ;
+text PsA at 21.5 -25.5 along declination towards SW ;
+text Aquarius at 20.7 -4 along declination towards W ;
+text Aquila at 20.6 -7.5 along declination ;
+
+add_labels CAP 34  CAP 23 ;

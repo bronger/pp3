@@ -1,0 +1,29 @@
+# Dephinus, the Dolphin
+#
+
+filename output del.tex
+filename include wiki.pp3
+
+set constellation DEL
+set center_rectascension  20.5
+set center_declination   12
+set box_height 7
+set box_width 7
+
+set grad_per_cm 3
+
+set faintest_star_with_label_magnitude 4.1
+set faintest_star_disk_magnitude 5.0
+
+objects_and_labels
+
+add NGC 6891  NGC 6934  NGC 7006 ;
+add_labels DEL 11 ;
+
+reposition NGC 7006 N ;
+
+text Aquila at 20 14 along declination towards S ;
+text Sagitta at 20.3 18 along declination towards E ;
+text Delphinus at 20.4 19.5 along declination towards SW ;
+text Equ at 21 12 along declination towards SW ;
+text Vulpecula at 21 20.5 along declination towards N ;

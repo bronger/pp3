@@ -1,0 +1,22 @@
+# Crovus
+#
+
+filename output crv.tex
+filename include wiki.pp3
+
+set constellation CRV
+set center_rectascension  12.4
+set center_declination   -18
+set box_height 6
+set box_width 9
+
+# set faintest_star_disk_magnitude 5.0
+
+objects_and_labels
+
+add_labels CRV 1 ;
+
+text Corvus at 12 -12 along declination towards SW ;
+text Virgo at 13 -15 along declination towards W ;
+text Hydra at 12.2 -26 along declination towards S ;
+text Crater at 11.9 -20 along declination ;

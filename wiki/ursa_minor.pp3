@@ -1,0 +1,23 @@
+# Ursa Minor
+#
+
+filename output umi.tex
+filename include wiki.pp3
+
+set constellation UMI
+set center_rectascension 15
+set center_declination   78
+set box_height 7
+set box_width 7
+
+set faintest_star_disk_magnitude 5.1
+
+objects_and_labels
+
+reposition UMI 1 SE ;
+add_labels UMI 22  UMI 16  UMI 23  UMI 21 ;
+
+text "Ursa Minor" at 13.2 71 along declination towards SW ;
+text "Draco" at 15.8 65 along declination towards W ;
+text "Camelopardalis" at 14 83 along declination towards SE ;
+text "\\FlexLabel{Cepheus}" at 21 78.9 ;

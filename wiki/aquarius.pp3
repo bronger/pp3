@@ -1,0 +1,29 @@
+# Aquarius
+#
+
+filename output aqr.tex
+filename include wiki.pp3
+
+set constellation AQR
+set center_rectascension  22.3
+set center_declination   -8
+set box_height 8
+set box_width 9
+
+set grad_per_cm 6
+
+
+objects_and_labels
+
+text Aquarius at 23.8 -11 along declination towards SE ;
+text Pisces at 23 -1 along declination towards NW ;
+text Pegasus at 23.9 10 along declination ;
+text Equ at 21 3.5 along declination towards NW ;
+text Del at 20.9 4 along declination ;
+text Cap at 21.9 -9 along declination towards SE ;
+text Mic at 21.4 -28 along declination towards SE ;
+text "Piscis Austrinus" at 21.5 -28 along declination towards W ;
+text Sculptor at 23.2 -26 along declination towards SW ;
+text Cet at 0 -24 along declination towards NW ;
+
+add_labels AQR 2  AQR 48  AQR 73 ;

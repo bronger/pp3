@@ -1,0 +1,35 @@
+# Carina, the keel
+#
+
+filename output car.tex
+filename include wiki.pp3
+
+set constellation CAR
+set center_rectascension 8.5
+set center_declination   -64
+set box_width 9
+set box_height 7
+
+set grad_per_cm 5
+
+
+objects_and_labels
+
+reposition M 68 E ;
+reposition HD 45348 S ;
+reposition NGC 3372 NW ;
+
+text Carina at 7 -55 along declination towards W ;
+text Vela at 10 -50 along declination towards N ;
+text Volans at 6.7 -65 along declination towards SW ;
+text Puppis at 7.4 -50 along declination towards N ;
+text Musca at 11.4 -71 along declination towards W ;
+text Chamaeleon at 11.5 -76 along declination towards SE ;
+text Pictor at 5.6 -60 along declination towards NW ;
+text Dor at 6.4 -67.5 along declination towards E ;
+text Mensa at 7.4 -76 along declination towards SE ;
+text Hyi at 4.5 -68 along declination towards SE ;
+text Cen at 11.4 -60 along declination towards W ;
+
+text "\\footnotesize L\\kern0.1emM\\kern0.1emC" 
+  at 5.5 -70 color 0.0 0.0 0.9333 towards S ;

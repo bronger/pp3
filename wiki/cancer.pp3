@@ -1,0 +1,27 @@
+# Cancer, the Crab
+#
+
+filename output cnc.tex
+filename include wiki.pp3
+
+set constellation CNC
+set center_rectascension  8.7
+set center_declination   20
+set box_height 8
+set box_width 9
+
+set faintest_star_disk_magnitude 5.0
+
+
+objects_and_labels
+
+text Cancer at 8.5 24 along declination towards S ;
+text Gemini at 7.9 17 along declination towards E ;
+text Lynx at 9 34 along declination towards N ;
+text Leo at 9.5 18 along declination towards W ;
+text "Leo Minor" at 9.5 33.5 along declination towards NW ;
+text Hydra at 9.5 6 along declination towards SE ;
+text "Canis Minor" at 8 9 along declination towards SE ;
+add_labels CNC 65  CNC 47  CNC 43  CNC 48 ;
+reposition M 44 NE ;
+reposition LYN 40 E ;

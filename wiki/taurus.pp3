@@ -1,0 +1,23 @@
+# Taurus
+#
+
+filename output tau.tex
+filename include wiki.pp3
+
+set constellation TAU
+set center_rectascension  4.6
+set center_declination   18
+set box_height 9
+set box_width 9
+
+
+objects_and_labels
+
+delete_labels TAU 27 ;
+set_label_text TAU 25 Pleiades
+reposition TAU 87 W ;
+text Orion at 4.8 15 along declination towards SW ;
+text Taurus at 5.3 17 along declination towards N ;
+text Perseus at 4.6 31.5 along declination ;
+text Auriga at 4.9 29 along declination towards NW ;
+text Ari at 3.45 30.5 along declination towards SE ;

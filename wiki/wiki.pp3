@@ -61,4 +61,5 @@ set_label_text HD 128620 "\\footnotesize Toliman"
 set_label_text HD 158427 "\\footnotesize Choo"  # alpha Ara
 set_label_text HD 108248 "\\footnotesize Acrux"
 set_label_text HD 45348 "\\footnotesize Canopus"
+set_label_text HD 10144 "\\footnotesize Achernar"
 

@@ -1,0 +1,23 @@
+# Cassiopeia
+#
+
+filename output cas.tex
+filename include wiki.pp3
+
+set constellation CAS
+set center_rectascension  0.5
+set center_declination   60.5
+set box_height 9
+set box_width 9
+
+# set grad_per_cm 4
+
+
+objects_and_labels
+
+text Cassiopeia at 23.8 51 along declination towards NW ;
+text Andromeda at 0.5 46 along declination towards S ;
+text Cepheus at 0.2 68 along declination ;
+text Perseus at 1.9 53 along declination towards W ;
+text Lac at 22.9 50 along declination towards E ;
+text Cam at 3.4 68.5 along declination towards SW ;

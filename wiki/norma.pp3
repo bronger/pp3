@@ -1,0 +1,26 @@
+# Norma
+#
+
+filename output nor.tex
+filename include wiki.pp3
+
+set constellation NOR
+set center_rectascension  16
+set center_declination   -50
+set box_height 7
+set box_width 8
+
+set faintest_star_disk_magnitude 5.0
+
+objects_and_labels
+
+add_labels HD 147971  HD 146686  HD 144197  HD 143546  HD 143474 ;
+
+text Norma at 16 -50 along declination towards S ;
+text Lupus at 15.8 -48 along declination ;
+text Cen at 14.6 -56.5 along declination towards SE ;
+text Cen at 15 -40 along declination ;
+text Scorpius at 16.3 -41 along declination towards NW ;
+text Ara at 17 -47 along declination towards S ;
+text Cir at 15.4 -56 along declination towards SE ;
+text TrA at 16.5 -61 along declination towards SE ;

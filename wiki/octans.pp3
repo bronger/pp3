@@ -1,0 +1,12 @@
+# Octans (Just a boundary test!!)
+#
+
+filename output oct.tex
+filename include wiki.pp3
+
+set constellation OCT
+set center_rectascension  12
+set center_declination  -90
+set box_height 8
+set box_width 8
+
