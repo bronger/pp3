@@ -1,3 +1,5 @@
+// 	$Id$	
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -185,6 +187,7 @@ void read_bsc5_zone(const int i, stars_list& stars) {
 		    toupper(current_star.constellation[i]);
 	current_star.flamsteed = read_byte(file);
 	string bayer_name = read_string(file,6);
+	current_star.name = "";
 	if (current_star.flamsteed != 0) {
 	    stringstream s;  s << '$' << current_star.flamsteed << '$';
 	    current_star.name = s.str();
@@ -259,8 +262,13 @@ void remove_names_duplicates(stars_list& stars) {
 			stars[brighter].name += '$';
 		    }
 		}
+		const double A = -0.4 * log(10);
+		stars[brighter].magnitude = log(exp(A*stars[brighter].magnitude)
+						+ exp(A*stars[fainter].magnitude))
+		    / A;
 		stars[fainter].name = "";
 		stars[fainter].flamsteed = 0;
+		stars[fainter].magnitude = 100;
 	    }
 	}
 }
@@ -338,7 +346,7 @@ int main() {
 	cout << "Removing names duplicates ..." << flush;
 	remove_names_duplicates(stars);
 	cout << " done.\n";
-	create_label_dimensions_database(stars);
+	/*	create_label_dimensions_database(stars); */
 	for (int i = 0; i < stars.size(); i++) out << stars[i];
     }
     catch (string s) {
@@ -349,6 +357,7 @@ int main() {
     for (int i = 0; i < stars.size(); i++) {
 	if (stars[i].b_v < b_v_min) b_v_min = stars[i].b_v;
 	if (stars[i].b_v < 90 && stars[i].b_v > b_v_max) b_v_max = stars[i].b_v;
+	if (stars[i].magnitude > 99.0) continue;
 	out << stars[i];
     }
     cout << b_v_min << " < B-V < " << b_v_max << endl;
