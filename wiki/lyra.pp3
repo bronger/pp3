@@ -1,0 +1,31 @@
+# Lyra
+#
+
+filename output lyra.tex
+filename include wiki.pp3
+
+set constellation LYR
+set center_rectascension  18.8
+set center_declination    37
+set box_height 8.5
+set box_width 6.3
+
+set grad_per_cm 3
+
+set faintest_star_with_label_magnitude 4.5
+set faintest_star_disk_magnitude 4.5
+
+objects_and_labels
+
+reposition M 57 S ;
+
+add IC 5070 ;
+add_labels  CYG 21  CYG 18  CYG 64  CYG 10 ;
+delete M 29 ;
+
+text Lyra at 18.3 47 along declination towards SW ;
+text Cygnus at 19.3 45 along declination towards NW ;
+text Draco at 18.4 48 along declination towards NW ;
+text Vulpecula at 19.05 25.5 along declination towards SW ;
+text Hercules at 18.5 25.5 along declination towards S ;
+text Her at 18.1 48 along declination towards SE ;

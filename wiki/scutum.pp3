@@ -1,0 +1,36 @@
+# Scutum, the Shield
+#
+
+filename output scutum.tex
+filename include wiki.pp3
+
+set constellation SCT
+set center_rectascension  18.7
+set center_declination   -10
+set box_height 6
+set box_width 6.3
+
+set grad_per_cm 3
+
+set faintest_star_disk_magnitude 5.5
+set faintest_star_with_label_magnitude 5
+
+objects_and_labels
+
+add NGC 6803  NGC 6781 ;
+add_labels AQL 60  AQL 55 ;
+
+delete HD 172088 ;
+
+text Scutum at 18.95 -12 along declination towards E ;
+text Aquila at 19.05 -10 along declination towards W ;
+text Sagittarius at 19 -17 along declination towards SE ;
+text Serpens at 18.67 -3.5 along declination ;
+
+text Delphinus at 20.4 19.5 along declination towards SW ;
+text Sagittarius at 19.5 -12.5 along declination towards S ;
+text Hercules at 18.9 13.5 along declination ;
+text Serpens at 18.9 6 along declination towards SE ;
+text Oph at 18.7 10 along declination towards E ;
+text Aqr at 20.7 0 along declination towards W ;
+text Capricornus at 20.4 -9 along declination towards S ;
