@@ -495,9 +495,9 @@ can override that with the environment variable @env{PP3DATA}.
 @cindex te@TeX{}
 
 There is exactly one object that can need a lot of memory: the Milky
-Way.  Therefor it's switched off by default.  But if you want to see the
-Milky Way on your maps, you probably should set the main memory size of
-your @TeX{} distribution to its maximal value.  This is very
+Way.  Therefore it's switched off by default.  But if you want to see
+the Milky Way on your maps, you probably should set the main memory size
+of your @TeX{} distribution to its maximal value.  This is very
 implementation specific.  With te@TeX{} (Linux) you have to find the
 file @file{texmf.cnf} and set `@code{main_memory.latex}' to 7500000.
 Then call (as root)
@@ -781,6 +781,7 @@ want to be created.
 * Parameters and commands::     The two parts of an input script.
 * Labels::                      Changing implicitly created labels.
 * Deleting and adding objects::  Remove or insert stars and nebulae.
+* Penalty scheme::              How PP3 avoids overlaps of labels.
 @end menu
 
 
@@ -1124,28 +1125,42 @@ reposition M 39  S ;
 
 @noindent
 This puts the label for the nebula M@s{}39 @emph{below} the nebula.
-`@code{S}'@tie{}means `south'.  The following diagram shows the possible
-values for the direction, by and large you know it from the wind rose:
+`@code{S}'@tie{}means `south'.  The following table shows all possible
+values, however you know it by and large from the wind rose probably:
 
 @cindex wind rose
 
-@image{pp3rose,,,Possible values for `reposition' and `towards'}
+@table @samp
+@item E
+prints the label to the right.
 
-@ifinfo
-@noindent
-The `X' marks the spot that lies @emph{exactly} on the celestial
-coordinates given after the `@code{at}' keyword.  Actually there are two
-other possible values, namely `@code{W_}' and `@code{E_}' that can be
-seen only in the printed or HTML version of this manual.  They are like
-`@code{W}' and `@code{E}' except that the X lies on the text baseline
-rather than the centre of the vertical edge.
-@end ifinfo
+@item NE
+prints the label to the upper right.
 
-@ifnotinfo
+@item N
+prints the label to the top.
+
+@item NW
+prints the label to the upper left.
+
+@item W
+prints the label to the left.
+
+@item SW
+prints the label to the lower left.
+
+@item S
+prints the label to the bottom.
+
+@item SE
+prints the label to the lower right.
+
+@end table
+
 @noindent
-The red point marks the spot that lies @emph{exactly} on the celestial
-coordinates given after the `@code{at}' keyword.
-@end ifnotinfo
+(@xref{The keyword `towards'}, for a figure visualising these
+abbreviations.  But be careful since this figure is actually intended
+for the @samp{towards} keyword.)
 
 Using `@code{reposition}' is also necessary if @PPTHREE{} has suppressed
 a label because it hadn't found a good place for it.
@@ -1172,7 +1187,47 @@ This places the text `Virgo galaxy cluster' at the celestial coordinates
 12.7@dmn{h} rectascension and @math{+10^\circ} declination in blue
 colour.  @xref{Colours}, for how to denote colours in @PPTHREE{}.
 
-The keyword `@code{towards}'
+@menu
+* The keyword `towards'::       Setting the labels' relative position.
+@end menu
+
+
+@node The keyword `towards'
+@subsubheading The keyword `@code{towards}'
+@kwindex towards
+@cindex windrose
+
+In a text label, after the keyword @samp{towards}, you can say in which
+direction, seen from the celestial coordinates given after the @samp{at}
+keyword, the label should be printed.  The following figure illustrates
+the ten possible values after @samp{towards}:
+
+@image{pp3rose,,,Possible values for `reposition' and `towards'}
+
+@ifinfo
+@noindent
+The `X' marks the spot that lies @emph{exactly} on the celestial
+coordinates given after the `@code{at}' keyword.  Actually there are two
+other possible values, namely `@code{W_}' and `@code{E_}' that can be
+seen only in the printed or HTML version of this manual.  They are like
+`@code{W}' and `@code{E}' except that the X lies on the text baseline
+rather than the centre of the vertical edge.
+@end ifinfo
+
+@ifnotinfo
+@noindent
+The red point marks the spot that lies @emph{exactly} on the celestial
+coordinates given after the `@code{at}' keyword.
+@end ifnotinfo
+
+The default value for @samp{towards} is @code{NE}, so if you don't use
+@samp{towards}, @PPTHREE{} places the text label to the upper right.  In
+particular, @PPTHREE{} does not perform any algorithm for finding the
+best position for the label as it does with automatically generated
+labels.
+
+For some nice tricks with text lables and @samp{towards}, see @ref{LaTeX
+in labels}.
 
 
 @node Using flexes
@@ -1238,6 +1293,12 @@ The `@code{add}' command is useful mostly for nebulae, because by
 default, @PPTHREE{} only includes all objects of the Messier catalogue,
 but only other objects with a minimal brightness, see @ref{Filtering by
 brightness}.
+
+
+@node Penalty scheme
+@section Penalty scheme
+
+@b{To be done.}
 
 
 @node Keywords reference
@@ -2128,8 +2189,8 @@ filename latex_preamble mypreamble.tex
 @end example
 
 @noindent
-The file @file{mypreamble.tex} contains your @LaTeX{} peamble macros and
-must reside in the current directory.
+The file @file{mypreamble.tex} contains your @LaTeX{} preamble macros
+and must reside in the current directory.
 
 The following is the original user @LaTeX{} preamble that was used for
 the Wikipedia Project, see @ref{Successful use of PP3}.
@@ -2685,4 +2746,4 @@ All @PPTHREE{} keywords are printed in @t{typewriter} style.
 @c  LocalWords:  cindex kwindex byfmt ini flexes xref ifinfo ifnotinfo tics Cyg
 @c  LocalWords:  deffn deffnx ifhtml todo xmarksthespot miktex Cnc hskip psdots
 @c  LocalWords:  leo nofiles pst TicMark TextLabel AtBeginDocument mypreamble
-@c  LocalWords:  IfFileExists eulervm pmy phv riptsize mdseries
+@c  LocalWords:  IfFileExists eulervm pmy phv riptsize mdseries atid
