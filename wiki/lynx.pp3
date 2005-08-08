@@ -22,5 +22,6 @@ text "Ursa Major" at 8.65 55.5 along declination towards W ;
 text Gemini at 8.1 32 along declination towards SE ;
 text Cancer at 8.2 32 along declination towards SW ;
 text Auriga at 7.4 44 along declination towards SE ;
-text LMi at 9.4 32.5 along declination towards SW ;
+text Leo at 9.4 32.5 along declination towards SW ;
+text LMi at 9.43 33.5 along declination towards NW ;
 text Camelopardalis at 8.1 62.5 along declination ;
