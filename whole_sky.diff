@@ -1,0 +1,78 @@
+*** pp3.w	14 Aug 2004 15:46:22 +0200	1.42
+--- pp3.w	10 Dez 2005 15:18:20 +0100	
+***************
+*** 2557,2567 ****
+  
+  @s zt TeX
+  
+- @q'@>
+- 
+  @c
+  inline double transformation::stretch_factor(const double z) const {
+!     const double zt = 1.0 - z;
+      return 1.0 + zt *
+          ( 1.0/3.0 + zt *
+            ( 2.0/15.0 + zt *
+--- 2557,2565 ----
+  
+  @s zt TeX
+  
+  @c
+  inline double transformation::stretch_factor(const double z) const {
+!     const double zt = 1.0 - (z > 0 ? z : -z);
+      return 1.0 + zt *
+          ( 1.0/3.0 + zt *
+            ( 2.0/15.0 + zt *
+***************
+*** 2632,2644 ****
+      
+      const double z1 =
+          a_unscaled[2][0] * x0 + a_unscaled[2][1] * y0 + a_unscaled[2][2] * z0;
+!     if (z1 < -DBL_EPSILON) return false;
+      const double stretch = stretch_factor(z1);
+      const double x1 = a[0][0] * x0 + a[0][1] * y0;
+      const double y1 = a[1][0] * x0 + a[1][1] * y0 + a[1][2] * z0;
+!     x = x1 * stretch + width / 2.0;
+!     y = y1 * stretch + height / 2.0;
+!     if (x < 0.0 || x > width || y < 0.0 || y > height) return false;
+      return true;
+  }
+  
+--- 2630,2649 ----
+      
+      const double z1 =
+          a_unscaled[2][0] * x0 + a_unscaled[2][1] * y0 + a_unscaled[2][2] * z0;
+!     if (z1 < -0.9 / rad_per_cm) return false;
+      const double stretch = stretch_factor(z1);
+      const double x1 = a[0][0] * x0 + a[0][1] * y0;
+      const double y1 = a[1][0] * x0 + a[1][1] * y0 + a[1][2] * z0;
+!     x = x1 * stretch;
+!     y = y1 * stretch;
+!     if (z1 < -DBL_EPSILON) {
+!       const double super_stretch = 2.0 * (M_PI_2 / rad_per_cm) / hypot(x, y) - 1.0;
+!       x = super_stretch * x;
+!       y = super_stretch * y;
+!     }
+!     x += width / 2.0;
+!     y += height / 2.0;
+!     //    if (x < 0.0 || x > width || y < 0.0 || y > height) return false;
+      return true;
+  }
+  
+***************
+*** 3934,3940 ****
+  
+  @<Draw all celestial objects and labels@>=
+          if (params.milkyway_visible) draw_milky_way(mytransform);
+!         create_grid(mytransform);
+          if (params.show_boundaries)
+              draw_boundaries(mytransform, boundaries, objects,
+                              params.constellation);
+--- 3939,3945 ----
+  
+  @<Draw all celestial objects and labels@>=
+          if (params.milkyway_visible) draw_milky_way(mytransform);
+!         create_grid(mytransform, 100, 0);
+          if (params.show_boundaries)
+              draw_boundaries(mytransform, boundaries, objects,
+                              params.constellation);
