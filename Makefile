@@ -75,7 +75,7 @@ install: all
 	install -d $(ROOT)$(PP3DATA)
 	install --mode=$(PERMS) *.dat $(ROOT)$(PP3DATA)
 	install -d $(ROOT)$(DATADIR)/doc/pp3/examples
-	install --mode=$(PERMS) examples/* $(ROOT)$(DATADIR)/doc/pp3/examples
+	install --mode=$(PERMS) wiki/*.* $(ROOT)$(DATADIR)/doc/pp3/examples
 	$(MAKE) --directory=info install ROOT=$(ROOT) PERMS=$(PERMS) \
 	  INFODIR=$(INFODIR) DOCDIR=$(DOCDIR)
 
