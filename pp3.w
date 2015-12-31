@@ -339,6 +339,7 @@ actually drawn.  So memory usage could be reduced drastically.
 #include <iomanip>
 #include <cstdlib>
 #include <cmath>
+#include <cstring>
 #include <cfloat>@#
 
 using namespace std;
