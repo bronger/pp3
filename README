@@ -9,6 +9,12 @@
 
                                            See the file COPYING or the above
                                            web address for licence information.
+UNMAINTAINED
+
+PP3 is currently unmaintained, and nobody gives support for it.  If you want to
+take over, send me an email.
+
+
 INSTALLATION
 
 There is a binary distribution for the Linux (RPM) and one for the Windows
